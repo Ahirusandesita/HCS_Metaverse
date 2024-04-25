@@ -19,5 +19,7 @@ public class LocalRemoteSeparation : MonoBehaviour
         GameObject localObject = Instantiate(localGameObject, Vector3.zero, Quaternion.identity);
 
         Instantiate(separationLifetimeScope).SeparationSetup(localObject, remoteView).Build();
+
+        Destroy(this);
     }
 }

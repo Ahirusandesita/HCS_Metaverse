@@ -9,13 +9,21 @@ public class LocalAvatarLogic : MonoBehaviour
     public void Inject(RemoteView remoteView)
     {
         this.remoteView = remoteView;
+        Vector3 position = this.transform.position;
+        position.z -= 1f;
+        remoteView.transform.position = position;
+
+        remoteView.GetComponent<MeshRenderer>().enabled = false;
     }
 
     private void Update()
     {
-        var input = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0f);
-        transform.Translate(6f * Time.deltaTime * input.normalized);
 
-        remoteView.transform.Translate(6f * Time.deltaTime * input.normalized);
+        //remoteView.transform.Translate(6f * Time.deltaTime * input.normalized);
+        //Vector3 position = this.transform.position;
+        //position.z -= 1f;
+        //remoteView.transform.position = position;
+
+        remoteView.transform.position = transform.position/* + (transform.forward * -0.5f)*/;
     }
 }
