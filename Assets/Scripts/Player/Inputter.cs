@@ -9,7 +9,7 @@ public class Inputter : IDisposable
         Gamepad,
     }
 
-    private PlayerInputActions pias = default;  // ’·‚¢‚Ì‚Å‚±‚Ì–½–¼‚Å‹–‚µ‚Ä
+    private readonly PlayerInputActions pias = default;  // ’·‚¢‚Ì‚Å‚±‚Ì–½–¼‚Å‹–‚µ‚Ä
 
     // Jump‚Ì‚İPlayerController‘¤‚©‚ç‘‚«Š·‚¦‚ğ‹–‰Â‚·‚é
     public bool IsJump { get; set; }
