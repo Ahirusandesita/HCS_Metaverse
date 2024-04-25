@@ -25,7 +25,21 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// 接地判定をする球の半径（CharacterControllerのRadiusを参照する）
     /// </summary>
-    private float GroundedRadius => characterController.radius;
+    private float GroundedRadius
+    {
+        get
+        {
+            try
+            {
+                return characterController.radius;
+            }
+            catch (UnassignedReferenceException)
+            {
+                return GetComponent<CharacterController>().radius;
+            }
+        }
+    }
+
 
 
     private void Awake()
@@ -160,6 +174,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void JumpAndGravity()
     {
+        print(characterController.velocity.y);
         if (isGrounded)
         {
             // 速度が無限に低下するのを防ぐ
@@ -187,8 +202,6 @@ public class PlayerController : MonoBehaviour
 
             // 空中にいるとき、ジャンプをリセット
             inputter.IsJump = false;
-
-            print(characterController.velocity.y);
         }
 
         // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
@@ -228,6 +241,7 @@ public class PlayerController : MonoBehaviour
         else Gizmos.color = transparentRed;
 
         // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
-        Gizmos.DrawSphere(new Vector3(myTransform.position.x, myTransform.position.y - playerDataAsset.GroundedOffset, myTransform.position.z), GroundedRadius);
+        // エディタで動作するため、transformのキャッシュは使用しない
+        Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - playerDataAsset.GroundedOffset, transform.position.z), GroundedRadius);
     }
 }
