@@ -187,6 +187,8 @@ public class PlayerController : MonoBehaviour
 
             // 空中にいるとき、ジャンプをリセット
             inputter.IsJump = false;
+
+            print(characterController.velocity.y);
         }
 
         // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
