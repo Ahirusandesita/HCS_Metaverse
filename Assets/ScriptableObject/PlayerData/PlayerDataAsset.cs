@@ -27,8 +27,6 @@ public class PlayerDataAsset : ScriptableObject
     [SerializeField] private float jumpTimeout = 0.1f;
 
     [Header("Player Grounded")]
-    [Tooltip("接地判定のOffset（ラフグラウンドで特に有効）")]
-    [SerializeField] private float groundedOffset = -0.14f;
     [Tooltip("地面として使用しているレイヤー")]
     [SerializeField] private LayerMask groundLayers;
 
@@ -66,10 +64,6 @@ public class PlayerDataAsset : ScriptableObject
     /// 再びジャンプできるようになるまでの時間（0fに設定すると、即座に再度ジャンプする）
     /// </summary>
     public float JumpTimeout => jumpTimeout;
-    /// <summary>
-    /// 接地判定のOffset（ラフグラウンドで特に有効）
-    /// </summary>
-    public float GroundedOffset => groundedOffset;
     /// <summary>
     /// 地面として使用しているレイヤー
     /// </summary>
