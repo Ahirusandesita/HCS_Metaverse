@@ -16,7 +16,9 @@ public class Inputter : IDisposable
     public bool IsSprint { get; private set; }
     public Vector2 MoveDir { get; private set; }
     public Vector2 LookDir { get; private set; }
-
+    /// <summary>
+    /// 最後にLookActionを操作したデバイス
+    /// </summary>
     public DeviceType LastLookedDevice { get; private set; }
 
 

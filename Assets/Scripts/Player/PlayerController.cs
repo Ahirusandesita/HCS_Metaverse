@@ -1,4 +1,6 @@
 using UnityEngine;
+using System;
+using UniRx;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -6,6 +8,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerDataAsset playerDataAsset = default;
     [Tooltip("ChinemachineVirtualCameraが追従するターゲット（回転させるため、子オブジェクトのEmptyが望ましい）")]
     [SerializeField] private Transform cinemachineCameraTarget = default;
+    [Tooltip("接地判定を行う球の原点となるターゲット")]
+    [SerializeField] private Transform groundCheckSphere = default;
+    [Tooltip("天井判定を行う球の原点となるターゲット")]
+    [SerializeField] private Transform ceilingCheckSphere = default;
 
     private Transform myTransform = default;
     private CharacterController characterController = default;
@@ -20,12 +26,16 @@ public class PlayerController : MonoBehaviour
     [Tooltip("カメラの勾配（垂直方向の角度）")]
     private float cinemachineTargetPitch = default;
 
-    private const float TERMINAL_VELOCITY = 53.0f;
+    [Tooltip("天井に当たっているかどうか")]
+    private readonly BoolReactiveProperty isHitCeilingRP = new BoolReactiveProperty();
+
+    private const float TERMINAL_VELOCITY = 53f;
+    private const float VERTICAL_VELOCITY_COEFFICIENT = -2f;
 
     /// <summary>
     /// 接地判定をする球の半径（CharacterControllerのRadiusを参照する）
     /// </summary>
-    private float GroundedRadius
+    private float DecisionRadius
     {
         get
         {
@@ -33,7 +43,7 @@ public class PlayerController : MonoBehaviour
             {
                 return characterController.radius;
             }
-            catch (UnassignedReferenceException)
+            catch (SystemException e) when (e is UnassignedReferenceException || e is NullReferenceException)
             {
                 return GetComponent<CharacterController>().radius;
             }
@@ -47,7 +57,15 @@ public class PlayerController : MonoBehaviour
         // キャッシュ
         myTransform = transform;
         characterController = GetComponent<CharacterController>();
-        inputter = new Inputter();
+        inputter = new Inputter().AddTo(this);
+
+        // 購読
+        isHitCeilingRP
+            // フィルター：値がtrueに変わったとき かつ 上向きの速度があるとき
+            .Where(isHitCeiling => isHitCeiling && verticalVelocity > 0f)
+            // 垂直方向の速度をリセット
+            .Subscribe(isHitCeiling => verticalVelocity = VERTICAL_VELOCITY_COEFFICIENT)
+            .AddTo(this);
     }
 
     private void Start()
@@ -59,7 +77,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         JumpAndGravity();
-        GroundedCheck();
+        GroundedAndCeilingCheck();
         Move();
     }
 
@@ -68,19 +86,13 @@ public class PlayerController : MonoBehaviour
         CameraRotation();
     }
 
-    private void OnDestroy()
-    {
-        inputter.Dispose();
-    }
-
     /// <summary>
-    /// 接地判定処理
+    /// 接地および天井判定処理
     /// </summary>
-    private void GroundedCheck()
+    private void GroundedAndCeilingCheck()
     {
-        // set sphere position, with offset
-        Vector3 spherePosition = new Vector3(myTransform.position.x, myTransform.position.y - playerDataAsset.GroundedOffset, myTransform.position.z);
-        isGrounded = Physics.CheckSphere(spherePosition, GroundedRadius, playerDataAsset.GroundLayers, QueryTriggerInteraction.Ignore);
+        isGrounded = Physics.CheckSphere(groundCheckSphere.position, DecisionRadius, playerDataAsset.GroundLayers, QueryTriggerInteraction.Ignore);
+        isHitCeilingRP.Value = Physics.CheckSphere(ceilingCheckSphere.position, DecisionRadius, playerDataAsset.GroundLayers, QueryTriggerInteraction.Ignore);
     }
 
     /// <summary>
@@ -174,20 +186,19 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void JumpAndGravity()
     {
-        print(characterController.velocity.y);
         if (isGrounded)
         {
             // 速度が無限に低下するのを防ぐ
             if (verticalVelocity < 0f)
             {
-                verticalVelocity = -2f;
+                verticalVelocity = VERTICAL_VELOCITY_COEFFICIENT;
             }
 
             // ジャンプ入力があるかつ、ジャンプタイムアウトの時間外であれば、ジャンプをする
-            if (inputter.IsJump && jumpTimeoutDelta <= 0f)
+            if (inputter.IsJump && !isHitCeilingRP.Value && jumpTimeoutDelta <= 0f)
             {
                 // the square root of H * -2 * G = how much velocity needed to reach desired height
-                verticalVelocity = Mathf.Sqrt(playerDataAsset.JumpHeight * -2f * playerDataAsset.Gravity);
+                verticalVelocity = Mathf.Sqrt(playerDataAsset.JumpHeight * VERTICAL_VELOCITY_COEFFICIENT * playerDataAsset.Gravity);
             }
             // ジャンプタイムアウト中
             else if (jumpTimeoutDelta >= 0f)
@@ -204,10 +215,14 @@ public class PlayerController : MonoBehaviour
             inputter.IsJump = false;
         }
 
-        // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
+        // 現在の速度が終端速度以下のとき、重力を加算
         if (verticalVelocity < TERMINAL_VELOCITY)
         {
             verticalVelocity += playerDataAsset.Gravity * Time.deltaTime;
+        }
+
+        void A()
+        {
         }
     }
 
@@ -236,12 +251,17 @@ public class PlayerController : MonoBehaviour
     {
         Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
         Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
+        Color transparentBlue = new Color(0.0f, 0.0f, 1.0f, 0.35f);
+        Color transparentYellow = new Color(1.0f, 1.0f, 0.0f, 0.35f);
 
-        if (isGrounded) Gizmos.color = transparentGreen;
+        if (isGrounded && isHitCeilingRP.Value) Gizmos.color = transparentBlue;
+        else if (isGrounded && !isHitCeilingRP.Value) Gizmos.color = transparentGreen;
+        else if (!isGrounded && isHitCeilingRP.Value) Gizmos.color = transparentYellow;
         else Gizmos.color = transparentRed;
 
         // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
         // エディタで動作するため、transformのキャッシュは使用しない
-        Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - playerDataAsset.GroundedOffset, transform.position.z), GroundedRadius);
+        Gizmos.DrawSphere(groundCheckSphere.position, DecisionRadius);
+        Gizmos.DrawSphere(ceilingCheckSphere.position, DecisionRadius);
     }
 }
