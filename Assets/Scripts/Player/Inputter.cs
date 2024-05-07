@@ -6,7 +6,7 @@ public class Inputter : IDisposable
     public enum DeviceType
     {
         KeyboardMouse,
-        Gamepad,
+        GamepadOrXR,
     }
 
     private readonly PlayerInputActions pias = default;  // 長いのでこの命名で許して
@@ -41,8 +41,8 @@ public class Inputter : IDisposable
             LastLookedDevice = context.control.layout switch
             {
                 "Delta" => DeviceType.KeyboardMouse,
-                "Stick" => DeviceType.Gamepad,
-                _ => throw new DeviceException("[操作：Look]がKeyboard, Gamepad以外のデバイスから入力されました。"),
+                "Stick" => DeviceType.GamepadOrXR,
+                _ => throw new DeviceException("[操作：Look]がKeyboard, Gamepad, XR以外のデバイスから入力されました。"),
             };
         };
         pias.Player.Look.canceled += _ => LookDir = Vector2.zero;
