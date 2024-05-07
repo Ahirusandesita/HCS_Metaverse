@@ -1,10 +1,10 @@
-using UnityEngine;
-using System;
 using UniRx;
+using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] private CharacterController characterController = default;
     [SerializeField] private PlayerDataAsset playerDataAsset = default;
     [Tooltip("ChinemachineVirtualCameraが追従するターゲット（回転させるため、子オブジェクトのEmptyが望ましい）")]
     [SerializeField] private Transform cinemachineCameraTarget = default;
@@ -14,7 +14,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform ceilingCheckSphere = default;
 
     private Transform myTransform = default;
-    private CharacterController characterController = default;
     private Inputter inputter = default;
 
     [Tooltip("接地しているかどうか")]
@@ -35,33 +34,18 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// 接地判定をする球の半径（CharacterControllerのRadiusを参照する）
     /// </summary>
-    private float DecisionRadius
-    {
-        get
-        {
-            try
-            {
-                return characterController.radius;
-            }
-            catch (SystemException e) when (e is UnassignedReferenceException || e is NullReferenceException)
-            {
-                return GetComponent<CharacterController>().radius;
-            }
-        }
-    }
-
+    private float DecisionRadius => characterController.radius;
 
 
     private void Awake()
     {
-        // キャッシュ
+        // Cache
         myTransform = transform;
-        characterController = GetComponent<CharacterController>();
         inputter = new Inputter().AddTo(this);
 
-        // 購読
+        // Subscribe
         isHitCeilingRP
-            // フィルター：値がtrueに変わったとき かつ 上向きの速度があるとき
+            // Filter: 値がtrueに変わったとき かつ 上向きの速度があるとき
             .Where(isHitCeiling => isHitCeiling && verticalVelocity > 0f)
             // 垂直方向の速度をリセット
             .Subscribe(isHitCeiling => verticalVelocity = VERTICAL_VELOCITY_COEFFICIENT)
@@ -70,7 +54,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        // 初期化
+        // Initialize
         jumpTimeoutDelta = playerDataAsset.JumpTimeout;
     }
 
@@ -160,7 +144,7 @@ public class PlayerController : MonoBehaviour
         // 設定した速度まで徐々に加減速を行う
         if (currentHorizontalSpeed < speed - SPEED_OFFSET || currentHorizontalSpeed > speed + SPEED_OFFSET)
         {
-            // note: tは渡された後にクランプされるので、こっちでクランプする必要はない
+            // Note: tは渡された後にクランプされるので、こっちでクランプする必要はない
             speed = Mathf.Lerp(currentHorizontalSpeed, speed * inputMagnitude, Time.deltaTime * playerDataAsset.SpeedChangeRate);
 
             // 速度は小数点以下3桁に丸める
@@ -171,7 +155,7 @@ public class PlayerController : MonoBehaviour
         Vector3 inputDirection = new Vector3(inputter.MoveDir.x, 0.0f, inputter.MoveDir.y).normalized;
 
         // Inputがある場合、Inputから移動方向を合成
-        // note: Vector2の != 演算子は近似値を使用するため、浮動小数点エラーが発生しにくく、magnitudeよりも安価である。
+        // Note: Vector2の != 演算子は近似値を使用するため、浮動小数点エラーが発生しにくく、magnitudeよりも安価である。
         if (inputter.MoveDir != Vector2.zero)
         {
             inputDirection = myTransform.right * inputter.MoveDir.x + myTransform.forward * inputter.MoveDir.y;
@@ -219,10 +203,6 @@ public class PlayerController : MonoBehaviour
         if (verticalVelocity < TERMINAL_VELOCITY)
         {
             verticalVelocity += playerDataAsset.Gravity * Time.deltaTime;
-        }
-
-        void A()
-        {
         }
     }
 
