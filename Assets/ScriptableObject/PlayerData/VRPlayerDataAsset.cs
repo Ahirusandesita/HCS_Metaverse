@@ -7,11 +7,11 @@ using UnityEngine;
 public class VRPlayerDataAsset : PlayerDataAssetBase
 {
     [Header("Camera")]
-    [Tooltip("x²‚Ì‰ñ“]Šp[‹]")]
-    [SerializeField] private float xRotateAngle = 15f;
+    [Tooltip("‰ñ“]Šp[‹]")]
+    [SerializeField] private float rotateAngle = 30f;
 
     /// <summary>
     /// x²‚Ì‰ñ“]Šp[‹]
     /// </summary>
-    public float XRotateAngle => xRotateAngle;
+    public float RotateAngle => rotateAngle;
 }

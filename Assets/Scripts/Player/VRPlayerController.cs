@@ -7,12 +7,16 @@ using System;
 /// </summary>
 public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>
 {
+    [SerializeField] private Transform centerEyeTransform = default;
+
     [Tooltip("左右どちらに回転するか")]
     private FloatReactiveProperty lookDirX_RP = default;
 
     protected override void Awake()
     {
         base.Awake();
+
+        followTransform = centerEyeTransform;
 
         // Subscribe
         lookDirX_RP = new FloatReactiveProperty().AddTo(this);
@@ -47,6 +51,6 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>
     /// <param name="leftOrRight">左右を表す符号（-1f, 1fのいずれか）</param>
     private void OnRotate(float leftOrRight)
     {
-        myTransform.Rotate(Vector3.up * (playerDataAsset.XRotateAngle * leftOrRight));
+        myTransform.Rotate(Vector3.up * (playerDataAsset.RotateAngle * leftOrRight));
     }
 }

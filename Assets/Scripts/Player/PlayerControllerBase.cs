@@ -18,6 +18,8 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
     protected Transform myTransform = default;
     protected Inputter inputter = default;
 
+    [Tooltip("移動における追従先Transform")]
+    protected Transform followTransform = default;
     [Tooltip("接地しているかどうか")]
     private bool isGrounded = default;
     [Tooltip("垂直方向の速度")]
@@ -56,6 +58,11 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
     {
         // Initialize
         jumpTimeoutDelta = playerDataAsset.JumpTimeout;
+        
+        if (followTransform is null)
+        {
+            followTransform = myTransform;
+        }
     }
 
     protected virtual void Update()
@@ -127,7 +134,7 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
         // Note: Vector2の != 演算子は近似値を使用するため、浮動小数点エラーが発生しにくく、magnitudeよりも安価である。
         if (inputter.MoveDir != Vector2.zero)
         {
-            inputDirection = myTransform.right * inputter.MoveDir.x + myTransform.forward * inputter.MoveDir.y;
+            inputDirection = followTransform.right * inputter.MoveDir.x + followTransform.forward * inputter.MoveDir.y;
         }
 
         // プレイヤーを移動させる
