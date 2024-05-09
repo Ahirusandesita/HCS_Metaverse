@@ -47,6 +47,6 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>
     /// <param name="leftOrRight">左右を表す符号（-1f, 1fのいずれか）</param>
     private void OnRotate(float leftOrRight)
     {
-        myTransform.Rotate(Vector3.up * (15f * leftOrRight));
+        myTransform.Rotate(Vector3.up * (playerDataAsset.XRotateAngle * leftOrRight));
     }
 }
