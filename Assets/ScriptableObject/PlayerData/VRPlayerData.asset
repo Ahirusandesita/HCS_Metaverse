@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 430e0c7105ecb334cbff5ecb25f235e4, type: 3}
-  m_Name: PlayerData
+  m_Script: {fileID: 11500000, guid: e5f04a2fa1c6f6c4699dc423d686a4c5, type: 3}
+  m_Name: VRPlayerData
   m_EditorClassIdentifier: 
   walkSpeed: 4
   sprintSpeed: 6
@@ -21,6 +21,4 @@ MonoBehaviour:
   groundLayers:
     serializedVersion: 2
     m_Bits: 1
-  rotationSpeed: 1
-  verticalMaxAngle: 90
-  verticalMinAngle: -90
+  xRotateAngle: 15

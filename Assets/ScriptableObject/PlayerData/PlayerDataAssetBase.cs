@@ -1,0 +1,56 @@
+using UnityEngine;
+
+/// <summary>
+/// プレイヤーのパラメータを扱うクラス
+/// </summary>
+public abstract class PlayerDataAssetBase : ScriptableObject
+{
+    [Header("Player")]
+    [Tooltip("プレイヤーの歩行速度[m/s]")]
+    [SerializeField] private float walkSpeed = 4.0f;
+    [Tooltip("プレイヤーのスプリント速度[m/s]")]
+    [SerializeField] private float sprintSpeed = 6.0f;
+    [Tooltip("加減速レート（Lerp関数でTime.deltaTimeと掛け合わせて使用される）")]
+    [SerializeField] private float speedChangeRate = 10.0f;
+
+    [Space]
+    [Tooltip("プレイヤーがジャンプ可能な高さ")]
+    [SerializeField] private float jumpHeight = 1.2f;
+    [Tooltip("プレイヤー独自の重力（UnityEngineの標準は-9.81f）")]
+    [SerializeField] private float gravity = -15.0f;
+    [Tooltip("再びジャンプできるようになるまでの時間（0fに設定すると、即座に再度ジャンプする）")]
+    [SerializeField] private float jumpTimeout = 0.1f;
+
+    [Header("Player Grounded")]
+    [Tooltip("地面として使用しているレイヤー")]
+    [SerializeField] private LayerMask groundLayers;
+
+    /// <summary>
+    /// プレイヤーの歩行速度[m/s]
+    /// </summary>
+    public float WalkSpeed => walkSpeed;
+    /// <summary>
+    /// プレイヤーのスプリント速度[m/s]
+    /// </summary>
+    public float SprintSpeed => sprintSpeed;
+    /// <summary>
+    /// 加減速レート（Lerp関数でTime.deltaTimeと掛け合わせて使用される）
+    /// </summary>
+    public float SpeedChangeRate => speedChangeRate;
+    /// <summary>
+    /// プレイヤーがジャンプ可能な高さ
+    /// </summary>
+    public float JumpHeight => jumpHeight;
+    /// <summary>
+    /// プレイヤー独自の重力（UnityEngineの標準は-9.81f）
+    /// </summary>
+    public float Gravity => gravity;
+    /// <summary>
+    /// 再びジャンプできるようになるまでの時間（0fに設定すると、即座に再度ジャンプする）
+    /// </summary>
+    public float JumpTimeout => jumpTimeout;
+    /// <summary>
+    /// 地面として使用しているレイヤー
+    /// </summary>
+    public LayerMask GroundLayers => groundLayers;
+}
