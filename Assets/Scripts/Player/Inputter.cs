@@ -1,12 +1,21 @@
-using UnityEngine;
 using System;
+using UnityEngine;
+#if UNITY_EDITOR
+using UnityEngine.InputSystem;
+#endif
 
 public class Inputter : IDisposable
 {
     public enum DeviceType
     {
-        KeyboardMouse,
+        Mouse,
         GamepadOrXR,
+#if UNITY_EDITOR
+        /// <summary>
+        /// Editor only
+        /// </summary>
+        Keyboard,
+#endif
     }
 
     private readonly PlayerInputActions pias = default;  // 長いのでこの命名で許して
@@ -40,9 +49,12 @@ public class Inputter : IDisposable
             // プレイヤーの処理で分岐が必要になるため、泣く泣く実装。
             LastLookedDevice = context.control.layout switch
             {
-                "Delta" => DeviceType.KeyboardMouse,
+                "Delta" => DeviceType.Mouse,
                 "Stick" => DeviceType.GamepadOrXR,
+#if UNITY_EDITOR
+                "Key" => DeviceType.Keyboard,
                 _ => throw new DeviceException("[操作：Look]がKeyboard, Gamepad, XR以外のデバイスから入力されました。"),
+#endif
             };
         };
         pias.Player.Look.canceled += _ => LookDir = Vector2.zero;
@@ -55,6 +67,13 @@ public class Inputter : IDisposable
 #else
         throw new NotSupportedException("InputSystemが有効になっていません。" +
             "このプロジェクトではInputSystemの使用を前提としているため、旧入力システムではなくInputSystemを使用してください。");
+#endif
+
+#if UNITY_EDITOR
+        // VR操作のデバッグ用に、Editorでのみキーバインドを追加
+        pias.Player.Look.AddCompositeBinding("2DVector")
+            .With("Left", "<Keyboard>/k")
+            .With("Right", "<Keyboard>/semicolon");
 #endif
     }
 

@@ -2255,10 +2255,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 0}
-  playerDataAsset: {fileID: 11400000, guid: f7290cfb8ce774c4aa4658c0338e2190, type: 2}
-  cinemachineCameraTarget: {fileID: 2070455262}
+  playerDataAsset: {fileID: 0}
   groundCheckSphere: {fileID: 433556504}
   ceilingCheckSphere: {fileID: 0}
+  cinemachineCameraTarget: {fileID: 2070455262}
 --- !u!143 &2070455267
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2731,6 +2731,7 @@ GameObject:
   - component: {fileID: 6351484207248466316}
   - component: {fileID: 3802566839015803766}
   - component: {fileID: 6351484207248466317}
+  - component: {fileID: 6351484207248466318}
   m_Layer: 6
   m_Name: PlayerCapsule (1)
   m_TagString: Player
@@ -2771,14 +2772,30 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6351484207248466310}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 889bbcb8f39372945a73cecf6af082d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 6351484207248466316}
   playerDataAsset: {fileID: 11400000, guid: f7290cfb8ce774c4aa4658c0338e2190, type: 2}
+  groundCheckSphere: {fileID: 133181508}
+  ceilingCheckSphere: {fileID: 1295514362}
   cinemachineCameraTarget: {fileID: 1644686918949640410}
+--- !u!114 &6351484207248466318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6351484207248466310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6f995c52a7c7f145b31aaa78fc76f5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterController: {fileID: 6351484207248466316}
+  playerDataAsset: {fileID: 11400000, guid: 5ca95e5846cbcb4468f4cc9f369e9a1f, type: 2}
   groundCheckSphere: {fileID: 133181508}
   ceilingCheckSphere: {fileID: 1295514362}
 --- !u!1001 &7288094137546172433
