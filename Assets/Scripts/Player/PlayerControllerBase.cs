@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using UniRx;
 using UnityEngine;
 
@@ -208,6 +209,7 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
         return Mathf.Clamp(lfAngle, lfMin, lfMax);
     }
 
+    [Conditional("UNITY_EDITOR")]
     protected virtual void OnDrawGizmosSelected()
     {
         Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);

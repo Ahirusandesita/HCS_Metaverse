@@ -53,7 +53,9 @@ public class Inputter : IDisposable
                 "Stick" => DeviceType.GamepadOrXR,
 #if UNITY_EDITOR
                 "Key" => DeviceType.Keyboard,
-                _ => throw new DeviceException("[操作：Look]がKeyboard, Gamepad, XR以外のデバイスから入力されました。"),
+                _ => throw new DeviceException("[操作：Look]がMouse, Keyboard, Gamepad, XR以外のデバイスから入力されました。"),
+#else
+                _ => DeviceType.GamepadOrXR,
 #endif
             };
         };
