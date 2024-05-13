@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using VContainer;
 
@@ -5,6 +6,7 @@ public class LocalAvatarLogic : MonoBehaviour
 {
     private RemoteView remoteView;
 
+    private Action action;
     [Inject]
     public void Inject(RemoteView remoteView)
     {
@@ -14,6 +16,8 @@ public class LocalAvatarLogic : MonoBehaviour
         remoteView.transform.position = position;
 
         remoteView.GetComponent<MeshRenderer>().enabled = false;
+
+        action += () => remoteView.transform.position = transform.position;
     }
 
     private void Update()
@@ -24,6 +28,7 @@ public class LocalAvatarLogic : MonoBehaviour
         //position.z -= 1f;
         //remoteView.transform.position = position;
 
-        remoteView.transform.position = transform.position/* + (transform.forward * -0.5f)*/;
+        action?.Invoke();
+        /* + (transform.forward * -0.5f)*/;
     }
 }
