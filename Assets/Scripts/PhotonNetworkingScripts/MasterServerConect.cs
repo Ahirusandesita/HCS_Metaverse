@@ -21,6 +21,6 @@ public class MasterServerConect : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        Instantiate(localRemoteReparation);
+        localRemoteReparation.RemoteViewCreate();
     }
 }
