@@ -1,6 +1,5 @@
 using UniRx;
 using UnityEngine;
-using System;
 
 /// <summary>
 /// プレイヤーの挙動を扱うクラス（VR)

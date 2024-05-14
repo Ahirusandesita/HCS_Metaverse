@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using UniRx;
-using System;
 using UnityEngine;
 
 /// <summary>
@@ -8,7 +7,7 @@ using UnityEngine;
 /// </summary>
 /// <typeparam name="TData">プレイヤーのパラメータクラス</typeparam>
 [RequireComponent(typeof(CharacterController))]
-public abstract partial class PlayerControllerBase<TData> : MonoBehaviour where TData : PlayerDataAssetBase
+public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : PlayerDataAssetBase
 {
     [SerializeField] protected CharacterController characterController = default;
     [SerializeField] protected TData playerDataAsset = default;
@@ -32,6 +31,11 @@ public abstract partial class PlayerControllerBase<TData> : MonoBehaviour where 
     [Tooltip("天井に当たっているかどうか")]
     private readonly ReactiveProperty<bool> isHitCeilingRP = new ReactiveProperty<bool>();
 
+    [Tooltip("移動中かどうか")]
+    protected readonly ReactiveProperty<bool> isMovingRP = new ReactiveProperty<bool>(false);
+    [Tooltip("ジャンプ中かどうか")]
+    protected readonly ReactiveProperty<bool> isJumpingRP = new ReactiveProperty<bool>(false);
+
     private const float TERMINAL_VELOCITY = 53f;
     private const float VERTICAL_VELOCITY_COEFFICIENT = -2f;
 
@@ -39,6 +43,9 @@ public abstract partial class PlayerControllerBase<TData> : MonoBehaviour where 
     /// 接地判定をする球の半径（CharacterControllerのRadiusを参照する）
     /// </summary>
     private float DecisionRadius => characterController.radius;
+
+    public IReadOnlyReactiveProperty<bool> IsMovingRP => isMovingRP;
+    public IReadOnlyReactiveProperty<bool> IsJumpingRP => isJumpingRP;
 
 
     protected virtual void Awake()
@@ -52,14 +59,30 @@ public abstract partial class PlayerControllerBase<TData> : MonoBehaviour where 
         isMovingRP.AddTo(this);
         isJumpingRP.AddTo(this);
 
-        isGroundedRP.AddTo(this).Subscribe(isGrounded => isJumpingRP.Value = !isGrounded);
+        inputter.IsJumpInputRP
+            // Filter: ジャンプ入力があったとき
+            .Where(isJumpInput => isJumpInput)
+            // 「ジャンプ中」をtrue
+            .Subscribe(isJumpInput => isJumpingRP.Value = true)
+            .AddTo(this);
+
+        isGroundedRP
+            .AddTo(this)
+            // Filter: 着地したとき
+            .Where(isGrounded => isGrounded)
+            // 「ジャンプ中」をfalse
+            .Subscribe(isGrounded => isJumpingRP.Value = false);
 
         isHitCeilingRP
             .AddTo(this)
-            // Filter: 値がtrueに変わったとき かつ 上向きの速度があるとき
+            // Filter: 天井に当たったとき かつ 上向きの速度があるとき
             .Where(isHitCeiling => isHitCeiling && verticalVelocity > 0f)
             // 垂直方向の速度をリセット
-            .Subscribe(isHitCeiling => verticalVelocity = VERTICAL_VELOCITY_COEFFICIENT);
+            .Subscribe(isHitCeiling =>
+            {
+                verticalVelocity = VERTICAL_VELOCITY_COEFFICIENT;
+                isJumpingRP.Value = false;
+            });
 
         inputter.OnMoveStartedSubject.Subscribe(_ => isMovingRP.Value = true);
         inputter.OnMoveFinishedSubject.Subscribe(_ => isMovingRP.Value = false);
@@ -113,7 +136,7 @@ public abstract partial class PlayerControllerBase<TData> : MonoBehaviour where 
         else
         {
             // 歩行速度またはスプリント速度を設定
-            speed = inputter.IsSprint
+            speed = inputter.IsSprintInputRP.Value
                 ? playerDataAsset.SprintSpeed
                 : playerDataAsset.WalkSpeed;
         }
@@ -167,7 +190,7 @@ public abstract partial class PlayerControllerBase<TData> : MonoBehaviour where 
             }
 
             // ジャンプ入力があるかつ、ジャンプタイムアウトの時間外であれば、ジャンプをする
-            if (inputter.IsJump && !isHitCeilingRP.Value && jumpTimeoutDelta <= 0f)
+            if (inputter.IsJumpInputRP.Value && !isHitCeilingRP.Value && jumpTimeoutDelta <= 0f)
             {
                 // the square root of H * -2 * G = how much velocity needed to reach desired height
                 verticalVelocity = Mathf.Sqrt(playerDataAsset.JumpHeight * VERTICAL_VELOCITY_COEFFICIENT * playerDataAsset.Gravity);
@@ -184,7 +207,7 @@ public abstract partial class PlayerControllerBase<TData> : MonoBehaviour where 
             jumpTimeoutDelta = playerDataAsset.JumpTimeout;
 
             // 空中にいるとき、ジャンプをリセット
-            inputter.IsJump = false;
+            inputter.IsJumpInputRP.Value = false;
         }
 
         // 現在の速度が終端速度以下のとき、重力を加算
@@ -229,19 +252,4 @@ public abstract partial class PlayerControllerBase<TData> : MonoBehaviour where 
         Gizmos.DrawSphere(groundCheckSphere.position, DecisionRadius);
         Gizmos.DrawSphere(ceilingCheckSphere.position, DecisionRadius);
     }
-}
-
-public abstract partial class PlayerControllerBase<TData>
-{
-    public enum ControlType
-    {
-        Move,
-        Jump,
-    }
-
-    protected readonly ReactiveProperty<bool> isMovingRP = new ReactiveProperty<bool>(false);
-    protected readonly ReactiveProperty<bool> isJumpingRP = new ReactiveProperty<bool>(false);
-
-    public IReadOnlyReactiveProperty<bool> IsMovingRP => isMovingRP;
-    public IReadOnlyReactiveProperty<bool> IsJumpingRP => isJumpingRP;
 }
