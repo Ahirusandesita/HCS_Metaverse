@@ -21,12 +21,13 @@ public class Inputter : IDisposable
 
     private readonly PlayerInputActions pias = default;  // 長いのでこの命名で許して
 
-    private readonly Subject<Unit> onMoveStartedSubject = default;
-    private readonly Subject<Unit> onMoveFinishedSubject = default;
+    private readonly Subject<Unit> onMoveStartedSubject = new Subject<Unit>();
+    private readonly Subject<Unit> onMoveFinishedSubject = new Subject<Unit>();
+    private readonly ReactiveProperty<bool> isSprintInputRP = new ReactiveProperty<bool>();
 
     // JumpのみPlayerController側から書き換えを許可する
-    public bool IsJump { get; set; }
-    public bool IsSprint { get; private set; }
+    public ReactiveProperty<bool> IsJumpInputRP { get; set; } = new ReactiveProperty<bool>();
+    public IReadOnlyReactiveProperty<bool> IsSprintInputRP => isSprintInputRP;
     public Vector2 MoveDir { get; private set; }
     public Vector2 LookDir { get; private set; }
     /// <summary>
@@ -40,9 +41,6 @@ public class Inputter : IDisposable
 
     public Inputter()
     {
-        onMoveStartedSubject = new Subject<Unit>();
-        onMoveFinishedSubject = new Subject<Unit>();
-
 #if ENABLE_INPUT_SYSTEM
         pias = new PlayerInputActions();
         pias.Enable();
@@ -77,11 +75,11 @@ public class Inputter : IDisposable
         };
         pias.Player.Look.canceled += _ => LookDir = Vector2.zero;
 
-        pias.Player.Jump.performed += _ => IsJump = true;
-        pias.Player.Jump.canceled += _ => IsJump = false;
+        pias.Player.Jump.performed += _ => IsJumpInputRP.Value = true;
+        pias.Player.Jump.canceled += _ => IsJumpInputRP.Value = false;
 
-        pias.Player.Sprint.performed += _ => IsSprint = true;
-        pias.Player.Sprint.canceled += _ => IsSprint = false;
+        pias.Player.Sprint.performed += _ => isSprintInputRP.Value = true;
+        pias.Player.Sprint.canceled += _ => isSprintInputRP.Value = false;
 #else
         throw new NotSupportedException("InputSystemが有効になっていません。" +
             "このプロジェクトではInputSystemの使用を前提としているため、旧入力システムではなくInputSystemを使用してください。");

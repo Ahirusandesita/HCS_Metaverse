@@ -1,10 +1,7 @@
 using DG.Tweening;
-using System;
 using System.Diagnostics;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.InputSystem;
 using UniRx;
+using UnityEngine;
 
 /// <summary>
 /// <see href="https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@2.1/manual/tunneling-vignette-controller.html">
@@ -37,12 +34,16 @@ public class TunnelingVignetteManager : MonoBehaviour
     [SerializeField] private VRPlayerController VRPC = default;
     [Tooltip("移動時にTunnelingVignetteを有効化するかどうか")]
     [SerializeField] private bool enabledOnMoving = true;
-    [Tooltip("移動時のEasingの所要時間[s]")]
-    [SerializeField, Min(0f)] private float easeDurationOnMoving = 0.15f;
+    [Tooltip("移動時のEaseinの所要時間[s]")]
+    [SerializeField, Min(0f)] private float easeInDurationOnMoving = 0.15f;
+    [Tooltip("移動時のEaseOutの所要時間[s]")]
+    [SerializeField, Min(0f)] private float easeOutDurationOnMoving = 0.15f;
     [Tooltip("ジャンプ時にTunnelingVignetteを有効化するかどうか")]
     [SerializeField] private bool enabledOnJumping = true;
-    [Tooltip("ジャンプ時のEasingの所要時間[s]")]
-    [SerializeField, Min(0f)] private float easeDurationOnJumping = 0.10f;
+    [Tooltip("ジャンプ時のEaseInの所要時間[s]")]
+    [SerializeField, Min(0f)] private float easeInDurationOnJumping = 0.10f;
+    [Tooltip("ジャンプ時のEaseOutの所要時間[s]")]
+    [SerializeField, Min(0f)] private float easeOutDurationOnJumping = 0.10f;
 
     private MeshRenderer meshRenderer = default;
     private MaterialPropertyBlock vignettePropertyBlock = default;
@@ -77,12 +78,12 @@ public class TunnelingVignetteManager : MonoBehaviour
                 // 移動開始時はEaseIn
                 if (isMoving)
                 {
-                    EaseInTunnelingVignette(easeDurationOnMoving);
+                    EaseInTunnelingVignette(easeInDurationOnMoving);
                 }
                 // 移動終了時はEaseOut
                 else
                 {
-                    EaseOutTunnelingVignette(easeDurationOnMoving);
+                    EaseOutTunnelingVignette(easeOutDurationOnMoving);
                 }
             })
             .AddTo(this);
@@ -97,12 +98,12 @@ public class TunnelingVignetteManager : MonoBehaviour
                 // ジャンプ開始時はEaseIn
                 if (isJumping)
                 {
-                    EaseInTunnelingVignette(easeDurationOnJumping);
+                    EaseInTunnelingVignette(easeInDurationOnJumping);
                 }
                 // 着地時はEaseOut
                 else
                 {
-                    EaseOutTunnelingVignette(easeDurationOnJumping);
+                    EaseOutTunnelingVignette(easeOutDurationOnJumping);
                 }
             })
             .AddTo(this);
