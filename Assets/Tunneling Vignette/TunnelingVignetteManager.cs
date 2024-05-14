@@ -48,8 +48,6 @@ public class TunnelingVignetteManager : MonoBehaviour
     private MeshRenderer meshRenderer = default;
     private MaterialPropertyBlock vignettePropertyBlock = default;
     private float initialApertureSize = default;
-    private bool isEaseIn = false;
-    private bool isEaseOut = false;
 
 
     private void Awake()
@@ -121,12 +119,6 @@ public class TunnelingVignetteManager : MonoBehaviour
     /// </summary>
     private void EaseInTunnelingVignette(float easeDuration)
     {
-        if (isEaseIn)
-        {
-            return;
-        }
-
-        isEaseIn = true;
         // RendererからMaterialPropertyBlockを取得
         meshRenderer.GetPropertyBlock(vignettePropertyBlock);
 
@@ -136,8 +128,7 @@ public class TunnelingVignetteManager : MonoBehaviour
             // 値の更新
             vignettePropertyBlock.SetFloat(ShaderPropertyLookup.apertureSize, value);
             meshRenderer.SetPropertyBlock(vignettePropertyBlock);
-        })
-        .OnComplete(() => isEaseIn = false);
+        });
     }
 
     /// <summary>
@@ -145,12 +136,6 @@ public class TunnelingVignetteManager : MonoBehaviour
     /// </summary>
     private void EaseOutTunnelingVignette(float easeDuration)
     {
-        if (isEaseOut)
-        {
-            return;
-        }
-
-        isEaseOut = true;
         // RendererからMaterialPropertyBlockを取得
         meshRenderer.GetPropertyBlock(vignettePropertyBlock);
 
@@ -160,7 +145,6 @@ public class TunnelingVignetteManager : MonoBehaviour
             // 値の更新
             vignettePropertyBlock.SetFloat(ShaderPropertyLookup.apertureSize, value);
             meshRenderer.SetPropertyBlock(vignettePropertyBlock);
-        })
-        .OnComplete(() => isEaseOut = false);
+        });
     }
 }
