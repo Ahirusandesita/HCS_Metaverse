@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using UniRx;
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -7,7 +8,7 @@ using UnityEngine;
 /// </summary>
 /// <typeparam name="TData">プレイヤーのパラメータクラス</typeparam>
 [RequireComponent(typeof(CharacterController))]
-public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : PlayerDataAssetBase
+public abstract partial class PlayerControllerBase<TData> : MonoBehaviour where TData : PlayerDataAssetBase
 {
     [SerializeField] protected CharacterController characterController = default;
     [SerializeField] protected TData playerDataAsset = default;
@@ -21,15 +22,15 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
 
     [Tooltip("移動における追従先Transform")]
     protected Transform followTransform = default;
-    [Tooltip("接地しているかどうか")]
-    private bool isGrounded = default;
     [Tooltip("垂直方向の速度")]
     private float verticalVelocity = default;
     [Tooltip("ジャンプタイムアウト[s]（再ジャンプを許可するまでの時間）")]
     private float jumpTimeoutDelta = default;
 
+    [Tooltip("接地しているかどうか")]
+    private readonly ReactiveProperty<bool> isGroundedRP = new ReactiveProperty<bool>();
     [Tooltip("天井に当たっているかどうか")]
-    private readonly BoolReactiveProperty isHitCeilingRP = new BoolReactiveProperty();
+    private readonly ReactiveProperty<bool> isHitCeilingRP = new ReactiveProperty<bool>();
 
     private const float TERMINAL_VELOCITY = 53f;
     private const float VERTICAL_VELOCITY_COEFFICIENT = -2f;
@@ -42,24 +43,34 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
 
     protected virtual void Awake()
     {
-        // Cache
+        #region Cache
         myTransform = transform;
         inputter = new Inputter().AddTo(this);
+        #endregion
 
-        // Subscribe
+        #region Subscribe
+        isMovingRP.AddTo(this);
+        isJumpingRP.AddTo(this);
+
+        isGroundedRP.AddTo(this).Subscribe(isGrounded => isJumpingRP.Value = !isGrounded);
+
         isHitCeilingRP
+            .AddTo(this)
             // Filter: 値がtrueに変わったとき かつ 上向きの速度があるとき
             .Where(isHitCeiling => isHitCeiling && verticalVelocity > 0f)
             // 垂直方向の速度をリセット
-            .Subscribe(isHitCeiling => verticalVelocity = VERTICAL_VELOCITY_COEFFICIENT)
-            .AddTo(this);
+            .Subscribe(isHitCeiling => verticalVelocity = VERTICAL_VELOCITY_COEFFICIENT);
+
+        inputter.OnMoveStartedSubject.Subscribe(_ => isMovingRP.Value = true);
+        inputter.OnMoveFinishedSubject.Subscribe(_ => isMovingRP.Value = false);
+        #endregion
     }
 
     protected virtual void Start()
     {
         // Initialize
         jumpTimeoutDelta = playerDataAsset.JumpTimeout;
-        
+
         if (followTransform is null)
         {
             followTransform = myTransform;
@@ -83,7 +94,7 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
     /// </summary>
     private void GroundedAndCeilingCheck()
     {
-        isGrounded = Physics.CheckSphere(groundCheckSphere.position, DecisionRadius, playerDataAsset.GroundLayers, QueryTriggerInteraction.Ignore);
+        isGroundedRP.Value = Physics.CheckSphere(groundCheckSphere.position, DecisionRadius, playerDataAsset.GroundLayers, QueryTriggerInteraction.Ignore);
         isHitCeilingRP.Value = Physics.CheckSphere(ceilingCheckSphere.position, DecisionRadius, playerDataAsset.GroundLayers, QueryTriggerInteraction.Ignore);
     }
 
@@ -147,7 +158,7 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
     /// </summary>
     protected virtual void JumpAndGravity()
     {
-        if (isGrounded)
+        if (isGroundedRP.Value)
         {
             // 速度が無限に低下するのを防ぐ
             if (verticalVelocity < 0f)
@@ -212,19 +223,25 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
     [Conditional("UNITY_EDITOR")]
     protected virtual void OnDrawGizmosSelected()
     {
-        Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
-        Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
-        Color transparentBlue = new Color(0.0f, 0.0f, 1.0f, 0.35f);
-        Color transparentYellow = new Color(1.0f, 1.0f, 0.0f, 0.35f);
-
-        if (isGrounded && isHitCeilingRP.Value) Gizmos.color = transparentBlue;
-        else if (isGrounded && !isHitCeilingRP.Value) Gizmos.color = transparentGreen;
-        else if (!isGrounded && isHitCeilingRP.Value) Gizmos.color = transparentYellow;
-        else Gizmos.color = transparentRed;
-
         // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
         // エディタで動作するため、transformのキャッシュは使用しない
+        Gizmos.color = new Color(0.0f, 1.0f, 0.0f, 0.35f);
         Gizmos.DrawSphere(groundCheckSphere.position, DecisionRadius);
         Gizmos.DrawSphere(ceilingCheckSphere.position, DecisionRadius);
     }
+}
+
+public abstract partial class PlayerControllerBase<TData>
+{
+    public enum ControlType
+    {
+        Move,
+        Jump,
+    }
+
+    protected readonly ReactiveProperty<bool> isMovingRP = new ReactiveProperty<bool>(false);
+    protected readonly ReactiveProperty<bool> isJumpingRP = new ReactiveProperty<bool>(false);
+
+    public IReadOnlyReactiveProperty<bool> IsMovingRP => isMovingRP;
+    public IReadOnlyReactiveProperty<bool> IsJumpingRP => isJumpingRP;
 }
