@@ -303,7 +303,7 @@ public class EffectPooler
     /// <br>- newした段階でInstantiateが走るため注意</br>
     /// <br>- newの戻り値はIGettablePoolインターフェースで受け取ること</br>
     /// </summary>
-    public EffectPooler(PoolEffectAsset createEfectData, string parentName = null, Transform setParent = null)
+    public EffectPooler(PoolParticleAsset createEfectData, string parentName = null, Transform setParent = null)
     {
         particle = createEfectData.Partilce;
         objectPool = new();
