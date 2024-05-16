@@ -17,6 +17,8 @@ public class FlickParent : MonoBehaviour, IFlickButtonParent, IFlickButtonOpenin
 {
     [SerializeField]
     private char keyChar;
+    [SerializeField]
+    private FlickButtonSetAsset flickButtonSetAsset;
 
     private bool canButtonDown = true;
     private FlickManager flickManager;
