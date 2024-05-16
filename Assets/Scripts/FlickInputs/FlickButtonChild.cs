@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class FlickButtonChild : FlickButton, IFlickButtonDeployment
+public class FlickButtonChild : FlickEnter, IFlickButtonDeployment
 {
+    private bool canSendMessage = true;
+
     void IFlickButtonDeployment.ButtonClose()
     {
         this.GetComponent<Image>().enabled = false;
@@ -14,27 +16,34 @@ public class FlickButtonChild : FlickButton, IFlickButtonDeployment
 
     void IFlickButtonDeployment.ButtonDeployment()
     {
+        canSendMessage = true;
         this.GetComponent<Image>().enabled = true;
         this.GetComponentInChildren<TextMeshProUGUI>().enabled = true;
     }
 
-    protected override void LetButton()
+    protected override void EnterButton()
     {
 
     }
 
-    protected override void PushButton()
+    protected override void ExitButton()
     {
 
     }
 
-    protected override void StartPushButton()
+    protected override void EndClickTouch()
     {
-
+    }
+    protected override void EndTouch()
+    {
     }
 
-    protected override void LetButtonMe()
+    protected override void EndEnterTouch()
     {
-        FlickManager.SendChar(keyChar);
+        if (canSendMessage)
+        {
+            FlickManager.SendChar(keyChar);
+            canSendMessage = false;
+        }
     }
 }

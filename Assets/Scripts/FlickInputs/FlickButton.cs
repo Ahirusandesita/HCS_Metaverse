@@ -30,35 +30,62 @@ public abstract class FlickButton : MonoBehaviour
         entryPointerUp.callback.AddListener((x) => PointerUp());
         eventTrigger.triggers.Add(entryPointerUp);
 
-        flickManager = this.transform.parent.GetComponent<FlickManager>();
+        EventTrigger.Entry entryPointerEnter = new EventTrigger.Entry();
+        entryPointerEnter.eventID = EventTriggerType.PointerEnter;
+        entryPointerEnter.callback.AddListener((x) => PointerEnter());
+        eventTrigger.triggers.Add(entryPointerEnter);
+
+        EventTrigger.Entry entryPointerExit = new EventTrigger.Entry();
+        entryPointerExit.eventID = EventTriggerType.PointerExit;
+        entryPointerExit.callback.AddListener((x) => PointerExit());
+        eventTrigger.triggers.Add(entryPointerExit);
+
+
+
+        EventTrigger.Entry entryPointerExitEnd = new EventTrigger.Entry();
+        entryPointerExitEnd.eventID = EventTriggerType.PointerExit;
+        entryPointerExitEnd.callback.AddListener((x) => EndCanvasEnterTouch());
+        eventTrigger.triggers.Add(entryPointerExitEnd);
+
+        EventTrigger.Entry entryPointerClickEnd = new EventTrigger.Entry();
+        entryPointerClickEnd.eventID = EventTriggerType.PointerClick;
+        entryPointerClickEnd.callback.AddListener((x) => EndClickCanvasTouch());
+        eventTrigger.triggers.Add(entryPointerClickEnd);
+
+        EventTrigger.Entry entryPointerDownEnd = new EventTrigger.Entry();
+        entryPointerDownEnd.eventID = EventTriggerType.PointerUp;
+        entryPointerDownEnd.callback.AddListener((x) => EndCanvasTouch());
+        eventTrigger.triggers.Add(entryPointerDownEnd);
+
+        flickManager = this.transform.root.GetComponent<FlickManager>();
     }
 
-    private void PointerDown()
+    private void EndClickCanvasTouch()
     {
-        if (!flickManager.IsPushScreen)
-        {
-            LetButtonMe();
-            isStartPush = true;
-        }
-        LetButton();
+        //if (!FlickManager.IsPushScreen)
+        //{
+            EndClickTouch();
+        //}
     }
 
-    private void PointerUp()
+    private void EndCanvasTouch()
     {
-        if (isStartPush)
-        {
-            isStartPush = false;
-            StartPushButton();
-        }
-
-        PushButton();
+        EndTouch();
     }
 
-    protected abstract void StartPushButton();
-    protected abstract void PushButton();
-    protected abstract void LetButton();
-    protected virtual void LetButtonMe()
+    private void EndCanvasEnterTouch()
     {
-
+        //if (!FlickManager.IsPushScreen)
+        //{
+            EndEnterTouch();
+        //}
     }
+
+    protected virtual void PointerDown() { }
+    protected virtual void PointerUp() { }
+    protected virtual void PointerEnter() { }
+    protected virtual void PointerExit() { }
+    protected abstract void EndClickTouch();
+    protected abstract void EndTouch();
+    protected abstract void EndEnterTouch();
 }

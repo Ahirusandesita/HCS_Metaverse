@@ -1,10 +1,13 @@
 using UnityEngine;
 using Oculus.Interaction;
+using TMPro;
 
 public class FlickManager : MonoBehaviour
 {
     private IFlickButtonClosure[] flickButtonClosures;
 
+    [SerializeField]
+    TextMeshProUGUI TextMeshProUGUI;
 
     private bool isPushScreen;
     public bool IsPushScreen 
@@ -22,10 +25,12 @@ public class FlickManager : MonoBehaviour
 
     public void UnSelected()
     {
+        Debug.Log($"UnitittiUntitti  UnSelect");
         isPushScreen = false;
     }
     public void Selected()
     {
+        Debug.Log($"UnitittiUntitti  Select");
         isPushScreen = true;
     }
 
@@ -38,12 +43,20 @@ public class FlickManager : MonoBehaviour
                 continue;
             }
 
-            flickButtonClosure.ButtonClose();
+            closure.ButtonClose();
+        }
+    }
+
+    public void FinishFlickInput(IFlickButtonClosure flickButtonClosure)
+    {
+        foreach(IFlickButtonClosure closure in flickButtonClosures)
+        {
+            closure.ButtonOpen();
         }
     }
 
     public void SendChar(char type)
     {
-
+        TextMeshProUGUI.text += type;
     }
 }
