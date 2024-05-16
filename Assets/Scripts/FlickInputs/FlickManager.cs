@@ -1,62 +1,42 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using Oculus.Interaction;
 using TMPro;
 
 public class FlickManager : MonoBehaviour
 {
-    private IFlickButtonClosure[] flickButtonClosures;
-
     [SerializeField]
-    TextMeshProUGUI TextMeshProUGUI;
+    private TextMeshProUGUI textMeshProUGUI;
 
-    private bool isPushScreen;
-    public bool IsPushScreen 
-    { 
-        get
-        {
-            return isPushScreen;
-        } 
-    }
+    private IFlickButtonOpeningAndClosing[] flickButtonOpeningAndClosings;
 
     private void Awake()
     {
-        flickButtonClosures = this.transform.GetComponentsInChildren<IFlickButtonClosure>();
+        flickButtonOpeningAndClosings = this.GetComponentsInChildren<IFlickButtonOpeningAndClosing>(true);
     }
 
-    public void UnSelected()
+    public void StartFlick(IFlickButtonOpeningAndClosing flickButtonOpeningAndClosing)
     {
-        Debug.Log($"UnitittiUntitti  UnSelect");
-        isPushScreen = false;
-    }
-    public void Selected()
-    {
-        Debug.Log($"UnitittiUntitti  Select");
-        isPushScreen = true;
-    }
-
-    public void StartFlickInput(IFlickButtonClosure flickButtonClosure)
-    {
-        foreach(IFlickButtonClosure closure in flickButtonClosures)
+        foreach(IFlickButtonOpeningAndClosing item in flickButtonOpeningAndClosings)
         {
-            if(closure == flickButtonClosure)
+            if(item == flickButtonOpeningAndClosing)
             {
                 continue;
             }
 
-            closure.ButtonClose();
+            item.Close();
         }
     }
-
-    public void FinishFlickInput(IFlickButtonClosure flickButtonClosure)
+    public void EndFlick(IFlickButtonOpeningAndClosing flickButtonOpeningAndClosing)
     {
-        foreach(IFlickButtonClosure closure in flickButtonClosures)
+        foreach(IFlickButtonOpeningAndClosing item in flickButtonOpeningAndClosings)
         {
-            closure.ButtonOpen();
+            item.Open();
         }
     }
 
-    public void SendChar(char type)
+    public void SendMessage(char keyChar)
     {
-        TextMeshProUGUI.text += type;
+        textMeshProUGUI.text += keyChar;
     }
 }

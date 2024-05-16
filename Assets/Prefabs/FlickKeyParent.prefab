@@ -147,7 +147,7 @@ GameObject:
   - component: {fileID: 4281777465321071587}
   - component: {fileID: 8586532720440016275}
   - component: {fileID: 1537734928710705175}
-  - component: {fileID: 7672107428191754393}
+  - component: {fileID: 7575374584955526002}
   m_Layer: 0
   m_Name: FlickKeyParent
   m_TagString: Untagged
@@ -235,7 +235,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.48235294, g: 0.48362404, b: 0.48362404, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
@@ -270,7 +270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delegates: []
---- !u!114 &7672107428191754393
+--- !u!114 &7575374584955526002
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -279,8 +279,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 7129214610853641432}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab639dd8978835942bcd414a1c17b02b, type: 3}
+  m_Script: {fileID: 11500000, guid: 647b7dfdd93a46c4392934ef11f8b034, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  keyChar: 719
   eventTrigger: {fileID: 1537734928710705175}
-  keyChar: 101
