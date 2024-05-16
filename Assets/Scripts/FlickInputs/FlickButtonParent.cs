@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FlickButtonParent : FlickButton, IFlickButtonClosure
+public class FlickButtonParent : FlickPush, IFlickButtonClosure
 {
     private IFlickButtonDeployment[] flickButtonDeployments;
+    private bool canButtonPush = true;
 
     protected override void Awake()
     {
@@ -18,14 +19,23 @@ public class FlickButtonParent : FlickButton, IFlickButtonClosure
     }
     void IFlickButtonClosure.ButtonClose()
     {
-
+        canButtonPush = false;
     }
+    void IFlickButtonClosure.ButtonOpen()
+    {
+        canButtonPush = true;
+    }
+
     protected override void StartPushButton()
     {
-        FlickManager.StartFlickInput(this);
-        foreach (IFlickButtonDeployment deployment in flickButtonDeployments)
+        if (canButtonPush)
         {
-            deployment.ButtonDeployment();
+
+            FlickManager.StartFlickInput(this);
+            foreach (IFlickButtonDeployment deployment in flickButtonDeployments)
+            {
+                deployment.ButtonDeployment();
+            }
         }
     }
 
@@ -41,10 +51,43 @@ public class FlickButtonParent : FlickButton, IFlickButtonClosure
 
     protected override void LetButtonMe()
     {
-        foreach (IFlickButtonDeployment deployment in flickButtonDeployments)
+
+    }
+
+    protected override void EndClickTouch()
+    {
+        if (canButtonPush)
         {
-            deployment.ButtonClose();
+            foreach (IFlickButtonDeployment deployment in flickButtonDeployments)
+            {
+                deployment.ButtonClose();
+            }
+            FlickManager.SendChar(keyChar);
         }
-        FlickManager.SendChar(keyChar);
+    }
+
+    protected override void EndEnterTouch()
+    {
+        if (canButtonPush)
+        {
+            foreach (IFlickButtonDeployment deployment in flickButtonDeployments)
+            {
+                deployment.ButtonClose();
+            }
+        }
+
+        FlickManager.FinishFlickInput(this);
+    }
+    protected override void EndTouch()
+    {
+        if (canButtonPush)
+        {
+            foreach (IFlickButtonDeployment deployment in flickButtonDeployments)
+            {
+                deployment.ButtonClose();
+            }
+        }
+
+        FlickManager.FinishFlickInput(this);
     }
 }
