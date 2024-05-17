@@ -1,7 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using VContainer;
 
 public struct Key
 {
@@ -17,21 +17,26 @@ public class FlickParent : MonoBehaviour, IFlickButtonParent, IFlickButtonOpenin
 {
     [SerializeField]
     private char keyChar;
-    [SerializeField]
-    private FlickButtonSetAsset flickButtonSetAsset;
 
     private bool canButtonDown = true;
     private FlickManager flickManager;
     [SerializeField]
     private EventTrigger eventTrigger;
 
+    bool canUseChildKey = false;
     private Key childKey;
 
-    private IFlickButtonChild[] flickButtonChilds;
+    private IFlickButtonChild[] flickButtonChildren;
+
+    [Inject]
+    public void FlickChildInject(List<IFlickButtonChild> flickButtonChildren)
+    {
+        this.flickButtonChildren = flickButtonChildren.ToArray();
+    }
+
     private void Awake()
     {
-        flickManager = this.transform.root.GetComponent<FlickManager>();
-        flickButtonChilds = this.GetComponentsInChildren<IFlickButtonChild>(true);
+        flickManager = this.transform.root.GetComponentInChildren<FlickManager>(true);
 
         EventTrigger.Entry entryPointerDown = new EventTrigger.Entry();
         entryPointerDown.eventID = EventTriggerType.PointerDown;
@@ -45,11 +50,21 @@ public class FlickParent : MonoBehaviour, IFlickButtonParent, IFlickButtonOpenin
         entryPointerClick.eventID = EventTriggerType.PointerClick;
         entryPointerClick.callback.AddListener((x) => PointerClick());
 
+
+        EventTrigger.Entry entryPointerEnter = new EventTrigger.Entry();
+        entryPointerEnter.eventID = EventTriggerType.PointerEnter;
+        entryPointerEnter.callback.AddListener((x) => PointerEnter());
+        eventTrigger.triggers.Add(entryPointerEnter);
+
         eventTrigger.triggers.Add(entryPointerDown);
         eventTrigger.triggers.Add(entryPointerUp);
         eventTrigger.triggers.Add(entryPointerClick);
     }
 
+    private void PointerEnter()
+    {
+        canUseChildKey = true;
+    }
     private void PointerDown()
     {
         if (!canButtonDown)
@@ -58,7 +73,7 @@ public class FlickParent : MonoBehaviour, IFlickButtonParent, IFlickButtonOpenin
         }
 
         flickManager.StartFlick(this);
-        foreach (IFlickButtonChild item in flickButtonChilds)
+        foreach (IFlickButtonChild item in flickButtonChildren)
         {
             item.ButtonDeployment();
         }
@@ -72,11 +87,11 @@ public class FlickParent : MonoBehaviour, IFlickButtonParent, IFlickButtonOpenin
 
         flickManager.EndFlick(this);
 
-        if (childKey.canUseKey)
+        if (!canUseChildKey)
         {
             flickManager.SendMessage(childKey.keyChar);
         }
-        foreach (IFlickButtonChild item in flickButtonChilds)
+        foreach (IFlickButtonChild item in flickButtonChildren)
         {
             item.ButtonClose();
         }
@@ -100,6 +115,7 @@ public class FlickParent : MonoBehaviour, IFlickButtonParent, IFlickButtonOpenin
     }
     public void SendMessage(Key key)
     {
+        canUseChildKey = false;
         this.childKey = key;
     }
 }
