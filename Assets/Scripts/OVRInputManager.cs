@@ -12,10 +12,10 @@ public class OVRInputManager : MonoBehaviour
 
     private void Update()
     {
-        if (OVRInput.Get(OVRInput.Button.One,OVRInput.Controller.RTouch))
-        {
-            transform.position += cameraTransform.up * Time.deltaTime * speed;
-        }
+        //if (OVRInput.Get(OVRInput.Button.One,OVRInput.Controller.RTouch))
+        //{
+        //    transform.position += cameraTransform.up * Time.deltaTime * speed;
+        //}
 
         if (OVRInput.Get(OVRInput.Button.Two,OVRInput.Controller.RTouch))
         {
@@ -35,10 +35,10 @@ public class OVRInputManager : MonoBehaviour
 
         //transform.Rotate(new Vector3(cameraDirection.y, cameraDirection.x, 0f));
 
-        if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch))
-        {
-            transform.Rotate(new Vector3(0f, 90f, 0f));
-        }
+        //if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch))
+        //{
+        //    transform.Rotate(new Vector3(0f, 90f, 0f));
+        //}
         if (OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.LTouch))
         {
             transform.Rotate(new Vector3(0f, -90f, 0f));

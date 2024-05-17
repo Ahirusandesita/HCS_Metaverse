@@ -1,49 +1,42 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using Oculus.Interaction;
+using TMPro;
 
 public class FlickManager : MonoBehaviour
 {
-    private IFlickButtonClosure[] flickButtonClosures;
+    [SerializeField]
+    private TextMeshProUGUI textMeshProUGUI;
 
-
-    private bool isPushScreen;
-    public bool IsPushScreen 
-    { 
-        get
-        {
-            return isPushScreen;
-        } 
-    }
+    private IFlickButtonOpeningAndClosing[] flickButtonOpeningAndClosings;
 
     private void Awake()
     {
-        flickButtonClosures = this.transform.GetComponentsInChildren<IFlickButtonClosure>();
+        flickButtonOpeningAndClosings = this.GetComponentsInChildren<IFlickButtonOpeningAndClosing>(true);
     }
 
-    public void UnSelected()
+    public void StartFlick(IFlickButtonOpeningAndClosing flickButtonOpeningAndClosing)
     {
-        isPushScreen = false;
-    }
-    public void Selected()
-    {
-        isPushScreen = true;
-    }
-
-    public void StartFlickInput(IFlickButtonClosure flickButtonClosure)
-    {
-        foreach(IFlickButtonClosure closure in flickButtonClosures)
+        foreach(IFlickButtonOpeningAndClosing item in flickButtonOpeningAndClosings)
         {
-            if(closure == flickButtonClosure)
+            if(item == flickButtonOpeningAndClosing)
             {
                 continue;
             }
 
-            flickButtonClosure.ButtonClose();
+            item.Close();
+        }
+    }
+    public void EndFlick(IFlickButtonOpeningAndClosing flickButtonOpeningAndClosing)
+    {
+        foreach(IFlickButtonOpeningAndClosing item in flickButtonOpeningAndClosings)
+        {
+            item.Open();
         }
     }
 
-    public void SendChar(char type)
+    public void SendMessage(char keyChar)
     {
-
+        textMeshProUGUI.text += keyChar;
     }
 }
