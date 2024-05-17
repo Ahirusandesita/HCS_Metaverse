@@ -36,7 +36,7 @@ public class FlickParent : MonoBehaviour, IFlickButtonParent, IFlickButtonOpenin
 
     private void Awake()
     {
-        flickManager = this.transform.root.GetComponent<FlickManager>();
+        flickManager = this.transform.root.GetComponentInChildren<FlickManager>(true);
 
         EventTrigger.Entry entryPointerDown = new EventTrigger.Entry();
         entryPointerDown.eventID = EventTriggerType.PointerDown;
