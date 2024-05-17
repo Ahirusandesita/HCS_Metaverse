@@ -41,8 +41,6 @@ public class FlickChild : MonoBehaviour, IFlickButtonChild
 
         textMeshProUGUI.enabled = false;
         image.enabled = false;
-
-        flickButtonParent = this.transform.parent.GetComponent<IFlickButtonParent>();
     }
 
     private void PointerEnter()
