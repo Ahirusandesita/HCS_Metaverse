@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -11,6 +12,17 @@ public class PlayerController : PlayerControllerBase<PlayerDataAsset>
     [Tooltip("カメラの勾配（垂直方向の角度）")]
     private float cinemachineTargetPitch = default;
 
+
+    protected override void Reset()
+    {
+        base.Reset();
+
+        try
+        {
+            cinemachineCameraTarget ??= transform.Find("PlayerCameraRoot").transform;
+        }
+        catch (NullReferenceException) { }
+    }
 
     /// <summary>
     /// CinemachineCameraおよびプレイヤーの回転処理

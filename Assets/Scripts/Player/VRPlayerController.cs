@@ -1,3 +1,4 @@
+using System;
 using UniRx;
 using UnityEngine;
 
@@ -10,6 +11,18 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>
 
     [Tooltip("ç∂âEÇ«ÇøÇÁÇ…âÒì]Ç∑ÇÈÇ©")]
     private FloatReactiveProperty lookDirX_RP = default;
+
+
+    protected override void Reset()
+    {
+        base.Reset();
+
+        try
+        {
+            centerEyeTransform ??= transform.Find("CenterEyeAnchor").transform;
+        }
+        catch (NullReferenceException) { }
+    }
 
     protected override void Awake()
     {

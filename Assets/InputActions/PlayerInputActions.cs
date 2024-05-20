@@ -89,6 +89,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Chat"",
+                    ""type"": ""Button"",
+                    ""id"": ""06c10498-9675-49a4-bafc-9ce5cd202a25"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -322,6 +331,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""HeadPosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9cb0aba9-a85e-4081-8b4b-f091812f1f54"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Chat"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""18bda043-d609-433a-8f43-bfcba70f4d63"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Chat"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -475,6 +506,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_HeadPosition = m_Player.FindAction("HeadPosition", throwIfNotFound: true);
         m_Player_HeadRotation = m_Player.FindAction("HeadRotation", throwIfNotFound: true);
         m_Player_TrackingState = m_Player.FindAction("TrackingState", throwIfNotFound: true);
+        m_Player_Chat = m_Player.FindAction("Chat", throwIfNotFound: true);
         // VRHead
         m_VRHead = asset.FindActionMap("VRHead", throwIfNotFound: true);
         m_VRHead_Position = m_VRHead.FindAction("Position", throwIfNotFound: true);
@@ -548,6 +580,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_HeadPosition;
     private readonly InputAction m_Player_HeadRotation;
     private readonly InputAction m_Player_TrackingState;
+    private readonly InputAction m_Player_Chat;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -559,6 +592,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @HeadPosition => m_Wrapper.m_Player_HeadPosition;
         public InputAction @HeadRotation => m_Wrapper.m_Player_HeadRotation;
         public InputAction @TrackingState => m_Wrapper.m_Player_TrackingState;
+        public InputAction @Chat => m_Wrapper.m_Player_Chat;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -589,6 +623,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @TrackingState.started += instance.OnTrackingState;
             @TrackingState.performed += instance.OnTrackingState;
             @TrackingState.canceled += instance.OnTrackingState;
+            @Chat.started += instance.OnChat;
+            @Chat.performed += instance.OnChat;
+            @Chat.canceled += instance.OnChat;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -614,6 +651,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @TrackingState.started -= instance.OnTrackingState;
             @TrackingState.performed -= instance.OnTrackingState;
             @TrackingState.canceled -= instance.OnTrackingState;
+            @Chat.started -= instance.OnChat;
+            @Chat.performed -= instance.OnChat;
+            @Chat.canceled -= instance.OnChat;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -738,6 +778,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnHeadPosition(InputAction.CallbackContext context);
         void OnHeadRotation(InputAction.CallbackContext context);
         void OnTrackingState(InputAction.CallbackContext context);
+        void OnChat(InputAction.CallbackContext context);
     }
     public interface IVRHeadActions
     {

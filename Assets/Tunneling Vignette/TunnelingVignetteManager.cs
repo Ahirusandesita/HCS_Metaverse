@@ -50,6 +50,12 @@ public class TunnelingVignetteManager : MonoBehaviour
     private float initialApertureSize = default;
 
 
+    [Conditional("UNITY_EDITOR")]
+    private void Reset()
+    {
+        VRPC ??= GetComponentInParent<VRPlayerController>();
+    }
+
     private void Awake()
     {
         #region Cache
@@ -106,12 +112,6 @@ public class TunnelingVignetteManager : MonoBehaviour
             })
             .AddTo(this);
         #endregion
-    }
-
-    [Conditional("UNITY_EDITOR")]
-    private void Reset()
-    {
-        VRPC ??= GetComponentInParent<VRPlayerController>();
     }
 
     /// <summary>
