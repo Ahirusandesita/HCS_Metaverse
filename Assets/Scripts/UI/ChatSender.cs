@@ -21,22 +21,25 @@ public class ChatSender : MonoBehaviour
 
     private void Awake()
     {
+        // 入力完了時のコールバックを設定
         inputField.onSubmit.AddListener(delegate
         {
+            // ChatSystemに入力内容を送信
             chatSystem.SendManually(inputField.text);
             inputField.text = string.Empty;
         });
 
-        inputter = new Inputter();
+        // InputFieldのアクティブ状態を切り替える
+        inputter = new Inputter().AddTo(this);
         inputter.IsChatOpenRP.Subscribe(isChatOpen =>
         {
             if (isChatOpen)
             {
-                inputField.Select();
+                inputField.ActivateInputField();
             }
             else if (inputField.text.Equals(string.Empty))
             {
-                inputField.ReleaseSelection();
+                inputField.DeactivateInputField();
             }
         });
     }
