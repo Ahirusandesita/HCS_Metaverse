@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Text.RegularExpressions;
 
 /// <summary>
 /// ワールドチャットのシステム
@@ -43,8 +43,10 @@ public class ChatSystem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI target = default;
     [SerializeField] private Scrollbar verticalScrollbar = default;
     [SerializeField] private ImproperWordAsset improperWordAsset = default;
+    [Tooltip("ログにタイムスタンプを設置するかどうか")]
     [SerializeField] private bool enableTimeStamp = true;
-    [SerializeField] private bool enableImproperMasking = false;
+    [Tooltip("ログに特定文字列置換機能（ブラックワードリスト）を適用するかどうか")]
+    [SerializeField] private bool enableImproperMasking = true;
 
     private readonly StringBuilder sb = new StringBuilder();
     private readonly List<Log> chatLogs = new List<Log>();
@@ -81,20 +83,6 @@ public class ChatSystem : MonoBehaviour
         catch (NullReferenceException) { }
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            SendManually(count.ToString());
-            count++;
-        }
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            SendManually("Yanagi");
-            count++;
-        }
-    }
-
     /// <summary>
     /// 自由な文字列を送信する
     /// </summary>
@@ -107,9 +95,12 @@ public class ChatSystem : MonoBehaviour
             throw new ArgumentNullException(nameof(content));
         }
 
-        foreach (var word in improperWordAsset.ImproperWords)
+        if (enableImproperMasking)
         {
-            content = Regex.Replace(content, $"{word}", new string(ImproperWordAsset.MASKED_CHAR, word.Length), RegexOptions.IgnoreCase);
+            foreach (var word in improperWordAsset.ImproperWords)
+            {
+                content = Regex.Replace(content, word, new string(ImproperWordAsset.MASKED_CHAR, word.Length), RegexOptions.IgnoreCase);
+            }
         }
 
         UpdateLog(content, LogType.Manually);
@@ -211,7 +202,7 @@ public class ChatSystem : MonoBehaviour
                 }
 
                 // StringBuilderで文字列連結
-                sb.Append(timeStamp + log.content + Environment.NewLine);
+                sb.AppendLine(timeStamp + log.content);
             }
 
             // ログをテキストに代入
