@@ -4,7 +4,7 @@ using UnityEngine;
 public class SendChat : MonoBehaviour
 {
     private PhotonView _PhotonViewControl;
-
+    
     private void Awake()
     {
 
