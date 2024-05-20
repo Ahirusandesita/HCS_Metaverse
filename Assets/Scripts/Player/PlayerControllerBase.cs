@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using UniRx;
 using UnityEngine;
@@ -7,6 +8,7 @@ using UnityEngine;
 /// </summary>
 /// <typeparam name="TData">プレイヤーのパラメータクラス</typeparam>
 [RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(CapsuleCollider))]
 public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : PlayerDataAssetBase
 {
     [SerializeField] protected CharacterController characterController = default;
@@ -47,6 +49,22 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
     public IReadOnlyReactiveProperty<bool> IsMovingRP => isMovingRP;
     public IReadOnlyReactiveProperty<bool> IsJumpingRP => isJumpingRP;
 
+
+    protected virtual void Reset()
+    {
+        characterController ??= GetComponent<CharacterController>();
+        try
+        {
+            groundCheckSphere ??= transform.Find("GroundChecker").transform;
+        }
+        catch (NullReferenceException) { }
+
+        try
+        {
+            ceilingCheckSphere ??= transform.Find("CeilingChecker").transform;
+        }
+        catch (NullReferenceException) { }
+    }
 
     protected virtual void Awake()
     {

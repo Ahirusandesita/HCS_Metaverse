@@ -54,9 +54,6 @@ public class ChatSystem : MonoBehaviour
 
     private const int MAX_LOG_COUNT = 100;
 
-    // Debug
-    private int count = 0;
-
 
     public bool EnableTimeStamp
     {
@@ -93,6 +90,11 @@ public class ChatSystem : MonoBehaviour
         if (content is null)
         {
             throw new ArgumentNullException(nameof(content));
+        }
+
+        if (content.Equals(string.Empty))
+        {
+            return;
         }
 
         if (enableImproperMasking)

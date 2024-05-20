@@ -24,6 +24,7 @@ public class Inputter : IDisposable
     private readonly Subject<Unit> onMoveStartedSubject = new Subject<Unit>();
     private readonly Subject<Unit> onMoveFinishedSubject = new Subject<Unit>();
     private readonly ReactiveProperty<bool> isSprintInputRP = new ReactiveProperty<bool>();
+    private readonly ReactiveProperty<bool> isChatOpenRP = new ReactiveProperty<bool>(false);
 
     // JumpのみPlayerController側から書き換えを許可する
     public ReactiveProperty<bool> IsJumpInputRP { get; set; } = new ReactiveProperty<bool>();
@@ -37,6 +38,7 @@ public class Inputter : IDisposable
 
     public IObservable<Unit> OnMoveStartedSubject => onMoveStartedSubject;
     public IObservable<Unit> OnMoveFinishedSubject => onMoveFinishedSubject;
+    public IReadOnlyReactiveProperty<bool> IsChatOpenRP => isChatOpenRP;
 
 
     public Inputter()
@@ -80,6 +82,8 @@ public class Inputter : IDisposable
 
         pias.Player.Sprint.performed += _ => isSprintInputRP.Value = true;
         pias.Player.Sprint.canceled += _ => isSprintInputRP.Value = false;
+
+        pias.Player.Chat.performed += _ => isChatOpenRP.Value = !isChatOpenRP.Value;
 #else
         throw new NotSupportedException("InputSystemが有効になっていません。" +
             "このプロジェクトではInputSystemの使用を前提としているため、旧入力システムではなくInputSystemを使用してください。");
@@ -101,5 +105,6 @@ public class Inputter : IDisposable
         pias?.Dispose();
         onMoveStartedSubject?.Dispose();
         onMoveFinishedSubject?.Dispose();
+        isChatOpenRP?.Dispose();
     }
 }
