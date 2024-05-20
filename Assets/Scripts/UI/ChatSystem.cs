@@ -84,15 +84,9 @@ public class ChatSystem : MonoBehaviour
     /// 自由な文字列を送信する
     /// </summary>
     /// <param name="content">送信内容</param>
-    /// <exception cref="ArgumentNullException"></exception>
     public void SendManually(string content)
     {
-        if (content is null)
-        {
-            throw new ArgumentNullException(nameof(content));
-        }
-
-        if (content.Equals(string.Empty))
+        if (string.IsNullOrEmpty(content))
         {
             return;
         }
