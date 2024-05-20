@@ -12,10 +12,13 @@ public class FlickManager : MonoBehaviour
     private IFlickButtonOpeningAndClosing[] flickButtonOpeningAndClosings;
     private IFlickButtonCaseConvertible[] flickButtonCaseConvertibles;
 
+    private SendChat sendChat;
     private void Awake()
     {
         flickButtonOpeningAndClosings = this.GetComponentsInChildren<IFlickButtonOpeningAndClosing>(true);
         flickButtonCaseConvertibles = this.GetComponentsInChildren<IFlickButtonCaseConvertible>(true);
+
+        sendChat = GameObject.FindObjectOfType<SendChat>();
     }
 
     public void StartFlick(IFlickButtonOpeningAndClosing flickButtonOpeningAndClosing)
@@ -50,13 +53,25 @@ public class FlickManager : MonoBehaviour
             item.Conversion(caseConversion);
         }
     }
+    public void SendMessage(Delete delete)
+    {
+        text = text.Remove(text.Length - 1);
+        textMeshProUGUI.text = text;
+    }
+
+    public void Return()
+    {
+        sendChat.Send_ToOthers(text);
+        textMeshProUGUI.text = "";
+        text = "";
+    }
     //public void SendMessage(SpecialKeyType specialKeyType)
     //{
     //    switch (specialKeyType)
     //    {
     //        case SpecialKeyType.None: break;
     //        case SpecialKeyType.Delete:
-    //            text = text.Remove(text.Length - 1);
+    //            
     //            break;
     //        case SpecialKeyType.Space:
     //            text += " ";

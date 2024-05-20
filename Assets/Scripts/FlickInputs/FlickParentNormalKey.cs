@@ -87,7 +87,6 @@ public class FlickParentNormalKey : FlickParent, IFlickButtonParent, IFlickButto
         textMeshProUGUI.text = keyString;
 
         image.color = ButtonColor.PushColor;
-        Debug.Log(image.color);
 
         flickManager.StartFlick(this);
         foreach (IFlickButtonChild item in flickButtonChildren)

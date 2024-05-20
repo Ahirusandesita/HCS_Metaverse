@@ -2,10 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
-public class CaseConversionConKey : FlickParent
+public class Delete
 {
+    private int deleteValue;
+    public int DeleteValue => deleteValue;
 
+    public Delete(int deleteValue)
+    {
+        this.deleteValue = deleteValue;
+    }
+}
+public class DeleteKey : FlickParent
+{
     private Image image;
     private Color startColor;
 
@@ -26,22 +34,7 @@ public class CaseConversionConKey : FlickParent
 
     }
 
-    public class CaseConversion
-    {
-        public enum ConversionType
-        {
-            Upper,
-            Lower
-        }
-        private ConversionType conversionType;
-        public ConversionType GetOnlyConversionType => conversionType;
-        public CaseConversion(ConversionType conversionType)
-        {
-            this.conversionType = conversionType;
-        }
-    }
-
-    private CaseConversion caseConversion = new CaseConversion(CaseConversion.ConversionType.Lower);
+    private Delete delete = new Delete(1);
 
 
     protected override void PointerClick()
@@ -51,8 +44,7 @@ public class CaseConversionConKey : FlickParent
 
     protected override void PointerDown()
     {
-        caseConversion = new CaseConversion(CaseConversion.ConversionType.Upper);
-        flickManager.SendMessage(caseConversion);
+        flickManager.SendMessage(delete);
         image.color = ButtonColor.PushColor;
         transform.localScale = pushSize;
     }
@@ -64,8 +56,6 @@ public class CaseConversionConKey : FlickParent
 
     protected override void PointerUp()
     {
-        caseConversion = new CaseConversion(CaseConversion.ConversionType.Lower);
-        flickManager.SendMessage(caseConversion);
         image.color = startColor;
         transform.localScale = startSize;
     }
