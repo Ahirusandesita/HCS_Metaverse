@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using VContainer;
 using TMPro;
 
-public class FlickChild : MonoBehaviour, IFlickButtonChild
+public class FlickChild : MonoBehaviour, IFlickButtonChild,IFlickButtonCaseConvertible
 {
     [SerializeField]
     private Image image;
@@ -14,11 +14,14 @@ public class FlickChild : MonoBehaviour, IFlickButtonChild
     private TextMeshProUGUI textMeshProUGUI;
 
     [SerializeField]
-    private char keyChar;
+    private string keyString;
 
     [SerializeField]
     private EventTrigger eventTrigger;
     private IFlickButtonParent flickButtonParent;
+    private TextMeshProUGUI outPutText;
+
+    private Color startColor;
 
     [Inject]
     public void FlickParentInject(IFlickButtonParent flickButtonParent)
@@ -39,17 +42,24 @@ public class FlickChild : MonoBehaviour, IFlickButtonChild
         eventTrigger.triggers.Add(entryPointerExit);
         eventTrigger.triggers.Add(entryPointerEnter);
 
+
+        outPutText = this.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+
+        startColor = image.color;
+
         textMeshProUGUI.enabled = false;
         image.enabled = false;
     }
 
     private void PointerEnter()
     {
-        flickButtonParent.SendMessage(new Key(keyChar,true));
+        image.color = ButtonColor.PushColor;
+        flickButtonParent.SendMessage(new Key(keyString,true));
     }
     private void PointerExit()
     {
-        flickButtonParent.SendMessage(new Key(keyChar, false));
+        image.color = startColor;
+        flickButtonParent.SendMessage(new Key(keyString, false));
     }
 
     void IFlickButtonChild.ButtonClose()
@@ -62,5 +72,19 @@ public class FlickChild : MonoBehaviour, IFlickButtonChild
     {
         textMeshProUGUI.enabled = true;
         image.enabled = true;
+    }
+    public void Conversion(CaseConversionConKey.CaseConversion caseConversion)
+    {
+        switch (caseConversion.GetOnlyConversionType)
+        {
+            case CaseConversionConKey.CaseConversion.ConversionType.Upper:
+                outPutText.text = outPutText.text.ToUpper();
+                keyString = keyString.ToUpper();
+                break;
+            case CaseConversionConKey.CaseConversion.ConversionType.Lower:
+                outPutText.text = outPutText.text.ToLower();
+                keyString = keyString.ToLower();
+                break;
+        }
     }
 }

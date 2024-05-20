@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(FlickParent))]
+[RequireComponent(typeof(FlickParentNormalKey))]
 public class FlickButtonDependencyInjection : MonoBehaviour
 {
     [SerializeField]
@@ -10,7 +10,7 @@ public class FlickButtonDependencyInjection : MonoBehaviour
 
     private void Awake()
     {
-        FlickParent flickButtonParent = this.GetComponent<FlickParent>();
+        FlickParentNormalKey flickButtonParent = this.GetComponent<FlickParentNormalKey>();
 
         List<IFlickButtonChild> flickButtonChildren = new List<IFlickButtonChild>();
         foreach(FlickChild item in flickChildren)

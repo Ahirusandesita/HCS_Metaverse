@@ -1,40 +1,15 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using VContainer;
 
-public struct Key
+public abstract class FlickParent : MonoBehaviour
 {
-    public char keyChar;
-    public bool canUseKey;
-    public Key(char keyChar,bool canUseKey)
-    {
-        this.keyChar = keyChar;
-        this.canUseKey = canUseKey;
-    }
-}
-public class FlickParent : MonoBehaviour, IFlickButtonParent, IFlickButtonOpeningAndClosing
-{
-    [SerializeField]
-    private char keyChar;
-
-    private bool canButtonDown = true;
-    private FlickManager flickManager;
+    protected FlickManager flickManager;
     [SerializeField]
     private EventTrigger eventTrigger;
 
-    bool canUseChildKey = false;
-    private Key childKey;
-
-    private IFlickButtonChild[] flickButtonChildren;
-
-    [Inject]
-    public void FlickChildInject(List<IFlickButtonChild> flickButtonChildren)
-    {
-        this.flickButtonChildren = flickButtonChildren.ToArray();
-    }
-
-    private void Awake()
+    protected virtual void Awake()
     {
         flickManager = this.transform.root.GetComponentInChildren<FlickManager>(true);
 
@@ -61,61 +36,9 @@ public class FlickParent : MonoBehaviour, IFlickButtonParent, IFlickButtonOpenin
         eventTrigger.triggers.Add(entryPointerClick);
     }
 
-    private void PointerEnter()
-    {
-        canUseChildKey = true;
-    }
-    private void PointerDown()
-    {
-        if (!canButtonDown)
-        {
-            return;
-        }
+    protected abstract void PointerEnter();
+    protected abstract void PointerDown();
 
-        flickManager.StartFlick(this);
-        foreach (IFlickButtonChild item in flickButtonChildren)
-        {
-            item.ButtonDeployment();
-        }
-    }
-    private void PointerUp()
-    {
-        if (!canButtonDown)
-        {
-            return;
-        }
-
-        flickManager.EndFlick(this);
-
-        if (!canUseChildKey)
-        {
-            flickManager.SendMessage(childKey.keyChar);
-        }
-        foreach (IFlickButtonChild item in flickButtonChildren)
-        {
-            item.ButtonClose();
-        }
-    }
-    private void PointerClick()
-    {
-        if (!canButtonDown)
-        {
-            return;
-        }
-        flickManager.SendMessage(keyChar);
-    }
-
-    void IFlickButtonOpeningAndClosing.Open()
-    {
-        canButtonDown = true;
-    }
-    void IFlickButtonOpeningAndClosing.Close()
-    {
-        canButtonDown = false;
-    }
-    public void SendMessage(Key key)
-    {
-        canUseChildKey = false;
-        this.childKey = key;
-    }
+    protected abstract void PointerUp();
+    protected abstract void PointerClick();
 }
