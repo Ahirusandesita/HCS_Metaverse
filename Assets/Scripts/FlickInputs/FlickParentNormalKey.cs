@@ -20,7 +20,7 @@ public struct Key
 {
     public string keyString;
     public bool canUseKey;
-    public Key(string keyString,bool canUseKey)
+    public Key(string keyString, bool canUseKey)
     {
         this.keyString = keyString;
         this.canUseKey = canUseKey;
@@ -28,7 +28,7 @@ public struct Key
 }
 
 
-public class FlickParentNormalKey : FlickParent, IFlickButtonParent, IFlickButtonOpeningAndClosing,IFlickButtonCaseConvertible
+public class FlickParentNormalKey : FlickParent, IFlickButtonParent, IFlickButtonOpeningAndClosing, IFlickButtonCaseConvertible
 {
     [SerializeField]
     private string familyString;
@@ -44,14 +44,6 @@ public class FlickParentNormalKey : FlickParent, IFlickButtonParent, IFlickButto
     private IFlickButtonChild[] flickButtonChildren;
     private TextMeshProUGUI textMeshProUGUI;
 
-    private Image image;
-    private Color startColor;
-
-    private Vector3 startSize;
-
-    private Vector3 pushSize;
-    private float push_xSize = 0.37f;
-
     [Inject]
     public void FlickChildInject(List<IFlickButtonChild> flickButtonChildren)
     {
@@ -63,13 +55,6 @@ public class FlickParentNormalKey : FlickParent, IFlickButtonParent, IFlickButto
         base.Awake();
         textMeshProUGUI = this.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         textMeshProUGUI.text = familyString;
-
-        image = this.GetComponent<Image>();
-        startColor = image.color;
-
-        startSize = transform.localScale;
-        pushSize = startSize;
-        pushSize.x = push_xSize;
     }
 
     protected override void PointerEnter()
@@ -83,10 +68,9 @@ public class FlickParentNormalKey : FlickParent, IFlickButtonParent, IFlickButto
             return;
         }
 
-        transform.localScale = pushSize;
         textMeshProUGUI.text = keyString;
 
-        image.color = ButtonColor.PushColor;
+        PointerDownAnimation();
 
         flickManager.StartFlick(this);
         foreach (IFlickButtonChild item in flickButtonChildren)
@@ -100,11 +84,9 @@ public class FlickParentNormalKey : FlickParent, IFlickButtonParent, IFlickButto
         {
             return;
         }
-
-        transform.localScale = startSize;
         textMeshProUGUI.text = familyString;
 
-        image.color = startColor;
+        PointerUpAnimation();
 
         flickManager.EndFlick(this);
 

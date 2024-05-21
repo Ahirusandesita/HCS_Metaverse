@@ -14,25 +14,6 @@ public class Delete
 }
 public class DeleteKey : FlickParent
 {
-    private Image image;
-    private Color startColor;
-
-    private Vector3 startSize;
-
-    private Vector3 pushSize;
-    private float push_xSize = 0.37f;
-
-    protected override void Awake()
-    {
-        base.Awake();
-        image = GetComponent<Image>();
-        startColor = image.color;
-
-        startSize = transform.localScale;
-        pushSize = startSize;
-        pushSize.x = push_xSize;
-
-    }
 
     private Delete delete = new Delete(1);
 
@@ -45,8 +26,7 @@ public class DeleteKey : FlickParent
     protected override void PointerDown()
     {
         flickManager.SendMessage(delete);
-        image.color = ButtonColor.PushColor;
-        transform.localScale = pushSize;
+        PointerDownAnimation();
     }
 
     protected override void PointerEnter()
@@ -56,7 +36,6 @@ public class DeleteKey : FlickParent
 
     protected override void PointerUp()
     {
-        image.color = startColor;
-        transform.localScale = startSize;
+        PointerUpAnimation();
     }
 }

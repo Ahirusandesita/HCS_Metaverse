@@ -2,12 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public abstract class FlickParent : MonoBehaviour
 {
     protected FlickManager flickManager;
     [SerializeField]
     private EventTrigger eventTrigger;
+
+
+    private Image image;
+    private Color startColor;
+    private Vector3 startSize;
+    private Vector3 pushSize;
+    protected float push_xSize = 0.37f;
 
     protected virtual void Awake()
     {
@@ -34,6 +42,25 @@ public abstract class FlickParent : MonoBehaviour
         eventTrigger.triggers.Add(entryPointerDown);
         eventTrigger.triggers.Add(entryPointerUp);
         eventTrigger.triggers.Add(entryPointerClick);
+
+        image = GetComponent<Image>();
+        startColor = image.color;
+
+        startSize = transform.localScale;
+        pushSize = startSize;
+        pushSize.x = push_xSize;
+    }
+
+    protected void PointerDownAnimation()
+    {
+        image.color = ButtonColor.PushColor;
+        transform.localScale = pushSize;
+    }
+
+    protected void PointerUpAnimation()
+    {
+        image.color = startColor;
+        transform.localScale = startSize;
     }
 
     protected abstract void PointerEnter();
