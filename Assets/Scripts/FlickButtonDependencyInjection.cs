@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(FlickParentNormalKey))]
 public class FlickButtonDependencyInjection : MonoBehaviour
 {
-    [SerializeField]
-    private List<FlickChild> flickChildren = new List<FlickChild>();
+    [SerializeField,InterfaceType(typeof(IFlickButtonChild))]
+    private List<UnityEngine.Object> IFlickButtonChild = new List<UnityEngine.Object>();
+    private List<IFlickButtonChild> flickChildren => IFlickButtonChild.OfType<IFlickButtonChild>().ToList();
 
     private void Awake()
     {

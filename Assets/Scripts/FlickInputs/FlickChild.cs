@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using VContainer;
 using TMPro;
 
-public class FlickChild : MonoBehaviour, IFlickButtonChild,IFlickButtonCaseConvertible
+public class FlickChild : MonoBehaviour, IFlickButtonChild, IFlickButtonCaseConvertible
 {
     [SerializeField]
     private Image image;
@@ -54,7 +54,7 @@ public class FlickChild : MonoBehaviour, IFlickButtonChild,IFlickButtonCaseConve
     private void PointerEnter()
     {
         image.color = ButtonColor.PushColor;
-        flickButtonParent.SendMessage(new Key(keyString,true));
+        flickButtonParent.SendMessage(new Key(keyString, true));
     }
     private void PointerExit()
     {

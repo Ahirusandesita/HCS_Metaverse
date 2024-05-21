@@ -1,0 +1,42 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Item_Cube : MonoBehaviour, IItem, IInventory_Mesh
+{
+    private AppearanceInfo_Mesh appearanceInfo_Mesh;
+
+    private void Awake()
+    {
+        appearanceInfo_Mesh = new AppearanceInfo_Mesh(
+            GetComponent<MeshFilter>().mesh,
+            GetComponent<MeshRenderer>().material
+        );
+    }
+    AppearanceInfo_Mesh IInventory_Mesh.Appearance()
+    {
+        return appearanceInfo_Mesh;
+    }
+
+    void IItem.CleanUp()
+    {
+        this.GetComponent<MeshRenderer>().enabled = false;
+    }
+
+    void IItem.TakeOut(Vector3 position)
+    {
+        this.GetComponent<MeshRenderer>().enabled = true;
+        this.transform.position = position;
+    }
+
+
+    void IItem.Use()
+    {
+
+    }
+
+    public void UnSelect()
+    {
+        FindObjectOfType<InventoryManager>().SendItem(this);
+    }
+}
