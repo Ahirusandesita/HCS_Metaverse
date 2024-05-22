@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item_Cube : MonoBehaviour, IItem, IInventory_Mesh
+public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable
 {
     private AppearanceInfo_Mesh appearanceInfo_Mesh;
 
@@ -13,7 +13,7 @@ public class Item_Cube : MonoBehaviour, IItem, IInventory_Mesh
             GetComponent<MeshRenderer>().material
         );
     }
-    AppearanceInfo_Mesh IInventory_Mesh.Appearance()
+    AppearanceInfo_Mesh IInventoryRetractable.Appearance()
     {
         return appearanceInfo_Mesh;
     }

@@ -36,7 +36,7 @@ public interface IItem
 
     void TakeOut(Vector3 position);
 }
-public interface IInventory_Mesh
+public interface IInventoryRetractable
 {
     AppearanceInfo_Mesh Appearance();
 }
