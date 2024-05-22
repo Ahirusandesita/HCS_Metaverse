@@ -1,6 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+/// <summary>
+/// 表示するためのMesh情報とサイズ
+/// </summary>
 public class AppearanceInfo_Mesh
 {
     private Mesh mesh;
@@ -9,6 +10,7 @@ public class AppearanceInfo_Mesh
 
     public Mesh Mesh => mesh;
     public Material Material => material;
+    public Vector3 Size => size;
 
     public AppearanceInfo_Mesh(Mesh mesh, Material material)
     {
@@ -22,27 +24,4 @@ public class AppearanceInfo_Mesh
         this.material = material;
         this.size = size;
     }
-}
-public interface IItem
-{
-    /// <summary>
-    /// アイテム使用
-    /// </summary>
-    void Use();
-    /// <summary>
-    /// アイテムをしまう
-    /// </summary>
-    void CleanUp();
-
-    void TakeOut(Vector3 position);
-}
-public interface IInventoryRetractable
-{
-    AppearanceInfo_Mesh Appearance();
-}
-public interface IInventory
-{
-    bool HasItem { get; }
-    void PutAway(IItem item);
-    IItem TakeOut();
 }

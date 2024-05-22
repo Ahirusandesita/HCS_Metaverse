@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class ScrollObject : MonoBehaviour, IScrollable
 {
-    void IScrollable.Scroll(Vector2 move)
+    public void Scroll(Vector2 moveValue, float sensitivity)
     {
-        this.transform.position += -(Vector3)move / 1000f;
+        this.transform.position += -(Vector3)moveValue / (1500f / sensitivity);
     }
 }

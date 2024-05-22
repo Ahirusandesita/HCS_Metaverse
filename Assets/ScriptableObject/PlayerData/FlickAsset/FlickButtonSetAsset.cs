@@ -5,5 +5,5 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "FlickAsset", menuName = "ScriptableObjects/FlickAsset")]
 public class FlickButtonSetAsset : ScriptableObject
 {
-    public List<FlickChild> flickChilds = new List<FlickChild>();
+    public List<FlickKeyChild> flickChilds = new List<FlickKeyChild>();
 }

@@ -12,29 +12,29 @@ public class Delete
         this.deleteValue = deleteValue;
     }
 }
-public class DeleteKey : FlickParent
+public class DeleteKey : FlickKeyParent
 {
 
     private Delete delete = new Delete(1);
 
 
-    protected override void PointerClick()
+    protected override void OnPointerClick()
     {
 
     }
 
-    protected override void PointerDown()
+    protected override void OnPointerDown()
     {
         flickManager.SendMessage(delete);
         PointerDownAnimation();
     }
 
-    protected override void PointerEnter()
+    protected override void OnPointerEnter()
     {
 
     }
 
-    protected override void PointerUp()
+    protected override void OnPointerUp()
     {
         PointerUpAnimation();
     }

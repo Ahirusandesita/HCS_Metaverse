@@ -1,9 +1,14 @@
-using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
-
-public class Inventory : MonoBehaviour, IInventory
+/// <summary>
+/// ƒCƒ“ƒxƒ“ƒgƒŠ‚P˜gŠÇ—
+/// </summary>
+public class InventoryOneFrame : MonoBehaviour, IInventoryOneFrame
 {
+    [SerializeField]
+    private MeshRenderer meshRenderer;
+    [SerializeField]
+    private MeshFilter meshFilter;
+
     private bool hasItem;
     public bool HasItem
     {
@@ -12,10 +17,6 @@ public class Inventory : MonoBehaviour, IInventory
             return hasItem;
         }
     }
-    [SerializeField]
-    private MeshRenderer meshRenderer;
-    [SerializeField]
-    private MeshFilter meshFilter;
 
     private IInventoryRetractable inventory_Mesh;
     public IInventoryRetractable Inventory_Mesh => inventory_Mesh;

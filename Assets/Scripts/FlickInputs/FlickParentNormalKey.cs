@@ -28,7 +28,7 @@ public struct Key
 }
 
 
-public class FlickParentNormalKey : FlickParent, IFlickButtonParent, IFlickButtonOpeningAndClosing, IFlickButtonCaseConvertible
+public class FlickParentNormalKey : FlickKeyParent, IFlickButtonParent, IFlickKeyEnabledAndDisabled, IFlickKeyCaseConvertible
 {
     [SerializeField]
     private string familyString;
@@ -57,11 +57,11 @@ public class FlickParentNormalKey : FlickParent, IFlickButtonParent, IFlickButto
         textMeshProUGUI.text = familyString;
     }
 
-    protected override void PointerEnter()
+    protected override void OnPointerEnter()
     {
         canUseChildKey = true;
     }
-    protected override void PointerDown()
+    protected override void OnPointerDown()
     {
         if (!canButtonDown)
         {
@@ -72,13 +72,13 @@ public class FlickParentNormalKey : FlickParent, IFlickButtonParent, IFlickButto
 
         PointerDownAnimation();
 
-        flickManager.StartFlick(this);
+        flickManager.OtherFlickKeyDisabled(this);
         foreach (IFlickButtonChild item in flickButtonChildren)
         {
             item.ButtonDeployment();
         }
     }
-    protected override void PointerUp()
+    protected override void OnPointerUp()
     {
         if (!canButtonDown)
         {
@@ -88,7 +88,7 @@ public class FlickParentNormalKey : FlickParent, IFlickButtonParent, IFlickButto
 
         PointerUpAnimation();
 
-        flickManager.EndFlick(this);
+        flickManager.OtherFlickKeyEnabled(this);
 
         if (!canUseChildKey)
         {
@@ -99,7 +99,7 @@ public class FlickParentNormalKey : FlickParent, IFlickButtonParent, IFlickButto
             item.ButtonClose();
         }
     }
-    protected override void PointerClick()
+    protected override void OnPointerClick()
     {
         if (!canButtonDown)
         {
@@ -108,23 +108,23 @@ public class FlickParentNormalKey : FlickParent, IFlickButtonParent, IFlickButto
         flickManager.SendMessage(keyString);
     }
 
-    void IFlickButtonOpeningAndClosing.Open()
+    void IFlickKeyEnabledAndDisabled.Enabled()
     {
         canButtonDown = true;
     }
-    void IFlickButtonOpeningAndClosing.Close()
+    void IFlickKeyEnabledAndDisabled.Disabled()
     {
         canButtonDown = false;
     }
-    public void Conversion(CaseConversionConKey.CaseConversion caseConversion)
+    public void Conversion(CaseConversionKey.CaseConversionInfo caseConversion)
     {
         switch (caseConversion.GetOnlyConversionType)
         {
-            case CaseConversionConKey.CaseConversion.ConversionType.Upper:
+            case CaseConversionKey.CaseConversionInfo.ConversionType.Upper:
                 textMeshProUGUI.text = textMeshProUGUI.text.ToUpper();
                 keyString = keyString.ToUpper();
                 break;
-            case CaseConversionConKey.CaseConversion.ConversionType.Lower:
+            case CaseConversionKey.CaseConversionInfo.ConversionType.Lower:
                 textMeshProUGUI.text = textMeshProUGUI.text.ToLower();
                 keyString = keyString.ToLower();
                 break;

@@ -15,13 +15,13 @@ public class FlickButtonDependencyInjection : MonoBehaviour
         FlickParentNormalKey flickButtonParent = this.GetComponent<FlickParentNormalKey>();
 
         List<IFlickButtonChild> flickButtonChildren = new List<IFlickButtonChild>();
-        foreach(FlickChild item in flickChildren)
+        foreach(FlickKeyChild item in flickChildren)
         {
             flickButtonChildren.Add(item);
         }
         flickButtonParent.FlickChildInject(flickButtonChildren);
 
-        foreach (FlickChild flickChild in flickChildren)
+        foreach (FlickKeyChild flickChild in flickChildren)
         {
             flickChild.FlickParentInject((IFlickButtonParent)flickButtonParent);
         }

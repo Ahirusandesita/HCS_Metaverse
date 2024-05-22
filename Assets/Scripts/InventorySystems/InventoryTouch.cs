@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -8,12 +6,12 @@ public class InventoryTouch : MonoBehaviour
     [SerializeField]
     private EventTrigger eventTrigger;
 
-    private IInventory inventory;
+    private IInventoryOneFrame inventory;
     private InventoryManager inventoryManager;
 
     private void Awake()
     {
-        inventory = this.GetComponent<IInventory>();
+        inventory = this.GetComponent<IInventoryOneFrame>();
         inventoryManager = transform.root.GetComponent<InventoryManager>();
 
         EventTrigger.Entry entryPointerUp = new EventTrigger.Entry();

@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using VContainer;
 using TMPro;
 
-public class FlickChild : MonoBehaviour, IFlickButtonChild, IFlickButtonCaseConvertible
+public class FlickKeyChild : MonoBehaviour, IFlickButtonChild, IFlickKeyCaseConvertible
 {
     [SerializeField]
     private Image image;
@@ -73,15 +71,15 @@ public class FlickChild : MonoBehaviour, IFlickButtonChild, IFlickButtonCaseConv
         textMeshProUGUI.enabled = true;
         image.enabled = true;
     }
-    public void Conversion(CaseConversionConKey.CaseConversion caseConversion)
+    public void Conversion(CaseConversionKey.CaseConversionInfo caseConversion)
     {
         switch (caseConversion.GetOnlyConversionType)
         {
-            case CaseConversionConKey.CaseConversion.ConversionType.Upper:
+            case CaseConversionKey.CaseConversionInfo.ConversionType.Upper:
                 outPutText.text = outPutText.text.ToUpper();
                 keyString = keyString.ToUpper();
                 break;
-            case CaseConversionConKey.CaseConversion.ConversionType.Lower:
+            case CaseConversionKey.CaseConversionInfo.ConversionType.Lower:
                 outPutText.text = outPutText.text.ToLower();
                 keyString = keyString.ToLower();
                 break;
