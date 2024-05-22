@@ -17,8 +17,8 @@ public class Inventory : MonoBehaviour, IInventory
     [SerializeField]
     private MeshFilter meshFilter;
 
-    private IInventory_Mesh inventory_Mesh;
-    public IInventory_Mesh Inventory_Mesh => inventory_Mesh;
+    private IInventoryRetractable inventory_Mesh;
+    public IInventoryRetractable Inventory_Mesh => inventory_Mesh;
 
     private AppearanceInfo_Mesh appearanceInfo_Mesh;
 
@@ -29,7 +29,7 @@ public class Inventory : MonoBehaviour, IInventory
 
     public void PutAway(IItem item)
     {
-        inventory_Mesh = item as IInventory_Mesh;
+        inventory_Mesh = item as IInventoryRetractable;
         appearanceInfo_Mesh = inventory_Mesh.Appearance();
         InventoryView();
         hasItem = true;
