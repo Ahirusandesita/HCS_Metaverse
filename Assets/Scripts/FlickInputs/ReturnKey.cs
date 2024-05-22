@@ -3,24 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ReturnKey : FlickParent
+public class ReturnKey : FlickKeyParent
 {
-    protected override void PointerClick()
+    protected override void OnPointerClick()
     {
 
     }
 
-    protected override void PointerDown()
+    protected override void OnPointerDown()
     {
         PointerDownAnimation();
     }
 
-    protected override void PointerEnter()
+    protected override void OnPointerEnter()
     {
 
     }
 
-    protected override void PointerUp()
+    protected override void OnPointerUp()
     {
         PointerUpAnimation();
         flickManager.Return();

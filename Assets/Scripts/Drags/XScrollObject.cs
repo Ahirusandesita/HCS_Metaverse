@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class XScrollObject : MonoBehaviour, IBesideOnlyScrollable
+public class XScrollObject : MonoBehaviour, IHorizontalOnlyScrollable
 {
-    public void Scroll(Vector2 move)
+    public void Scroll(Vector2 moveValue, float sensitivity)
     {
-        this.transform.position += -new Vector3(move.x, 0f, 0f) / 1000f;
+        this.transform.position += -new Vector3(moveValue.x,0f, 0f) / (1500f / sensitivity);
     }
 }

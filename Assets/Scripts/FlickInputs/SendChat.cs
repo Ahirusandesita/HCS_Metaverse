@@ -1,6 +1,8 @@
 using Photon.Pun;
 using UnityEngine;
-
+/// <summary>
+/// Test
+/// </summary>
 public class SendChat : MonoBehaviour
 {
     private PhotonView _PhotonViewControl;

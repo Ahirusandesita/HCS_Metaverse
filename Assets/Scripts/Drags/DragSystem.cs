@@ -1,60 +1,90 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class DragSystem : MonoBehaviour
 {
+    [SerializeField]
+    private float sensitivity = 1f;
+
+    /// <summary>
+    /// スクロールする対象
+    /// </summary>
     private IScrollable[] scrollables;
 
-    private Vector2 move;
+    /// <summary>
+    /// 最後の画面接触点
+    /// </summary>
+    private Vector2 LastPointerPosition;
+    /// <summary>
+    /// スクロールできるかどうか
+    /// </summary>
     private bool canScroll = false;
+
     private void Awake()
     {
+        //EventTriggerに対応する関数を登録する///////////////////////////////////////////////////////
         EventTrigger trigger = GetComponent<EventTrigger>();
         EventTrigger.Entry entryDrag = new EventTrigger.Entry();
         entryDrag.eventID = EventTriggerType.Drag;
-        entryDrag.callback.AddListener((data) => { OnDragDelegate((PointerEventData)data); });
-        trigger.triggers.Add(entryDrag);
+        entryDrag.callback.AddListener((data) => { OnDrag((PointerEventData)data); });
 
         EventTrigger.Entry entryPointerDown = new EventTrigger.Entry();
         entryPointerDown.eventID = EventTriggerType.PointerDown;
-        entryPointerDown.callback.AddListener((data) => PointerDown((PointerEventData)data));
-        trigger.triggers.Add(entryPointerDown);
+        entryPointerDown.callback.AddListener((data) => OnPinterDown((PointerEventData)data));
 
         EventTrigger.Entry entryPointerUp = new EventTrigger.Entry();
         entryPointerUp.eventID = EventTriggerType.PointerUp;
-        entryPointerUp.callback.AddListener((x) => PointerUp());
+        entryPointerUp.callback.AddListener((x) => OnPointerUp());
+
+        trigger.triggers.Add(entryDrag);
+        trigger.triggers.Add(entryPointerDown);
         trigger.triggers.Add(entryPointerUp);
+        /////////////////////////////////////////////////////////////////////////////////////////////
 
         scrollables = this.transform.GetComponentsInChildren<IScrollable>(true);
     }
 
-    private void OnDragDelegate(PointerEventData data)
+    /// <summary>
+    /// ドラッグされたとき
+    /// </summary>
+    /// <param name="data"></param>
+    private void OnDrag(PointerEventData data)
     {
+        //スクロールできない状態なら終了する
         if (!canScroll)
         {
             return;
         }
 
-        Vector3 scrollMove = move - data.position;
+        //前回の接触点から現在の接触点を引いて接触点の移動量を求める
+        Vector3 scrollMove = LastPointerPosition - data.position;
+        //スクロールする対象に移動量を渡してスクロールさせる
         foreach (IScrollable scrollable in scrollables)
         {
-            scrollable.Scroll(scrollMove);
-            Debug.Log(scrollMove);
+            scrollable.Scroll(scrollMove, sensitivity);
         }
 
-        move = data.position;
+        //前回の接触点を更新する
+        LastPointerPosition = data.position;
     }
 
-    private void PointerDown(PointerEventData data)
+    /// <summary>
+    /// 押されたとき
+    /// </summary>
+    /// <param name="data"></param>
+    private void OnPinterDown(PointerEventData data)
     {
-        move = data.position;
+        //前回の接触点に設定して、スクロール開始できるようにする
+        LastPointerPosition = data.position;
         canScroll = true;
     }
 
-    private void PointerUp()
+    /// <summary>
+    /// 離されたとき
+    /// </summary>
+    private void OnPointerUp()
     {
+        //スクロールできなくする
         canScroll = false;
     }
 }

@@ -1,19 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// ‚P‚Â‚ÌƒCƒ“ƒxƒ“ƒgƒŠŠÇ—
+/// </summary>
 public class InventoryManager : MonoBehaviour
 {
-    private IInventory[] inventories;
+    private IInventoryOneFrame[] inventories;
 
     private void Awake()
     {
-        inventories = GetComponentsInChildren<IInventory>(true);
+        inventories = GetComponentsInChildren<IInventoryOneFrame>(true);
     }
 
     public void SendItem(IItem item)
     {
-        foreach(IInventory inventory in inventories)
+        foreach(IInventoryOneFrame inventory in inventories)
         {
             if (!inventory.HasItem)
             {
