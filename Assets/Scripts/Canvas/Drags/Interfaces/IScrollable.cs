@@ -11,3 +11,8 @@ public interface IScrollable
     /// <param name="sensitivity">Š´“x</param>
     void Scroll(Vector2 moveValue, float sensitivity);
 }
+
+public interface ITransformInjectable
+{
+    void TransformInject(Transform transform);
+}
