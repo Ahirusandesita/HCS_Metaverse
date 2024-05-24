@@ -2,16 +2,15 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
-public class MasterServerConect : MonoBehaviourPunCallbacks
+public interface IMasterServerConectable
+{
+    void Connect();
+}
+
+public class MasterServerConect : MonoBehaviourPunCallbacks, IMasterServerConectable
 {
     [SerializeField]
     private LocalRemoteSeparation localRemoteReparation;
-
-    private void Start()
-    {
-        //マスタサーバへ接続
-        PhotonNetwork.ConnectUsingSettings();
-    }
 
     public override void OnConnectedToMaster()
     {
@@ -22,5 +21,10 @@ public class MasterServerConect : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         localRemoteReparation.RemoteViewCreate();
+    }
+
+    void IMasterServerConectable.Connect()
+    {
+        PhotonNetwork.ConnectUsingSettings();
     }
 }

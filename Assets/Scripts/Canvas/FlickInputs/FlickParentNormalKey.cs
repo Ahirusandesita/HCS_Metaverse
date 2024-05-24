@@ -1,9 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using VContainer;
 using TMPro;
-using UnityEngine.UI;
 
 public static class ButtonColor
 {
@@ -44,7 +41,6 @@ public class FlickParentNormalKey : FlickKeyParent, IFlickButtonParent, IFlickKe
     private IFlickButtonChild[] flickButtonChildren;
     private TextMeshProUGUI textMeshProUGUI;
 
-    [Inject]
     public void FlickChildInject(List<IFlickButtonChild> flickButtonChildren)
     {
         this.flickButtonChildren = flickButtonChildren.ToArray();
