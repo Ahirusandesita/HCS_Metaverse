@@ -22,7 +22,7 @@ public class ChatSender : MonoBehaviour
     private void Awake()
     {
         // 入力完了時のコールバックを設定
-        inputField.onSubmit.AddListener(delegate
+        inputField.onSubmit.AddListener(_ =>
         {
             // ChatSystemに入力内容を送信
             chatSystem.SendManually(inputField.text);

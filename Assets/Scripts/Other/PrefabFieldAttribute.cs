@@ -1,7 +1,11 @@
 using UnityEngine;
 
+/// <summary>
+/// アタッチできるオブジェクトをPrefab Onlyにする
+/// </summary>
 public class PrefabFieldAttribute : PropertyAttribute { }
 
+#if UNITY_EDITOR
 namespace UnityEditor
 {
     [CustomPropertyDrawer(typeof(PrefabFieldAttribute))]
@@ -25,3 +29,4 @@ namespace UnityEditor
         }
     }
 }
+#endif
