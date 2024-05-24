@@ -23,7 +23,7 @@ public abstract class FlickKeyParent : MonoBehaviour
     /// <summary>
     /// Keyの初期サイズ
     /// </summary>
-    private Vector3 initialSize;
+    private Vector3 initialKeySize;
     /// <summary>
     /// Keyが押されたときのKeySize
     /// </summary>
@@ -65,10 +65,10 @@ public abstract class FlickKeyParent : MonoBehaviour
 
         //キーの初期代入
         initialKeyColor = keyImage.color;
-        initialSize = transform.localScale;
+        initialKeySize = transform.localScale;
 
         //キーが押されたときの数値設定
-        pushKeySize = initialSize;
+        pushKeySize = initialKeySize;
         pushKeySize.x = push_xKeySize;
     }
 
@@ -86,7 +86,7 @@ public abstract class FlickKeyParent : MonoBehaviour
     protected void PointerUpAnimation()
     {
         keyImage.color = initialKeyColor;
-        transform.localScale = initialSize;
+        transform.localScale = initialKeySize;
     }
 
     /// <summary>
