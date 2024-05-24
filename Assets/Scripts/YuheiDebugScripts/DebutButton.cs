@@ -1,17 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+
+public interface ICanvasDeploymentAndConvergence
+{
+    /// <summary>
+    /// “WŠJ
+    /// </summary>
+    void Deployment();
+    /// <summary>
+    /// Žû‘©
+    /// </summary>
+    void Convergence();
+    /// <summary>
+    /// “WŠJ’†‚©
+    /// </summary>
+    bool IsDeployment { get; }
+}
 
 public class DebutButton : MonoBehaviour
 {
     [SerializeField]
     Transform centerAye;
+
     [SerializeField]
-    Transform button;
+    private OVRCanvasManager OVRCanvasManager;
+
     public void Selected()
     {
-        button.transform.position = centerAye.transform.position;
-        button.transform.rotation = centerAye.transform.rotation;
-        button.transform.Translate(new Vector3(0f, 0f, 0.3f));
+        OVRCanvasManager.ChangeCanvasDeployment();
     }
 }

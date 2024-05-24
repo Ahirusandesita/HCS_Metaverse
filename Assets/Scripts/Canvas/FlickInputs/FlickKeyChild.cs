@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using VContainer;
 using TMPro;
 
 public class FlickKeyChild : MonoBehaviour, IFlickButtonChild, IFlickKeyCaseConvertible
@@ -21,7 +20,6 @@ public class FlickKeyChild : MonoBehaviour, IFlickButtonChild, IFlickKeyCaseConv
 
     private Color startColor;
 
-    [Inject]
     public void FlickParentInject(IFlickButtonParent flickButtonParent)
     {
         this.flickButtonParent = flickButtonParent;
