@@ -69,26 +69,26 @@ public class EventTriggerPresenter : MonoBehaviour
         }
         );
 
-        IPointerDragRegistrable[] pointerDragRegistrables = this.GetComponents<IPointerDragRegistrable>();
+        IDragRegistrable[] pointerDragRegistrables = this.GetComponents<IDragRegistrable>();
         EventTrigger.Entry entryPointerDrag = new EventTrigger.Entry();
         entryPointerDrag.eventID = EventTriggerType.Drag;
         entryPointerDrag.callback.AddListener((data) =>
         {
-            foreach (IPointerDragRegistrable pointerDrag in pointerDragRegistrables)
+            foreach (IDragRegistrable pointerDrag in pointerDragRegistrables)
             {
-                pointerDrag.OnPointerDrag((PointerEventData)data);
+                pointerDrag.OnDrag((PointerEventData)data);
             }
         }
         );
 
-        IPointerDragRegistrableToParent[] pointerDragRegistrableToParents = this.GetComponentsInChildren<IPointerDragRegistrableToParent>(true);
+        IDragRegistrableToParent[] pointerDragRegistrableToParents = this.GetComponentsInChildren<IDragRegistrableToParent>(true);
         EventTrigger.Entry entryDragToParent = new EventTrigger.Entry();
         entryDragToParent.eventID = EventTriggerType.Drag;
         entryDragToParent.callback.AddListener((data) =>
         {
-            foreach (IPointerDragRegistrableToParent pointerDragRegistrableToParent in pointerDragRegistrableToParents)
+            foreach (IDragRegistrableToParent pointerDragRegistrableToParent in pointerDragRegistrableToParents)
             {
-                pointerDragRegistrableToParent.OnParentPointerDrag((PointerEventData)data);
+                pointerDragRegistrableToParent.OnParentDrag((PointerEventData)data);
             }
         }
         );

@@ -20,11 +20,11 @@ public interface IPointerClickRegistrable
 {
     void OnPointerClick(PointerEventData data);
 }
-public interface IPointerDragRegistrable
+public interface IDragRegistrable
 {
-    void OnPointerDrag(PointerEventData data);
+    void OnDrag(PointerEventData data);
 }
-public interface IPointerDragRegistrableToParent
+public interface IDragRegistrableToParent
 {
-    void OnParentPointerDrag(PointerEventData data);
+    void OnParentDrag(PointerEventData data);
 }
