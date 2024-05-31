@@ -33,9 +33,13 @@ public abstract class FlickKeyParent : MonoBehaviour
     /// </summary>
     protected float push_xKeySize = 0.37f;
 
+    public void FlickManagerInject(FlickKeyboardManager flickKeyboardManager)
+    {
+        this.flickManager = flickKeyboardManager;
+    }
+
     protected virtual void Awake()
     {
-        flickManager = this.transform.root.GetComponentInChildren<FlickKeyboardManager>(true);
 
         //EventTrigger‚É‘Î‰‚·‚éŠÖ”‚ğ“o˜^‚·‚é////////////////////////////////////////
         EventTrigger.Entry entryPointerDown = new EventTrigger.Entry();
