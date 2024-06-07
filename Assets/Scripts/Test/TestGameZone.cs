@@ -3,24 +3,25 @@ using UnityEngine;
 public class TestGameZone : MonoBehaviour, IInteraction, ISelectedNotification
 {
     public ISelectedNotification SelectedNotification => this;
-
+    [SerializeField]
+    private GameFrame gameFrame;
     public void Close()
     {
-        throw new System.NotImplementedException();
+        gameFrame.Close();
     }
 
     public void Open()
     {
-        throw new System.NotImplementedException();
+        gameFrame.GameStart();
     }
 
     public void Select(SelectArgs selectArgs)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("GameŠJŽn");
     }
 
     public void Unselect(SelectArgs selectArgs)
     {
-        throw new System.NotImplementedException();
+        
     }
 }

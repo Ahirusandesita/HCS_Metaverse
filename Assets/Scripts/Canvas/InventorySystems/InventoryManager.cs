@@ -28,6 +28,8 @@ public class InventoryManager : MonoBehaviour
                 items.Add(item);
                 inventory.PutAway(item);
                 item.CleanUp();
+
+                GameObject.FindObjectOfType<PlayerInteraction>().Add(item as ISelectedNotificationInjectable);
                 break;
             }
         }
@@ -36,6 +38,7 @@ public class InventoryManager : MonoBehaviour
     public void ReturnItem(IItem item)
     {
         item.TakeOut(this.transform.position);
+        item.Use();
         items.Remove(item);
     }
 }
