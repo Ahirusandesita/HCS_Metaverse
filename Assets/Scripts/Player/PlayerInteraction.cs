@@ -17,6 +17,8 @@ public class PlayerInteraction : MonoBehaviour
     {
         public ISelectedNotification SelectedNotification => new NullSelectedNotification();
 
+        public GameObject gameObject => throw new NotImplementedException();
+
         public void Close()
         {
 
