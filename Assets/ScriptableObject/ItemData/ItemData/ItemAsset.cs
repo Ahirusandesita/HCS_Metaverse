@@ -16,5 +16,6 @@ public class ItemAsset : ScriptableObject
     public string ItemName => itemName;
     public string ItemText => itemText;
     public GameObject Prefab => prefab;
+    public bool AllowVisualCatalog => allowVisualCatalog;
     public IDisplayItem DisplayItem => displayItem as IDisplayItem;
 }

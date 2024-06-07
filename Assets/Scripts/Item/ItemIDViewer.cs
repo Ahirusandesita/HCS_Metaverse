@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class ItemID
+public class ItemIDViewer
 {
     [SerializeField] private int id = default;
     [SerializeField] private string displayName = default;
@@ -12,22 +12,22 @@ public class ItemID
 
     public int ID => id;
 
-    public static implicit operator int(ItemID itemID)
+    public static implicit operator int(ItemIDViewer itemID)
     {
         return itemID.id;
     }
 
-    public static explicit operator ItemID(int id)
+    public static explicit operator ItemIDViewer(int id)
     {
-        return new ItemID() { id = id };
+        return new ItemIDViewer() { id = id };
     }
 }
 
 #if UNITY_EDITOR
 namespace UnityEditor
 {
-    [CustomPropertyDrawer(typeof(ItemID))]
-    public class ItemIDDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(ItemIDViewer))]
+    public class ItemIDViewerDrawer : PropertyDrawer
     {
         private SerializedProperty idProperty = default;
         private SerializedProperty nameProperty = default;
@@ -61,7 +61,7 @@ namespace UnityEditor
             if (EditorGUI.EndChangeCheck())
             {
                 idProperty.intValue = allItemAsset.Items[newValue].ItemID;
-                nameProperty.stringValue = allItemAsset.Items[newValue].DisplayName;
+                nameProperty.stringValue = allItemAsset.Items[newValue].ItemName;
                 selectedIndexProperty.intValue = newValue;
             }
             EditorGUI.EndProperty();
@@ -75,7 +75,13 @@ namespace UnityEditor
             var tmpList = new List<string>();
             foreach (var item in allItemAsset.Items)
             {
-                tmpList.Add(item.DisplayName);
+                string content = item.ItemName;
+
+                if (!item.AllowVisualCatalog)
+                {
+                    content += " (Text Catalog Only)";
+                }
+                tmpList.Add(content);
             }
             displayedOptions = tmpList.ToArray();
         }
