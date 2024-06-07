@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable,ISelectedNotificationInjectable
+public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable, ISelectedNotificationInjectable
 {
     private AppearanceInfo_Mesh appearanceInfo_Mesh;
     private ISelectedNotification selectedNotification = new NullSelectedNotification();
@@ -10,7 +10,7 @@ public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable,ISelectedNo
     {
         appearanceInfo_Mesh = new AppearanceInfo_Mesh(
             GetComponent<MeshFilter>().mesh,
-            GetComponent<MeshRenderer>().material
+            GetComponent<MeshRenderer>().materials
         );
     }
     AppearanceInfo_Mesh IInventoryRetractable.Appearance()

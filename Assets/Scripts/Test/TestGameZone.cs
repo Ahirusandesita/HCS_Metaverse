@@ -7,6 +7,7 @@ public class TestGameZone : MonoBehaviour, IInteraction, ISelectedNotification
     private GameFrame gameFrame;
     public void Close()
     {
+        Debug.Log("Nishigaki");
         gameFrame.Close();
     }
 

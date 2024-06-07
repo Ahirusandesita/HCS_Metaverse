@@ -9,6 +9,13 @@ public class InventoryOneFrame : MonoBehaviour
     [SerializeField]
     private MeshFilter meshFilter;
 
+    
+    private NotExistMaterial notExistMaterial;
+    public void Inject(NotExistMaterial notExistMaterial)
+    {
+        this.notExistMaterial = notExistMaterial;
+    }
+
     private IInventoryRetractable inventory_Mesh;
     public IInventoryRetractable Inventory_Mesh => inventory_Mesh;
 
@@ -21,7 +28,8 @@ public class InventoryOneFrame : MonoBehaviour
 
     public void PutAway(IItem item)
     {
-        inventory_Mesh = item as IInventoryRetractable;
+        
+        inventory_Mesh = item is IInventoryRetractable ? item as IInventoryRetractable : notExistMaterial;
         appearanceInfo_Mesh = inventory_Mesh.Appearance();
         InventoryView();
     }
@@ -34,7 +42,8 @@ public class InventoryOneFrame : MonoBehaviour
     private void InventoryView()
     {
         meshRenderer.enabled = true;
-        meshRenderer.material = appearanceInfo_Mesh.Material;
+        meshRenderer.materials = appearanceInfo_Mesh.Material;
+        meshRenderer.transform.localScale = appearanceInfo_Mesh.Size;
         meshFilter.mesh = appearanceInfo_Mesh.Mesh;
     }
 }
