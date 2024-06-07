@@ -1,6 +1,7 @@
 
 public interface IInteraction
 {
-    ISelectedNotification Open();
+    void Open();
     void Close();
+    ISelectedNotification SelectedNotification { get; }
 }

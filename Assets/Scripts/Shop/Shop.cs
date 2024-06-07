@@ -9,6 +9,8 @@ public class Shop : MonoBehaviour, IInteraction, ISelectedNotification
 
     public IReadOnlyList<ItemID> ItemLineup => itemLineup;
 
+    ISelectedNotification IInteraction.SelectedNotification => this;
+
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void Reset()
     {
@@ -23,7 +25,7 @@ public class Shop : MonoBehaviour, IInteraction, ISelectedNotification
         Open();
     }
 
-    public ISelectedNotification Open()
+    public void Open()
     {
         Vector3 vector = transform.position;
         foreach (var id in itemLineup)
@@ -33,8 +35,6 @@ public class Shop : MonoBehaviour, IInteraction, ISelectedNotification
             vector += new Vector3(1.5f, 0f, 0f);
 
         }
-
-        return this;
     }
 
     public void Close()
