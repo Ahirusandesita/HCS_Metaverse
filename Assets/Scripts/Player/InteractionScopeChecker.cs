@@ -28,6 +28,9 @@ public class InteractionScopeChecker : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        onInteractionExit.OnNext(Unit.Default);
+        if (other.TryGetComponent(out interaction))
+        {
+            onInteractionExit.OnNext(Unit.Default);
+        }
     }
 }
