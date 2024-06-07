@@ -1,47 +1,33 @@
 using System;
-using System.Collections.Generic;
-using UnityEngine;
 using UniRx;
+using UnityEngine;
 
 public class InteractionScopeChecker : MonoBehaviour
 {
     private IInteraction interaction = default;
-    private readonly Subject<IInteraction> onHitInteractionEnter = new Subject<IInteraction>();
-    private readonly Subject<Unit> onHitInteractionExit = new Subject<Unit>();
-    private readonly ReactiveProperty<ControllerColliderHit> hitRP = new ReactiveProperty<ControllerColliderHit>();
-    private readonly ReactiveProperty<bool> isHitInteractionRP = new ReactiveProperty<bool>();
+    private readonly Subject<IInteraction> onInteractionEnter = new Subject<IInteraction>();
+    private readonly Subject<Unit> onInteractionExit = new Subject<Unit>();
 
-    public IObservable<IInteraction> OnInteractionEnter => onHitInteractionEnter;
-    public IObservable<Unit> OnInteractionExit => onHitInteractionExit;
-    public IReadOnlyReactiveProperty<ControllerColliderHit> HitRP => hitRP;
+    public IObservable<IInteraction> OnInteractionEnter => onInteractionEnter;
+    public IObservable<Unit> OnInteractionExit => onInteractionExit;
+
 
     private void Awake()
     {
-        isHitInteractionRP
-            .Subscribe(isHitInteraction =>
-            {
-                if (isHitInteraction)
-                {
-                    onHitInteractionEnter.OnNext(interaction);
-                }
-                else
-                {
-                    onHitInteractionExit.OnNext(Unit.Default);
-                }
-            });
+        onInteractionEnter.AddTo(this);
+        onInteractionExit.AddTo(this);
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
+    private void OnTriggerEnter(Collider other)
     {
-        hitRP.Value = hit;
+        if (other.TryGetComponent(out interaction))
+        {
+            onInteractionEnter.OnNext(interaction);
+        }
+    }
 
-        if (hit.gameObject.TryGetComponent(out interaction))
-        {
-            isHitInteractionRP.Value = true;
-        }
-        else
-        {
-            isHitInteractionRP.Value = false;
-        }
+    private void OnTriggerExit(Collider other)
+    {
+        onInteractionExit.OnNext(Unit.Default);
     }
 }
