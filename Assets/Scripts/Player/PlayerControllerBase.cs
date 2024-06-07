@@ -9,6 +9,7 @@ using UnityEngine;
 /// <typeparam name="TData">プレイヤーのパラメータクラス</typeparam>
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(CapsuleCollider))]
+[RequireComponent(typeof(InteractionScopeChecker))]
 public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : PlayerDataAssetBase
 {
     [SerializeField] protected CharacterController characterController = default;
