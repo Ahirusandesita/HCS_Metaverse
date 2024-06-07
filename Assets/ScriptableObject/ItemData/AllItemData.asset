@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd09e363e7717544aa837c887e6a6f3e, type: 3}
+  m_Name: AllItemData
+  m_EditorClassIdentifier: 
+  items:
+  - itemID: 10001
+    displayName: Item1
+    prefab: {fileID: 279108426018531790, guid: e564fba7e7118ff45ac59af8cabf0a4f, type: 3}
+  - itemID: 10002
+    displayName: Item2
+    prefab: {fileID: 7459471834238955573, guid: 51fdae2cdca263a4cbc2bcd1af01dbcc, type: 3}
+  - itemID: 10003
+    displayName: Item3
+    prefab: {fileID: -6362724353538937532, guid: 09646ed6a02f6cf48bae4d2ed731f445, type: 3}
+  - itemID: 10004
+    displayName: Item4
+    prefab: {fileID: -6362724353538937532, guid: 09646ed6a02f6cf48bae4d2ed731f445, type: 3}
+  - itemID: 10005
+    displayName: Item5
+    prefab: {fileID: -6362724353538937532, guid: 09646ed6a02f6cf48bae4d2ed731f445, type: 3}
+  - itemID: 10006
+    displayName: Item6
+    prefab: {fileID: -6362724353538937532, guid: 09646ed6a02f6cf48bae4d2ed731f445, type: 3}
+  - itemID: 20001
+    displayName: Item7
+    prefab: {fileID: -6362724353538937532, guid: 09646ed6a02f6cf48bae4d2ed731f445, type: 3}
+  - itemID: 20002
+    displayName: Item8
+    prefab: {fileID: -6362724353538937532, guid: 09646ed6a02f6cf48bae4d2ed731f445, type: 3}
