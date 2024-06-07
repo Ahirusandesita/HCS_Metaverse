@@ -5,9 +5,10 @@ using UnityEngine;
 public class Shop : MonoBehaviour, IInteraction, ISelectedNotification
 {
     [SerializeField] private AllItemAsset allItemAsset = default;
-    [SerializeField] private List<ItemID> itemLineup = default;
+    [SerializeField] private CatalogType catalogType = default;
+    [SerializeField] private List<ItemIDViewer> itemLineup = default;
 
-    public IReadOnlyList<ItemID> ItemLineup => itemLineup;
+    public IReadOnlyList<ItemIDViewer> ItemLineup => itemLineup;
 
     ISelectedNotification IInteraction.SelectedNotification => this;
 
@@ -69,7 +70,7 @@ namespace UnityEditor
             {
                 try
                 {
-                    ItemIDDrawer.UpdateDisplayOptions();
+                    ItemIDViewerDrawer.UpdateDisplayOptions();
                 }
                 // 要素ない状態でボタン押すと例外出る→うざいので握りつぶす
                 catch (System.NullReferenceException) { }
