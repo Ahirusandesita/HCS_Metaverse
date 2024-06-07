@@ -60,8 +60,8 @@ namespace UnityEditor
             // çXêV
             if (EditorGUI.EndChangeCheck())
             {
-                idProperty.intValue = allItemAsset.ItemInfos[newValue].ItemID;
-                nameProperty.stringValue = allItemAsset.ItemInfos[newValue].DisplayName;
+                idProperty.intValue = allItemAsset.Items[newValue].ItemID;
+                nameProperty.stringValue = allItemAsset.Items[newValue].DisplayName;
                 selectedIndexProperty.intValue = newValue;
             }
             EditorGUI.EndProperty();
@@ -73,7 +73,7 @@ namespace UnityEditor
         public static void UpdateDisplayOptions()
         {
             var tmpList = new List<string>();
-            foreach (var item in allItemAsset.ItemInfos)
+            foreach (var item in allItemAsset.Items)
             {
                 tmpList.Add(item.DisplayName);
             }
