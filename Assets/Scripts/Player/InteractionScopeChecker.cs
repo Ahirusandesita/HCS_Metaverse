@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class InteractionScopeChecker : MonoBehaviour
 {
-    private IInteraction interaction = default;
     private readonly Subject<IInteraction> onInteractionEnter = new Subject<IInteraction>();
     private readonly Subject<Unit> onInteractionExit = new Subject<Unit>();
 
@@ -20,7 +19,7 @@ public class InteractionScopeChecker : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out interaction))
+        if (other.TryGetComponent(out IInteraction interaction))
         {
             onInteractionEnter.OnNext(interaction);
         }
@@ -28,7 +27,7 @@ public class InteractionScopeChecker : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.TryGetComponent(out interaction))
+        if (other.TryGetComponent(out IInteraction _))
         {
             onInteractionExit.OnNext(Unit.Default);
         }

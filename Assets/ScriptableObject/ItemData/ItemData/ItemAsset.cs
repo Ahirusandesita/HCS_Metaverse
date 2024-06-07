@@ -1,4 +1,3 @@
-using Unity.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "ItemData", menuName = "ScriptableObjects/ItemAsset")]
@@ -8,8 +7,9 @@ public class ItemAsset : ScriptableObject
     [SerializeField] private string itemName = default;
     [SerializeField] private string itemText = default;
     [SerializeField] private GameObject prefab = default;
+    [Space(10)]
     [SerializeField] private bool allowVisualCatalog = false;
-    [SerializeField, InterfaceType(typeof(IDisplayItem)), HideWhile(nameof(allowVisualCatalog))]
+    [SerializeField, HideWhile(nameof(allowVisualCatalog), false), InterfaceType(typeof(IDisplayItem))]
     private Object displayItem = default;
 
     public int ItemID => itemID;

@@ -30,8 +30,8 @@ public class Shop : MonoBehaviour, IInteraction, ISelectedNotification
         Vector3 vector = transform.position;
         foreach (var id in itemLineup)
         {
-            Debug.Log(allItemAsset.ItemDictionary[id].Name);
-            IDisplayItem.Instantiate(allItemAsset.ItemDictionary[id], vector, Quaternion.identity, this);
+            Debug.Log(allItemAsset.GetItemAssetByID(id).ItemName);
+            IDisplayItem.Instantiate(allItemAsset.GetItemAssetByID(id), vector, Quaternion.identity, this);
             vector += new Vector3(1.5f, 0f, 0f);
 
         }
@@ -45,7 +45,7 @@ public class Shop : MonoBehaviour, IInteraction, ISelectedNotification
     void ISelectedNotification.Select(SelectArgs selectArgs)
     {
         var itemSelectArgs = selectArgs as ItemSelectArgs;
-        IDisplayItem.Instantiate(allItemAsset.ItemDictionary[itemSelectArgs.id], this);
+        IDisplayItem.Instantiate(allItemAsset.GetItemAssetByID(itemSelectArgs.id), this);
     }
 
     void ISelectedNotification.Unselect(SelectArgs selectArgs)

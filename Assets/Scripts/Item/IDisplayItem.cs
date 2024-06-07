@@ -3,34 +3,44 @@ using UnityEngine;
 public interface IDisplayItem
 {
     GameObject gameObject { get; }
-
+    int ID { get; }
     string Name { get; }
 
+    void SetIDAndItemName(int id, string name);
     void InjectSelectedNotification(ISelectedNotification sn);
 
+
     #region static Method
-    static GameObject Instantiate(IDisplayItem item, ISelectedNotification caller)
+    static GameObject Instantiate(ItemAsset item, ISelectedNotification caller)
     {
-        item.InjectSelectedNotification(caller);
-        return Object.Instantiate(item.gameObject);
+        var displayItem = item.DisplayItem;
+        displayItem.SetIDAndItemName(item.ItemID, item.ItemName);
+        displayItem.InjectSelectedNotification(caller);
+        return Object.Instantiate(displayItem.gameObject);
     }
 
-    static GameObject Instantiate(IDisplayItem item, Transform parent, ISelectedNotification caller)
+    static GameObject Instantiate(ItemAsset item, Transform parent, ISelectedNotification caller)
     {
-        item.InjectSelectedNotification(caller);
-        return Object.Instantiate(item.gameObject, parent);
+        var displayItem = item.DisplayItem;
+        displayItem.SetIDAndItemName(item.ItemID, item.ItemName);
+        displayItem.InjectSelectedNotification(caller);
+        return Object.Instantiate(displayItem.gameObject, parent);
     }
 
-    static GameObject Instantiate(IDisplayItem item, Vector3 position, Quaternion rotation, ISelectedNotification caller)
+    static GameObject Instantiate(ItemAsset item, Vector3 position, Quaternion rotation, ISelectedNotification caller)
     {
-        item.InjectSelectedNotification(caller);
-        return Object.Instantiate(item.gameObject, position, rotation);
+        var displayItem = item.DisplayItem;
+        displayItem.SetIDAndItemName(item.ItemID, item.ItemName);
+        displayItem.InjectSelectedNotification(caller);
+        return Object.Instantiate(displayItem.gameObject, position, rotation);
     }
 
-    static GameObject Instantiate(IDisplayItem item, Vector3 position, Quaternion rotation, Transform parent, ISelectedNotification caller)
+    static GameObject Instantiate(ItemAsset item, Vector3 position, Quaternion rotation, Transform parent, ISelectedNotification caller)
     {
-        item.InjectSelectedNotification(caller);
-        return Object.Instantiate(item.gameObject, position, rotation, parent);
+        var displayItem = item.DisplayItem;
+        displayItem.SetIDAndItemName(item.ItemID, item.ItemName);
+        displayItem.InjectSelectedNotification(caller);
+        return Object.Instantiate(displayItem.gameObject, position, rotation, parent);
     }
     #endregion
 }

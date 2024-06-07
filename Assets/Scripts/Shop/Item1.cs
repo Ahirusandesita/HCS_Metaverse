@@ -9,13 +9,20 @@ public class Item1 : MonoBehaviour, IDisplayItem
     [SerializeField] private InteractableUnityEventWrapper distanceHandGrab = default;
     [SerializeField] private InteractableUnityEventWrapper distanceGrab = default;
 
-    public string Name => "item1";
+    public int ID { get; private set; }
+    public string Name { get; private set; }
+
+    void IDisplayItem.SetIDAndItemName(int id, string name)
+    {
+        ID = id;
+        Name = name;
+    }
 
     void IDisplayItem.InjectSelectedNotification(ISelectedNotification sn)
     {
         handGrab.WhenHover.AddListener(() =>
         {
-            sn.Select(SelectArgs.Empty);
+            sn.Select(new ItemSelectArgs(ID));
         });
     }
 }
