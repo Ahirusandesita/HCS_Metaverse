@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 /// <summary>
 /// ‚P‚Â‚ÌƒCƒ“ƒxƒ“ƒgƒŠŠÇ—
@@ -6,9 +7,16 @@ public class InventoryManager : MonoBehaviour
 {
     private IInventoryOneFrame[] inventories;
 
+    private List<IItem> items = new List<IItem>();
+
     private void Awake()
     {
         inventories = GetComponentsInChildren<IInventoryOneFrame>(true);
+
+        foreach(IInventoryOneFrame inventoryOneFrame in inventories)
+        {
+            inventoryOneFrame.Inject(this);
+        }
     }
 
     public void SendItem(IItem item)
@@ -17,10 +25,17 @@ public class InventoryManager : MonoBehaviour
         {
             if (!inventory.HasItem)
             {
+                items.Add(item);
                 inventory.PutAway(item);
                 item.CleanUp();
                 break;
             }
         }
+    }
+
+    public void ReturnItem(IItem item)
+    {
+        item.TakeOut(this.transform.position);
+        items.Remove(item);
     }
 }

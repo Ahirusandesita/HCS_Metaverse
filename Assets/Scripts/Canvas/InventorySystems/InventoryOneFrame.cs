@@ -2,21 +2,12 @@ using UnityEngine;
 /// <summary>
 /// ƒCƒ“ƒxƒ“ƒgƒŠ‚P˜gŠÇ—
 /// </summary>
-public class InventoryOneFrame : MonoBehaviour, IInventoryOneFrame
+public class InventoryOneFrame : MonoBehaviour
 {
     [SerializeField]
     private MeshRenderer meshRenderer;
     [SerializeField]
     private MeshFilter meshFilter;
-
-    private bool hasItem;
-    public bool HasItem
-    {
-        get
-        {
-            return hasItem;
-        }
-    }
 
     private IInventoryRetractable inventory_Mesh;
     public IInventoryRetractable Inventory_Mesh => inventory_Mesh;
@@ -33,14 +24,11 @@ public class InventoryOneFrame : MonoBehaviour, IInventoryOneFrame
         inventory_Mesh = item as IInventoryRetractable;
         appearanceInfo_Mesh = inventory_Mesh.Appearance();
         InventoryView();
-        hasItem = true;
     }
 
-    public IItem TakeOut()
+    public void TakeOut()
     {
         meshRenderer.enabled = false;
-        hasItem = false;
-        return inventory_Mesh as IItem;
     }
 
     private void InventoryView()

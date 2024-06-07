@@ -1,18 +1,41 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class InventoryTouch : MonoBehaviour
+public class InventoryTouch : MonoBehaviour,IInventoryOneFrame
 {
     [SerializeField]
     private EventTrigger eventTrigger;
-
-    private IInventoryOneFrame inventory;
     private InventoryManager inventoryManager;
+    private IItem item;
+    private InventoryOneFrame inventoryOneFrame;
+
+    private bool hasItem;
+    public bool HasItem
+    {
+        get
+        {
+            return hasItem;
+        }
+    }
+
+    public void PutAway(IItem item)
+    {
+        this.item = item;
+        inventoryOneFrame.PutAway(item);
+        hasItem = true;
+    }
+
+    public void TakeOut()
+    {
+        inventoryOneFrame.TakeOut();
+        hasItem = false;
+        inventoryManager.ReturnItem(item);
+        item = null;
+    }
 
     private void Awake()
     {
-        inventory = this.GetComponent<IInventoryOneFrame>();
-        inventoryManager = transform.root.GetComponent<InventoryManager>();
+        inventoryOneFrame = this.GetComponent<InventoryOneFrame>();
 
         EventTrigger.Entry entryPointerUp = new EventTrigger.Entry();
         entryPointerUp.eventID = EventTriggerType.PointerUp;
@@ -22,9 +45,14 @@ public class InventoryTouch : MonoBehaviour
     }
     private void PointerUp()
     {
-        IItem item = inventory.TakeOut();
-
-        //‰¼
-        item.TakeOut(this.transform.position);
+        if (!HasItem)
+        {
+            return;
+        }
+        TakeOut();
+    }
+    public void Inject(InventoryManager inventoryManager)
+    {
+        this.inventoryManager = inventoryManager;
     }
 }

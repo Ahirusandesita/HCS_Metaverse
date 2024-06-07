@@ -16,5 +16,6 @@ public interface IInventoryOneFrame
     /// インベントリから取り出す
     /// </summary>
     /// <returns></returns>
-    IItem TakeOut();
+    void TakeOut();
+    void Inject(InventoryManager inventoryManager);
 }
