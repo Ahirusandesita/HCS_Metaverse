@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class TestGameZone : IInteraction, ISelectedNotification
+public class TestGameZone : MonoBehaviour, IInteraction, ISelectedNotification
 {
     public ISelectedNotification SelectedNotification => this;
 
