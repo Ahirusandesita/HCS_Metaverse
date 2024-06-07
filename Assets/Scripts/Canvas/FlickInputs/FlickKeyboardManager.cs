@@ -21,6 +21,11 @@ public class FlickKeyboardManager : MonoBehaviour
         flickButtonCaseConvertibles = this.GetComponentsInChildren<IFlickKeyCaseConvertible>(true);
 
         sendChat = GameObject.FindObjectOfType<SendChat>();
+
+        foreach(FlickKeyParent flickKeyParent in this.GetComponentsInChildren<FlickKeyParent>(true))
+        {
+            flickKeyParent.FlickManagerInject(this);
+        }
     }
     /// <summary>
     /// ˆø”ˆÈŠO‚ÌIFlickKeyEnabledAndDisabledŒ^‚ÌƒL[‚ğ–³Œø‰»‚·‚é
@@ -75,7 +80,7 @@ public class FlickKeyboardManager : MonoBehaviour
     /// <param name="delete"></param>
     public void SendMessage(Delete delete)
     {
-        text = text.Remove(text.Length - 1);
+        text = text.Remove(text.Length - delete.DeleteValue);
         textMeshProUGUI.text = text;
     }
 
