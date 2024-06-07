@@ -31,6 +31,7 @@ public class GameFrame : MonoBehaviour
     }
     IEnumerator FrameAnimationDown()
     {
+        Debug.Log("Nishigaki");
         float size = 1f;
         while (size > 0f)
         {

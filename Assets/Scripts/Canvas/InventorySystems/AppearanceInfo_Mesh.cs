@@ -5,20 +5,20 @@ using UnityEngine;
 public class AppearanceInfo_Mesh
 {
     private Mesh mesh;
-    private Material material;
+    private Material[] material;
     private Vector3 size;
 
     public Mesh Mesh => mesh;
-    public Material Material => material;
+    public Material[] Material => material;
     public Vector3 Size => size;
 
-    public AppearanceInfo_Mesh(Mesh mesh, Material material)
+    public AppearanceInfo_Mesh(Mesh mesh, Material[] material)
     {
         this.mesh = mesh;
         this.material = material;
-        size = new Vector3(0.6f, 0.6f, 0.6f);
+        size = new Vector3(30f, 30f, 30f);
     }
-    public AppearanceInfo_Mesh(Mesh mesh, Material material, Vector3 size)
+    public AppearanceInfo_Mesh(Mesh mesh, Material[] material, Vector3 size)
     {
         this.mesh = mesh;
         this.material = material;

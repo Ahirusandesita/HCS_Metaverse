@@ -5,6 +5,9 @@ using UnityEngine;
 /// </summary>
 public class InventoryManager : MonoBehaviour
 {
+    [SerializeField]
+    private NotExistMaterial notExistMaterial;
+
     private IInventoryOneFrame[] inventories;
 
     private List<IItem> items = new List<IItem>();
@@ -16,6 +19,13 @@ public class InventoryManager : MonoBehaviour
         foreach(IInventoryOneFrame inventoryOneFrame in inventories)
         {
             inventoryOneFrame.Inject(this);
+        }
+
+        NotExistMaterial oject = Instantiate(notExistMaterial);
+
+        foreach(InventoryOneFrame inventoryOneFrame in GetComponentsInChildren<InventoryOneFrame>(true))
+        {
+            inventoryOneFrame.Inject(oject);
         }
     }
 

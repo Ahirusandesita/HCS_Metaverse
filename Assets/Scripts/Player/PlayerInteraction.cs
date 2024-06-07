@@ -10,6 +10,7 @@ public class PlayerInteraction : MonoBehaviour
     private InteractionScopeChecker interactionScopeChecker;
     [SerializeField]
     private SelectedNotificationDI DI;
+    private IInteraction nowInteraction = new NullInteraction();
 
     private List<ISelectedNotificationInjectable> selectedNotificationInjectables = new List<ISelectedNotificationInjectable>();
 
@@ -46,12 +47,14 @@ public class PlayerInteraction : MonoBehaviour
 
     private void InteractionInject(IInteraction interaction)
     {
+        this.nowInteraction = interaction;
         interaction.Open();
         DI.DependencyInjection(interaction, selectedNotificationInjectables);
     }
     private void InteractionCloseInject(IInteraction interaction)
     {
-        interaction.Close();
+        nowInteraction.Close();
         DI.DependencyInjection(interaction, selectedNotificationInjectables);
+        nowInteraction = interaction;
     }
 }
