@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable
+public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable,ISelectedNotificationInjectable
 {
     private AppearanceInfo_Mesh appearanceInfo_Mesh;
-
+    private ISelectedNotification selectedNotification = new NullSelectedNotification();
     private void Awake()
     {
         appearanceInfo_Mesh = new AppearanceInfo_Mesh(
@@ -34,11 +34,16 @@ public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable
 
     void IItem.Use()
     {
-
+        selectedNotification.Select(SelectArgs.Empty);
     }
 
     public void UnSelect()
     {
         FindObjectOfType<InventoryManager>().SendItem(this);
+    }
+
+    public void Inject(ISelectedNotification selectedNotification)
+    {
+        this.selectedNotification = selectedNotification;
     }
 }

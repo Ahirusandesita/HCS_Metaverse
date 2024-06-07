@@ -32,7 +32,7 @@ public class PlayerInteraction : MonoBehaviour
     private void Awake()
     {
         interactionScopeChecker.OnInteractionEnter.Subscribe(interaction => InteractionInject(interaction));
-        interactionScopeChecker.OnInteractionExit.Subscribe(unit => InteractionInject(new NullInteraction()));
+        interactionScopeChecker.OnInteractionExit.Subscribe(unit => InteractionCloseInject(new NullInteraction()));
     }
 
     public void Add(ISelectedNotificationInjectable selectedNotificationInjectable)
@@ -46,6 +46,12 @@ public class PlayerInteraction : MonoBehaviour
 
     private void InteractionInject(IInteraction interaction)
     {
+        interaction.Open();
+        DI.DependencyInjection(interaction, selectedNotificationInjectables);
+    }
+    private void InteractionCloseInject(IInteraction interaction)
+    {
+        interaction.Close();
         DI.DependencyInjection(interaction, selectedNotificationInjectables);
     }
 }
