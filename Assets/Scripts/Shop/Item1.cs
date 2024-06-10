@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Oculus.Interaction;
+using UnityEngine;
 
 public class Item1 : MonoBehaviour, IDisplayItem
 {
@@ -21,6 +19,14 @@ public class Item1 : MonoBehaviour, IDisplayItem
     void IDisplayItem.InjectSelectedNotification(ISelectedNotification sn)
     {
         handGrab.WhenHover.AddListener(() =>
+        {
+            sn.Select(new ItemSelectArgs(ID));
+        });
+        distanceGrab.WhenHover.AddListener(() =>
+        {
+            sn.Select(new ItemSelectArgs(ID));
+        });
+        distanceHandGrab.WhenHover.AddListener(() =>
         {
             sn.Select(new ItemSelectArgs(ID));
         });
