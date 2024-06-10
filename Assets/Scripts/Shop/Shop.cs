@@ -9,8 +9,8 @@ public class Shop : MonoBehaviour, IInteraction, ISelectedNotification
     [SerializeField] private List<ItemIDViewer> itemLineup = default;
 
     public IReadOnlyList<ItemIDViewer> ItemLineup => itemLineup;
-
     ISelectedNotification IInteraction.SelectedNotification => this;
+
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void Reset()
