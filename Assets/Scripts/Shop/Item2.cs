@@ -3,9 +3,7 @@ using UnityEngine;
 
 public class Item2 : MonoBehaviour, IDisplayItem
 {
-    [SerializeField] private InteractableUnityEventWrapper handGrab = default;
-    [SerializeField] private InteractableUnityEventWrapper distanceHandGrab = default;
-    [SerializeField] private InteractableUnityEventWrapper distanceGrab = default;
+    [SerializeField] private PointableUnityEventWrapper onGrabbed = default;
 
     public int ID { get; private set; }
     public string Name { get; private set; }
@@ -18,17 +16,14 @@ public class Item2 : MonoBehaviour, IDisplayItem
 
     void IDisplayItem.InjectSelectedNotification(ISelectedNotification sn)
     {
-        handGrab.WhenHover.AddListener(() =>
+        onGrabbed.WhenHover.AddListener(_ =>
         {
             sn.Select(new ItemSelectArgs(ID));
         });
-        distanceGrab.WhenHover.AddListener(() =>
-        {
-            sn.Select(new ItemSelectArgs(ID));
-        });
-        distanceHandGrab.WhenHover.AddListener(() =>
-        {
-            sn.Select(new ItemSelectArgs(ID));
-        });
+    }
+
+    void IDisplayItem.InjectPointableUnityEventWrapper(PointableUnityEventWrapper puew)
+    {
+        onGrabbed = puew;
     }
 }

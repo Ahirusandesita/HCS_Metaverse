@@ -31,7 +31,6 @@ public class Shop : MonoBehaviour, IInteraction, ISelectedNotification
         Vector3 vector = transform.position;
         foreach (var id in itemLineup)
         {
-            Debug.Log(allItemAsset.GetItemAssetByID(id).ItemName);
             IDisplayItem.Instantiate(allItemAsset.GetItemAssetByID(id), vector, Quaternion.identity, this);
             vector += new Vector3(1.5f, 0f, 0f);
 
