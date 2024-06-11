@@ -54,7 +54,7 @@ public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable, ISelectedN
 
     public void UnSelect()
     {
-        FindObjectOfType<InventoryManager>().SendItem(this);
+        //FindObjectOfType<InventoryManager>().SendItem(this);
         isSelect = false;
         test.SetActive(false);
     }
