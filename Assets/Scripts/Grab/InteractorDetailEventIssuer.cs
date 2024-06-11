@@ -24,31 +24,27 @@ public class InteractorDetailEventArgs : EventArgs
         this.HandType = handType;
         this.InteractorType = interactorType;
     }
+    public InteractorDetailEventArgs(HandType handType, InteractorType interactorType,Transform handTransform)
+    {
+        this.HandType = handType;
+        this.InteractorType = interactorType;
+        this.HandTransform = handTransform;
+    }
 }
+public delegate void InteractorDetailEventHandler(InteractorDetailEventArgs ida);
 public class InteractorDetailEventIssuer : MonoBehaviour
 {
-    public delegate void InteractorDetailEventHandler(InteractorDetailEventArgs ida);
+   
     public event InteractorDetailEventHandler OnInteractor;
 
     [SerializeField]
-    private List<InteractorUnityEventWrapper> leftInteractors;
-    [SerializeField]
-    private List<InteractorUnityEventWrapper> rightInteractors;
+    private List<InteractorManager> interactorManagers = new List<InteractorManager>();
 
     private void Awake()
     {
-        foreach (InteractorUnityEventWrapper interactorUnityEventWrapper in leftInteractors)
+        foreach(InteractorManager interactor in interactorManagers)
         {
-            interactorUnityEventWrapper.WhenSelect.AddListener(() => { OnInteractor?.Invoke(new InteractorDetailEventArgs(HandType.Left, InteractorType.Select));
-            });
-            interactorUnityEventWrapper.WhenUnselect.AddListener(() => OnInteractor?.Invoke(new InteractorDetailEventArgs(HandType.Left, InteractorType.UnSelect)));
-        }
-        foreach (InteractorUnityEventWrapper interactorUnityEventWrapper in rightInteractors)
-        {
-            interactorUnityEventWrapper.WhenSelect.AddListener(() => {
-                OnInteractor?.Invoke(new InteractorDetailEventArgs(HandType.Right, InteractorType.Select));
-            });
-            interactorUnityEventWrapper.WhenUnselect.AddListener(() => OnInteractor?.Invoke(new InteractorDetailEventArgs(HandType.Right, InteractorType.UnSelect)));
+            interactor.OnInteractor += OnInteractor;
         }
     }
 }
