@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Oculus.Interaction;
 public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable, ISelectedNotificationInjectable
 {
+    [SerializeField]
+    private GameObject test;
+
     private AppearanceInfo_Mesh appearanceInfo_Mesh;
     private ISelectedNotification selectedNotification = new NullSelectedNotification();
     private void Awake()
     {
+
         appearanceInfo_Mesh = new AppearanceInfo_Mesh(
             GetComponent<MeshFilter>().mesh,
             GetComponent<MeshRenderer>().materials
@@ -40,6 +44,13 @@ public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable, ISelectedN
     public void UnSelect()
     {
         FindObjectOfType<InventoryManager>().SendItem(this);
+
+        test.SetActive(false);
+    }
+
+    public void Select()
+    {
+        test.SetActive(true);
     }
 
     public void Inject(ISelectedNotification selectedNotification)
