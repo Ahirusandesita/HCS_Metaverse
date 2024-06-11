@@ -6,8 +6,7 @@ using Oculus.Interaction;
 public class GrabInteractorEvent : MonoBehaviour
 {
     [SerializeField]
-    private InteractorUnityEventWrapper leftInteractor;
-    private 
+    private InteractorUnityEventWrapper leftInteractor; 
 
     private void Awake()
     {
