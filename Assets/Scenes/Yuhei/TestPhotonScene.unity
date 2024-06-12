@@ -789,6 +789,11 @@ MonoBehaviour:
   _whenCancel:
     m_PersistentCalls:
       m_Calls: []
+--- !u!4 &90673409 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6508186075653574388, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+  m_PrefabInstance: {fileID: 921979061}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &98308699 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7824101882843447150, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
@@ -1327,7 +1332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f9624d4ab762d94b9e1bc78a57ec368, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handTransform: {fileID: 2143872361}
+  handTransform: {fileID: 282874078}
   interactorUnityEventWrapper: {fileID: 156273701}
   handType: 0
 --- !u!1 &159450044
@@ -2296,6 +2301,11 @@ MonoBehaviour:
     - {x: 0.087053336, y: -0.016991783, z: -0.26816446, w: 0.9592813}
     - {x: -0.064567596, y: 0.027889509, z: -0.31675595, w: 0.9458957}
     - {x: 0.0013677655, y: -0.048140183, z: -0.18934938, w: 0.98072803}
+--- !u!4 &282874078 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6508186075653585648, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+  m_PrefabInstance: {fileID: 921979061}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &284316314
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6764,9 +6774,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f9624d4ab762d94b9e1bc78a57ec368, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handTransform: {fileID: 934018305}
+  handTransform: {fileID: 90673409}
   interactorUnityEventWrapper: {fileID: 921979068}
-  handType: 0
+  handType: 1
 --- !u!114 &921979075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6779,7 +6789,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f9624d4ab762d94b9e1bc78a57ec368, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handTransform: {fileID: 2123096721}
+  handTransform: {fileID: 282874078}
   interactorUnityEventWrapper: {fileID: 921979069}
   handType: 0
 --- !u!114 &921979076
@@ -6794,18 +6804,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f9624d4ab762d94b9e1bc78a57ec368, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handTransform: {fileID: 1659963599}
+  handTransform: {fileID: 90673409}
   interactorUnityEventWrapper: {fileID: 921979070}
-  handType: 0
+  handType: 1
 --- !u!4 &924603557 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6106127509108096421, guid: 50be278e32a579c47934a40be20880df, type: 3}
   m_PrefabInstance: {fileID: 339724408}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &934018305 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2852678584540756583, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-  m_PrefabInstance: {fileID: 921979061}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &938103325
 GameObject:
@@ -7074,6 +7079,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 627d08eda983d1e4086c692ef00a893e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parent: {fileID: 405336793}
 --- !u!1001 &963829872
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10553,11 +10559,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e9dd25fe255d0dd4c9bb05c4e208bbf9, type: 3}
---- !u!4 &1659963599 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7282414697512313398, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-  m_PrefabInstance: {fileID: 921979061}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1670171917 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6508186075653957380, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
@@ -23753,11 +23754,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2120891604}
   m_CullTransparentMesh: 1
---- !u!4 &2123096721 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1564574847653859608, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-  m_PrefabInstance: {fileID: 921979061}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2143243916
 GameObject:
   m_ObjectHideFlags: 0
@@ -23842,11 +23838,6 @@ MonoBehaviour:
     - {x: 0.09111304, y: -0.00407137, z: -0.02812923, w: 0.9954349}
     - {x: -0.037616655, y: 0.042937722, z: 0.013286051, w: 0.99828094}
     - {x: 0.0006447434, y: -0.049170665, z: 0.024018828, w: 0.99850136}
---- !u!4 &2143872361 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6282777749258963273, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-  m_PrefabInstance: {fileID: 921979061}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2130248551972480490
 PrefabInstance:
   m_ObjectHideFlags: 0
