@@ -16,18 +16,9 @@ public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable, ISelectedN
     private MeshFilter meshFilter;
     [SerializeField]
     private MeshRenderer meshRenderer;
+
     private void Awake()
     {
-
-        InteractorDetailEventIssuer interactorDetailEventIssuer = GameObject.FindObjectOfType<InteractorDetailEventIssuer>();
-        interactorDetailEventIssuer.OnInteractor += (a) =>
-        {
-            if (a.InteractorType == InteractorType.Select && isSelect)
-            {
-
-            }
-        };
-
         appearanceInfo_Mesh = new AppearanceInfo_Mesh(
             meshFilter.mesh,
             meshRenderer.materials
@@ -61,12 +52,12 @@ public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable, ISelectedN
     {
         //FindObjectOfType<InventoryManager>().SendItem(this);
         isSelect = false;
-        test.SetActive(false);
+        //test.SetActive(false);
     }
     public void Select()
     {
         isSelect = true;
-        test.SetActive(true);
+        //test.SetActive(true);
     }
 
     public void Inject(ISelectedNotification selectedNotification)
