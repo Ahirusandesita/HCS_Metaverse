@@ -16,10 +16,13 @@ public class VisualShop : MonoBehaviour, IInteraction, ISelectedNotification
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void Reset()
     {
+#if UNITY_EDITOR
+        // なぜかConditional付けてもAssetDatabase型がビルド時にエラー起こすので、仕方なく二重
         allItemAsset = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(AllItemAsset)}")
                 .Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
                 .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<AllItemAsset>)
                 .First();
+#endif
     }
 
 
@@ -47,7 +50,11 @@ public class VisualShop : MonoBehaviour, IInteraction, ISelectedNotification
     void ISelectedNotification.Select(SelectArgs selectArgs)
     {
         var itemSelectArgs = selectArgs as ItemSelectArgs;
-        IDisplayItem.Instantiate(allItemAsset.GetItemAssetByID(itemSelectArgs.id), this);
+
+        var asset = allItemAsset.GetItemAssetByID(itemSelectArgs.id);
+        var position = itemSelectArgs.position;
+        var item =　IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
+        displayedItems.Add(item);
     }
 
     void ISelectedNotification.Unselect(SelectArgs selectArgs)

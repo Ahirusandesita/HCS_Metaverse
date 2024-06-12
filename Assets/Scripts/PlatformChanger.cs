@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 #if UNITY_EDITOR
 namespace UnityEditor
 {
+    using UnityEditor.SceneManagement;
+
     /// <summary>
     /// プラットフォームに応じてシーンのPrefabを切り替えるエディタ拡張
     /// </summary>

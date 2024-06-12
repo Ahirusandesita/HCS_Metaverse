@@ -5,8 +5,7 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
 {
     [SerializeField] private PointableUnityEventWrapper onGrabbed = default;
 
-    public int ID { get; private set; }
-    public string Name { get; private set; }
+    private ItemSelectArgs itemSelectArgs = default;
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void Reset()
@@ -18,17 +17,16 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
         catch (System.NullReferenceException) { }
     }
 
-    void IDisplayItem.SetIDAndItemName(int id, string name)
+    void IDisplayItem.InjectItemSelectArgs(ItemSelectArgs itemSelectArgs)
     {
-        ID = id;
-        Name = name;
+        this.itemSelectArgs = itemSelectArgs;
     }
 
     void IDisplayItem.InjectSelectedNotification(ISelectedNotification sn)
     {
         onGrabbed.WhenHover.AddListener(_ =>
         {
-            sn.Select(new ItemSelectArgs(ID));
+            sn.Select(itemSelectArgs);
         });
     }
 

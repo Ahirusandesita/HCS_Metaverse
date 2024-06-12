@@ -1,3 +1,4 @@
+using UnityEngine;
 
 public abstract class SelectArgs
 {
@@ -17,9 +18,13 @@ public abstract class SelectArgs
 public class ItemSelectArgs : SelectArgs
 {
     public readonly int id = default;
+    public readonly string name = default;
+    public readonly Vector3 position = default;
 
-    public ItemSelectArgs(int id)
+    public ItemSelectArgs(int id, string name, Vector3 position = default)
     {
         this.id = id;
+        this.name = name;
+        this.position = position;
     }
 }
