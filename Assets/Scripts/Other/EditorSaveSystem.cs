@@ -1,6 +1,7 @@
 using System.IO;
 using UnityEngine;
 
+#if UNITY_EDITOR
 namespace UnityEditor
 {
     public static class EditorSaveSystem
@@ -36,3 +37,4 @@ namespace UnityEditor
         }
     }
 }
+#endif
