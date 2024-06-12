@@ -27,7 +27,7 @@ public class TestSubItem : MonoBehaviour
         {
             if (a.InteractorType == InteractorType.Select && isSelect)
             {
-                Debug.Log(a.HandType);
+                new Debug().Log(a.HandType);
                 handTransform = a.HandTransform;
             }
         };
