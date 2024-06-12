@@ -7,6 +7,7 @@ public class TestSubItem : MonoBehaviour
     bool a = false;
     public void Select()
     {
+        Debug.Log("Select");
         a = true;
     }
 
@@ -14,9 +15,9 @@ public class TestSubItem : MonoBehaviour
     {
         a = false;
     }
-    private void Update()
+    private void LateUpdate()
     {
         if (a)
-            this.transform.position = new Vector3(100f, 100f, 100f);
+            this.transform.position = new Vector3(0f, 2f, 0f);
     }
 }

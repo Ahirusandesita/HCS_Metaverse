@@ -11,6 +11,11 @@ public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable, ISelectedN
     private ISelectedNotification selectedNotification = new NullSelectedNotification();
 
     private bool isSelect = false;
+
+    [SerializeField]
+    private MeshFilter meshFilter;
+    [SerializeField]
+    private MeshRenderer meshRenderer;
     private void Awake()
     {
 
@@ -24,8 +29,8 @@ public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable, ISelectedN
         };
 
         appearanceInfo_Mesh = new AppearanceInfo_Mesh(
-            GetComponent<MeshFilter>().mesh,
-            GetComponent<MeshRenderer>().materials
+            meshFilter.mesh,
+            meshRenderer.materials
         );
     }
     AppearanceInfo_Mesh IInventoryRetractable.Appearance()
@@ -54,7 +59,7 @@ public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable, ISelectedN
 
     public void UnSelect()
     {
-        FindObjectOfType<InventoryManager>().SendItem(this);
+        //FindObjectOfType<InventoryManager>().SendItem(this);
         isSelect = false;
         test.SetActive(false);
     }
