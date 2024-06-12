@@ -15,7 +15,7 @@ public class TestSubItem : MonoBehaviour
     {
         a = false;
     }
-    private void Update()
+    private void LateUpdate()
     {
         if (a)
             this.transform.position = new Vector3(0f, 2f, 0f);

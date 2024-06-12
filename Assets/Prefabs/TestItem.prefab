@@ -128,6 +128,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce4469c0af20f9b4ba7817895b15cd1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  test: {fileID: 0}
+  meshFilter: {fileID: 3407177590961665460}
+  meshRenderer: {fileID: 5806968432329107262}
 --- !u!54 &2755041954357062727
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -174,6 +177,9 @@ MonoBehaviour:
   _twoGrabTransformer: {fileID: 0}
   _targetTransform: {fileID: 0}
   _maxGrabPoints: -1
+  _rigidbody: {fileID: 0}
+  _kinematicWhileSelected: 1
+  _throwWhenUnselected: 1
 --- !u!114 &347095895510963549
 MonoBehaviour:
   m_ObjectHideFlags: 0
