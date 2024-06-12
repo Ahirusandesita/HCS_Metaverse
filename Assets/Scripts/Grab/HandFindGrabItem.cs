@@ -22,7 +22,7 @@ public class HandFindGrabItem : MonoBehaviour
         int distance = 10;
 
         //Rayの可視化    ↓Rayの原点　　　　↓Rayの方向　　　　　　　　　↓Rayの色
-        Debug.DrawLine(ray.origin, ray.direction * distance, Color.red);
+        UnityEngine.Debug.DrawLine(ray.origin, ray.direction * distance, Color.red);
 
         //もしRayにオブジェクトが衝突したら
         //                  ↓Ray  ↓Rayが当たったオブジェクト ↓距離

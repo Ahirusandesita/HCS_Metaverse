@@ -58,6 +58,7 @@ public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable, ISelectedN
     {
         isSelect = true;
         //test.SetActive(true);
+        
     }
 
     public void Inject(ISelectedNotification selectedNotification)
