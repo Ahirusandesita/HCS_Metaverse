@@ -12,13 +12,13 @@ GameObject:
   - component: {fileID: 4681791087612463342}
   - component: {fileID: 752911114040959850}
   - component: {fileID: 4875712510024453714}
-  - component: {fileID: 7459471834238955573}
   - component: {fileID: -5407962510600974283}
   - component: {fileID: -2423932409018218595}
   - component: {fileID: -1010649710718455197}
   - component: {fileID: 9006616148059154253}
   - component: {fileID: -5191159635780244218}
   - component: {fileID: -5264588601517618981}
+  - component: {fileID: -1949058583789263462}
   m_Layer: 0
   m_Name: Item2
   m_TagString: Untagged
@@ -35,9 +35,9 @@ Transform:
   m_GameObject: {fileID: 3877675211880592162}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 526.95, y: 436.71436, z: 105.562386}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -112,19 +112,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &7459471834238955573
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3877675211880592162}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f0b0821a9f7342429b823ac1764b4de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onGrabbed: {fileID: 0}
 --- !u!114 &-5407962510600974283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -190,7 +177,7 @@ MonoBehaviour:
   _maxInteractors: -1
   _maxSelectingInteractors: -1
   _data: {fileID: 0}
-  _pointableElement: {fileID: 0}
+  _pointableElement: {fileID: -5407962510600974283}
   _rigidbody: {fileID: -2423932409018218595}
   _physicsGrabbable: {fileID: 0}
   _resetGrabOnGrabsUpdated: 1
@@ -231,7 +218,7 @@ MonoBehaviour:
   _maxInteractors: -1
   _maxSelectingInteractors: -1
   _data: {fileID: 0}
-  _pointableElement: {fileID: 0}
+  _pointableElement: {fileID: -5407962510600974283}
   _rigidbody: {fileID: -2423932409018218595}
   _grabSource: {fileID: 0}
   _resetGrabOnGrabsUpdated: 1
@@ -253,7 +240,7 @@ MonoBehaviour:
   _maxInteractors: -1
   _maxSelectingInteractors: -1
   _data: {fileID: 0}
-  _pointableElement: {fileID: 0}
+  _pointableElement: {fileID: -5407962510600974283}
   _rigidbody: {fileID: -2423932409018218595}
   _physicsGrabbable: {fileID: 0}
   _resetGrabOnGrabsUpdated: 1
@@ -310,3 +297,16 @@ MonoBehaviour:
   _whenCancel:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &-1949058583789263462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3877675211880592162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a07834f1ca9abd4786861f09eb26ff9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onGrabbed: {fileID: -5264588601517618981}

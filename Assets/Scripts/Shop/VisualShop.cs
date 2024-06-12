@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Shop : MonoBehaviour, IInteraction, ISelectedNotification
+public class VisualShop : MonoBehaviour, IInteraction, ISelectedNotification
 {
     [SerializeField] private AllItemAsset allItemAsset = default;
-    [SerializeField] private CatalogType catalogType = default;
+    [SerializeField] private List<Transform> viewPoints = default;
     [SerializeField] private List<ItemIDViewer> itemLineup = default;
+    private List<IDisplayItem> displayedItems = default;
 
     public IReadOnlyList<ItemIDViewer> ItemLineup => itemLineup;
     ISelectedNotification IInteraction.SelectedNotification => this;
@@ -15,31 +16,32 @@ public class Shop : MonoBehaviour, IInteraction, ISelectedNotification
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void Reset()
     {
-        allItemAsset = allItemAsset = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(AllItemAsset)}")
+        allItemAsset = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(AllItemAsset)}")
                 .Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
                 .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<AllItemAsset>)
                 .First();
     }
 
-    private void Start()
-    {
-        Open();
-    }
 
     public void Open()
     {
-        Vector3 vector = transform.position;
-        foreach (var id in itemLineup)
-        {
-            IDisplayItem.Instantiate(allItemAsset.GetItemAssetByID(id), vector, Quaternion.identity, this);
-            vector += new Vector3(1.5f, 0f, 0f);
+        displayedItems = new List<IDisplayItem>();
 
+        for (int i = 0; i < itemLineup.Count; i++)
+        {
+            var asset = allItemAsset.GetItemAssetByID(itemLineup[i]);
+            var position = viewPoints[i].position;
+            var item = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
+            displayedItems.Add(item);
         }
     }
 
     public void Close()
     {
-
+        foreach (var item in displayedItems)
+        {
+            Destroy(item.gameObject);
+        }
     }
 
     void ISelectedNotification.Select(SelectArgs selectArgs)
@@ -57,7 +59,7 @@ public class Shop : MonoBehaviour, IInteraction, ISelectedNotification
 #if UNITY_EDITOR
 namespace UnityEditor
 {
-    [CustomEditor(typeof(Shop))]
+    [CustomEditor(typeof(VisualShop))]
     public class ShopEditor : Editor
     {
         public override void OnInspectorGUI()
