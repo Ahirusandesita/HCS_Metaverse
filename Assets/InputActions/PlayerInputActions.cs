@@ -89,15 +89,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""Chat"",
-                    ""type"": ""Button"",
-                    ""id"": ""06c10498-9675-49a4-bafc-9ce5cd202a25"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -331,10 +322,27 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""HeadPosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
+                }
+            ]
+        },
+        {
+            ""name"": ""UI"",
+            ""id"": ""ee7664a9-d128-4ae7-bc34-6d58c432e3f8"",
+            ""actions"": [
+                {
+                    ""name"": ""Chat"",
+                    ""type"": ""Button"",
+                    ""id"": ""8a3e3e08-b90f-4f6b-a939-b012842eaf66"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""9cb0aba9-a85e-4081-8b4b-f091812f1f54"",
+                    ""id"": ""af19dbd8-7b4a-46b4-81f0-5103264df1d5"",
                     ""path"": ""<Keyboard>/enter"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -345,12 +353,93 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""18bda043-d609-433a-8f43-bfcba70f4d63"",
+                    ""id"": ""49f4cda1-d5b1-462f-9052-b7adc59597b7"",
                     ""path"": ""<Keyboard>/t"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Chat"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Interaction"",
+            ""id"": ""d8e81069-110a-4d2d-bfab-935a0229ec90"",
+            ""actions"": [
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""358a2b52-e1d9-4aae-914a-9522963fbb89"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Disengage"",
+                    ""type"": ""Button"",
+                    ""id"": ""ee35ae0c-3fc8-4ea7-b352-8a5442067e28"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""aaccad2e-9abf-4e9a-bc5b-840ed9eeb3c2"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f1af2b2e-2124-424a-b260-9670af275be1"",
+                    ""path"": ""<XRController>{RightHand}/triggerPressed"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e484f864-a608-498f-a0e4-5fa74ba0cc73"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Disengage"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""78aff35d-92b9-44f4-98e0-32342a3f65ae"",
+                    ""path"": ""<Mouse>/backButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Disengage"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2b14987c-0188-4d95-b2df-f631e3749f34"",
+                    ""path"": ""<XRController>{RightHand}/secondaryButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Disengage"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -506,7 +595,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_HeadPosition = m_Player.FindAction("HeadPosition", throwIfNotFound: true);
         m_Player_HeadRotation = m_Player.FindAction("HeadRotation", throwIfNotFound: true);
         m_Player_TrackingState = m_Player.FindAction("TrackingState", throwIfNotFound: true);
-        m_Player_Chat = m_Player.FindAction("Chat", throwIfNotFound: true);
+        // UI
+        m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
+        m_UI_Chat = m_UI.FindAction("Chat", throwIfNotFound: true);
+        // Interaction
+        m_Interaction = asset.FindActionMap("Interaction", throwIfNotFound: true);
+        m_Interaction_Interact = m_Interaction.FindAction("Interact", throwIfNotFound: true);
+        m_Interaction_Disengage = m_Interaction.FindAction("Disengage", throwIfNotFound: true);
         // VRHead
         m_VRHead = asset.FindActionMap("VRHead", throwIfNotFound: true);
         m_VRHead_Position = m_VRHead.FindAction("Position", throwIfNotFound: true);
@@ -580,7 +675,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_HeadPosition;
     private readonly InputAction m_Player_HeadRotation;
     private readonly InputAction m_Player_TrackingState;
-    private readonly InputAction m_Player_Chat;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -592,7 +686,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @HeadPosition => m_Wrapper.m_Player_HeadPosition;
         public InputAction @HeadRotation => m_Wrapper.m_Player_HeadRotation;
         public InputAction @TrackingState => m_Wrapper.m_Player_TrackingState;
-        public InputAction @Chat => m_Wrapper.m_Player_Chat;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -623,9 +716,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @TrackingState.started += instance.OnTrackingState;
             @TrackingState.performed += instance.OnTrackingState;
             @TrackingState.canceled += instance.OnTrackingState;
-            @Chat.started += instance.OnChat;
-            @Chat.performed += instance.OnChat;
-            @Chat.canceled += instance.OnChat;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -651,9 +741,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @TrackingState.started -= instance.OnTrackingState;
             @TrackingState.performed -= instance.OnTrackingState;
             @TrackingState.canceled -= instance.OnTrackingState;
-            @Chat.started -= instance.OnChat;
-            @Chat.performed -= instance.OnChat;
-            @Chat.canceled -= instance.OnChat;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -671,6 +758,106 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
+
+    // UI
+    private readonly InputActionMap m_UI;
+    private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
+    private readonly InputAction m_UI_Chat;
+    public struct UIActions
+    {
+        private @PlayerInputActions m_Wrapper;
+        public UIActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Chat => m_Wrapper.m_UI_Chat;
+        public InputActionMap Get() { return m_Wrapper.m_UI; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(UIActions set) { return set.Get(); }
+        public void AddCallbacks(IUIActions instance)
+        {
+            if (instance == null || m_Wrapper.m_UIActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_UIActionsCallbackInterfaces.Add(instance);
+            @Chat.started += instance.OnChat;
+            @Chat.performed += instance.OnChat;
+            @Chat.canceled += instance.OnChat;
+        }
+
+        private void UnregisterCallbacks(IUIActions instance)
+        {
+            @Chat.started -= instance.OnChat;
+            @Chat.performed -= instance.OnChat;
+            @Chat.canceled -= instance.OnChat;
+        }
+
+        public void RemoveCallbacks(IUIActions instance)
+        {
+            if (m_Wrapper.m_UIActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IUIActions instance)
+        {
+            foreach (var item in m_Wrapper.m_UIActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_UIActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public UIActions @UI => new UIActions(this);
+
+    // Interaction
+    private readonly InputActionMap m_Interaction;
+    private List<IInteractionActions> m_InteractionActionsCallbackInterfaces = new List<IInteractionActions>();
+    private readonly InputAction m_Interaction_Interact;
+    private readonly InputAction m_Interaction_Disengage;
+    public struct InteractionActions
+    {
+        private @PlayerInputActions m_Wrapper;
+        public InteractionActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Interact => m_Wrapper.m_Interaction_Interact;
+        public InputAction @Disengage => m_Wrapper.m_Interaction_Disengage;
+        public InputActionMap Get() { return m_Wrapper.m_Interaction; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(InteractionActions set) { return set.Get(); }
+        public void AddCallbacks(IInteractionActions instance)
+        {
+            if (instance == null || m_Wrapper.m_InteractionActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_InteractionActionsCallbackInterfaces.Add(instance);
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
+            @Disengage.started += instance.OnDisengage;
+            @Disengage.performed += instance.OnDisengage;
+            @Disengage.canceled += instance.OnDisengage;
+        }
+
+        private void UnregisterCallbacks(IInteractionActions instance)
+        {
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
+            @Disengage.started -= instance.OnDisengage;
+            @Disengage.performed -= instance.OnDisengage;
+            @Disengage.canceled -= instance.OnDisengage;
+        }
+
+        public void RemoveCallbacks(IInteractionActions instance)
+        {
+            if (m_Wrapper.m_InteractionActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IInteractionActions instance)
+        {
+            foreach (var item in m_Wrapper.m_InteractionActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_InteractionActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public InteractionActions @Interaction => new InteractionActions(this);
 
     // VRHead
     private readonly InputActionMap m_VRHead;
@@ -778,7 +965,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnHeadPosition(InputAction.CallbackContext context);
         void OnHeadRotation(InputAction.CallbackContext context);
         void OnTrackingState(InputAction.CallbackContext context);
+    }
+    public interface IUIActions
+    {
         void OnChat(InputAction.CallbackContext context);
+    }
+    public interface IInteractionActions
+    {
+        void OnInteract(InputAction.CallbackContext context);
+        void OnDisengage(InputAction.CallbackContext context);
     }
     public interface IVRHeadActions
     {

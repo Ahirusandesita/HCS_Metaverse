@@ -38,6 +38,9 @@ public class VisualShop : MonoBehaviour, IInteraction, ISelectedNotification
             var item = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
             displayedItems.Add(item);
         }
+
+        var pias = new PlayerInputActions();
+        pias.Disable();
     }
 
     public void Close()
@@ -66,7 +69,7 @@ public class VisualShop : MonoBehaviour, IInteraction, ISelectedNotification
         if (buyArea.ClosestPoint(unselectedPosition) == unselectedPosition)
         {
             // Buy
-            new Debug().Log("BuyArea");
+            Debug.Log("BuyArea");
         }
 
         Destroy(itemSelectArgs.gameObject);

@@ -45,16 +45,16 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>
 
 #if UNITY_EDITOR
         // マウスでの入力は弾く
-        if (inputter.LastLookedDevice == Inputter.DeviceType.Mouse)
+        if (lastLookedDevice == DeviceType.Mouse)
         {
             return;
         }
 #endif
 
         // Look（回転）の入力を[-1f, 0f, 1f]に加工し代入する
-        lookDirX_RP.Value = inputter.LookDir.x == 0f
+        lookDirX_RP.Value = lookDir.x == 0f
             ? 0f
-            : Mathf.Sign(inputter.LookDir.x);
+            : Mathf.Sign(lookDir.x);
     }
 
     /// <summary>

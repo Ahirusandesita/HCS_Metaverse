@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using UniRx;
 using UnityEngine;
 
@@ -19,8 +18,17 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
     [SerializeField] private Transform ceilingCheckSphere = default;
 
     protected Transform myTransform = default;
-    protected Inputter inputter = default;
 
+    [Tooltip("移動方向")]
+    protected Vector2 moveDir = default;
+    [Tooltip("転回方向")]
+    protected Vector2 lookDir = default;
+    [Tooltip("スプリント入力があるかどうか")]
+    protected bool isSprintInput = default;
+    [Tooltip("ジャンプ入力があるかどうか")]
+    protected bool isJumpInput = default;
+    [Tooltip("最後にLookActionを操作したデバイス")]
+    protected DeviceType lastLookedDevice = default;
     [Tooltip("移動における追従先Transform")]
     protected Transform followTransform = default;
     [Tooltip("垂直方向の速度")]
@@ -45,11 +53,13 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
     /// 接地判定をする球の半径（CharacterControllerのRadiusを参照する）
     /// </summary>
     private float DecisionRadius => characterController.radius;
+    protected PlayerInputActions.PlayerActions PlayerActions => Inputter.Player;
 
     public IReadOnlyReactiveProperty<bool> IsMovingRP => isMovingRP;
     public IReadOnlyReactiveProperty<bool> IsJumpingRP => isJumpingRP;
 
 
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     protected virtual void Reset()
     {
         characterController ??= GetComponent<CharacterController>();
@@ -68,32 +78,79 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
 
     protected virtual void Awake()
     {
-        #region Cache
         myTransform = transform;
-        inputter = new Inputter().AddTo(this);
-        #endregion
 
         #region Subscribe
         isMovingRP.AddTo(this);
         isJumpingRP.AddTo(this);
 
-        inputter.IsJumpInputRP
-            // Filter: ジャンプ入力があったとき
-            .Where(isJumpInput => isJumpInput)
-            // 「ジャンプ中」をtrue
-            .Subscribe(isJumpInput => isJumpingRP.Value = true)
-            .AddTo(this);
+        PlayerActions.Enable();
+        // ジャンプ入力を購読
+        PlayerActions.Jump.performed += _ =>
+        {
+            isJumpInput = true;
+            isJumpingRP.Value = true;
+        };
+        PlayerActions.Jump.canceled += _ =>
+        {
+            isJumpInput = false;
+        };
+        // 移動入力を購読
+        PlayerActions.Move.started += _ =>
+        {
+            isMovingRP.Value = true;
+        };
+        PlayerActions.Move.performed += context =>
+        {
+            moveDir = context.ReadValue<Vector2>();
+        };
+        PlayerActions.Move.canceled += _ =>
+        {
+            isMovingRP.Value = false;
+        };
+        // スプリント入力を購読
+        PlayerActions.Sprint.performed += _ =>
+        {
+            isSprintInput = true;
+        };
+        PlayerActions.Sprint.canceled += _ =>
+        {
+            isSprintInput = false;
+        };
+        PlayerActions.Look.performed += context =>
+        {
+            lookDir = context.ReadValue<Vector2>();
 
+            // 入力されたデバイスを判定する
+            // 本来InputSystemは入力者を隠蔽し、入力者によって処理の分岐は想定していないが、
+            // プレイヤーの処理で分岐が必要になるため、泣く泣く実装。
+            lastLookedDevice = context.control.layout switch
+            {
+                "Delta" => DeviceType.Mouse,
+                "Stick" => DeviceType.GamepadOrXR,
+#if UNITY_EDITOR
+                "Key" => DeviceType.Debug,
+                "Button" => DeviceType.Debug,
+                _ => throw new DeviceException("[操作：Look]がMouse, Keyboard, Gamepad, XR以外のデバイスから入力されました。"),
+#else
+                _ => DeviceType.GamepadOrXR,
+#endif
+            };
+        };
+
+        // 着地したときを購読
         isGroundedRP
             .AddTo(this)
-            // Filter: 着地したとき
             .Where(isGrounded => isGrounded)
             // 「ジャンプ中」をfalse
-            .Subscribe(isGrounded => isJumpingRP.Value = false);
+            .Subscribe(isGrounded =>
+            {
+                isJumpingRP.Value = false;
+            });
 
+        // 天井に当たったときを購読
         isHitCeilingRP
             .AddTo(this)
-            // Filter: 天井に当たったとき かつ 上向きの速度があるとき
             .Where(isHitCeiling => isHitCeiling && verticalVelocity > 0f)
             // 垂直方向の速度をリセット
             .Subscribe(isHitCeiling =>
@@ -101,9 +158,6 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
                 verticalVelocity = VERTICAL_VELOCITY_COEFFICIENT;
                 isJumpingRP.Value = false;
             });
-
-        inputter.OnMoveStartedSubject.Subscribe(_ => isMovingRP.Value = true);
-        inputter.OnMoveFinishedSubject.Subscribe(_ => isMovingRP.Value = false);
         #endregion
     }
 
@@ -130,6 +184,16 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
         CameraRotation();
     }
 
+    public void Enable()
+    {
+        PlayerActions.Enable();
+    }
+
+    public void Disable()
+    {
+        PlayerActions.Disable();
+    }
+
     /// <summary>
     /// 接地および天井判定処理
     /// </summary>
@@ -146,7 +210,7 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
     {
         float speed;
 
-        if (inputter.MoveDir == Vector2.zero)
+        if (moveDir == Vector2.zero)
         {
             // 移動の入力がなければ0を代入
             speed = 0f;
@@ -154,7 +218,7 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
         else
         {
             // 歩行速度またはスプリント速度を設定
-            speed = inputter.IsSprintInputRP.Value
+            speed = isSprintInput
                 ? playerDataAsset.SprintSpeed
                 : playerDataAsset.WalkSpeed;
         }
@@ -166,8 +230,8 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
         const float SPEED_OFFSET = 0.1f;
 
         // Inputのベクトルの大きさは1を超さない
-        float inputMagnitude = inputter.MoveDir.magnitude <= 1f
-            ? inputter.MoveDir.magnitude
+        float inputMagnitude = moveDir.magnitude <= 1f
+            ? moveDir.magnitude
             : 1f;
 
         // 設定した速度まで徐々に加減速を行う
@@ -181,13 +245,13 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
         }
 
         // 入力方向の正規化
-        Vector3 inputDirection = new Vector3(inputter.MoveDir.x, 0.0f, inputter.MoveDir.y).normalized;
+        Vector3 inputDirection = new Vector3(moveDir.x, 0.0f, moveDir.y).normalized;
 
         // Inputがある場合、Inputから移動方向を合成
         // Note: Vector2の != 演算子は近似値を使用するため、浮動小数点エラーが発生しにくく、magnitudeよりも安価である。
-        if (inputter.MoveDir != Vector2.zero)
+        if (moveDir != Vector2.zero)
         {
-            inputDirection = followTransform.right * inputter.MoveDir.x + followTransform.forward * inputter.MoveDir.y;
+            inputDirection = followTransform.right * moveDir.x + followTransform.forward * moveDir.y;
         }
 
         // プレイヤーを移動させる
@@ -208,7 +272,7 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
             }
 
             // ジャンプ入力があるかつ、ジャンプタイムアウトの時間外であれば、ジャンプをする
-            if (inputter.IsJumpInputRP.Value && !isHitCeilingRP.Value && jumpTimeoutDelta <= 0f)
+            if (isJumpInput && !isHitCeilingRP.Value && jumpTimeoutDelta <= 0f)
             {
                 // the square root of H * -2 * G = how much velocity needed to reach desired height
                 verticalVelocity = Mathf.Sqrt(playerDataAsset.JumpHeight * VERTICAL_VELOCITY_COEFFICIENT * playerDataAsset.Gravity);
@@ -225,7 +289,7 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
             jumpTimeoutDelta = playerDataAsset.JumpTimeout;
 
             // 空中にいるとき、ジャンプをリセット
-            inputter.IsJumpInputRP.Value = false;
+            isJumpInput = false;
         }
 
         // 現在の速度が終端速度以下のとき、重力を加算
@@ -261,7 +325,7 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
         return Mathf.Clamp(lfAngle, lfMin, lfMax);
     }
 
-    [Conditional("UNITY_EDITOR")]
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     protected virtual void OnDrawGizmosSelected()
     {
         // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
@@ -270,4 +334,15 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
         Gizmos.DrawSphere(groundCheckSphere.position, DecisionRadius);
         Gizmos.DrawSphere(ceilingCheckSphere.position, DecisionRadius);
     }
+}
+public enum DeviceType
+{
+    Mouse,
+    GamepadOrXR,
+#if UNITY_EDITOR
+    /// <summary>
+    /// Editor only
+    /// </summary>
+    Debug,
+#endif
 }
