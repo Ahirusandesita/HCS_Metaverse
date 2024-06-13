@@ -67,15 +67,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
-                },
-                {
-                    "name": "Chat",
-                    "type": "Button",
-                    "id": "06c10498-9675-49a4-bafc-9ce5cd202a25",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -309,10 +300,27 @@
                     "action": "HeadPosition",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
+                }
+            ]
+        },
+        {
+            "name": "UI",
+            "id": "ee7664a9-d128-4ae7-bc34-6d58c432e3f8",
+            "actions": [
+                {
+                    "name": "Chat",
+                    "type": "Button",
+                    "id": "8a3e3e08-b90f-4f6b-a939-b012842eaf66",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
                 {
                     "name": "",
-                    "id": "9cb0aba9-a85e-4081-8b4b-f091812f1f54",
+                    "id": "af19dbd8-7b4a-46b4-81f0-5103264df1d5",
                     "path": "<Keyboard>/enter",
                     "interactions": "",
                     "processors": "",
@@ -323,12 +331,93 @@
                 },
                 {
                     "name": "",
-                    "id": "18bda043-d609-433a-8f43-bfcba70f4d63",
+                    "id": "49f4cda1-d5b1-462f-9052-b7adc59597b7",
                     "path": "<Keyboard>/t",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Chat",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Interaction",
+            "id": "d8e81069-110a-4d2d-bfab-935a0229ec90",
+            "actions": [
+                {
+                    "name": "Interact",
+                    "type": "Button",
+                    "id": "358a2b52-e1d9-4aae-914a-9522963fbb89",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Disengage",
+                    "type": "Button",
+                    "id": "ee35ae0c-3fc8-4ea7-b352-8a5442067e28",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "aaccad2e-9abf-4e9a-bc5b-840ed9eeb3c2",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f1af2b2e-2124-424a-b260-9670af275be1",
+                    "path": "<XRController>{RightHand}/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e484f864-a608-498f-a0e4-5fa74ba0cc73",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "Disengage",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "78aff35d-92b9-44f4-98e0-32342a3f65ae",
+                    "path": "<Mouse>/backButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "Disengage",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2b14987c-0188-4d95-b2df-f631e3749f34",
+                    "path": "<XRController>{RightHand}/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Disengage",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

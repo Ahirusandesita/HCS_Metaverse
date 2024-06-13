@@ -12,7 +12,6 @@ public class PlayerController : PlayerControllerBase<PlayerDataAsset>
     [Tooltip("カメラの勾配（垂直方向の角度）")]
     private float cinemachineTargetPitch = default;
 
-
     protected override void Reset()
     {
         base.Reset();
@@ -30,23 +29,23 @@ public class PlayerController : PlayerControllerBase<PlayerDataAsset>
     protected override void CameraRotation()
     {
         // Inputがない場合、処理を終了
-        if (inputter.LookDir == Vector2.zero)
+        if (lookDir == Vector2.zero)
         {
             return;
         }
 
         // マウスの入力にはTime.deltaTimeを掛けない
-        float deltaTimeMultiplier = inputter.LastLookedDevice == Inputter.DeviceType.Mouse
+        float deltaTimeMultiplier = lastLookedDevice == DeviceType.Mouse
             ? 1.0f
             : Time.deltaTime;
 
         // y軸の入力量に応じて、カメラの勾配（垂直方向の角度）を加算する
-        cinemachineTargetPitch += inputter.LookDir.y * playerDataAsset.RotationSpeed * deltaTimeMultiplier;
+        cinemachineTargetPitch += lookDir.y * playerDataAsset.RotationSpeed * deltaTimeMultiplier;
         // カメラの勾配をクランプする
         cinemachineTargetPitch = ClampAngle(cinemachineTargetPitch, playerDataAsset.VerticalMinAngle, playerDataAsset.VerticalMaxAngle);
 
         // x軸の入力方向への回転を取得
-        float rotationVelocity = inputter.LookDir.x * playerDataAsset.RotationSpeed * deltaTimeMultiplier;
+        float rotationVelocity = lookDir.x * playerDataAsset.RotationSpeed * deltaTimeMultiplier;
 
         // CinemachineCameraのtargetの回転を更新
         cinemachineCameraTarget.localRotation = Quaternion.Euler(cinemachineTargetPitch, 0f, 0f);

@@ -9,7 +9,7 @@ public class ChatSender : MonoBehaviour
     [SerializeField] private TMP_InputField inputField = default;
     [SerializeField] private ChatSystem chatSystem = default;
 
-    private Inputter inputter = default;
+    private PlayerInputActions.UIActions UIActions => Inputter.UI;
 
 
     [Conditional("UNITY_EDITOR")]
@@ -30,10 +30,10 @@ public class ChatSender : MonoBehaviour
         });
 
         // InputFieldのアクティブ状態を切り替える
-        inputter = new Inputter().AddTo(this);
-        inputter.IsChatOpenRP.Subscribe(isChatOpen =>
+        UIActions.Enable();
+        UIActions.Chat.performed += isChatOpen =>
         {
-            if (isChatOpen)
+            if (inputField.isFocused)
             {
                 inputField.ActivateInputField();
             }
@@ -41,6 +41,6 @@ public class ChatSender : MonoBehaviour
             {
                 inputField.DeactivateInputField();
             }
-        });
+        };
     }
 }
