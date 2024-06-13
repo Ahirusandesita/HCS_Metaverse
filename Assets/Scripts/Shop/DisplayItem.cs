@@ -4,7 +4,6 @@ using UnityEngine;
 public class DisplayItem : MonoBehaviour, IDisplayItem
 {
     [SerializeField] private PointableUnityEventWrapper onGrabbed = default;
-
     private ItemSelectArgs itemSelectArgs = default;
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
@@ -24,9 +23,24 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
 
     void IDisplayItem.InjectSelectedNotification(ISelectedNotification sn)
     {
-        onGrabbed.WhenHover.AddListener(_ =>
+        onGrabbed.WhenSelect.AddListener(_ =>
         {
             sn.Select(itemSelectArgs);
+        });
+
+        onGrabbed.WhenUnselect.AddListener(_ =>
+        {
+            sn.Unselect(itemSelectArgs);
+        });
+
+        onGrabbed.WhenHover.AddListener(_ =>
+        {
+            sn.Hover(itemSelectArgs);
+        });
+
+        onGrabbed.WhenUnhover.AddListener(_ =>
+        {
+            sn.Unhover(itemSelectArgs);
         });
     }
 
