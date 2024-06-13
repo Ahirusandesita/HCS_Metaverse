@@ -3,6 +3,8 @@ public interface ISelectedNotification
 {
     void Select(SelectArgs selectArgs);
     void Unselect(SelectArgs selectArgs);
+    void Hover(SelectArgs selectArgs) { }
+    void Unhover(SelectArgs selectArgs) { }
 }
 
 public sealed class NullSelectedNotification : ISelectedNotification

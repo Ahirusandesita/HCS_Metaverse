@@ -5,6 +5,7 @@ using UnityEngine;
 public class VisualShop : MonoBehaviour, IInteraction, ISelectedNotification
 {
     [SerializeField] private AllItemAsset allItemAsset = default;
+    [SerializeField] private Collider buyArea = default;
     [SerializeField] private List<Transform> viewPoints = default;
     [SerializeField] private List<ItemIDViewer> itemLineup = default;
     private List<IDisplayItem> displayedItems = default;
@@ -50,7 +51,6 @@ public class VisualShop : MonoBehaviour, IInteraction, ISelectedNotification
     void ISelectedNotification.Select(SelectArgs selectArgs)
     {
         var itemSelectArgs = selectArgs as ItemSelectArgs;
-
         var asset = allItemAsset.GetItemAssetByID(itemSelectArgs.id);
         var position = itemSelectArgs.position;
         var item =　IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
@@ -59,7 +59,27 @@ public class VisualShop : MonoBehaviour, IInteraction, ISelectedNotification
 
     void ISelectedNotification.Unselect(SelectArgs selectArgs)
     {
-        throw new System.NotImplementedException();
+        var itemSelectArgs = selectArgs as ItemSelectArgs;
+        var unselectedPosition = itemSelectArgs.gameObject.transform.position;
+
+        // 掴んだアイテムを離したポイントが、購入エリアだったら購入
+        if (buyArea.ClosestPoint(unselectedPosition) == unselectedPosition)
+        {
+            // Buy
+            new Debug().Log("BuyArea");
+        }
+
+        Destroy(itemSelectArgs.gameObject);
+    }
+
+    void ISelectedNotification.Hover(SelectArgs selectArgs)
+    {
+
+    }
+
+    void ISelectedNotification.Unhover(SelectArgs selectArgs)
+    {
+
     }
 }
 
