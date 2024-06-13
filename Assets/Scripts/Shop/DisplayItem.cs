@@ -25,21 +25,25 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
     {
         onGrabbed.WhenSelect.AddListener(_ =>
         {
+            new Debug().Log("WhenSelect");
             sn.Select(itemSelectArgs);
         });
 
         onGrabbed.WhenUnselect.AddListener(_ =>
         {
+            new Debug().Log("WhenUnselect");
             sn.Unselect(itemSelectArgs);
         });
 
         onGrabbed.WhenHover.AddListener(_ =>
         {
+            new Debug().Log("WhenHover");
             sn.Hover(itemSelectArgs);
         });
 
         onGrabbed.WhenUnhover.AddListener(_ =>
         {
+            new Debug().Log("WhenUnhover");
             sn.Unhover(itemSelectArgs);
         });
     }
