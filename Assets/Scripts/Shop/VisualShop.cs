@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class VisualShop : MonoBehaviour, IInteraction, ISelectedNotification
+public class VisualShop : SafetyInteractionObject
 {
     [SerializeField] private AllItemAsset allItemAsset = default;
     [SerializeField] private Collider buyArea = default;
@@ -11,8 +11,6 @@ public class VisualShop : MonoBehaviour, IInteraction, ISelectedNotification
     private List<IDisplayItem> displayedItems = default;
 
     public IReadOnlyList<ItemIDViewer> ItemLineup => itemLineup;
-    ISelectedNotification IInteraction.SelectedNotification => this;
-
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void Reset()
@@ -26,9 +24,9 @@ public class VisualShop : MonoBehaviour, IInteraction, ISelectedNotification
 #endif
     }
 
-
-    public void Open()
+    protected override void SafetyOpen()
     {
+        Debug.Log("BABABA");
         displayedItems = new List<IDisplayItem>();
 
         for (int i = 0; i < itemLineup.Count; i++)
@@ -43,7 +41,7 @@ public class VisualShop : MonoBehaviour, IInteraction, ISelectedNotification
         pias.Disable();
     }
 
-    public void Close()
+    protected override void SafetyClose()
     {
         foreach (var item in displayedItems)
         {
@@ -51,7 +49,7 @@ public class VisualShop : MonoBehaviour, IInteraction, ISelectedNotification
         }
     }
 
-    void ISelectedNotification.Select(SelectArgs selectArgs)
+    public override void Select(SelectArgs selectArgs)
     {
         var itemSelectArgs = selectArgs as ItemSelectArgs;
         var asset = allItemAsset.GetItemAssetByID(itemSelectArgs.id);
@@ -60,7 +58,7 @@ public class VisualShop : MonoBehaviour, IInteraction, ISelectedNotification
         displayedItems.Add(item);
     }
 
-    void ISelectedNotification.Unselect(SelectArgs selectArgs)
+    public override void Unselect(SelectArgs selectArgs)
     {
         var itemSelectArgs = selectArgs as ItemSelectArgs;
         var unselectedPosition = itemSelectArgs.gameObject.transform.position;
@@ -75,12 +73,12 @@ public class VisualShop : MonoBehaviour, IInteraction, ISelectedNotification
         Destroy(itemSelectArgs.gameObject);
     }
 
-    void ISelectedNotification.Hover(SelectArgs selectArgs)
+    public override void Hover(SelectArgs selectArgs)
     {
 
     }
 
-    void ISelectedNotification.Unhover(SelectArgs selectArgs)
+    public override void Unhover(SelectArgs selectArgs)
     {
 
     }

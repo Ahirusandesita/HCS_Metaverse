@@ -106,6 +106,7 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
         };
         PlayerActions.Move.canceled += _ =>
         {
+            moveDir = Vector2.zero;
             isMovingRP.Value = false;
         };
         // ƒXƒvƒŠƒ“ƒg“ü—Í‚ğw“Ç
