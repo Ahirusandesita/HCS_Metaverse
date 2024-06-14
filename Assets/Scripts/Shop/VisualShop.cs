@@ -26,7 +26,6 @@ public class VisualShop : SafetyInteractionObject
 
     protected override void SafetyOpen()
     {
-        Debug.Log("BABABA");
         displayedItems = new List<IDisplayItem>();
 
         for (int i = 0; i < itemLineup.Count; i++)
@@ -36,9 +35,6 @@ public class VisualShop : SafetyInteractionObject
             var item = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
             displayedItems.Add(item);
         }
-
-        var pias = new PlayerInputActions();
-        pias.Disable();
     }
 
     protected override void SafetyClose()

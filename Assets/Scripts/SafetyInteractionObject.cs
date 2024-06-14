@@ -4,8 +4,6 @@ using UnityEngine;
 
 public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISelectedNotification
 {
-
-
     ISelectedNotification IInteraction.SelectedNotification => this;
     private PlayerInputActions.InteractionActions Interaction => Inputter.Interaction;
     private PlayerInputActions.PlayerActions Player => Inputter.Player;
@@ -15,26 +13,28 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
         Interaction.Interact.performed += _ =>
         {
             SafetyOpen();
+            Interaction.Interact.Disable();
             Interaction.Disengage.Enable();
             Player.Disable();
         };
         Interaction.Disengage.performed += _ =>
         {
             SafetyClose();
-            Interaction.Disable();
+            Interaction.Interact.Enable();
+            Interaction.Disengage.Disable();
             Player.Enable();
         };
     }
 
     void IInteraction.Open()
     {
-        UnityEngine.Debug.Log("Open!!");
+        Debug.Log("Open!!");
         Interaction.Interact.Enable();
     }
 
     void IInteraction.Close()
     {
-        Interaction.Interact.Disable();
+        Interaction.Disable();
     }
 
     protected abstract void SafetyOpen();
