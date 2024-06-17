@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISelectedNotification
@@ -28,12 +26,13 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
 
     void IInteraction.Open()
     {
-        Debug.Log("Open!!");
+        NotificationUIManager.Instance.DisplayInteraction();
         Interaction.Interact.Enable();
     }
 
     void IInteraction.Close()
     {
+        NotificationUIManager.Instance.HideInteraction();
         Interaction.Disable();
     }
 
