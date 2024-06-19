@@ -32,7 +32,7 @@ public class Throwable : MonoBehaviour
     public void Select()
     {
         // Kinematicを有効にする
-        //_thisRigidbody.isKinematic = true;
+        _thisRigidbody.isKinematic = true;
 
         // ThrowDataを生成
         _throwData = new ThrowData(_thisTransform.position);
@@ -44,7 +44,7 @@ public class Throwable : MonoBehaviour
     public void UnSelect()
     {
         // Kinematicを無効にする
-        //_thisRigidbody.isKinematic = false;
+        _thisRigidbody.isKinematic = false;
 
         // 投擲ベクトルを取得する
         Vector3 throwVector = _throwData.GetThrowVector();
