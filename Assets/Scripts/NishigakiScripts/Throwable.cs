@@ -4,12 +4,38 @@ using UnityEngine;
 
 public class Throwable : MonoBehaviour
 {
+    [SerializeField, Tooltip("自身が持つRigidbody")]
+    private Rigidbody _thisRigidbody = default;
+
+    [SerializeField, Tooltip("自身が持つTransform")]
+    private Transform _thisTransform = default;
+
+    // 使用中のThrowDataを格納するための変数
+    private ThrowData _throwData = default;
+
+    private void Update()
+    {
+        // つかんでいる時のみ実行する
+        if (_throwData is null)
+        {
+            // つかんでいなかったら何もしない
+            return;
+        }
+
+        // 現在の座標を保存する
+        _throwData.SetOrbitPosition(_thisTransform.position);
+    }
+
     /// <summary>
     /// つかまれたときに実行する処理
     /// </summary>
     public void Select()
     {
+        // Kinematicを有効にする
+        //_thisRigidbody.isKinematic = true;
 
+        // ThrowDataを生成
+        _throwData = new ThrowData(_thisTransform.position);
     }
 
     /// <summary>
@@ -17,6 +43,16 @@ public class Throwable : MonoBehaviour
     /// </summary>
     public void UnSelect()
     {
+        // Kinematicを無効にする
+        //_thisRigidbody.isKinematic = false;
 
+        // 投擲ベクトルを取得する
+        Vector3 throwVector = _throwData.GetThrowVector();
+
+        // 投擲ベクトルを速度に代入する
+        _thisRigidbody.velocity = throwVector;
+
+        // 使い終わったThrowDataを消す
+        _throwData = null;
     }
 }
