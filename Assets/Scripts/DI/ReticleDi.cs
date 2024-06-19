@@ -58,6 +58,7 @@ public class ReticleDI : MonoBehaviour, IDependencyInjector<ReticleDependencyInf
     {
         handReticleIconDrawer.InjectDistanceInteractor(dependencyInformation.DistanceHandGrabInteractor);
         controllerReticleIconDrawer.InjectDistanceInteractor(dependencyInformation.DistanceGrabInteractor);
+
         handReticleIconDrawer.InjectCenterEye(dependencyInformation.CenterAye);
         controllerReticleIconDrawer.InjectCenterEye(dependencyInformation.CenterAye);
 
