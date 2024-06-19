@@ -40,11 +40,11 @@ public class DistanceInteractableActivatable : MonoBehaviour, IActivatableDistan
 
     private void InteractableEnable(bool active)
     {
-        foreach(DistanceGrabInteractable distanceGrabInteractable in distanceGrabInteractables)
+        foreach (DistanceGrabInteractable distanceGrabInteractable in distanceGrabInteractables)
         {
             distanceGrabInteractable.enabled = active;
         }
-        foreach(DistanceHandGrabInteractable distanceHandGrabInteractable in distanceHandGrabInteractables)
+        foreach (DistanceHandGrabInteractable distanceHandGrabInteractable in distanceHandGrabInteractables)
         {
             distanceHandGrabInteractable.enabled = active;
         }
