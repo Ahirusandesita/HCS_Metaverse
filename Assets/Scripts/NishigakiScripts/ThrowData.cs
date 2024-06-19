@@ -8,7 +8,7 @@ using UnityEngine;
 public class ThrowData
 {
     // 速度係数　投擲速度 を オブジェクトが運動する際の速度 に変換するために使用します
-    private const float VELOCITY_COFFICIENT = 1f;
+    private const float VELOCITY_COFFICIENT = 5f;
 
     /// <summary>
     /// 投擲するために必要な情報をまとめたクラス
@@ -60,7 +60,7 @@ public class ThrowData
         for (int positionsIndex = 0; positionsIndex < maxOrbitIndex; positionsIndex++)
         {
             // 軌道座標の差を求める
-            Vector3 positionDifference = _throwObjectOrbitPositions[positionsIndex] - _throwObjectOrbitPositions[positionsIndex - 1];
+            Vector3 positionDifference = _throwObjectOrbitPositions[positionsIndex] - _throwObjectOrbitPositions[positionsIndex + 1];
 
             // 軌道座標の差を加算する
             orbitVectors += positionDifference;
@@ -75,6 +75,8 @@ public class ThrowData
 
         // 投擲速度を ノルムの合計 から ノルムの平均 に変換する
         throwVelocity /= maxOrbitIndex;
+
+        Debug.LogError($"ぽいぽい→{orbitVectors * throwVelocity * VELOCITY_COFFICIENT}");
 
         // 軌道ベクトルと投擲速度を掛け合わせた 投擲ベクトル を生成して値を返す
         return orbitVectors * throwVelocity * VELOCITY_COFFICIENT;
