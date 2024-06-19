@@ -10,8 +10,6 @@ public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable, ISelectedN
     private AppearanceInfo_Mesh appearanceInfo_Mesh;
     private ISelectedNotification selectedNotification = new NullSelectedNotification();
 
-    private bool isSelect = false;
-
     [SerializeField]
     private MeshFilter meshFilter;
     [SerializeField]
@@ -51,12 +49,10 @@ public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable, ISelectedN
     public void UnSelect()
     {
         //FindObjectOfType<InventoryManager>().SendItem(this);
-        isSelect = false;
         //test.SetActive(false);
     }
     public void Select()
     {
-        isSelect = true;
         //test.SetActive(true);
         
     }

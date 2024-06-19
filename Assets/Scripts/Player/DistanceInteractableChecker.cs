@@ -5,7 +5,7 @@ public class DistanceInteractableChecker : MonoBehaviour
     private IActivatableDistance[] activeDistances;
     private void Awake()
     {
-        activeDistances = FindObjectsOfType<DistanceInteractableActivatable>();
+        activeDistances = InterfaceUtils.FindObjectOfInterfaces<IActivatableDistance>();
     }
 
     private void Update()
