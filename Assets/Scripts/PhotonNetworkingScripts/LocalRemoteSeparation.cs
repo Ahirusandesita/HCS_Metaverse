@@ -10,12 +10,12 @@ public class LocalRemoteSeparation : MonoBehaviour
     private GameObject localGameObject;
 
     [SerializeField]
-    private string remoteViewName;
+    private RemoteView remoteViewObject;
 
     // Update is called once per frame
     public void RemoteViewCreate()
     {
-        RemoteView remoteView = PhotonNetwork.Instantiate(remoteViewName, Vector3.zero, Quaternion.identity).GetComponent<RemoteView>();
+        RemoteView remoteView = PhotonNetwork.Instantiate(remoteViewObject.name, Vector3.zero, Quaternion.identity).GetComponent<RemoteView>();
         //GameObject localObject = Instantiate(localGameObject, Vector3.zero, Quaternion.identity);
 
         Instantiate(separationLifetimeScope).SeparationSetup(localGameObject, remoteView).Build();
