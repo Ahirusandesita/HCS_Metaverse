@@ -1,6 +1,7 @@
 using System;
 using UniRx;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// プレイヤーの挙動を扱うクラス（VR)
@@ -37,6 +38,15 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>
             .Where(value => value != 0f)
             // プレイヤーを回転させる
             .Subscribe(value => OnRotate(value));
+
+#if UNITY_EDITOR
+        PlayerActions.Look.AddCompositeBinding("2DVector")
+            .With("Left", "<Keyboard>/k")
+            .With("Right", "<Keyboard>/semicolon");
+        PlayerActions.Look.AddCompositeBinding("2DVector")
+            .With("Left", "<Mouse>/leftButton")
+            .With("Right", "<Mouse>/rightButton");
+#endif
     }
 
     protected override void Update()
