@@ -5,7 +5,7 @@ using UnityEngine;
 public class Throwable : MonoBehaviour
 {
     [SerializeField, Tooltip("自身が持つRigidbody")]
-    private Rigidbody _thisRigidbody = default;
+    public Rigidbody _thisRigidbody = default;
 
     [SerializeField, Tooltip("自身が持つTransform")]
     public Transform _thisTransform = default;
@@ -13,7 +13,13 @@ public class Throwable : MonoBehaviour
     // 使用中のThrowDataを格納するための変数
     public ThrowData _throwData = default;
 
-    private void Update()
+    private void Awake()
+    {
+        // ThrowDataを生成する
+        _throwData = new ThrowData(_thisTransform.position);
+    }
+
+    private void FixedUpdate()
     {
         // つかんでいる時のみ実行する
         if (_throwData is null)
