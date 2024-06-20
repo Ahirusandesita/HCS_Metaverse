@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 
 public interface ICanvasDeploymentAndConvergence
 {
@@ -21,14 +22,20 @@ public interface ICanvasDeploymentAndConvergence
 
 public class DebutButton : MonoBehaviour
 {
-    [SerializeField]
-    Transform centerAye;
-
-    [SerializeField]
     private OVRCanvasManager OVRCanvasManager;
 
-    public void Selected()
+    private void Awake()
     {
+        FindOVRCanvasManager().Forget();
+    }
+
+    public void Selected()
+    {     
         OVRCanvasManager.ChangeCanvasDeployment();
+    }
+
+    private async UniTaskVoid FindOVRCanvasManager()
+    {
+        OVRCanvasManager = await GameObject.FindObjectOfType<PokeableCanvasInHandInitialize>().WaitForSpecificTypeAsync<OVRCanvasManager>();
     }
 }
