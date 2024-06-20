@@ -7,6 +7,8 @@ public class VelocityTester : MonoBehaviour
     [SerializeField]
     private Throwable _throwable = default;
 
+    bool isMove = false;
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.UpArrow))
@@ -14,15 +16,23 @@ public class VelocityTester : MonoBehaviour
             // ThrowDataÇê∂ê¨
             _throwable.Select();
 
-            for (int i = 0; i < 11; i++)
-            {
-                // 
-                _throwable._throwData.SetOrbitPosition(_throwable._thisTransform.position + -Vector3.forward * 0.15f * i);
-            }
+            isMove = true;
 
-            _throwable.UnSelect();
+            StartCoroutine(coroutineA());
         }
 
+        if (isMove)
+        {
+            _throwable._thisTransform.position += -Vector3.forward * 1f * Time.deltaTime;
+        }
+    }
 
+    private IEnumerator coroutineA()
+    {
+        yield return new WaitForSeconds(1);
+
+        isMove = false;
+
+        _throwable.UnSelect();
     }
 }

@@ -15,20 +15,39 @@ public class ThrowData
     public ThrowData(Vector3 nowPosition)
     {
         // 軌道座標の初期化を行う
-        for (int positionNumber = 0; positionNumber < _throwObjectOrbitPositions.Length; positionNumber++)
+        for (int positionNumber = 0; positionNumber < _orbitDatas.Length; positionNumber++)
         {
             // 軌道座標の初期値を設定する
-            _throwObjectOrbitPositions[positionNumber] = nowPosition;
+            _orbitDatas[positionNumber]._orbitPosition = nowPosition;
         }
     }
     #endregion
 
     #region 変数・定数
-    // 速度係数　投擲速度 を オブジェクトが運動する際の速度 に変換するために使用します
-    private const float VELOCITY_COFFICIENT = 5f;
+    /// <summary>
+    /// 軌道ベクトルの生成に必要な情報をまとめた構造体
+    /// </summary>
+    private struct OrbitData
+    {
+        /// <summary>
+        /// 軌道座標
+        /// </summary>
+        public Vector3 _orbitPosition;
 
-    // 投擲オブジェクトがつかまれているときの軌道座標たちorbit
-    private Vector3[] _throwObjectOrbitPositions = new Vector3[10];
+        /// <summary>
+        /// 保存時刻
+        /// </summary>
+        public float _storeTime;
+    }
+
+    // 失効時刻　軌道ベクトルの生成に使用できる情報の期限　期限切れは使わない
+    private const float REVOCATION_TIME = 0.06f;
+
+    // 速度係数　投擲速度 を オブジェクトが運動する際の速度 に変換するために使用する
+    private const float VELOCITY_COFFICIENT = 600f;
+
+    // 軌道ベクトルの生成に必要な情報たち　軌道座標と保存時刻を持つ
+    private OrbitData[] _orbitDatas = new OrbitData[30];
     #endregion
 
     #region メソッド・プロパティ
@@ -38,15 +57,18 @@ public class ThrowData
     /// <param name="newPosition">新しい軌道座標</param>
     public void SetOrbitPosition(Vector3 newPosition)
     {
-        // 保存してある座標の保存位置を更新する
-        for (int beforeIndex = 0; beforeIndex < _throwObjectOrbitPositions.Length - 1; beforeIndex++)
+        // 保存してある情報の保存位置を更新する
+        for (int beforeIndex = 0; beforeIndex < _orbitDatas.Length - 1; beforeIndex++)
         {
             // 一つ後ろに移していく
-            _throwObjectOrbitPositions[beforeIndex + 1] = _throwObjectOrbitPositions[beforeIndex];
+            _orbitDatas[beforeIndex + 1] = _orbitDatas[beforeIndex];
         }
 
         // 新しい座標を保存する
-        _throwObjectOrbitPositions[0] = newPosition;
+        _orbitDatas[0]._orbitPosition = newPosition;
+
+        // 新しい保存時刻を記録する
+        _orbitDatas[0]._storeTime = Time.time;
     }
 
     /// <summary>
@@ -55,20 +77,20 @@ public class ThrowData
     /// <returns>投擲ベクトル</returns>
     public Vector3 GetThrowVector()
     {
+        // 軌道ベクトルの生成に使用可能な情報の最後の番地
+        int usableIndex = GetUsableIndex();
+
         // 軌道ベクトル 軌道座標の差から求められる
         Vector3 orbitVector = default;
 
         // 投擲速度　軌道ベクトルのノルムの平均をもとに決められる
         float throwVelocity = default;
 
-        // 軌道ベクトルの個数　( 軌道座標の個数 - 1 )個
-        int maxOrbitIndex = _throwObjectOrbitPositions.Length - 1; 
-
         // 保存してある軌道座標から軌道ベクトルを作成する --------------------------------
-        for (int positionsIndex = 0; positionsIndex < maxOrbitIndex; positionsIndex++)
+        for (int positionsIndex = 0; positionsIndex < usableIndex; positionsIndex++)
         {
             // 軌道座標の差を求める
-            Vector3 positionDifference = _throwObjectOrbitPositions[positionsIndex] - _throwObjectOrbitPositions[positionsIndex + 1];
+            Vector3 positionDifference = _orbitDatas[positionsIndex]._orbitPosition - _orbitDatas[positionsIndex + 1]._orbitPosition;
 
             // 軌道座標の差を加算する
             orbitVector += positionDifference;
@@ -82,12 +104,35 @@ public class ThrowData
         orbitVector = orbitVector.normalized;
 
         // 投擲速度を ノルムの合計 から ノルムの平均 に変換する
-        throwVelocity /= maxOrbitIndex;
+        throwVelocity /= usableIndex;
 
-        Debug.Log($"<color=blue>ぽいベクトル{orbitVector.ToString("F6")} , ぽいスピード{throwVelocity.ToString("F8")} , ぽいノルム{(orbitVector * throwVelocity).magnitude.ToString("F8")}</color>");
+        // 情報の総合時間を取得する
+        float totalTime = _orbitDatas[0]._storeTime - _orbitDatas[usableIndex]._storeTime;
+
+        Debug.Log($"<color=blue>ぽいベクトル{orbitVector.ToString("F6")} , ぽいスピード{throwVelocity.ToString("F8")} , ぽいノルム{(orbitVector * throwVelocity * VELOCITY_COFFICIENT).magnitude.ToString("F8")}</color>");
 
         // 軌道ベクトルと投擲速度を掛け合わせた 投擲ベクトル を生成して値を返す
         return orbitVector * throwVelocity * VELOCITY_COFFICIENT;
+    }
+
+    private int GetUsableIndex()
+    {
+        // 最後に保存した情報の保存時刻
+        float rastStoreTime = _orbitDatas[0]._storeTime;
+
+        // 軌道ベクトルの生成に使用可能な情報をまとめる　ベクトルが生成できないといけないからorbitIndexは２から加算していく
+        for (int orbitIndex = 2; orbitIndex < _orbitDatas.Length; orbitIndex++)
+        {
+            // 失効時刻を超えていた場合
+            if (REVOCATION_TIME < rastStoreTime - _orbitDatas[orbitIndex]._storeTime)
+            {
+                // 軌道ベクトルの生成に使用可能な情報の最後の番地を設定する
+                return orbitIndex - 1;
+            }
+        }
+
+        // すべての情報が失効時刻を超えていなかった場合は情報の総数を返す
+        return _orbitDatas.Length;
     }
     #endregion
 }
