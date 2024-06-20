@@ -15,16 +15,17 @@ public class ReticleInitialize : MonoBehaviour
 
     private void Awake()
     {
-        foreach(GameObject gameObject in initialize.InitializeObjects)
+        foreach (GameObject gameObject in initialize.InitializeObjects)
         {
-             GameObject instance = Instantiate(gameObject);
+            GameObject instance = Instantiate(gameObject);
 
             dependencyInjectors = instance.GetComponentsInChildren<IDependencyInjector<ReticleDependencyInformation>>();
+
+            foreach (IDependencyInjector<ReticleDependencyInformation> dependencyInjector in dependencyInjectors)
+            {
+                dependencyInjector.Inject(reticleDependencyProvider.Information);
+            }
         }
 
-        foreach(IDependencyInjector<ReticleDependencyInformation> dependencyInjector in dependencyInjectors)
-        {
-            dependencyInjector.Inject(reticleDependencyProvider.Information);
-        }
     }
 }

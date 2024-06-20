@@ -3510,11 +3510,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 925ef87c5bafc37469a2f7ec825dee4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!20 &807516657 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 7318300721671002095, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-  m_PrefabInstance: {fileID: 921979061}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &813563780 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6508186075653536544, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
@@ -3983,6 +3978,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 443344130544163188, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+      propertyPath: centerAye
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 443344130544163188, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+      propertyPath: OVRCanvasManager
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 9043037264926603685, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4032,6 +4035,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+--- !u!114 &921979062 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3179331219875569769, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+  m_PrefabInstance: {fileID: 921979061}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8705caac8114262478ed13ebe30f47af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &924603557 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6106127509108096421, guid: 50be278e32a579c47934a40be20880df, type: 3}
@@ -4471,7 +4485,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 2
-  m_Camera: {fileID: 807516657}
+  m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -4747,6 +4761,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Initialize
       objectReference: {fileID: 0}
+    - target: {fileID: 5404462492477205967, guid: 52079ba9aabf0e84db1c2561119385ce, type: 3}
+      propertyPath: PokeableCanvasInHandDependencyProvider
+      value: 
+      objectReference: {fileID: 921979062}
     - target: {fileID: 6834759851099962894, guid: 52079ba9aabf0e84db1c2561119385ce, type: 3}
       propertyPath: ReticleDependencyProvider
       value: 
