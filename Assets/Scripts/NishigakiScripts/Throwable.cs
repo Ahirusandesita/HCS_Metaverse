@@ -8,10 +8,10 @@ public class Throwable : MonoBehaviour
     private Rigidbody _thisRigidbody = default;
 
     [SerializeField, Tooltip("自身が持つTransform")]
-    private Transform _thisTransform = default;
+    public Transform _thisTransform = default;
 
     // 使用中のThrowDataを格納するための変数
-    private ThrowData _throwData = default;
+    public ThrowData _throwData = default;
 
     private void Update()
     {
@@ -51,6 +51,8 @@ public class Throwable : MonoBehaviour
 
         // 投擲ベクトルを速度に代入する
         _thisRigidbody.velocity = throwVector;
+
+        Debug.Log($"ぽいべろしちー{_thisRigidbody.velocity.ToString("F6")}");
 
         // 使い終わったThrowDataを消す
         _throwData = null;
