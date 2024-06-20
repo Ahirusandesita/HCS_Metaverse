@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public class PokeableCanvasInHandInitialize : MonoBehaviour
 {
@@ -14,12 +13,14 @@ public class PokeableCanvasInHandInitialize : MonoBehaviour
 
     private IDependencyInjector<PokeableCanvasInformation>[] dependencyInjectors;
 
-
+    private GameObject instance;
+    private bool existInstance = false;
     private void Awake()
     {
         foreach (GameObject gameObject in initialize.InitializeObjects)
         {
-            GameObject instance = Instantiate(gameObject);
+            instance = Instantiate(gameObject);
+            existInstance = true;
 
             dependencyInjectors = instance.GetComponentsInChildren<IDependencyInjector<PokeableCanvasInformation>>();
 
@@ -31,4 +32,12 @@ public class PokeableCanvasInHandInitialize : MonoBehaviour
             instance.transform.parent = pokeableCanvasDependencyProvider.Information.Parent;
         }
     }
+
+    public async UniTask<T> WaitForSpecificTypeAsync<T>()
+    {
+        await UniTask.WaitUntil(() => existInstance);
+
+        return instance.GetComponentInChildren<T>();
+    }
+
 }
