@@ -1,13 +1,27 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
-public class PokeableCanvasInHandInitialize : MonoBehaviour
+public interface IAvailableSpecificType
+{
+    UniTask<T> WaitForSpecificTypeAsync<T>();
+}
+public interface IInjectableSpecificType
+{
+    void Inject(IAvailableSpecificType availableSpecificType);
+}
+public class PokeableCanvasInHandInitialize : MonoBehaviour, IAvailableSpecificType
 {
     [SerializeField]
     private InitializeAsset initialize;
 
     [SerializeField, InterfaceType(typeof(IDependencyProvider<PokeableCanvasInformation>))]
     private UnityEngine.Object PokeableCanvasInHandDependencyProvider;
+
+    [SerializeField, InterfaceType(typeof(IInjectableSpecificType))]
+    private List<UnityEngine.Object> IInjectableSpecificTypes;
+    private List<IInjectableSpecificType> injectableSpecificTypes => IInjectableSpecificTypes.OfType<IInjectableSpecificType>().ToList();
 
     private IDependencyProvider<PokeableCanvasInformation> pokeableCanvasDependencyProvider => PokeableCanvasInHandDependencyProvider as IDependencyProvider<PokeableCanvasInformation>;
 
@@ -17,6 +31,11 @@ public class PokeableCanvasInHandInitialize : MonoBehaviour
     private bool existInstance = false;
     private void Awake()
     {
+        foreach(IInjectableSpecificType injectableSpecificType in injectableSpecificTypes)
+        {
+            injectableSpecificType.Inject(this);
+        }
+
         foreach (GameObject gameObject in initialize.InitializeObjects)
         {
             instance = Instantiate(gameObject);
