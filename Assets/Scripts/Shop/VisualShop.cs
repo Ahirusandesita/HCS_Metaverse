@@ -5,7 +5,7 @@ using UnityEngine;
 public class VisualShop : SafetyInteractionObject
 {
     [SerializeField] private AllItemAsset allItemAsset = default;
-    [SerializeField] private Collider buyArea = default;
+    [SerializeField] private BuyArea buyArea = default;
     [SerializeField] private List<Transform> viewPoints = default;
     [SerializeField] private List<ItemIDViewer> itemLineup = default;
     private List<IDisplayItem> displayedItems = default;
@@ -52,6 +52,8 @@ public class VisualShop : SafetyInteractionObject
         var position = itemSelectArgs.position;
         var item =　IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
         displayedItems.Add(item);
+
+        buyArea.Display(itemSelectArgs.position);
     }
 
     public override void Unselect(SelectArgs selectArgs)
@@ -60,13 +62,14 @@ public class VisualShop : SafetyInteractionObject
         var unselectedPosition = itemSelectArgs.gameObject.transform.position;
 
         // 掴んだアイテムを離したポイントが、購入エリアだったら購入
-        if (buyArea.ClosestPoint(unselectedPosition) == unselectedPosition)
+        if (buyArea.IsExist(unselectedPosition))
         {
             // Buy
             Debug.Log("BuyArea");
         }
 
         Destroy(itemSelectArgs.gameObject);
+        buyArea.Hide();
     }
 
     public override void Hover(SelectArgs selectArgs)
