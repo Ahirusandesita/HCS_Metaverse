@@ -41,13 +41,13 @@ public class ThrowData
     }
 
     // 失効時刻　軌道ベクトルの生成に使用できる情報の期限　期限切れは使わない
-    private const float REVOCATION_TIME = 0.06f;
+    private const float REVOCATION_TIME = 0.1f;
 
     // 速度係数　投擲速度 を オブジェクトが運動する際の速度 に変換するために使用する
-    private const float VELOCITY_COFFICIENT = 600f;
+    private const float VELOCITY_COFFICIENT = 1f;
 
     // 軌道ベクトルの生成に必要な情報たち　軌道座標と保存時刻を持つ
-    private OrbitData[] _orbitDatas = new OrbitData[30];
+    private OrbitData[] _orbitDatas = new OrbitData[12];
     #endregion
 
     #region メソッド・プロパティ
@@ -83,7 +83,7 @@ public class ThrowData
         // 軌道ベクトル 軌道座標の差から求められる
         Vector3 orbitVector = default;
 
-        // 投擲速度　軌道ベクトルのノルムの平均をもとに決められる
+        // 投擲速度　軌道ベクトルのノルムの合計をもとに秒間速度を求める
         float throwVelocity = default;
 
         // 保存してある軌道座標から軌道ベクトルを作成する --------------------------------
@@ -103,13 +103,10 @@ public class ThrowData
         // 軌道ベクトルを正規化する
         orbitVector = orbitVector.normalized;
 
-        // 投擲速度を ノルムの合計 から ノルムの平均 に変換する
-        throwVelocity /= usableIndex;
+        // 投擲速度を ノルムの合計 から 秒間速度 に変換する
+        throwVelocity /= _orbitDatas[0]._storeTime - _orbitDatas[usableIndex]._storeTime;
 
-        // 情報の総合時間を取得する
-        float totalTime = _orbitDatas[0]._storeTime - _orbitDatas[usableIndex]._storeTime;
-
-        Debug.Log($"<color=blue>ぽいベクトル{orbitVector.ToString("F6")} , ぽいスピード{throwVelocity.ToString("F8")} , ぽいノルム{(orbitVector * throwVelocity * VELOCITY_COFFICIENT).magnitude.ToString("F8")}</color>");
+        Debug.Log($"<color=green>ぽいベクトル{orbitVector.ToString("F6")} , ぽいスピード{throwVelocity.ToString("F8")} , ぽいノルム{(orbitVector * throwVelocity * VELOCITY_COFFICIENT).magnitude.ToString("F8")}</color>");
 
         // 軌道ベクトルと投擲速度を掛け合わせた 投擲ベクトル を生成して値を返す
         return orbitVector * throwVelocity * VELOCITY_COFFICIENT;
