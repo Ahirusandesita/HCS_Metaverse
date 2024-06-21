@@ -33,19 +33,19 @@ public class Throwable : MonoBehaviour
     }
 
     /// <summary>
-    /// つかまれたときに実行する処理
+    /// つかまれたときに実行するメソッド
     /// </summary>
     public void Select()
     {
         // Kinematicを有効にする
         _thisRigidbody.isKinematic = true;
 
-        // ThrowDataを生成
-        _throwData = new ThrowData(_thisTransform.position);
+        // 情報の初期化を行う
+        _throwData.ReSetThrowData(_thisTransform.position);
     }
 
     /// <summary>
-    /// 離されたときに実行する処理
+    /// 離されたときに実行するメソッド
     /// </summary>
     public void UnSelect()
     {
@@ -57,10 +57,5 @@ public class Throwable : MonoBehaviour
 
         // 投擲ベクトルを速度に代入する
         _thisRigidbody.velocity = throwVector;
-
-        Debug.Log($"ぽいべろしちー{_thisRigidbody.velocity.ToString("F6")}");
-
-        // 使い終わったThrowDataを消す
-        _throwData = null;
     }
 }
