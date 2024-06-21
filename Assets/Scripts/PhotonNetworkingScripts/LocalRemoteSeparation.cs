@@ -1,4 +1,5 @@
 using UnityEngine;
+using Fusion;
 
 public class LocalRemoteSeparation : MonoBehaviour
 {
@@ -9,12 +10,14 @@ public class LocalRemoteSeparation : MonoBehaviour
     private GameObject localGameObject;
 
     [SerializeField]
-    private RemoteView remoteViewObject;
+    private NetworkPrefabRef remoteViewObject;
 
-    // Update is called once per frame
-    public void RemoteViewCreate()
+
+   
+	// Update is called once per frame
+	public void RemoteViewCreate(NetworkRunner networkRunner,PlayerRef playerRef)
     {                                   //FusionÇÃê∂ê¨
-        RemoteView remoteView = null;/*PhotonNetwork.Instantiate(remoteViewObject.name, Vector3.zero, Quaternion.identity).GetComponent<RemoteView>();*/
+        RemoteView remoteView = networkRunner.Spawn(remoteViewObject,Vector3.zero,Quaternion.identity,playerRef).GetComponent<RemoteView>();/*PhotonNetwork.Instantiate(remoteViewObject.name, Vector3.zero, Quaternion.identity).GetComponent<RemoteView>();*/
 
         //GameObject localObject = Instantiate(localGameObject, Vector3.zero, Quaternion.identity);
 
