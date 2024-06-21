@@ -17,18 +17,11 @@ public class LocalAvatarLogic : MonoBehaviour
 
         remoteView.GetComponent<MeshRenderer>().enabled = false;
 
-        action += () => remoteView.transform.position = transform.position;
+        action += () => remoteView.SetVector3(this.transform.position);
     }
 
     private void Update()
     {
-
-        //remoteView.transform.Translate(6f * Time.deltaTime * input.normalized);
-        //Vector3 position = this.transform.position;
-        //position.z -= 1f;
-        //remoteView.transform.position = position;
-
         action?.Invoke();
-        /* + (transform.forward * -0.5f)*/;
     }
 }
