@@ -1,4 +1,3 @@
-using Photon.Pun;
 using UnityEngine;
 
 public class LocalRemoteSeparation : MonoBehaviour
@@ -14,8 +13,9 @@ public class LocalRemoteSeparation : MonoBehaviour
 
     // Update is called once per frame
     public void RemoteViewCreate()
-    {
-        RemoteView remoteView = PhotonNetwork.Instantiate(remoteViewObject.name, Vector3.zero, Quaternion.identity).GetComponent<RemoteView>();
+    {                                   //FusionÇÃê∂ê¨
+        RemoteView remoteView = null;/*PhotonNetwork.Instantiate(remoteViewObject.name, Vector3.zero, Quaternion.identity).GetComponent<RemoteView>();*/
+
         //GameObject localObject = Instantiate(localGameObject, Vector3.zero, Quaternion.identity);
 
         Instantiate(separationLifetimeScope).SeparationSetup(localGameObject, remoteView).Build();

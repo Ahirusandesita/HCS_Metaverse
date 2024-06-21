@@ -89,7 +89,7 @@ public class FlickKeyboardManager : MonoBehaviour
     /// </summary>
     public void Return()
     {
-        sendChat.Send_ToOthers(text);
+        //sendChat.Send_ToOthers(text);
         textMeshProUGUI.text = "";
         text = "";
     }
