@@ -16,9 +16,4 @@ public class ServerJoinButton : MonoBehaviour,IPointerUpRegistrable
         conectable.Connect();
         isJoin = true;
     }
-
-	private void Start()
-	{
-        conectable.Connect();
-	}
 }
