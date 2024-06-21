@@ -911,8 +911,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f6b13eb2fb7a9342924b56aa2544183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  centerAye: {fileID: 0}
-  OVRCanvasManager: {fileID: 0}
 --- !u!1 &5635463473996804778
 GameObject:
   m_ObjectHideFlags: 0
@@ -3214,6 +3212,10 @@ PrefabInstance:
     - target: {fileID: 1759382180007303836, guid: 86f711b02960d794b8c4ad0bcbf17527, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2492800384500457778, guid: 86f711b02960d794b8c4ad0bcbf17527, type: 3}
+      propertyPath: _maxLength
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 5665378001225409506, guid: 86f711b02960d794b8c4ad0bcbf17527, type: 3}
       propertyPath: m_Name
@@ -6044,6 +6046,10 @@ PrefabInstance:
       propertyPath: _hmd
       value: 
       objectReference: {fileID: 3544865910130079141}
+    - target: {fileID: 1739767371118133675, guid: 8b13b070429a7684eb2c1ae2367ad765, type: 3}
+      propertyPath: _maxLength
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 2452280113640883969, guid: 8b13b070429a7684eb2c1ae2367ad765, type: 3}
       propertyPath: _syntheticHand
       value: 
@@ -6071,6 +6077,10 @@ PrefabInstance:
     - target: {fileID: 5227393467079911493, guid: 8b13b070429a7684eb2c1ae2367ad765, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562763353200214104, guid: 8b13b070429a7684eb2c1ae2367ad765, type: 3}
+      propertyPath: _maxLength
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 5972292634215972463, guid: 8b13b070429a7684eb2c1ae2367ad765, type: 3}
       propertyPath: _rotation.w
@@ -6155,6 +6165,10 @@ PrefabInstance:
     - target: {fileID: 7288775255335375506, guid: 8b13b070429a7684eb2c1ae2367ad765, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7381632195567819182, guid: 8b13b070429a7684eb2c1ae2367ad765, type: 3}
+      propertyPath: _maxLength
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7590733697234238304, guid: 8b13b070429a7684eb2c1ae2367ad765, type: 3}
       propertyPath: m_LocalRotation.w
@@ -8600,6 +8614,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 2492800384500457778, guid: 86f711b02960d794b8c4ad0bcbf17527, type: 3}
+      propertyPath: _maxLength
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5665378001225409506, guid: 86f711b02960d794b8c4ad0bcbf17527, type: 3}
       propertyPath: m_Name
       value: ControllerDistanceGrabInteractor
@@ -8996,6 +9014,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1739767371118133675, guid: 8b13b070429a7684eb2c1ae2367ad765, type: 3}
+      propertyPath: _maxLength
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 2452280113640883969, guid: 8b13b070429a7684eb2c1ae2367ad765, type: 3}
       propertyPath: _syntheticHand
       value: 
@@ -9039,6 +9061,10 @@ PrefabInstance:
     - target: {fileID: 5227393467079911493, guid: 8b13b070429a7684eb2c1ae2367ad765, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5562763353200214104, guid: 8b13b070429a7684eb2c1ae2367ad765, type: 3}
+      propertyPath: _maxLength
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 5972292634215972463, guid: 8b13b070429a7684eb2c1ae2367ad765, type: 3}
       propertyPath: _rotation.w
@@ -9123,6 +9149,10 @@ PrefabInstance:
     - target: {fileID: 7288775255335375506, guid: 8b13b070429a7684eb2c1ae2367ad765, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7381632195567819182, guid: 8b13b070429a7684eb2c1ae2367ad765, type: 3}
+      propertyPath: _maxLength
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7590733697234238305, guid: 8b13b070429a7684eb2c1ae2367ad765, type: 3}
       propertyPath: m_Layer
