@@ -52,6 +52,23 @@ public class ThrowData
 
     #region メソッド・プロパティ
     /// <summary>
+    /// 投擲を行うために必要な情報を初期化するためのメソッド
+    /// </summary>
+    /// <param name="nowPosition"></param>
+    public void ReSetThrowData(Vector3 nowPosition)
+    {
+        // 軌道座標の初期化を行う
+        for (int positionNumber = 0; positionNumber < _orbitDatas.Length; positionNumber++)
+        {
+            // 軌道座標の初期値を設定する
+            _orbitDatas[positionNumber]._orbitPosition = nowPosition;
+
+            // 保存時刻を初期化する
+            _orbitDatas[positionNumber]._storeTime = default;
+        }
+    }
+
+    /// <summary>
     /// 新しい軌道座標を保存するためのプロパティ
     /// </summary>
     /// <param name="newPosition">新しい軌道座標</param>
@@ -106,12 +123,14 @@ public class ThrowData
         // 投擲速度を ノルムの合計 から 秒間速度 に変換する
         throwVelocity /= _orbitDatas[0]._storeTime - _orbitDatas[usableIndex]._storeTime;
 
-        Debug.Log($"<color=green>ぽいベクトル{orbitVector.ToString("F6")} , ぽいスピード{throwVelocity.ToString("F8")} , ぽいノルム{(orbitVector * throwVelocity * VELOCITY_COFFICIENT).magnitude.ToString("F8")}</color>");
-
         // 軌道ベクトルと投擲速度を掛け合わせた 投擲ベクトル を生成して値を返す
         return orbitVector * throwVelocity * VELOCITY_COFFICIENT;
     }
 
+    /// <summary>
+    ///  軌道ベクトルの生成に使用可能な情報の最後の番地を取得するためのプロパティ
+    /// </summary>
+    /// <returns>使用可能な情報の最後の番地</returns>
     private int GetUsableIndex()
     {
         // 最後に保存した情報の保存時刻
