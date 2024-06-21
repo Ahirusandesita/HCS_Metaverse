@@ -4,15 +4,8 @@ using UnityEngine;
 
 public class RemoteView : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public void SetVector3(Vector3 vector)
+	{
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+	}
 }
