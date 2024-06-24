@@ -148,7 +148,7 @@ public class ThrowData
         }
 
         // ‚·‚×‚Ä‚Ìî•ñ‚ª¸Œø‚ğ’´‚¦‚Ä‚¢‚È‚©‚Á‚½ê‡‚Íî•ñ‚Ì‘”‚ğ•Ô‚·
-        return _orbitDatas.Length;
+        return _orbitDatas.Length - 1;
     }
     #endregion
 }

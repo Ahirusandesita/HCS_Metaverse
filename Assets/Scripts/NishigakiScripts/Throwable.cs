@@ -30,6 +30,8 @@ public class Throwable : MonoBehaviour
 
         // 現在の座標を保存する
         _throwData.SetOrbitPosition(_thisTransform.position);
+
+        Debug.Log($"<color=yellow>なうぽいすぴーど＝{_thisRigidbody.velocity}</color>");
     }
 
     /// <summary>
@@ -54,6 +56,8 @@ public class Throwable : MonoBehaviour
 
         // 投擲ベクトルを取得する
         Vector3 throwVector = _throwData.GetThrowVector();
+
+        Debug.Log($"<color=red>ぽいしたよ</color>");
 
         // 投擲ベクトルを速度に代入する
         _thisRigidbody.velocity = throwVector;
