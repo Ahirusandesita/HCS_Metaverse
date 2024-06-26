@@ -3,6 +3,9 @@ using UnityEngine;
 public class ReticleInitialize : MonoBehaviour
 {
     [SerializeField]
+    private HandType handType;
+
+    [SerializeField]
     private InitializeAsset initialize;
 
     [SerializeField, InterfaceType(typeof(IDependencyProvider<ReticleDependencyInformation>))]
@@ -26,6 +29,19 @@ public class ReticleInitialize : MonoBehaviour
                 dependencyInjector.Inject(reticleDependencyProvider.Information);
             }
         }
+    }
 
+    public void Inject()
+    {
+        ReticleDependencyProvider[] reticleDependencyProviders = GameObject.FindObjectsOfType<ReticleDependencyProvider>();
+
+        foreach(ReticleDependencyProvider @object in reticleDependencyProviders)
+        {
+            if(@object.HandType == handType)
+            {
+                ReticleDependencyProvider = @object;
+            }
+        }
     }
 }
+

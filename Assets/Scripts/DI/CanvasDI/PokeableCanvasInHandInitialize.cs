@@ -60,4 +60,8 @@ public class PokeableCanvasInHandInitialize : MonoBehaviour, IAvailableSpecificT
         return instance.GetComponentInChildren<T>();
     }
 
+    public void Inject()
+    {
+        PokeableCanvasInHandDependencyProvider = GameObject.FindObjectOfType<PokeableCanvasProvider>();
+    }
 }

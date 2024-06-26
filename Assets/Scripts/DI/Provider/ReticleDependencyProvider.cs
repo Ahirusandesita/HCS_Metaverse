@@ -7,6 +7,10 @@ using UnityEngine;
 public class ReticleDependencyProvider : MonoBehaviour, IDependencyProvider<ReticleDependencyInformation>
 {
     [SerializeField]
+    private HandType handType;
+    public HandType HandType => handType;
+
+    [SerializeField]
     ReticleDependencyInformation reticleDependencyInformation;
     [SerializeField]
     private DistanceHandGrabInteractor distanceHandGrabInteractor;

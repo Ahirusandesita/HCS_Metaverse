@@ -56,4 +56,9 @@ public class PlayerInitialize : MonoBehaviour
         IDependencyProvider<PlayerHandDependencyInfomation> providerPlayerHand = playerProvider_static;
         dependencyInjector.Inject(providerPlayerHand.Information);
     }
+
+    public void Inject()
+    {
+        playerProvider = InterfaceUtils.FindObjectOfInterfaces<PlayerProvider>()[0];
+    }
 }
