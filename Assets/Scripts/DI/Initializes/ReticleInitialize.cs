@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ReticleInitialize : MonoBehaviour
+public class ReticleInitialize : InitializeBase
 {
     [SerializeField]
     private HandType handType;
@@ -31,17 +31,40 @@ public class ReticleInitialize : MonoBehaviour
         }
     }
 
-    public void Inject()
+    public override void Initialize()
     {
         ReticleDependencyProvider[] reticleDependencyProviders = GameObject.FindObjectsOfType<ReticleDependencyProvider>();
 
-        foreach(ReticleDependencyProvider @object in reticleDependencyProviders)
+        foreach (ReticleDependencyProvider @object in reticleDependencyProviders)
         {
-            if(@object.HandType == handType)
+            if (@object.HandType == handType)
             {
                 ReticleDependencyProvider = @object;
             }
         }
+
+        string[] guids = InitializeAssetDatabase.Find();
+        foreach (string guid in guids)
+        {
+            InitializeAsset asset = InitializeAssetDatabase.LoadAssetAtPathFromGuid(guid);
+
+            if (asset.InitializeType == this)
+            {
+                initialize = asset;
+            }
+        }
     }
+
+    public static bool operator ==(InitializeType initializeTye, ReticleInitialize reticleInitialize)
+    {
+        return reticleInitialize.handType == HandType.Left && initializeTye == InitializeType.ReticleLeftHand || reticleInitialize.handType == HandType.Right && initializeTye == InitializeType.ReticleRightHand;
+    }
+    public static bool operator !=(InitializeType initializeTye, ReticleInitialize reticleInitialize)
+    {
+        return !(reticleInitialize.handType == HandType.Left && initializeTye == InitializeType.ReticleLeftHand || reticleInitialize.handType == HandType.Right && initializeTye == InitializeType.ReticleRightHand);
+    }
+
+    public override bool Equals(object obj) => this.Equals(obj as ReticleInitialize);
+    public override int GetHashCode() => GetHashCode();
 }
 
