@@ -2,13 +2,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class VisualShop : SafetyInteractionObject
+public class VisualShop : SafetyInteractionObject, IDependencyInjector<PlayerBodyDependencyInformation>
 {
     [SerializeField] private AllItemAsset allItemAsset = default;
     [SerializeField] private BuyArea buyArea = default;
     [SerializeField] private List<Transform> viewPoints = default;
     [SerializeField] private List<ItemIDViewer> itemLineup = default;
-    private List<IDisplayItem> displayedItems = default;
+    private List<GameObject> displayedItems = default;
+    private IReadonlyPositionAdapter positionAdapter = default;
 
     public IReadOnlyList<ItemIDViewer> ItemLineup => itemLineup;
 
@@ -25,24 +26,29 @@ public class VisualShop : SafetyInteractionObject
         buyArea = GetComponentInChildren<BuyArea>();
     }
 
+    private void Start()
+    {
+        PlayerInitialize.ConsignmentInject_static(this);
+    }
+
     protected override void SafetyOpen()
     {
-        displayedItems = new List<IDisplayItem>();
+        displayedItems = new List<GameObject>();
 
         for (int i = 0; i < itemLineup.Count; i++)
         {
             var asset = allItemAsset.GetItemAssetByID(itemLineup[i]);
             var position = viewPoints[i].position;
             var item = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
-            displayedItems.Add(item);
+            displayedItems.Add(item.gameObject);
         }
     }
 
     protected override void SafetyClose()
     {
-        foreach (var item in displayedItems)
+        foreach (var obj in displayedItems)
         {
-            Destroy(item.gameObject);
+            Destroy(obj);
         }
     }
 
@@ -52,9 +58,9 @@ public class VisualShop : SafetyInteractionObject
         var asset = allItemAsset.GetItemAssetByID(itemSelectArgs.id);
         var position = itemSelectArgs.position;
         var item = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
-        displayedItems.Add(item);
+        displayedItems.Add(item.gameObject);
 
-        buyArea.Display(itemSelectArgs.position);
+        buyArea.Display(positionAdapter.Position);
     }
 
     public override void Unselect(SelectArgs selectArgs)
@@ -69,6 +75,7 @@ public class VisualShop : SafetyInteractionObject
             Debug.Log("BuyArea");
         }
 
+        displayedItems.Remove(itemSelectArgs.gameObject);
         Destroy(itemSelectArgs.gameObject);
         buyArea.Hide();
     }
@@ -81,6 +88,11 @@ public class VisualShop : SafetyInteractionObject
     public override void Unhover(SelectArgs selectArgs)
     {
 
+    }
+
+    void IDependencyInjector<PlayerBodyDependencyInformation>.Inject(PlayerBodyDependencyInformation information)
+    {
+        positionAdapter = information.PlayerBody;
     }
 }
 
