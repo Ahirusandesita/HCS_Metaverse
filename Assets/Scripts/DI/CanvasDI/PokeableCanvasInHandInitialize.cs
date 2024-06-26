@@ -11,7 +11,7 @@ public interface IInjectableSpecificType
 {
     void Inject(IAvailableSpecificType availableSpecificType);
 }
-public class PokeableCanvasInHandInitialize : MonoBehaviour, IAvailableSpecificType
+public class PokeableCanvasInHandInitialize : InitializeBase, IAvailableSpecificType
 {
     [SerializeField]
     private InitializeAsset initialize;
@@ -60,7 +60,7 @@ public class PokeableCanvasInHandInitialize : MonoBehaviour, IAvailableSpecificT
         return instance.GetComponentInChildren<T>();
     }
 
-    public void Inject()
+    public override void Initialize()
     {
         PokeableCanvasInHandDependencyProvider = GameObject.FindObjectOfType<PokeableCanvasProvider>();
     }

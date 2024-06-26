@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ReticleInitialize : MonoBehaviour
+public class ReticleInitialize : InitializeBase
 {
     [SerializeField]
     private HandType handType;
@@ -31,7 +31,7 @@ public class ReticleInitialize : MonoBehaviour
         }
     }
 
-    public void Inject()
+    public override void Initialize()
     {
         ReticleDependencyProvider[] reticleDependencyProviders = GameObject.FindObjectsOfType<ReticleDependencyProvider>();
 

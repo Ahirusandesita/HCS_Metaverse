@@ -1,8 +1,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System;
+public class DependencyInjectionException : Exception
+{
+    public DependencyInjectionException()
+    {
 
-public class PlayerInitialize : MonoBehaviour
+    }
+    public DependencyInjectionException(string message)
+    {
+        Debug.LogError(message);
+    }
+    public DependencyInjectionException(string message, Exception innerException)
+    {
+
+    }
+}
+public class PlayerInitialize : InitializeBase
 {
     [SerializeField]
     private PlayerProvider playerProvider;
@@ -26,7 +41,7 @@ public class PlayerInitialize : MonoBehaviour
         }
 
         IDependencyProvider<PlayerHandDependencyInfomation> providerPlayerHand = playerProvider;
-        foreach(IDependencyInjector<PlayerHandDependencyInfomation> dependencyInjector in dependencyInjectorsPlayerHand)
+        foreach (IDependencyInjector<PlayerHandDependencyInfomation> dependencyInjector in dependencyInjectorsPlayerHand)
         {
             dependencyInjector.Inject(providerPlayerHand.Information);
         }
@@ -47,17 +62,25 @@ public class PlayerInitialize : MonoBehaviour
 
     public static void ConsignmentInject_static(IDependencyInjector<PlayerBodyDependencyInformation> dependencyInjector)
     {
+        if(playerProvider_static is null)
+        {
+            throw new DependencyInjectionException($"PlayerProvider is NULL");
+        }
         IDependencyProvider<PlayerBodyDependencyInformation> providerPlayerBody = playerProvider_static;
         dependencyInjector.Inject(providerPlayerBody.Information);
     }
 
     public static void ConsignmentInject_static(IDependencyInjector<PlayerHandDependencyInfomation> dependencyInjector)
     {
+        if(playerProvider_static is null)
+        {
+            throw new DependencyInjectionException($"PlayerProvider is NULL");
+        }
         IDependencyProvider<PlayerHandDependencyInfomation> providerPlayerHand = playerProvider_static;
         dependencyInjector.Inject(providerPlayerHand.Information);
     }
 
-    public void Inject()
+    public override void Initialize()
     {
         playerProvider = InterfaceUtils.FindObjectOfInterfaces<PlayerProvider>()[0];
     }
