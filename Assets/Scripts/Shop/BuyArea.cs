@@ -41,14 +41,22 @@ public class BuyArea : MonoBehaviour
         UpdateAction?.Invoke();
     }
 
+    /// <summary>
+    /// エリア内に指定したターゲットが存在するかどうか
+    /// </summary>
+    /// <param name="targetPos">ターゲットの座標</param>
     public bool IsExist(Vector3 targetPos)
     {
         return myCollider.ClosestPoint(targetPos) == targetPos;
     }
 
-    public void Display(Vector3 itemPosition)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="playerPosition"></param>
+    public void Display(Vector3 playerPosition)
     {
-        myTransform.position = itemPosition + Vector3.right;
+        myTransform.position = playerPosition + Vector3.right;// Debug
         myTransform.localScale = Vector3.zero;
         meshRenderer.enabled = true;
         UpdateAction += OverlapCheck;
