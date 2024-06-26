@@ -121,7 +121,6 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
         PlayerActions.Look.performed += context =>
         {
             lookDir = context.ReadValue<Vector2>();
-            Debug.Log(lookDir);
 
             // 入力されたデバイスを判定する
             // 本来InputSystemは入力者を隠蔽し、入力者によって処理の分岐は想定していないが、
