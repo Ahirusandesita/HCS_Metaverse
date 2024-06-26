@@ -55,7 +55,7 @@ public class PokeableCanvasInHandInitialize : MonoBehaviour, IAvailableSpecificT
     public async UniTask<T> WaitForSpecificTypeAsync<T>()
     {
         await UniTask.WaitUntil(() => existInstance);
-        await UniTask.WaitUntil(() => instance.GetComponentInChildren<T>() == null);
+        await UniTask.WaitUntil(() => instance.GetComponentInChildren<T>() != null);
 
         return instance.GetComponentInChildren<T>();
     }
