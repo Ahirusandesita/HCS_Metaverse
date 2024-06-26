@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameFrame : MonoBehaviour
 {
@@ -28,6 +29,8 @@ public class GameFrame : MonoBehaviour
         }
 
         this.transform.localScale = new Vector3(1f, 1f, 1f);
+
+        SceneManager.LoadScene("CookActivity");
     }
     IEnumerator FrameAnimationDown()
     {
