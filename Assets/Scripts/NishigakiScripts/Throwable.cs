@@ -40,7 +40,7 @@ public class Throwable : MonoBehaviour
     public void Select()
     {
         // Kinematicを有効にする
-        _thisRigidbody.isKinematic = true;
+        _thisRigidbody.isKinematic = false;
 
         // 情報の初期化を行う
         _throwData.ReSetThrowData(_thisTransform.position);
@@ -57,7 +57,14 @@ public class Throwable : MonoBehaviour
         // 投擲ベクトルを取得する
         Vector3 throwVector = _throwData.GetThrowVector();
 
-        Debug.Log($"<color=red>ぽいしたよ</color>");
+        Debug.Log($"<color=red>ぽいしたよ→{throwVector}</color>");
+
+        StartCoroutine(PoiPoi(throwVector));
+    }
+
+    private IEnumerator PoiPoi(Vector3 throwVector)
+    {
+        yield return new WaitForEndOfFrame();
 
         // 投擲ベクトルを速度に代入する
         _thisRigidbody.velocity = throwVector;

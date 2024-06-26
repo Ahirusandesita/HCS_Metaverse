@@ -10,7 +10,7 @@ public interface IDependencyProvider<T> where T : DependencyInformation
 {
     T Information { get; }
 }
-
+[System.Serializable]
 public class DependencyInformation
 {
 

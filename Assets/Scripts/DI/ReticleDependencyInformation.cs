@@ -4,7 +4,7 @@ using Oculus.Interaction.Input;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[System.Serializable]
 public class ReticleDependencyInformation : DependencyInformation
 {
     public readonly DistanceHandGrabInteractor DistanceHandGrabInteractor;

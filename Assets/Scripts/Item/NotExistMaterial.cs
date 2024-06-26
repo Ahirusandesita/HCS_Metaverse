@@ -10,7 +10,6 @@ public class NotExistMaterial : MonoBehaviour, IInventoryRetractable
     private MeshRenderer meshRenderer;
     private void Awake()
     {
-
         appearanceInfo_Mesh = new AppearanceInfo_Mesh(
             meshFilter.mesh,
             meshRenderer.materials,
