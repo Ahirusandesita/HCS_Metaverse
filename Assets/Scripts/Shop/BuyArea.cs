@@ -20,16 +20,8 @@ public class BuyArea : MonoBehaviour
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void Reset()
     {
-        try
-        {
-            myCollider ??= GetComponent<BoxCollider>();
-        }
-        catch (NullReferenceException) { }
-        try
-        {
-            meshRenderer ??= GetComponent<MeshRenderer>();
-        }
-        catch (NullReferenceException) { }
+        myCollider ??= GetComponent<BoxCollider>();
+        meshRenderer ??= GetComponent<MeshRenderer>();
     }
 
     private void Awake()

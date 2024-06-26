@@ -22,6 +22,7 @@ public class VisualShop : SafetyInteractionObject
                 .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<AllItemAsset>)
                 .First();
 #endif
+        buyArea = GetComponentInChildren<BuyArea>();
     }
 
     protected override void SafetyOpen()
@@ -50,7 +51,7 @@ public class VisualShop : SafetyInteractionObject
         var itemSelectArgs = selectArgs as ItemSelectArgs;
         var asset = allItemAsset.GetItemAssetByID(itemSelectArgs.id);
         var position = itemSelectArgs.position;
-        var item =Å@IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
+        var item = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
         displayedItems.Add(item);
 
         buyArea.Display(itemSelectArgs.position);

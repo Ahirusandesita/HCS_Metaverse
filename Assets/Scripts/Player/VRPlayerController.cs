@@ -17,12 +17,7 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>
     protected override void Reset()
     {
         base.Reset();
-
-        try
-        {
-            centerEyeTransform ??= transform.Find("CenterEyeAnchor").transform;
-        }
-        catch (NullReferenceException) { }
+        centerEyeTransform ??= transform.Find("CenterEyeAnchor").transform;
     }
 
     protected override void Awake()
