@@ -4,12 +4,10 @@ using Oculus.Interaction.Input;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class ReticleDependencyProvider : MonoBehaviour, IDependencyProvider<ReticleDependencyInformation>
 {
     [SerializeField]
     ReticleDependencyInformation reticleDependencyInformation;
-
     [SerializeField]
     private DistanceHandGrabInteractor distanceHandGrabInteractor;
     [SerializeField]
