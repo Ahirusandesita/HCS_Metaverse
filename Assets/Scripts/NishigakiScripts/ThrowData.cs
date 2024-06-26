@@ -44,7 +44,8 @@ public class ThrowData
     private const float REVOCATION_TIME = 0.1f;
 
     // 速度係数　投擲速度 を オブジェクトが運動する際の速度 に変換するために使用する
-    private const float VELOCITY_COFFICIENT = 1f;
+    [SerializeField]
+    private float VELOCITY_COFFICIENT = 2f;
 
     // 軌道ベクトルの生成に必要な情報たち　軌道座標と保存時刻を持つ
     private OrbitData[] _orbitDatas = new OrbitData[12];

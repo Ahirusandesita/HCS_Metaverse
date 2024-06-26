@@ -8,6 +8,9 @@ using UnityEngine;
 public class ReticleDependencyProvider : MonoBehaviour, IDependencyProvider<ReticleDependencyInformation>
 {
     [SerializeField]
+    ReticleDependencyInformation reticleDependencyInformation;
+
+    [SerializeField]
     private DistanceHandGrabInteractor distanceHandGrabInteractor;
     [SerializeField]
     private DistanceGrabInteractor distanceGrabInteractor;
