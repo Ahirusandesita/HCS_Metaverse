@@ -184,7 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73cba56b57b24a04fa46374ca2c5a766, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerBody: {fileID: 9043037264926603685}
+  IReadonlyPositionAdapter: {fileID: 7011571691283869889}
   playerLeftHand: {fileID: 6508186075653585648}
   playerRightHand: {fileID: 6508186075653574388}
 --- !u!1 &1558308030087521903
@@ -336,6 +336,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f451ba95654f5d40ae778a117edabd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  handType: 1
   distanceHandGrabInteractor: {fileID: 5549703467582361670}
   distanceGrabInteractor: {fileID: 5447822994804488579}
   handRef: {fileID: 8299793514515489064}
@@ -1342,6 +1343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f451ba95654f5d40ae778a117edabd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  handType: 0
   distanceHandGrabInteractor: {fileID: 7627872227980079384}
   distanceGrabInteractor: {fileID: 3943412707121904053}
   handRef: {fileID: 6337108645449859190}
@@ -1364,6 +1366,7 @@ GameObject:
   - component: {fileID: 7398685987471483529}
   - component: {fileID: 9013771318999876011}
   - component: {fileID: 4522849915732727832}
+  - component: {fileID: 7011571691283869889}
   m_Layer: 6
   m_Name: PlayerAvatar
   m_TagString: Untagged
@@ -1516,6 +1519,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 98de21a1049ea5045934f454ae479147, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7011571691283869889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9142103114872535056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60797b2b1e1103b4789523628e4b77fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &209632335693756794
