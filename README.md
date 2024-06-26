@@ -9,3 +9,6 @@
 <b>Right Stick:</b> &lt;XRController&gt;{RightHand}/thumbstick<br>
 <b>A Button:</b> &lt;XRController&gt;{RightHand}/primaryButton<br>
 <b>LeftTrigger:</b> &lt;XRController&gt;{LeftHand}/triggerPressed<br>
+
+<h3>Tech Wiki</h3>
+https://rounded-hugger-739.notion.site/463383b02ddb458aa2ca3dfdc650d31d?v=ede284b806964bdcb00e5fbb596ae174
