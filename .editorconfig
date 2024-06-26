@@ -1,0 +1,7 @@
+﻿[*.cs]
+
+# CS0660: 型は演算子 == または演算子 != を定義しますが、Object.Equals(object o) をオーバーライドしません
+dotnet_diagnostic.CS0660.severity = none
+
+# CS0661: 型は演算子 == または演算子 != を定義しますが、Object.GetHashCode() をオーバーライドしません
+dotnet_diagnostic.CS0661.severity = none

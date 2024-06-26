@@ -63,5 +63,16 @@ public class PokeableCanvasInHandInitialize : InitializeBase, IAvailableSpecific
     public override void Initialize()
     {
         PokeableCanvasInHandDependencyProvider = GameObject.FindObjectOfType<PokeableCanvasProvider>();
+
+        string[] guids = InitializeAssetDatabase.Find();
+        foreach (string guid in guids)
+        {
+            InitializeAsset asset = InitializeAssetDatabase.LoadAssetAtPathFromGuid(guid);
+
+            if (asset.InitializeType == InitializeType.PokeableCanvas)
+            {
+                initialize = asset;
+            }
+        }
     }
 }

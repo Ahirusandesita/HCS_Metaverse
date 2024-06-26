@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1917116172496176959}
+  - component: {fileID: 5722206655390664202}
   m_Layer: 0
   m_Name: Initialize
   m_TagString: Untagged
@@ -34,6 +35,18 @@ Transform:
   - {fileID: 5751262762945206129}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5722206655390664202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2551148088665135835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1625fc8c474b94a4eaf3db6acd6e0a47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5532481096728320957
 GameObject:
   m_ObjectHideFlags: 0
@@ -174,6 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50c53bad9149af04fba50f607b21bdab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  handType: 1
   initialize: {fileID: 11400000, guid: d27d87d042d18e745a9a114d64cdb01e, type: 2}
   ReticleDependencyProvider: {fileID: 0}
 --- !u!114 &7905050200948115168
@@ -188,5 +202,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50c53bad9149af04fba50f607b21bdab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  handType: 0
   initialize: {fileID: 11400000, guid: b1634186ede248b4390098317dba32d7, type: 2}
   ReticleDependencyProvider: {fileID: 0}
