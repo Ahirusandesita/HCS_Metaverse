@@ -15,6 +15,8 @@ public class PlayerInitialize : MonoBehaviour
     private List<UnityEngine.Object> IDependencyInjectorsPlayerHand;
     private List<IDependencyInjector<PlayerHandDependencyInfomation>> dependencyInjectorsPlayerHand => IDependencyInjectorsPlayerHand.OfType<IDependencyInjector<PlayerHandDependencyInfomation>>().ToList();
 
+    private static PlayerProvider playerProvider_static;
+
     private void Awake()
     {
         IDependencyProvider<PlayerBodyDependencyInformation> providerPlayerBody = playerProvider;
@@ -28,6 +30,8 @@ public class PlayerInitialize : MonoBehaviour
         {
             dependencyInjector.Inject(providerPlayerHand.Information);
         }
+
+        playerProvider_static = playerProvider;
     }
 
     public void ConsignmentInject(IDependencyInjector<PlayerBodyDependencyInformation> dependencyInjector)
@@ -38,6 +42,18 @@ public class PlayerInitialize : MonoBehaviour
     public void ConsignmentInject(IDependencyInjector<PlayerHandDependencyInfomation> dependencyInjector)
     {
         IDependencyProvider<PlayerHandDependencyInfomation> providerPlayerHand = playerProvider;
+        dependencyInjector.Inject(providerPlayerHand.Information);
+    }
+
+    public static void ConsignmentInject_static(IDependencyInjector<PlayerBodyDependencyInformation> dependencyInjector)
+    {
+        IDependencyProvider<PlayerBodyDependencyInformation> providerPlayerBody = playerProvider_static;
+        dependencyInjector.Inject(providerPlayerBody.Information);
+    }
+
+    public static void ConsignmentInject_static(IDependencyInjector<PlayerHandDependencyInfomation> dependencyInjector)
+    {
+        IDependencyProvider<PlayerHandDependencyInfomation> providerPlayerHand = playerProvider_static;
         dependencyInjector.Inject(providerPlayerHand.Information);
     }
 }

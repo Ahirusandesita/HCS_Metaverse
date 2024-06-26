@@ -18,7 +18,7 @@ public class TestGameZone : MonoBehaviour, IInteraction, ISelectedNotification
 
     public void Select(SelectArgs selectArgs)
     {
-        Debug.Log("GameŠJŽn");
+        
     }
 
     public void Unselect(SelectArgs selectArgs)
