@@ -6,7 +6,6 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
 {
     [SerializeField] private PointableUnityEventWrapper onGrabbed = default;
     private ItemSelectArgs itemSelectArgs = default;
-    private Outline outline = default;
 
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
@@ -39,13 +38,11 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
         onGrabbed.WhenHover.AddListener(_ =>
         {
             sn.Hover(itemSelectArgs);
-            outline.enabled = true;
         });
 
         onGrabbed.WhenUnhover.AddListener(_ =>
         {
             sn.Unhover(itemSelectArgs);
-            outline.enabled = false;
         });
     }
 
