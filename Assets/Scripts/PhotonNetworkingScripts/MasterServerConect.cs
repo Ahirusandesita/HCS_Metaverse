@@ -22,10 +22,10 @@ public class MasterServerConect : NetworkBehaviour,INetworkRunnerCallbacks, IMas
     private LocalRemoteSeparation localRemoteReparation;
 	private NetworkRunner _networkRunner;
 
+	[ContextMenu("awake")]
 	private void Awake()
 	{
 		_networkRunner = (NetworkRunner)FindObjectOfType(typeof(NetworkRunner));
-		//シングルトン化
 		if (_networkRunner is null)
 		{
 			_networkRunner = Instantiate(_networkRunnerPrefab);
@@ -36,11 +36,11 @@ public class MasterServerConect : NetworkBehaviour,INetworkRunnerCallbacks, IMas
 			return;
 		}
 
-		//コールバックに追加
-		_networkRunner.AddCallbacks(this);
 
-		//Voiceのクライアントに自身のレコーダーを設定
 		_networkRunner.GetComponent<FusionVoiceClient>().PrimaryRecorder = _recorder;
+		_networkRunner.AddCallbacks(this);
+		var a = this as IMasterServerConectable;
+		a.Connect();
 	}
 
 	void IMasterServerConectable.Connect()
@@ -50,7 +50,6 @@ public class MasterServerConect : NetworkBehaviour,INetworkRunnerCallbacks, IMas
 		{
 			GameMode = GameMode.AutoHostOrClient,
 			SessionName = "Room",
-			//シーンマネージャーを設定する
 			SceneManager = _networkRunner.GetComponent<NetworkSceneManagerDefault>()
 		}
 		);
