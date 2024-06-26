@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5998250638352630627}
   - component: {fileID: 5277142121672186451}
+  - component: {fileID: 5283059930006110042}
   m_Layer: 0
   m_Name: MasterServer
   m_TagString: Untagged
@@ -45,3 +46,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   localRemoteReparation: {fileID: 5470062202958232113, guid: b49223fc95aa3784ea2065e977a21df2, type: 3}
+  _networkRunnerPrefab: {fileID: 687033457346460161, guid: b216176172d0a434a91184485630abf8, type: 3}
+--- !u!114 &5283059930006110042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3324060701469087776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 2259395473
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 5277142121672186451}
