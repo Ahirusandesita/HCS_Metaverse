@@ -28,10 +28,6 @@ public class DebutButton : MonoBehaviour, IInjectableSpecificType
     public void Inject(IAvailableSpecificType availableSpecificType)
     {
         this.availableSpecificType = availableSpecificType;
-    }
-
-    private void Awake()
-    {
         FindOVRCanvasManager().Forget();
     }
 
