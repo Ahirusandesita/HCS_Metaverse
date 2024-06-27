@@ -31,7 +31,7 @@ public class PokeableCanvasInHandInitialize : InitializeBase, IAvailableSpecific
     private bool existInstance = false;
     private void Awake()
     {
-        foreach(IInjectableSpecificType injectableSpecificType in injectableSpecificTypes)
+        foreach (IInjectableSpecificType injectableSpecificType in injectableSpecificTypes)
         {
             injectableSpecificType.Inject(this);
         }
@@ -62,6 +62,7 @@ public class PokeableCanvasInHandInitialize : InitializeBase, IAvailableSpecific
 
     public override void Initialize()
     {
+#if UNITY_EDITOR
         PokeableCanvasInHandDependencyProvider = GameObject.FindObjectOfType<PokeableCanvasProvider>();
 
         string[] guids = InitializeAssetDatabase.Find();
@@ -74,5 +75,7 @@ public class PokeableCanvasInHandInitialize : InitializeBase, IAvailableSpecific
                 initialize = asset;
             }
         }
+        UnityEditor.EditorUtility.SetDirty(this);
+#endif
     }
 }

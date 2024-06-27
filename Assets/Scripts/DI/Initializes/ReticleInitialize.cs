@@ -53,6 +53,8 @@ public class ReticleInitialize : InitializeBase
                 initialize = asset;
             }
         }
+
+        UnityEditor.EditorUtility.SetDirty(this);
     }
 
     public static bool operator ==(InitializeType initializeTye, ReticleInitialize reticleInitialize)
