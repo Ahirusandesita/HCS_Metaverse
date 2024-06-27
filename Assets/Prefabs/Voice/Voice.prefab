@@ -60,8 +60,8 @@ MonoBehaviour:
   sourceType: 0
   microphoneType: 0
   audioClip: {fileID: 0}
-  loopAudioClip: 1
-  recordingEnabled: 1
+  loopAudioClip: 0
+  recordingEnabled: 0
   audioSessionParameters:
     Category: 4
     Mode: 1
@@ -73,5 +73,5 @@ MonoBehaviour:
     EnableNS: 1
   stopRecordingWhenPaused: 0
   useOnAudioFilterRead: 0
-  useMicrophoneTypeFallback: 1
+  useMicrophoneTypeFallback: 0
   recordWhenJoined: 1
