@@ -187,6 +187,8 @@ MonoBehaviour:
   IReadonlyPositionAdapter: {fileID: 7011571691283869889}
   playerLeftHand: {fileID: 6508186075653585648}
   playerRightHand: {fileID: 6508186075653574388}
+  playerVisualLeftHand: {fileID: 0}
+  playerVisualRightHand: {fileID: 0}
 --- !u!1 &1558308030087521903
 GameObject:
   m_ObjectHideFlags: 0
@@ -1367,6 +1369,7 @@ GameObject:
   - component: {fileID: 9013771318999876011}
   - component: {fileID: 4522849915732727832}
   - component: {fileID: 7011571691283869889}
+  - component: {fileID: 6632934823874355765}
   m_Layer: 6
   m_Name: PlayerAvatar
   m_TagString: Untagged
@@ -1531,6 +1534,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 60797b2b1e1103b4789523628e4b77fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6632934823874355765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9142103114872535056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ece4941ea7e4d145b6f2a5d886c5fe8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &209632335693756794
