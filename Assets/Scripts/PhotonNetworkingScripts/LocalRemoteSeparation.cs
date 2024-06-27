@@ -10,11 +10,12 @@ public class LocalRemoteSeparation : MonoBehaviour
     private GameObject localGameObject;
 
     [SerializeField]
-    private NetworkPrefabRef remoteViewObject;
+    private NetworkPrefabRef remoteViewObjectPrefab;
 
 	public void RemoteViewCreate(NetworkRunner networkRunner,PlayerRef playerRef)
-    {                                   //FusionÇÃê∂ê¨
-        RemoteView remoteView = networkRunner.Spawn(remoteViewObject,Vector3.zero,Quaternion.identity,playerRef).GetComponent<RemoteView>();
+    {
+        NetworkObject remoteViewObject = networkRunner.Spawn(remoteViewObjectPrefab, Vector3.zero, Quaternion.identity, playerRef);
+        RemoteView remoteView =remoteViewObject.GetComponent<RemoteView>();
 
         Instantiate(separationLifetimeScope).SeparationSetup(localGameObject, remoteView).Build();
     }

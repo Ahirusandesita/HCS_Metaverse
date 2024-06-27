@@ -8,10 +8,10 @@ using Photon.Voice.Fusion;
 
 public interface IMasterServerConectable
 {
-    void Connect();
+	void Connect();
 }
 
-public class MasterServerConect : NetworkBehaviour,INetworkRunnerCallbacks, IMasterServerConectable
+public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMasterServerConectable
 {
 
 	[SerializeField]
@@ -19,32 +19,43 @@ public class MasterServerConect : NetworkBehaviour,INetworkRunnerCallbacks, IMas
 	[SerializeField]
 	private NetworkRunner _networkRunnerPrefab;
 	[SerializeField]
-    private LocalRemoteSeparation localRemoteReparation;
+	private LocalRemoteSeparation localRemoteReparation;
+
 	private NetworkRunner _networkRunner;
 
-	[ContextMenu("awake")]
 	private void Awake()
 	{
 		_networkRunner = (NetworkRunner)FindObjectOfType(typeof(NetworkRunner));
 		if (_networkRunner is null)
 		{
 			_networkRunner = Instantiate(_networkRunnerPrefab);
+			var a = (IMasterServerConectable)this;
+			a.Connect();
 		}
 		else
 		{
+			var a = (IMasterServerConectable)this;
+			a.Connect();
 			Destroy(this.gameObject);
 			return;
 		}
 
-
 		_networkRunner.GetComponent<FusionVoiceClient>().PrimaryRecorder = _recorder;
 		_networkRunner.AddCallbacks(this);
-		var a = this as IMasterServerConectable;
-		a.Connect();
+	}
+
+	public void UpdateNetworkRunner()
+	{
+		_networkRunner.Shutdown(true, ShutdownReason.HostMigration);
+		// NetworkRunnerを生成する
+		_networkRunner = Instantiate(_networkRunnerPrefab);
+		// NetworkRunnerのコールバック対象に、このスクリプト（GameLauncher）を登録する
+		_networkRunner.AddCallbacks(this);
+
 	}
 
 	void IMasterServerConectable.Connect()
-    {
+	{
 		// "Room"という名前のルームに参加する（ルームが存在しなければ作成して参加する）
 		_networkRunner.StartGame(new StartGameArgs
 		{
@@ -65,7 +76,8 @@ public class MasterServerConect : NetworkBehaviour,INetworkRunnerCallbacks, IMas
 
 	public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
 	{
-		localRemoteReparation.RemoteViewCreate(runner,player);
+		if (!_networkRunner.IsServer) { return; }
+		localRemoteReparation.RemoteViewCreate(runner, player);
 	}
 
 	public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
