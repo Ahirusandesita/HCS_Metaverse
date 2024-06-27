@@ -15,6 +15,7 @@ public class BuyArea : MonoBehaviour
     private Action UpdateAction = default;
 
     private readonly Collider[] resultNonAlloc = new Collider[4];
+    private const float DOSCALE_DURATION = 0.2f;
 
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
@@ -51,7 +52,7 @@ public class BuyArea : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// エリアを表示する
     /// </summary>
     /// <param name="playerPosition"></param>
     public void Display(Vector3 playerPosition)
@@ -60,13 +61,16 @@ public class BuyArea : MonoBehaviour
         myTransform.localScale = Vector3.zero;
         meshRenderer.enabled = true;
         UpdateAction += OverlapCheck;
-        myTransform.DOScale(initScale, 0.25f);
+        myTransform.DOScale(initScale, DOSCALE_DURATION);
     }
 
+    /// <summary>
+    /// エリアを非表示する
+    /// </summary>
     public void Hide()
     {
         UpdateAction -= OverlapCheck;
-        myTransform.DOScale(Vector3.zero, 0.25f).OnComplete(() => meshRenderer.enabled = false);
+        myTransform.DOScale(Vector3.zero, DOSCALE_DURATION).OnComplete(() => meshRenderer.enabled = false);
     }
 
     private void OverlapCheck()
