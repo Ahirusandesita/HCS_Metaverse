@@ -54,6 +54,8 @@ public class PlayerInitialize : InitializeBase, ISingletonInitializer<PlayerProv
             dependencyInjector.Inject(providerPlayerHand.Information);
         }
 
+        IDependencyProvider<PlayerVisualHandDependencyInformation> providerPlayerVisualHandAndController = playerProvider;
+
         foreach(IDependencyInjector<PlayerBodyDependencyInformation> injector in InterfaceUtils.FindObjectOfInterfaces<IDependencyInjector<PlayerBodyDependencyInformation>>())
         {
             injector.Inject(providerPlayerBody.Information);
@@ -61,6 +63,10 @@ public class PlayerInitialize : InitializeBase, ISingletonInitializer<PlayerProv
         foreach(IDependencyInjector<PlayerHandDependencyInfomation> injector in InterfaceUtils.FindObjectOfInterfaces<IDependencyInjector<PlayerHandDependencyInfomation>>())
         {
             injector.Inject(providerPlayerHand.Information);
+        }
+        foreach(IDependencyInjector<PlayerVisualHandDependencyInformation> injector in InterfaceUtils.FindObjectOfInterfaces<IDependencyInjector<PlayerVisualHandDependencyInformation>>())
+        {
+            injector.Inject(providerPlayerVisualHandAndController.Information);
         }
     }
 
@@ -93,6 +99,16 @@ public class PlayerInitialize : InitializeBase, ISingletonInitializer<PlayerProv
         }
         IDependencyProvider<PlayerHandDependencyInfomation> providerPlayerHand = playerProvider_static;
         dependencyInjector.Inject(providerPlayerHand.Information);
+    }
+
+    public static void ConsignmentInject_static(IDependencyInjector<PlayerVisualHandDependencyInformation> dependencyInjector)
+    {
+        if (playerProvider_static is null)
+        {
+            playerProvider_static = InterfaceUtils.FindObjectOfInterfaces<ISingletonInitializer<PlayerProvider>>()[0].Provider;
+        }
+        IDependencyProvider<PlayerVisualHandDependencyInformation> providerPlayerHandAndController = playerProvider_static;
+        dependencyInjector.Inject(providerPlayerHandAndController.Information);
     }
 
     public override void Initialize()
