@@ -1671,6 +1671,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1942162650}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &582314631 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8424850574183054459, guid: c170afc76fbd3f44d998f88f56c3ebbc, type: 3}
+  m_PrefabInstance: {fileID: 940213346}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &582314636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582314631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfe41b523b23cdd4181558fec88afe99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &585636844
 GameObject:
   m_ObjectHideFlags: 0
@@ -1750,6 +1767,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 838491555}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &604451415 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9142103114872535056, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+  m_PrefabInstance: {fileID: 921979061}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &627653289 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8299274384004940590, guid: 13264d633d3544946b062a9df1e2e40f, type: 3}
@@ -1854,6 +1876,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Photon
       objectReference: {fileID: 0}
+    - target: {fileID: 9207041947322171013, guid: 4fa54e5eec46828498093a64a48029bf, type: 3}
+      propertyPath: localGameObject
+      value: 
+      objectReference: {fileID: 604451415}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3160,7 +3186,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8424850574183054459, guid: c170afc76fbd3f44d998f88f56c3ebbc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 582314636}
   m_SourcePrefab: {fileID: 100100000, guid: c170afc76fbd3f44d998f88f56c3ebbc, type: 3}
 --- !u!1 &990021031
 GameObject:
