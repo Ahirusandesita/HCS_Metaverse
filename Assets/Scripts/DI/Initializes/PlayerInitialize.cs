@@ -53,6 +53,15 @@ public class PlayerInitialize : InitializeBase, ISingletonInitializer<PlayerProv
         {
             dependencyInjector.Inject(providerPlayerHand.Information);
         }
+
+        foreach(IDependencyInjector<PlayerBodyDependencyInformation> injector in InterfaceUtils.FindObjectOfInterfaces<IDependencyInjector<PlayerBodyDependencyInformation>>())
+        {
+            injector.Inject(providerPlayerBody.Information);
+        }
+        foreach(IDependencyInjector<PlayerHandDependencyInfomation> injector in InterfaceUtils.FindObjectOfInterfaces<IDependencyInjector<PlayerHandDependencyInfomation>>())
+        {
+            injector.Inject(providerPlayerHand.Information);
+        }
     }
 
     public void ConsignmentInject(IDependencyInjector<PlayerBodyDependencyInformation> dependencyInjector)
