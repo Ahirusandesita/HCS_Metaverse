@@ -30,10 +30,21 @@ public class PlayerVisualHandDependencyInformation : DependencyInformation
     public readonly Transform VisualLeftHand;
     public readonly Transform VisualRightHand;
 
-    public PlayerVisualHandDependencyInformation(Transform visualLeftHand, Transform visualRightHand)
+    public readonly Transform VisualLeftController;
+    public readonly Transform VisualRightController;
+    public readonly Transform VisualLeftControllerHand;
+    public readonly Transform VisualRightControllerHand;
+
+    public PlayerVisualHandDependencyInformation(Transform visualLeftHand, Transform visualRightHand,Transform visualLeftController,Transform visualRightController,Transform visualLeftControllerHand,Transform visualRightControllerHand)
     {
         this.VisualLeftHand = visualLeftHand;
         this.VisualRightHand = visualRightHand;
+
+        this.VisualLeftController = visualLeftController;
+        this.VisualRightController = visualRightController;
+
+        this.VisualLeftControllerHand = visualLeftControllerHand;
+        this.VisualRightControllerHand = visualRightControllerHand;
     }
 }
 
@@ -52,11 +63,20 @@ public class PlayerProvider : MonoBehaviour, IDependencyProvider<PlayerBodyDepen
     private Transform playerVisualLeftHand;
     [SerializeField]
     private Transform playerVisualRightHand;
+    [SerializeField]
+    private Transform playerVisualLeftController;
+    [SerializeField]
+    private Transform playerVisualRightController;
+    [SerializeField]
+    private Transform playerVisualLeftControllerHand;
+    [SerializeField]
+    private Transform playerVisualRightControllerHand;
+
 
 
     PlayerHandDependencyInfomation IDependencyProvider<PlayerHandDependencyInfomation>.Information => new PlayerHandDependencyInfomation(playerLeftHand, playerRightHand);
 
     PlayerBodyDependencyInformation IDependencyProvider<PlayerBodyDependencyInformation>.Information => new PlayerBodyDependencyInformation(playerBody);
 
-    PlayerVisualHandDependencyInformation IDependencyProvider<PlayerVisualHandDependencyInformation>.Information => new PlayerVisualHandDependencyInformation(playerVisualLeftHand, playerVisualRightHand);
+    PlayerVisualHandDependencyInformation IDependencyProvider<PlayerVisualHandDependencyInformation>.Information => new PlayerVisualHandDependencyInformation(playerVisualLeftHand, playerVisualRightHand,playerVisualLeftController,playerVisualRightController,playerVisualLeftControllerHand,playerVisualRightControllerHand);
 }
