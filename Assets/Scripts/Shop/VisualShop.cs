@@ -26,8 +26,9 @@ public class VisualShop : SafetyInteractionObject, IDependencyInjector<PlayerBod
         buyArea = GetComponentInChildren<BuyArea>();
     }
 
-    private void Start()
+    protected override void Awake()
     {
+        base.Awake();
         PlayerInitialize.ConsignmentInject_static(this);
     }
 

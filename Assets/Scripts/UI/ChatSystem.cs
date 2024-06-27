@@ -31,6 +31,10 @@ public class ChatSystem : MonoBehaviour
         All,
         Manually,
         System,
+        /// <summary>
+        /// Editor以外で使わないで
+        /// </summary>
+        Debug,
     }
 
     public enum SystemMessageType
@@ -39,6 +43,8 @@ public class ChatSystem : MonoBehaviour
         LeftTheWorld,
     }
 
+    private static ChatSystem s_instance = default;
+    public static ChatSystem Instance => s_instance;
 
     [SerializeField] private TextMeshProUGUI target = default;
     [SerializeField] private Scrollbar verticalScrollbar = default;
@@ -73,11 +79,18 @@ public class ChatSystem : MonoBehaviour
     private void Reset()
     {
         target ??= GetComponentInChildren<TextMeshProUGUI>();
-        try
+        verticalScrollbar ??= transform.Find("Scrollbar Vertical").GetComponent<Scrollbar>();
+    }
+
+    private void Awake()
+    {
+        if (s_instance is not null)
         {
-            verticalScrollbar ??= transform.Find("Scrollbar Vertical").GetComponent<Scrollbar>();
+            Destroy(this);
+            return;
         }
-        catch (NullReferenceException) { }
+
+        s_instance = this;
     }
 
     /// <summary>
@@ -166,9 +179,34 @@ public class ChatSystem : MonoBehaviour
                 }
                 return systemLogs;
 
+#if UNITY_EDITOR
+            case LogType.Debug:
+                var debugLogs = new List<Log>();
+                foreach (var log in chatLogs)
+                {
+                    if (log.logType == LogType.Debug)
+                    {
+                        debugLogs.Add(log);
+                    }
+                }
+                return debugLogs;
+#endif
+
             default:
                 throw new ArgumentOutOfRangeException(nameof(logType));
         }
+    }
+
+    /// <summary>
+    /// ChatWindowにデバッグ用メッセージを送信する
+    /// <br>※Awakeでの実行はエラーが出る可能性があるため非推奨</br>
+    /// </summary>
+    /// <param name="message"></param>
+    [Conditional("UNITY_EDITOR")]
+    public static void Debug(string message)
+    {
+        message = $"<color=red>{message}</color>";
+        Instance.UpdateLog(message, LogType.Debug);
     }
 
     private void UpdateLog(string content, LogType logType)
@@ -195,6 +233,12 @@ public class ChatSystem : MonoBehaviour
                 {
                     // [HH:mm] の形式で表示
                     timeStamp = $"[{log.timeStamp:HH:mm}] ";
+#if UNITY_EDITOR
+                    if (logType == LogType.Debug)
+                    {
+                        timeStamp = $"<color=red>{timeStamp}</color>";
+                    }
+#endif
                 }
 
                 // StringBuilderで文字列連結

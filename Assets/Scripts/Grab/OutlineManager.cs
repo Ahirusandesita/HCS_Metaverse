@@ -19,10 +19,7 @@ public class OutlineManager : MonoBehaviour, IDependencyInjector<PlayerBodyDepen
         outline.OutlineColor = new Color32(255, 163, 0, 255);
         outline.OutlineWidth = 10f;
         outline.enabled = false;
-    }
 
-    private void Start()
-    {
         PlayerInitialize.ConsignmentInject_static(this);
     }
 
