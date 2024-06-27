@@ -10,6 +10,7 @@ public class CanvasLotateManager : MonoBehaviour, IPutCanvasInHand,ICanvasFixabl
     private float y;
 
     private bool isFixed = false;
+    private bool isInject = false;
 
     void ICanvasFixable.Fixed(bool isFixed)
     {
@@ -28,6 +29,8 @@ public class CanvasLotateManager : MonoBehaviour, IPutCanvasInHand,ICanvasFixabl
     {
         this.cameraTransform = cameraTransform;
         this.handTransform = handTransform;
+
+        isInject = true;
     }
 
     // Start is called before the first frame update
@@ -39,6 +42,11 @@ public class CanvasLotateManager : MonoBehaviour, IPutCanvasInHand,ICanvasFixabl
     // Update is called once per frame
     void Update()
     {
+        if (!isInject)
+        {
+            return;
+        }
+
         if (isFixed)
         {
             return;
