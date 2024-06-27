@@ -17,19 +17,27 @@ public class DependencyInjectionException : Exception
 
     }
 }
-public class PlayerInitialize : InitializeBase
+public interface ISingletonInitializer<T>
+{
+    T Provider { get; }
+}
+
+public class PlayerInitialize : InitializeBase, ISingletonInitializer<PlayerProvider>
 {
     [SerializeField]
     private PlayerProvider playerProvider;
 
     [SerializeField, InterfaceType(typeof(IDependencyInjector<PlayerBodyDependencyInformation>))]
     private List<UnityEngine.Object> IDependencyInjectorsPlayerBody;
-    private List<IDependencyInjector<PlayerBodyDependencyInformation>> dependencyInjectorsPlayerBody => IDependencyInjectorsPlayerBody.OfType<IDependencyInjector<PlayerBodyDependencyInformation>>().ToList();
+    private List<IDependencyInjector<PlayerBodyDependencyInformation>> dependencyInjectorsPlayerBody =>
+        IDependencyInjectorsPlayerBody.OfType<IDependencyInjector<PlayerBodyDependencyInformation>>().ToList();
 
     [SerializeField, InterfaceType(typeof(IDependencyInjector<PlayerHandDependencyInfomation>))]
     private List<UnityEngine.Object> IDependencyInjectorsPlayerHand;
-    private List<IDependencyInjector<PlayerHandDependencyInfomation>> dependencyInjectorsPlayerHand => IDependencyInjectorsPlayerHand.OfType<IDependencyInjector<PlayerHandDependencyInfomation>>().ToList();
+    private List<IDependencyInjector<PlayerHandDependencyInfomation>> dependencyInjectorsPlayerHand =>
+        IDependencyInjectorsPlayerHand.OfType<IDependencyInjector<PlayerHandDependencyInfomation>>().ToList();
 
+    PlayerProvider ISingletonInitializer<PlayerProvider>.Provider => playerProvider;
     private static PlayerProvider playerProvider_static;
 
     private void Awake()
@@ -45,8 +53,6 @@ public class PlayerInitialize : InitializeBase
         {
             dependencyInjector.Inject(providerPlayerHand.Information);
         }
-
-        playerProvider_static = playerProvider;
     }
 
     public void ConsignmentInject(IDependencyInjector<PlayerBodyDependencyInformation> dependencyInjector)
@@ -62,9 +68,9 @@ public class PlayerInitialize : InitializeBase
 
     public static void ConsignmentInject_static(IDependencyInjector<PlayerBodyDependencyInformation> dependencyInjector)
     {
-        if(playerProvider_static is null)
+        if (playerProvider_static is null)
         {
-            throw new DependencyInjectionException($"PlayerProvider is NULL");
+            playerProvider_static = InterfaceUtils.FindObjectOfInterfaces<ISingletonInitializer<PlayerProvider>>()[0].Provider;
         }
         IDependencyProvider<PlayerBodyDependencyInformation> providerPlayerBody = playerProvider_static;
         dependencyInjector.Inject(providerPlayerBody.Information);
@@ -72,9 +78,9 @@ public class PlayerInitialize : InitializeBase
 
     public static void ConsignmentInject_static(IDependencyInjector<PlayerHandDependencyInfomation> dependencyInjector)
     {
-        if(playerProvider_static is null)
+        if (playerProvider_static is null)
         {
-            throw new DependencyInjectionException($"PlayerProvider is NULL");
+            playerProvider_static = InterfaceUtils.FindObjectOfInterfaces<ISingletonInitializer<PlayerProvider>>()[0].Provider;
         }
         IDependencyProvider<PlayerHandDependencyInfomation> providerPlayerHand = playerProvider_static;
         dependencyInjector.Inject(providerPlayerHand.Information);
@@ -83,5 +89,10 @@ public class PlayerInitialize : InitializeBase
     public override void Initialize()
     {
         playerProvider = InterfaceUtils.FindObjectOfInterfaces<PlayerProvider>()[0];
+    }
+
+    private void OnDestroy()
+    {
+        playerProvider_static = null;
     }
 }
