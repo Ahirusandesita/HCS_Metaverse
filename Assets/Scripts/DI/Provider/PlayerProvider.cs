@@ -25,7 +25,19 @@ public class PlayerHandDependencyInfomation : DependencyInformation
     }
 }
 
-public class PlayerProvider : MonoBehaviour, IDependencyProvider<PlayerBodyDependencyInformation>, IDependencyProvider<PlayerHandDependencyInfomation>
+public class PlayerVisualHandDependencyInformation : DependencyInformation
+{
+    public readonly Transform VisualLeftHand;
+    public readonly Transform VisualRightHand;
+
+    public PlayerVisualHandDependencyInformation(Transform visualLeftHand, Transform visualRightHand)
+    {
+        this.VisualLeftHand = visualLeftHand;
+        this.VisualRightHand = visualRightHand;
+    }
+}
+
+public class PlayerProvider : MonoBehaviour, IDependencyProvider<PlayerBodyDependencyInformation>, IDependencyProvider<PlayerHandDependencyInfomation>,IDependencyProvider<PlayerVisualHandDependencyInformation>
 {
     [SerializeField, InterfaceType(typeof(IReadonlyPositionAdapter))]
     private UnityEngine.Object IReadonlyPositionAdapter;
@@ -36,8 +48,15 @@ public class PlayerProvider : MonoBehaviour, IDependencyProvider<PlayerBodyDepen
     [SerializeField]
     private Transform playerRightHand;
 
+    [SerializeField]
+    private Transform playerVisualLeftHand;
+    [SerializeField]
+    private Transform playerVisualRightHand;
+
 
     PlayerHandDependencyInfomation IDependencyProvider<PlayerHandDependencyInfomation>.Information => new PlayerHandDependencyInfomation(playerLeftHand, playerRightHand);
 
     PlayerBodyDependencyInformation IDependencyProvider<PlayerBodyDependencyInformation>.Information => new PlayerBodyDependencyInformation(playerBody);
+
+    PlayerVisualHandDependencyInformation IDependencyProvider<PlayerVisualHandDependencyInformation>.Information => new PlayerVisualHandDependencyInformation(playerVisualLeftHand, playerVisualRightHand);
 }
