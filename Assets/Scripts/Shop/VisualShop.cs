@@ -17,7 +17,7 @@ public class VisualShop : SafetyInteractionObject, IDependencyInjector<PlayerBod
     private void Reset()
     {
 #if UNITY_EDITOR
-        // なぜかConditional付けてもAssetDatabase型がビルド時にエラー起こすので、仕方なく二重
+        // Conditionalはメソッド内はコンパイルされてしまうので、仕方なく二重
         allItemAsset = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(AllItemAsset)}")
                 .Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
                 .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<AllItemAsset>)
@@ -57,6 +57,8 @@ public class VisualShop : SafetyInteractionObject, IDependencyInjector<PlayerBod
         var itemSelectArgs = selectArgs as ItemSelectArgs;
         var asset = allItemAsset.GetItemAssetByID(itemSelectArgs.id);
         var position = itemSelectArgs.position;
+
+        // 選択されたアイテムと同じものを生成する（コピーを表現）
         var item = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
         displayedItems.Add(item.gameObject);
 
