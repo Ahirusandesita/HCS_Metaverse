@@ -10,13 +10,13 @@ public class DualHandMainHandTracker : MonoBehaviour
 
     public void Select()
     {
-        // 
+        // OffHandTracker‚ð’Í‚ß‚é‚æ‚¤‚É‚·‚é
         _offHandsGrabbable.enabled = true;
     }
 
     public void UnSelect()
     {
-        // 
+        // OffHandTracker‚ð’Í‚ß‚È‚¢‚æ‚¤‚É‚·‚é
         _offHandsGrabbable.enabled = false;
     }
 }
