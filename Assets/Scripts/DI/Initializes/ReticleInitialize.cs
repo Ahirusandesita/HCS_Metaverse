@@ -33,6 +33,7 @@ public class ReticleInitialize : InitializeBase
 
     public override void Initialize()
     {
+#if UNITY_EDITOR
         ReticleDependencyProvider[] reticleDependencyProviders = GameObject.FindObjectsOfType<ReticleDependencyProvider>();
 
         foreach (ReticleDependencyProvider @object in reticleDependencyProviders)
@@ -55,6 +56,7 @@ public class ReticleInitialize : InitializeBase
         }
 
         UnityEditor.EditorUtility.SetDirty(this);
+#endif
     }
 
     public static bool operator ==(InitializeType initializeTye, ReticleInitialize reticleInitialize)
