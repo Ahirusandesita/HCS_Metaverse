@@ -9,7 +9,7 @@ public class ItemAsset : ScriptableObject
     [SerializeField] private GameObject prefab = default;
     [Space(10)]
     [SerializeField] private bool allowVisualCatalog = false;
-    [SerializeField, HideWhile(nameof(allowVisualCatalog), false), InterfaceType(typeof(IDisplayItem))]
+    [SerializeField, HideForBool(nameof(allowVisualCatalog), false), InterfaceType(typeof(IDisplayItem))]
     private Object displayItem = default;
 
     public int ItemID => itemID;
