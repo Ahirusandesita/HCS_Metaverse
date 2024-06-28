@@ -1526,11 +1526,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!4 &525606842 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2641608407761755457, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-  m_PrefabInstance: {fileID: 921979061}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &549924836
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2790,6 +2785,10 @@ PrefabInstance:
       propertyPath: _handGrabPoses.Array.data[0]
       value: 
       objectReference: {fileID: 1345170393}
+    - target: {fileID: 3449801304472923758, guid: f25db58ef230d3e408bc64c00ff54147, type: 3}
+      propertyPath: _transferOnSecondSelection
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4350234574138482786, guid: f25db58ef230d3e408bc64c00ff54147, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -2997,30 +2996,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5671115918361860096, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-      propertyPath: playerVisualLeftHand
-      value: 
-      objectReference: {fileID: 1932868255}
-    - target: {fileID: 5671115918361860096, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-      propertyPath: playerVisualRightHand
-      value: 
-      objectReference: {fileID: 2031215445}
-    - target: {fileID: 5671115918361860096, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-      propertyPath: playerVisualLeftController
-      value: 
-      objectReference: {fileID: 525606842}
-    - target: {fileID: 5671115918361860096, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-      propertyPath: playerVisualRightController
-      value: 
-      objectReference: {fileID: 1814234931}
-    - target: {fileID: 5671115918361860096, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-      propertyPath: playerVisualLeftControllerHand
-      value: 
-      objectReference: {fileID: 1810042103}
-    - target: {fileID: 5671115918361860096, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-      propertyPath: playerVisualRightControllerHand
-      value: 
-      objectReference: {fileID: 1810109519}
     - target: {fileID: 9043037264926603685, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -6178,21 +6153,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05ed7dc8e53f68b4b89b57797675eeeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &1810042103 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 816662654532004885, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-  m_PrefabInstance: {fileID: 921979061}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1810109519 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2792310077848817182, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-  m_PrefabInstance: {fileID: 921979061}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1814234931 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7520638469477159236, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-  m_PrefabInstance: {fileID: 921979061}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1860992351
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6483,11 +6443,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2106935852}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1932868255 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 409364639812271698, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-  m_PrefabInstance: {fileID: 921979061}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1940321113
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6775,11 +6730,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f451ba95654f5d40ae778a117edabd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &2031215445 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8853656343675916507, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-  m_PrefabInstance: {fileID: 921979061}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2059439025
 PrefabInstance:
   m_ObjectHideFlags: 0
