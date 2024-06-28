@@ -5,11 +5,19 @@ using UnityEngine;
 /// </summary>
 public class CustomFieldAttribute : PropertyAttribute
 {
-    public readonly string addDisplayName = default;
-
-    public CustomFieldAttribute(string addDisplayName)
+    public enum DisplayType
     {
-        this.addDisplayName = addDisplayName;
+        Add,
+        Replace,
+    }
+
+    public readonly string displayName = default;
+    public readonly DisplayType displayType = default;
+
+    public CustomFieldAttribute(string displayName, DisplayType displayType = DisplayType.Add)
+    {
+        this.displayName = displayName;
+        this.displayType = displayType;
     }
 }
 
@@ -22,7 +30,15 @@ namespace UnityEditor
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             var customFieldAttribute = attribute as CustomFieldAttribute;
-            label.text += $" ({customFieldAttribute.addDisplayName})";
+            if (customFieldAttribute.displayType == CustomFieldAttribute.DisplayType.Add)
+            {
+                label.text += $" ({customFieldAttribute.displayName})";
+            }
+            else
+            {
+                label.text = customFieldAttribute.displayName;
+            }
+
             EditorGUI.PropertyField(position, property, label);
         }
     }

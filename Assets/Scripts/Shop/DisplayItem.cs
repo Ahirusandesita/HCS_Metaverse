@@ -11,11 +11,7 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void Reset()
     {
-        try
-        {
-            onGrabbed ??= GetComponent<PointableUnityEventWrapper>();
-        }
-        catch (System.NullReferenceException) { }
+        onGrabbed ??= GetComponent<PointableUnityEventWrapper>();
     }
 
     void IDisplayItem.InjectItemSelectArgs(ItemSelectArgs itemSelectArgs)

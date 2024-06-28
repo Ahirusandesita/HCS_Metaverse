@@ -1,4 +1,3 @@
-using System;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,7 +7,15 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>
 {
-    [SerializeField] private Transform centerEyeTransform = default;
+    [SerializeField]
+    private Transform centerEyeTransform = default;
+    [Header("à⁄ìÆï˚éÆ")]
+    [SerializeField, CustomField("Move Type", CustomFieldAttribute.DisplayType.Replace)]
+    private MoveTypeReactiveProperty moveTypeRP = default;
+    [SerializeField, HideForMoveType(nameof(moveTypeEditor), VRMoveType.Natural)]
+    private SpriteRenderer warpSymbol = default;
+    [SerializeField, HideInInspector]
+    private VRMoveType moveTypeEditor = default;
 
     [Tooltip("ç∂âEÇ«ÇøÇÁÇ…âÒì]Ç∑ÇÈÇ©")]
     private FloatReactiveProperty lookDirX_RP = default;
@@ -18,6 +25,12 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>
     {
         base.Reset();
         centerEyeTransform ??= transform.Find("CenterEyeAnchor").transform;
+    }
+
+    [System.Diagnostics.Conditional("UNITY_EDITOR")]
+    private void OnValidate()
+    {
+        moveTypeEditor = moveTypeRP.Value;
     }
 
     protected override void Awake()
@@ -42,6 +55,28 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>
             .With("Left", "<Mouse>/leftButton")
             .With("Right", "<Mouse>/rightButton");
 #endif
+
+        moveTypeRP
+            .AddTo(this)
+            .Where(value => value == VRMoveType.Warp)
+            .Subscribe(value =>
+            {
+                IsMovingRP.Subscribe(isMoving =>
+                {
+                    if (isMoving)
+                    {
+                        // UI spawn
+                        warpSymbol.transform.position = myTransform.position;
+                        warpSymbol.enabled = true;
+                    }
+                    else
+                    {
+                        // UI despawn
+                        warpSymbol.enabled = false;
+                    }
+                })
+                .AddTo(this);
+            });
     }
 
     protected override void Update()
@@ -60,6 +95,32 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>
         lookDirX_RP.Value = lookDir.x == 0f
             ? 0f
             : Mathf.Sign(lookDir.x);
+    }
+
+    protected override void Move()
+    {
+        switch (moveTypeRP.Value)
+        {
+            case VRMoveType.Natural:
+                base.Move();
+                break;
+
+            case VRMoveType.Warp:
+                WarpMove();
+                break;
+        }
+    }
+
+    /// <summary>
+    /// ÉèÅ[Évà⁄ìÆ
+    /// </summary>
+    private void WarpMove()
+    {
+        if (!IsMovingRP.Value)
+        {
+            return;
+        }
+
     }
 
     /// <summary>
