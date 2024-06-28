@@ -9,11 +9,15 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>
 {
     [SerializeField]
     private Transform centerEyeTransform = default;
+
+    // Inspectorägí£ÇÃAtrributeëΩÇﬂÅBÇ®ãCÇ…Ç»Ç≥ÇÁÇ∏ÅI
     [Header("à⁄ìÆï˚éÆ")]
     [SerializeField, CustomField("Move Type", CustomFieldAttribute.DisplayType.Replace)]
     private MoveTypeReactiveProperty moveTypeRP = default;
+
     [SerializeField, HideForMoveType(nameof(moveTypeEditor), VRMoveType.Natural)]
     private SpriteRenderer warpSymbol = default;
+
     [SerializeField, HideInInspector]
     private VRMoveType moveTypeEditor = default;
 
