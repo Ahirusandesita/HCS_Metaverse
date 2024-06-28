@@ -113,8 +113,10 @@ public class PlayerInitialize : InitializeBase, ISingletonInitializer<PlayerProv
 
     public override void Initialize()
     {
+#if UNITY_EDITOR
         playerProvider = InterfaceUtils.FindObjectOfInterfaces<PlayerProvider>()[0];
         UnityEditor.EditorUtility.SetDirty(this);
+#endif
     }
 
     private void OnDestroy()

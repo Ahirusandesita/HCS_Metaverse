@@ -4,7 +4,7 @@ public abstract class InitializeBase : MonoBehaviour
 {
     public abstract void Initialize();
 }
-
+#if UNITY_EDITOR
 public static class InitializeAssetDatabase
 {
     public static string[] Find()
@@ -33,3 +33,4 @@ public static class InitializeAssetDatabase
         return UnityEditor.AssetDatabase.LoadAssetAtPath<InitializeAsset>(path);
     }
 }
+#endif
