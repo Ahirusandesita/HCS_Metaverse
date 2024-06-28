@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
 
-public class ViewLocker : MonoBehaviour
+public class ViewLocker : MonoBehaviour, IDependencyInjector<PlayerVisualHandDependencyInformation>
 {
     [SerializeField, Tooltip("見た目用オブジェクト")]
-    private GameObject _viewObject = default;
+    private GameObject _visualObject = default;
 
     [SerializeField, Tooltip("見た目を固定するための境界線との判定を行う座標群")]
     private Transform[] _lockPositionCheckerTransforms = new Transform[4];
@@ -17,9 +18,55 @@ public class ViewLocker : MonoBehaviour
     private bool _isGrabbing = false;
 
     // 
-    private Vector3 _lockingPosition = default;
+    private InteractorDetailEventIssuer _detailEventer = default;
 
-    void Update()
+    // 
+    private PlayerVisualHandDependencyInformation _handVisualInformation = default;
+
+    // 
+    private bool _isSetTransforms = default;
+
+    // 
+    private HandType _detailHandType = default;
+
+    // 
+    private HandType _grabbingHandType = default;
+
+    // 
+    private Vector3 _lockingvisualObjectPosition = default;
+    private Quaternion _lockingVisualObjectRotation = default;
+
+    // 
+    private Vector3 _lockingVisualRightHandPosition = default;
+    private Quaternion _lockingVisualRightHandRotation = default;
+
+    // 
+    private Vector3 _lockingVisualLeftHandPosition = default;
+    private Quaternion _lockingVisualLeftHandRotation = default;
+
+    // 
+    private Vector3 _lockingVisualRightControllerPosition = default;
+    private Quaternion _lockingVisualRightControllerRotation = default;
+
+    // 
+    private Vector3 _lockingVisualLeftControllerPosition = default;
+    private Quaternion _lockingVisualLeftControllerRotation = default;
+
+    // 
+    private Vector3 _lockingVisualRightControllerHandPosition = default;
+    private Quaternion _lockingVisualRightControllerHandRotation = default;
+
+    // 
+    private Vector3 _lockingVisualLeftControllerHandPosition = default;
+    private Quaternion _lockingVisualLeftControllerHandRotation = default;
+
+    private void Start()
+    {
+        // 掴んだ時の手の方向を講読しておく
+        _detailEventer.OnInteractor += (handler) => { _detailHandType = handler.HandType; };
+    }
+
+    private void LateUpdate()
     {
         // 
         if (_isGrabbing)
@@ -28,30 +75,27 @@ public class ViewLocker : MonoBehaviour
             if (CheckInLockPosition())
             {
                 // 
-                if (_lockingPosition == default)
+                if (_isSetTransforms)
                 {
                     // 
-                    _lockingPosition = _viewObject.transform.position;
-
-                    // 
-                    _lockingPosition.y = _lockPositionHeight;
+                    LockingViewTransforms(_grabbingHandType);
                 }
 
                 // 
-                _viewObject.transform.position = _lockingPosition;
+                SetViewParameters();
             }
             // 
-            else if(_lockingPosition != default)
+            else if(_isSetTransforms)
             {
                 // 
-                _lockingPosition = default;
+                ResetViewParameters();
             }
         }
         // 
-        else if(_lockingPosition != default)
+        else if(_isSetTransforms)
         {
             // 
-            _lockingPosition = default;
+            ResetViewParameters();
         }
     }
 
@@ -59,12 +103,128 @@ public class ViewLocker : MonoBehaviour
     {
         // 
         _isGrabbing = true;
+
+        // 
+        _grabbingHandType = _detailHandType;
     }
 
     public void UnSelect()
     {
         // 
         _isGrabbing = false;
+    }
+
+    private void SetViewParameters()
+    {
+        // 
+        _lockingvisualObjectPosition = _visualObject.transform.position;
+        _lockingVisualObjectRotation = _visualObject.transform.rotation;
+
+        // 
+        switch (_grabbingHandType)
+        {
+            case HandType.Right:
+                // 
+                _lockingVisualRightHandPosition = _handVisualInformation.VisualRightHand.transform.position;
+                _lockingVisualRightHandRotation = _handVisualInformation.VisualRightHand.transform.rotation;
+
+                // 
+                _lockingVisualRightControllerPosition = _handVisualInformation.VisualRightController.transform.position;
+                _lockingVisualRightControllerRotation = _handVisualInformation.VisualRightController.transform.rotation;
+
+                // 
+                _lockingVisualRightControllerHandPosition = _handVisualInformation.VisualRightControllerHand.transform.position;
+                _lockingVisualRightControllerHandRotation = _handVisualInformation.VisualRightControllerHand.transform.rotation;
+
+                break;
+
+            case HandType.Left:
+                // 
+                _lockingVisualLeftHandPosition = _handVisualInformation.VisualLeftHand.transform.position;
+                _lockingVisualLeftHandRotation = _handVisualInformation.VisualLeftHand.transform.rotation;
+
+                // 
+                _lockingVisualLeftControllerPosition = _handVisualInformation.VisualLeftController.transform.position;
+                _lockingVisualLeftControllerRotation = _handVisualInformation.VisualLeftController.transform.rotation;
+
+                // 
+                _lockingVisualLeftControllerHandPosition = _handVisualInformation.VisualLeftControllerHand.transform.position;
+                _lockingVisualLeftControllerHandRotation = _handVisualInformation.VisualLeftControllerHand.transform.rotation;
+
+                break;
+        }
+    }
+
+    private void ResetViewParameters()
+    {
+        // 
+        _lockingvisualObjectPosition = default;
+        _lockingVisualObjectRotation = default;
+
+        // 
+        _lockingVisualRightHandPosition = default;
+        _lockingVisualRightHandRotation = default;
+
+        // 
+        _lockingVisualLeftHandPosition = default;
+        _lockingVisualLeftHandRotation = default;
+
+        // 
+        _lockingVisualRightControllerPosition = default;
+        _lockingVisualRightControllerRotation = default;
+
+        // 
+        _lockingVisualLeftControllerPosition = default;
+        _lockingVisualLeftControllerRotation = default;
+
+        // 
+        _lockingVisualRightControllerHandPosition = default;
+        _lockingVisualRightControllerHandRotation = default;
+
+        // 
+        _lockingVisualLeftControllerHandPosition = default;
+        _lockingVisualLeftControllerHandRotation = default;
+    }
+
+    private void LockingViewTransforms(HandType grabbingHandType)
+    {
+        // 
+        _visualObject.transform.position = _lockingvisualObjectPosition;
+        _visualObject.transform.rotation = _lockingVisualObjectRotation;
+
+        // 
+        switch (grabbingHandType)
+        {
+            case HandType.Right:
+                // 
+                _handVisualInformation.VisualRightHand.transform.position = _lockingVisualRightHandPosition;
+                _handVisualInformation.VisualRightHand.transform.rotation = _lockingVisualRightHandRotation;
+
+                // 
+                _handVisualInformation.VisualRightController.transform.position = _lockingVisualRightControllerPosition;
+                _handVisualInformation.VisualRightController.transform.rotation = _lockingVisualRightControllerRotation;
+
+                // 
+                _handVisualInformation.VisualRightControllerHand.transform.position = _lockingVisualRightControllerHandPosition;
+                _handVisualInformation.VisualRightControllerHand.transform.rotation = _lockingVisualRightControllerHandRotation;
+
+                break;
+
+            case HandType.Left:
+                // 
+                _handVisualInformation.VisualLeftHand.transform.position = _lockingVisualLeftHandPosition;
+                _handVisualInformation.VisualLeftHand.transform.rotation = _lockingVisualLeftHandRotation;
+
+                // 
+                _handVisualInformation.VisualLeftController.transform.position = _lockingVisualLeftControllerPosition;
+                _handVisualInformation.VisualLeftController.transform.rotation = _lockingVisualLeftControllerRotation;
+
+                // 
+                _handVisualInformation.VisualLeftControllerHand.transform.position = _lockingVisualLeftControllerHandPosition;
+                _handVisualInformation.VisualLeftControllerHand.transform.rotation = _lockingVisualLeftControllerHandRotation;
+
+                break;
+        }
     }
 
     /// <summary>
@@ -86,5 +246,11 @@ public class ViewLocker : MonoBehaviour
 
         // すべての座標が境界線より上だった場合
         return false;
+    }
+
+    public void Inject(PlayerVisualHandDependencyInformation information)
+    {
+        // 手のView情報を取得しておく
+        _handVisualInformation = information;
     }
 }
