@@ -158,8 +158,14 @@ public class Throwable : MonoBehaviour, IDependencyInjector<PlayerHandDependency
         }
     }
 
+    /// <summary>
+    /// 掴んだ手のTransformを返すプロパティ
+    /// </summary>
+    /// <param name="handType">手の方向</param>
+    /// <returns>掴んだ手のTransform</returns>
     private Transform GetDetailHandsTransform(HandType handType)
     {
+        // 手の方向をもとに分岐
         switch (handType)
         {
             // 右手の場合
@@ -180,9 +186,14 @@ public class Throwable : MonoBehaviour, IDependencyInjector<PlayerHandDependency
         }
     }
 
+    /// <summary>
+    /// 投擲速度を上書きするためのコルーチン
+    /// </summary>
+    /// <param name="throwVector">投擲速度</param>
+    /// <returns></returns>
     private IEnumerator OverwriteVelocity(Vector3 throwVector)
     {
-        // 1フレーム待機する
+        // 1フレーム待機する　1フレーム待機しないとOVRに消される
         yield return new WaitForEndOfFrame();
 
         // 投擲ベクトルを速度に上書きする
