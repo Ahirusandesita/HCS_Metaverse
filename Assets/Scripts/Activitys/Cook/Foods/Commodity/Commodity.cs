@@ -6,18 +6,18 @@ public class Commodity : MonoBehaviour
 {
     [SerializeField]
     private CommodityAsset commodityAsset;
-    public CommodityAsset CommodityAsset => commodityAsset;
+    public CommodityAsset CommodityAsset => this.commodityAsset;
 
-    public bool IsMatchCommodity(CommodityAsset commodity)
+    public bool IsMatchCommodity(CommodityAsset commodityAsset)
     {
-        if (CommodityAsset.ProcessedGoodsAssets.Count != commodity.ProcessedGoodsAssets.Count)
+        if (CommodityAsset.ProcessedGoodsAssets.Count != commodityAsset.ProcessedGoodsAssets.Count)
         {
             return false;
         }
 
-        for (int myProcessedGoods = 0; myProcessedGoods < commodityAsset.ProcessedGoodsAssets.Count; myProcessedGoods++)
+        for (int myProcessedGoods = 0; myProcessedGoods < this.commodityAsset.ProcessedGoodsAssets.Count; myProcessedGoods++)
         {
-            if (!(commodityAsset.ProcessedGoodsAssets[myProcessedGoods].isMatchProcessedGoods(commodity.ProcessedGoodsAssets[myProcessedGoods])))
+            if (!(this.commodityAsset.ProcessedGoodsAssets[myProcessedGoods].isMatchProcessedGoods(commodityAsset.ProcessedGoodsAssets[myProcessedGoods])))
             {
                 return false;
             }

@@ -89,9 +89,14 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     {
         for (int i = 0; i < commodityAssets.Length; i++)
         {
+            if(commodityAssets[i] == null)
+            {
+                continue;
+            }
             if (commodity.IsMatchCommodity(commodityAssets[i]))
             {
                 //’ñoŠ®—¹
+                Debug.Log("’ñoŠ®—¹");
                 OrderEventArgs orderEventArgs = new OrderEventArgs(new CommodityInformation(commodityAssets[i]), OrderType.Submit, i);
                 commodityAssets[i] = null;
                 PackOrders();
@@ -99,6 +104,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
                 break;
             }
         }
+
 
         for (int i = 0; i < commodityAssets.Length; i++)
         {
