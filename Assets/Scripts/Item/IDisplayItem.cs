@@ -14,7 +14,7 @@ public interface IDisplayItem
     static IDisplayItem Instantiate(ItemAsset item, ISelectedNotification caller)
     {
         var displayItem = Object.Instantiate(item.DisplayItem.gameObject).GetComponent<IDisplayItem>();
-        var itemSelectArgs = new ItemSelectArgs(id: item.ItemID, name: item.ItemName, gameObject: displayItem.gameObject);
+        var itemSelectArgs = new ItemSelectArgs(id: item.ID, name: item.Name, gameObject: displayItem.gameObject);
         displayItem.InjectItemSelectArgs(itemSelectArgs);
         displayItem.InjectSelectedNotification(caller);
         return displayItem;
@@ -23,7 +23,7 @@ public interface IDisplayItem
     static IDisplayItem Instantiate(ItemAsset item, Transform parent, ISelectedNotification caller)
     {
         var displayItem = Object.Instantiate(item.DisplayItem.gameObject, parent).GetComponent<IDisplayItem>();
-        var itemSelectArgs = new ItemSelectArgs(id: item.ItemID, name: item.ItemName, gameObject: displayItem.gameObject);
+        var itemSelectArgs = new ItemSelectArgs(id: item.ID, name: item.Name, gameObject: displayItem.gameObject);
         displayItem.InjectItemSelectArgs(itemSelectArgs);
         displayItem.InjectSelectedNotification(caller);
         return displayItem;
@@ -32,7 +32,7 @@ public interface IDisplayItem
     static IDisplayItem Instantiate(ItemAsset item, Vector3 position, Quaternion rotation, ISelectedNotification caller)
     {
         var displayItem = Object.Instantiate(item.DisplayItem.gameObject, position, rotation).GetComponent<IDisplayItem>();
-        var itemSelectArgs = new ItemSelectArgs(item.ItemID, item.ItemName, position, displayItem.gameObject);
+        var itemSelectArgs = new ItemSelectArgs(item.ID, item.Name, position, displayItem.gameObject);
         displayItem.InjectItemSelectArgs(itemSelectArgs);
         displayItem.InjectSelectedNotification(caller);
         return displayItem;
@@ -41,7 +41,7 @@ public interface IDisplayItem
     static IDisplayItem Instantiate(ItemAsset item, Vector3 position, Quaternion rotation, Transform parent, ISelectedNotification caller)
     {
         var displayItem = Object.Instantiate(item.DisplayItem.gameObject, position, rotation, parent).GetComponent<IDisplayItem>();
-        var itemSelectArgs = new ItemSelectArgs(item.ItemID, item.ItemName, position, displayItem.gameObject);
+        var itemSelectArgs = new ItemSelectArgs(item.ID, item.Name, position, displayItem.gameObject);
         displayItem.InjectItemSelectArgs(itemSelectArgs);
         displayItem.InjectSelectedNotification(caller);
         return displayItem;
