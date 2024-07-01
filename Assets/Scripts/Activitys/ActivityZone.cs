@@ -5,9 +5,11 @@ public class ActivityZone : MonoBehaviour
     private string sessionName;
     public string SessionName => sessionName;
 
-    [Rpc]
-    private void A(string sessionName)
+
+    [Rpc(RpcSources.All,RpcTargets.All)]
+    public void RPC_SessionNaming()
     {
-        
+        this.sessionName = sessionName;
+        Debug.LogWarning("daadad");
     }
 }

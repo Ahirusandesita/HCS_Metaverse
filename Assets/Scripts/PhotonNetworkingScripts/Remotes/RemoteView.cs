@@ -8,19 +8,23 @@ public class RemoteView : MonoBehaviour
 	private Transform myTransform = default;
 
 	private MasterServerConect _masterServerConect = default;
+	[SerializeField]
+	private ActivityZone activityZone = default;
 	private void Start()
 	{
 		myTransform = transform;
 		_masterServerConect = (MasterServerConect)FindObjectOfType(typeof(MasterServerConect));
-
+		activityZone = (ActivityZone)FindObjectOfType(typeof(ActivityZone));
+		
 	}
 
+	[ContextMenu("dadadad")]
 	/// <summary>
 	/// ホストだったら名前変えてシーンを読み込む
 	/// </summary>
 	public void ActivityStart()
 	{
-		
+		activityZone.RPC_SessionNaming();
 	}
 
 	/// <summary>
