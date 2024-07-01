@@ -49,6 +49,7 @@ public class Ingrodients : MonoBehaviour
 
                     if(timeItTakes <= 0f)
                     {
+                        //‰ÁH‚·‚é‹@ŠB‚©‚ç‚Å‚à‚¢‚¢
                         processedGoodsFactory.Generate(this, processingType);
                         Debug.Log("‰ÁHŠ®—¹");
                     }

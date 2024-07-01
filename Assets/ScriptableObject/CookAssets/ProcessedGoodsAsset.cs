@@ -18,4 +18,14 @@ public class ProcessedGoodsAsset : ScriptableObject
     public IngrodientsType IngrodientsType => ingrodientsType;
     public ProcessingType ProcessingType => processingType;
     public float TimeToDestruction => timeToDestruction;
+
+    public bool isMatchProcessedGoods(ProcessedGoodsAsset processedGoodsAsset)
+    {
+        if (IngrodientsType == processedGoodsAsset.IngrodientsType &&
+            ProcessingType == processedGoodsAsset.ProcessingType)
+        {
+            return true;
+        }
+        return false;
+    }
 }
