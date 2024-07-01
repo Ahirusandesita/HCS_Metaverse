@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class VisualShop : SafetyInteractionObject, IDependencyInjector<PlayerBodyDependencyInformation>
 {
-    [SerializeField] private AllItemAsset allItemAsset = default;
+    [SerializeField] private ItemBundleAsset allItemAsset = default;
     [SerializeField] private BuyArea buyArea = default;
     [SerializeField] private List<Transform> viewPoints = default;
     [SerializeField] private List<ItemIDViewer> itemLineup = default;
@@ -18,9 +18,9 @@ public class VisualShop : SafetyInteractionObject, IDependencyInjector<PlayerBod
     {
 #if UNITY_EDITOR
         // Conditionalはメソッド内はコンパイルされてしまうので、仕方なく二重
-        allItemAsset = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(AllItemAsset)}")
+        allItemAsset = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(ItemBundleAsset)}")
                 .Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
-                .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<AllItemAsset>)
+                .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<ItemBundleAsset>)
                 .First();
 #endif
         buyArea = GetComponentInChildren<BuyArea>();

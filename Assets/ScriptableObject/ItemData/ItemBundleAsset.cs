@@ -2,8 +2,8 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "AllItemData", menuName = "ScriptableObjects/AllItemAsset")]
-public class AllItemAsset : ScriptableObject
+[CreateAssetMenu(fileName = "ItemBundleData", menuName = "ScriptableObjects/ItemAsset/Bundle")]
+public class ItemBundleAsset : ScriptableObject
 {
     [SerializeField] private List<ItemAsset> items = default;
 
@@ -11,6 +11,6 @@ public class AllItemAsset : ScriptableObject
 
     public ItemAsset GetItemAssetByID(int id)
     {
-        return items.Where(item => item.ItemID == id).First();
+        return items.Where(item => item.ID == id).First();
     }
 }

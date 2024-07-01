@@ -32,7 +32,7 @@ namespace UnityEditor
         private SerializedProperty idProperty = default;
         private SerializedProperty nameProperty = default;
         private SerializedProperty selectedIndexProperty = default;
-        private static AllItemAsset allItemAsset = default;
+        private static ItemBundleAsset allItemAsset = default;
         private static string[] displayedOptions = default;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -48,9 +48,9 @@ namespace UnityEditor
             if (allItemAsset is null)
             {
                 // AllItemAssetのインスタンスを取得
-                allItemAsset = AssetDatabase.FindAssets($"t:{nameof(AllItemAsset)}")
+                allItemAsset = AssetDatabase.FindAssets($"t:{nameof(ItemBundleAsset)}")
                     .Select(AssetDatabase.GUIDToAssetPath)
-                    .Select(AssetDatabase.LoadAssetAtPath<AllItemAsset>)
+                    .Select(AssetDatabase.LoadAssetAtPath<ItemBundleAsset>)
                     .First();
                 UpdateDisplayOptions();
             }
@@ -60,8 +60,8 @@ namespace UnityEditor
             // 更新
             if (EditorGUI.EndChangeCheck())
             {
-                idProperty.intValue = allItemAsset.Items[newValue].ItemID;
-                nameProperty.stringValue = allItemAsset.Items[newValue].ItemName;
+                idProperty.intValue = allItemAsset.Items[newValue].ID;
+                nameProperty.stringValue = allItemAsset.Items[newValue].Name;
                 selectedIndexProperty.intValue = newValue;
             }
             EditorGUI.EndProperty();
@@ -75,11 +75,15 @@ namespace UnityEditor
             var tmpList = new List<string>();
             foreach (var item in allItemAsset.Items)
             {
-                string content = item.ItemName;
+                string content = item.Name;
 
                 if (!item.AllowVisualCatalog)
                 {
-                    content += " (Text Catalog Only)";
+                    content += " (No Visual)";
+                }
+                else if (item.Genre != ItemGenre.All)
+                {
+                    content += $" ({item.Genre})";
                 }
                 tmpList.Add(content);
             }
