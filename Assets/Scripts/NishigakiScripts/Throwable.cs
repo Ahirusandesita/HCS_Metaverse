@@ -2,6 +2,7 @@ using System.Collections;
 using UniRx;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 using System;
 
 public class Throwable : MonoBehaviour, IDependencyInjector<PlayerHandDependencyInfomation>
@@ -11,6 +12,9 @@ public class Throwable : MonoBehaviour, IDependencyInjector<PlayerHandDependency
 
     [SerializeField, Tooltip("自身が持つTransform")]
     public Transform _thisTransform = default;
+
+    [SerializeField, Tooltip("速度係数")]
+    private float _velocityCoefficient = 1f;
 
     // 現在掴んでいる手のTransform
     private Transform _grabbingHandTransform = default;
@@ -33,7 +37,7 @@ public class Throwable : MonoBehaviour, IDependencyInjector<PlayerHandDependency
     // 現在左手で掴んでいるかどうか
     private bool _isGrabbingLeftHand = false;
 
-    // 
+    // つかんだ瞬間の情報を取得するためのクラス
     private InteractorDetailEventIssuer _interactorDetailEventIssuer ;
 
     private void Awake()
@@ -122,7 +126,7 @@ public class Throwable : MonoBehaviour, IDependencyInjector<PlayerHandDependency
         _thisRigidbody.isKinematic = false;
 
         // 投擲ベクトルを取得する
-        Vector3 throwVector = _throwData.GetThrowVector();
+        Vector3 throwVector = _throwData.GetThrowVector() * _velocityCoefficient;
 
         // 1フレーム後にベクトルを上書きする
         StartCoroutine(OverwriteVelocity(throwVector));

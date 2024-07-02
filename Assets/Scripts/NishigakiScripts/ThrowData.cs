@@ -41,14 +41,10 @@ public class ThrowData
     }
 
     // 失効時刻　軌道ベクトルの生成に使用できる情報の期限　期限切れは使わない
-    private const float REVOCATION_TIME = 0.1f;
-
-    // 速度係数　投擲速度 を オブジェクトが運動する際の速度 に変換するために使用する
-    [SerializeField]
-    private float VELOCITY_COFFICIENT = 2f;
+    private const float REVOCATION_TIME = 0.2f;
 
     // 軌道ベクトルの生成に必要な情報たち　軌道座標と保存時刻を持つ
-    private OrbitData[] _orbitDatas = new OrbitData[12];
+    private OrbitData[] _orbitDatas = new OrbitData[22];
     #endregion
 
     #region メソッド・プロパティ
@@ -125,7 +121,7 @@ public class ThrowData
         throwVelocity /= _orbitDatas[0]._storeTime - _orbitDatas[usableIndex]._storeTime;
 
         // 軌道ベクトルと投擲速度を掛け合わせた 投擲ベクトル を生成して値を返す
-        return orbitVector * throwVelocity * VELOCITY_COFFICIENT;
+        return orbitVector * throwVelocity;
     }
 
     /// <summary>
