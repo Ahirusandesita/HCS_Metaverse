@@ -7,11 +7,11 @@ public class VisualShop : SafetyInteractionObject, IDependencyInjector<PlayerBod
     [SerializeField] private ItemBundleAsset allItemAsset = default;
     [SerializeField] private BuyArea buyArea = default;
     [SerializeField] private List<Transform> viewPoints = default;
-    [SerializeField] private List<ItemIDViewer> itemLineup = default;
+    [SerializeField] private List<ItemIDView> itemLineup = default;
     private List<GameObject> displayedItems = default;
     private IReadonlyPositionAdapter positionAdapter = default;
 
-    public IReadOnlyList<ItemIDViewer> ItemLineup => itemLineup;
+    public IReadOnlyList<ItemIDView> ItemLineup => itemLineup;
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void Reset()
@@ -21,6 +21,7 @@ public class VisualShop : SafetyInteractionObject, IDependencyInjector<PlayerBod
         allItemAsset = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(ItemBundleAsset)}")
                 .Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
                 .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<ItemBundleAsset>)
+                .Where(asset => asset.GenresHandled == ItemGenre.All)
                 .First();
 #endif
         buyArea = GetComponentInChildren<BuyArea>();
@@ -114,7 +115,7 @@ namespace UnityEditor
             {
                 try
                 {
-                    ItemIDViewerDrawer.UpdateDisplayOptions();
+                    ItemIDViewDrawer.UpdateDisplayOptions();
                 }
                 // 要素ない状態でボタン押すと例外出る→うざいので握りつぶす
                 catch (System.NullReferenceException) { }

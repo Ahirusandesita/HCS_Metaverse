@@ -7,18 +7,18 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
     [System.Serializable]
     private class FoodInfo
     {
-        [SerializeField] private ItemIDViewer foodID = default;
+        [SerializeField] private FoodIDView foodID = default;
         [SerializeField] private Transform foodBox = default;
 
-        public ItemIDViewer FoodID => foodID;
+        public FoodIDView FoodID => foodID;
         public Transform FoodBox => foodBox;
     }
 
-    [SerializeField] private ItemBundleAsset allItemAsset = default;
+    [SerializeField] private ItemBundleAsset foodItemAsset = default;
     [SerializeField] private List<FoodInfo> foodLineup = default;
     private List<GameObject> displayFoods = default;
 
-    public ItemBundleAsset AllItemAsset => allItemAsset;
+    public ItemBundleAsset FoodItemAsset => foodItemAsset;
 
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
@@ -26,9 +26,10 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
     {
 #if UNITY_EDITOR
         // Conditionalはメソッド内はコンパイルされてしまうので、仕方なく二重
-        allItemAsset = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(ItemBundleAsset)}")
+        foodItemAsset = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(ItemBundleAsset)}")
                 .Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
                 .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<ItemBundleAsset>)
+                .Where(asset => asset.GenresHandled == ItemGenre.Food)
                 .First();
 #endif
     }
@@ -42,7 +43,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
     public void Select(SelectArgs selectArgs)
     {
         var itemSelectArgs = selectArgs as ItemSelectArgs;
-        var asset = allItemAsset.GetItemAssetByID(itemSelectArgs.id);
+        var asset = foodItemAsset.GetItemAssetByID(itemSelectArgs.id);
         var position = itemSelectArgs.position;
         var foodItem = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
         displayFoods.Add(foodItem.gameObject);
@@ -61,7 +62,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
 
         foreach (var food in foodLineup)
         {
-            var asset = allItemAsset.GetItemAssetByID(food.FoodID);
+            var asset = foodItemAsset.GetItemAssetByID(food.FoodID);
             var position = food.FoodBox.position + Vector3.up;
             var foodItem = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
             displayFoods.Add(foodItem.gameObject);
@@ -92,7 +93,7 @@ namespace UnityEditor
             {
                 try
                 {
-                    ItemIDViewerDrawer.UpdateDisplayOptions();
+                    FoodIDViewDrawer.UpdateDisplayOptions();
                 }
                 // 要素ない状態でボタン押すと例外出る→うざいので握りつぶす
                 catch (System.NullReferenceException) { }
