@@ -9,13 +9,12 @@ public class RemoteView : MonoBehaviour
 
 	private MasterServerConect _masterServerConect = default;
 	[SerializeField]
-	private ActivityZone activityZone = default;
+	private RPCManager _rpcManager = default;
 	private void Start()
 	{
 		myTransform = transform;
 		_masterServerConect = (MasterServerConect)FindObjectOfType(typeof(MasterServerConect));
-		activityZone = (ActivityZone)FindObjectOfType(typeof(ActivityZone));
-		
+		_rpcManager = (RPCManager)FindObjectOfType(typeof(RPCManager));
 	}
 
 	[ContextMenu("dadadad")]
@@ -24,7 +23,8 @@ public class RemoteView : MonoBehaviour
 	/// </summary>
 	public void ActivityStart()
 	{
-		activityZone.RPC_SessionNaming();
+		_rpcManager.Rpc_SessionNaming("dadadad");
+		Debug.LogWarning("ActivityStart");
 	}
 
 	/// <summary>
@@ -45,7 +45,7 @@ public class RemoteView : MonoBehaviour
 
 	public void SetVector3(Vector3 vector)
 	{
-		Debug.LogWarning(vector);
+		//Debug.LogWarning(vector);
 
 		myTransform.position = vector;
 	}

@@ -2,14 +2,13 @@ using UnityEngine;
 using Fusion;
 public class ActivityZone : MonoBehaviour
 {
-    private string sessionName;
-    public string SessionName => sessionName;
+	private string sessionName;
+	public string SessionName => sessionName;
 
 
-    [Rpc(RpcSources.All,RpcTargets.All)]
-    public void RPC_SessionNaming()
-    {
-        this.sessionName = sessionName;
-        Debug.LogWarning("daadad");
-    }
+	public void SetSessionName(string sessionName)
+	{
+		this.sessionName = sessionName;
+		Debug.LogWarning("set:" + sessionName);
+	}
 }

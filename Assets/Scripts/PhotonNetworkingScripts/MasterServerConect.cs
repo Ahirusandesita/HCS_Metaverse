@@ -2,46 +2,49 @@ using UnityEngine;
 using Fusion;
 using Fusion.Sockets;
 using System.Collections.Generic;
-using System;
 using Photon.Voice.Unity;
 using Photon.Voice.Fusion;
 
 public interface IMasterServerConectable
 {
-	void Connect();
+	 void Connect();
 }
 
 public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMasterServerConectable
 {
-
+	[SerializeField]
+	private ActivityZone _activityZone = default;
 	[SerializeField]
 	private Recorder _recorder;
 	[SerializeField]
 	private NetworkRunner _networkRunnerPrefab;
+
 	[SerializeField]
 	private LocalRemoteSeparation localRemoteReparation;
 
+	[SerializeField]
+	private NetworkPrefabRef _rpcManagerPrefab;
+
 	private NetworkRunner _networkRunner;
 
-	private void Awake()
+	private async void Awake()
 	{
-		_networkRunner = (NetworkRunner)FindObjectOfType(typeof(NetworkRunner));
-		if (_networkRunner is null)
-		{
-			_networkRunner = Instantiate(_networkRunnerPrefab);
-			var a = (IMasterServerConectable)this;
-			a.Connect();
-		}
-		else
-		{
-			var a = (IMasterServerConectable)this;
-			a.Connect();
-			Destroy(this.gameObject);
-			return;
-		}
+		_networkRunner = Instantiate(_networkRunnerPrefab);
 
 		_networkRunner.GetComponent<FusionVoiceClient>().PrimaryRecorder = _recorder;
 		_networkRunner.AddCallbacks(this);
+
+		await _networkRunner.StartGame(new StartGameArgs
+		{
+			GameMode = GameMode.AutoHostOrClient,
+			SessionName = "Room",
+			SceneManager = _networkRunner.GetComponent<NetworkSceneManagerDefault>()
+		}
+		);
+
+		RPCManager rpcManager = _networkRunner.Spawn(_rpcManagerPrefab, Vector3.zero, Quaternion.identity).GetComponent<RPCManager>();
+		rpcManager.SessionNameChangedHandler += _activityZone.SetSessionName;
+
 	}
 
 	public void UpdateNetworkRunner()
@@ -54,10 +57,10 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 
 	}
 
-	void IMasterServerConectable.Connect()
+	async void IMasterServerConectable.Connect()
 	{
 		// "Room"という名前のルームに参加する（ルームが存在しなければ作成して参加する）
-		_networkRunner.StartGame(new StartGameArgs
+		await _networkRunner.StartGame(new StartGameArgs
 		{
 			GameMode = GameMode.AutoHostOrClient,
 			SessionName = "Room",
@@ -128,7 +131,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	{
 	}
 
-	public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data)
+	public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key,  System.ArraySegment<byte> data)
 	{
 	}
 
