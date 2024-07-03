@@ -828,16 +828,44 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2078758335}
     - target: {fileID: 7594199887262647102, guid: 77b89df1a37234546b33ae0d392d9651, type: 3}
+      propertyPath: foodLineup.Array.data[2].foodBox
+      value: 
+      objectReference: {fileID: 2078758335}
+    - target: {fileID: 7594199887262647102, guid: 77b89df1a37234546b33ae0d392d9651, type: 3}
+      propertyPath: foodLineup.Array.data[0].foodID.id
+      value: 20001
+      objectReference: {fileID: 0}
+    - target: {fileID: 7594199887262647102, guid: 77b89df1a37234546b33ae0d392d9651, type: 3}
       propertyPath: foodLineup.Array.data[1].foodID.id
       value: 20002
+      objectReference: {fileID: 0}
+    - target: {fileID: 7594199887262647102, guid: 77b89df1a37234546b33ae0d392d9651, type: 3}
+      propertyPath: foodLineup.Array.data[2].foodID.id
+      value: 20001
+      objectReference: {fileID: 0}
+    - target: {fileID: 7594199887262647102, guid: 77b89df1a37234546b33ae0d392d9651, type: 3}
+      propertyPath: foodLineup.Array.data[0].foodID.displayName
+      value: HumburgerBuns
       objectReference: {fileID: 0}
     - target: {fileID: 7594199887262647102, guid: 77b89df1a37234546b33ae0d392d9651, type: 3}
       propertyPath: foodLineup.Array.data[1].foodID.displayName
       value: Lettuce
       objectReference: {fileID: 0}
     - target: {fileID: 7594199887262647102, guid: 77b89df1a37234546b33ae0d392d9651, type: 3}
+      propertyPath: foodLineup.Array.data[2].foodID.displayName
+      value: HumburgerBuns
+      objectReference: {fileID: 0}
+    - target: {fileID: 7594199887262647102, guid: 77b89df1a37234546b33ae0d392d9651, type: 3}
+      propertyPath: foodLineup.Array.data[0].foodID.selectedIndex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7594199887262647102, guid: 77b89df1a37234546b33ae0d392d9651, type: 3}
       propertyPath: foodLineup.Array.data[1].foodID.selectedIndex
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7594199887262647102, guid: 77b89df1a37234546b33ae0d392d9651, type: 3}
+      propertyPath: foodLineup.Array.data[2].foodID.selectedIndex
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

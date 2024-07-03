@@ -34,12 +34,6 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
 #endif
     }
 
-    private void Start()
-    {
-        var a = this as IActivityNotification;
-        a.OnStart();
-    }
-
     public void Select(SelectArgs selectArgs)
     {
         var itemSelectArgs = selectArgs as ItemSelectArgs;
