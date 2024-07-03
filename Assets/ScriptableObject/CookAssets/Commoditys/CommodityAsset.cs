@@ -22,7 +22,7 @@ public interface IGrantableCommodityID
 [CreateAssetMenu(fileName = "CommodityAsset", menuName = "ScriptableObjects/Foods/CommodityAsset")]
 public class CommodityAsset : ScriptableObject,IGrantableCommodityID
 {
-    [SerializeField]
+    [SerializeField,HideInInspector]
     private int commodityID;
 
     [SerializeField]
