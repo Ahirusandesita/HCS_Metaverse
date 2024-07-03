@@ -191,6 +191,15 @@ public class Throwable : MonoBehaviour, IDependencyInjector<PlayerHandDependency
     }
 
     /// <summary>
+    /// 投擲補正を行うかどうかを判定するプロパティ
+    /// </summary>
+    /// <returns></returns>
+    private bool DoAimedThrow()
+    {
+        return false;
+    }
+
+    /// <summary>
     /// 投擲速度を上書きするためのコルーチン
     /// </summary>
     /// <param name="throwVector">投擲速度</param>
