@@ -6,6 +6,7 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
 {
     [SerializeField] private PointableUnityEventWrapper onGrabbed = default;
     private ItemSelectArgs itemSelectArgs = default;
+    private ISelectedNotification sn = default;
 
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
@@ -21,29 +22,41 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
 
     void IDisplayItem.InjectSelectedNotification(ISelectedNotification sn)
     {
-        onGrabbed.WhenSelect.AddListener(_ =>
-        {
-            sn.Select(itemSelectArgs);
-        });
+        this.sn = sn;
 
-        onGrabbed.WhenUnselect.AddListener(_ =>
-        {
-            sn.Unselect(itemSelectArgs);
-        });
-
-        onGrabbed.WhenHover.AddListener(_ =>
-        {
-            sn.Hover(itemSelectArgs);
-        });
-
-        onGrabbed.WhenUnhover.AddListener(_ =>
-        {
-            sn.Unhover(itemSelectArgs);
-        });
+        onGrabbed.WhenSelect.AddListener(WhenSelect);
+        onGrabbed.WhenUnselect.AddListener(WhenUnselect);
+        onGrabbed.WhenHover.AddListener(WhenHover);
+        onGrabbed.WhenUnhover.AddListener(WhenUnhover);
     }
 
     void IDisplayItem.InjectPointableUnityEventWrapper(PointableUnityEventWrapper puew)
     {
         onGrabbed = puew;
+    }
+
+    private void WhenSelect(PointerEvent pointerEvent)
+    {
+        sn.Select(itemSelectArgs);
+
+        onGrabbed.WhenSelect.RemoveListener(WhenSelect);
+        onGrabbed.WhenUnselect.RemoveListener(WhenUnselect);
+        onGrabbed.WhenHover.RemoveListener(WhenHover);
+        onGrabbed.WhenUnhover.RemoveListener(WhenUnhover);
+    }
+
+    private void WhenUnselect(PointerEvent pointerEvent)
+    {
+        sn.Unselect(itemSelectArgs);
+    }
+
+    private void WhenHover(PointerEvent pointerEvent)
+    {
+        sn.Hover(itemSelectArgs);
+    }
+
+    private void WhenUnhover(PointerEvent pointerEvent)
+    {
+        sn.Unhover(itemSelectArgs);
     }
 }
