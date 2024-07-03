@@ -1,28 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+public enum ProcessedType
+{
+    GrilledMeat
+}
 [CreateAssetMenu(fileName = "ProcessedAsset", menuName = "ScriptableObjects/Foods/ProcessedGoodsAsset")]
 public class ProcessedGoodsAsset : ScriptableObject
 {
     [SerializeField]
-    private IngrodientsType ingrodientsType;
-    [SerializeField]
-    private ProcessingType processingType;
+    private ProcessedType processedType;
+
     /// <summary>
     /// â¡çHäÆóπå„Ç…â¡çHÇµë±ÇØÇΩèÍçáÇÃêHïiÇ™îjâÛÇ≥ÇÍÇÈÇ‹Ç≈ÇÃéûä‘
     /// </summary>
     [SerializeField]
     private float timeToDestruction;
 
-    public IngrodientsType IngrodientsType => ingrodientsType;
-    public ProcessingType ProcessingType => processingType;
+    public ProcessedType ProcessedType => processedType;
     public float TimeToDestruction => timeToDestruction;
 
     public bool isMatchProcessedGoods(ProcessedGoodsAsset processedGoodsAsset)
     {
-        if (IngrodientsType == processedGoodsAsset.IngrodientsType &&
-            ProcessingType == processedGoodsAsset.ProcessingType)
+        if(processedType == processedGoodsAsset.ProcessedType)
         {
             return true;
         }

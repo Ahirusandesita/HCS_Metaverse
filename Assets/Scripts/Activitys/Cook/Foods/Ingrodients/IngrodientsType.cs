@@ -4,5 +4,6 @@ using UnityEngine;
 
 public enum IngrodientsType
 {
-    Meat
+    Meat,
+    A
 }
