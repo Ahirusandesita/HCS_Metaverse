@@ -210,9 +210,9 @@ namespace UnityEditor
                 Debug.Log("Attach Completed!");
 
                 // Colliderが付いていなかったときに通知する
-                if (!prefab.TryGetComponent(out Collider col))
+                if (!prefab.TryGetComponent(out Collider _))
                 {
-                    Debug.LogWarning("コライダーをアタッチされていません。手動でいずれかのコライダーをアタッチしてください。");
+                    Debug.LogWarning("コライダーがアタッチされていません。手動でいずれかのコライダーをアタッチしてください。");
                 }
             }
 
