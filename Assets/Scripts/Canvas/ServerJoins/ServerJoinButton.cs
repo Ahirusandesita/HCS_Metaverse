@@ -13,7 +13,8 @@ public class ServerJoinButton : MonoBehaviour,IPointerUpRegistrable
         {
             return;
         }
-        conectable.Connect();
+        conectable.Connect("Room");
+        Debug.LogError("ƒ‹[ƒ€–¼“K“–‚¾‚æ");
         isJoin = true;
     }
 }

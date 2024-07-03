@@ -1,13 +1,15 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Fusion;
 using Fusion.Sockets;
 using System.Collections.Generic;
 using Photon.Voice.Unity;
 using Photon.Voice.Fusion;
+using Cysharp.Threading.Tasks;
 
 public interface IMasterServerConectable
 {
-	 void Connect();
+	 UniTask Connect(string SessionName);
 }
 
 public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMasterServerConectable
@@ -21,37 +23,87 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 
 	[SerializeField]
 	private LocalRemoteSeparation localRemoteReparation;
+	[SerializeField]
+	private NetworkPrefabRef _roomCounterPrefab;
 
 	[SerializeField]
 	private NetworkPrefabRef _rpcManagerPrefab;
 
 	private NetworkRunner _networkRunner;
+	[SerializeField]
+	private RegisterSceneInInspector activityName;
+
+	[SerializeField]
+	private Transform _linkTransform;
+
 
 	private async void Awake()
 	{
 		_networkRunner = Instantiate(_networkRunnerPrefab);
 
-		_networkRunner.GetComponent<FusionVoiceClient>().PrimaryRecorder = _recorder;
 		_networkRunner.AddCallbacks(this);
 
-		await _networkRunner.StartGame(new StartGameArgs
-		{
-			GameMode = GameMode.AutoHostOrClient,
-			SessionName = "Room",
-			SceneManager = _networkRunner.GetComponent<NetworkSceneManagerDefault>()
-		}
-		);
+		await Connect("Room");
 
+		if (!_networkRunner.IsServer) { return; }
 		RPCManager rpcManager = _networkRunner.Spawn(_rpcManagerPrefab, Vector3.zero, Quaternion.identity).GetComponent<RPCManager>();
-		rpcManager.SessionNameChangedHandler += _activityZone.SetSessionName;
+		if(_activityZone is not null)
+		{
+			rpcManager.SessionNameChangedHandler += _activityZone.SetSessionName;
+		}
 
+		_networkRunner.Spawn(_roomCounterPrefab);
+	}
+
+	[ContextMenu("WaitTrigger")]
+	private void WaitRoomStartTrigger()
+	{
+		//アクティビティスタート
+		string sessionName = "TestRoom";
+		JoinOrCreateRoom(sessionName);
+		if (!_networkRunner.IsServer) { return; }
+		RPCManager.Instance.Rpc_SessionNaming(sessionName);
+	}
+
+	[ContextMenu("ActivityTrigger")]
+	private void ActivityStartTrigger()
+	{
+		ActivityStart(activityName);
+	}
+
+
+	/// <summary>
+	/// アクティビティを開始する
+	/// </summary>
+	/// <param name="sceneName">開始するアクティビティのシーン名</param>
+	public void ActivityStart(string sceneName)
+	{
+		if (!_networkRunner.IsServer) { return; }
+
+		Debug.LogWarning("ActivityStart");
+		_networkRunner.LoadScene(sceneName);
+	}
+
+	/// <summary>
+	/// ルームに入る。ない場合は作る
+	/// </summary>
+	/// <param name="sessionName">セッション名</param>
+	public async void JoinOrCreateRoom(string sessionName)
+	{
+		if (_networkRunner.IsServer)
+		{
+			await UpdateNetworkRunner();
+		}
+
+		await Connect(sessionName);
 	}
 
 	/// <summary>
 	/// ネットワークランナーを更新する
 	/// </summary>
-	public async void UpdateNetworkRunner()
+	private async UniTask UpdateNetworkRunner()
 	{
+		Debug.LogWarning("UpdateRunner");
 		await _networkRunner.Shutdown(true,ShutdownReason.HostMigration);
 		// NetworkRunnerを生成する
 		_networkRunner = Instantiate(_networkRunnerPrefab);
@@ -60,16 +112,18 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 
 	}
 
-	async void IMasterServerConectable.Connect()
+	public async UniTask Connect(string SessionName)
 	{
 		// "Room"という名前のルームに参加する（ルームが存在しなければ作成して参加する）
 		await _networkRunner.StartGame(new StartGameArgs
 		{
+			StartGameCancellationToken = destroyCancellationToken,
 			GameMode = GameMode.AutoHostOrClient,
-			SessionName = "Room",
+			SessionName = SessionName,
 			SceneManager = _networkRunner.GetComponent<NetworkSceneManagerDefault>()
 		}
 		);
+		_networkRunner.GetComponent<FusionVoiceClient>().PrimaryRecorder = _recorder;
 	}
 
 	public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
@@ -82,12 +136,17 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 
 	public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
 	{
-		if (!_networkRunner.IsServer) { return; }
+		if (!runner.IsServer) { return; }
 		localRemoteReparation.RemoteViewCreate(runner, player);
 	}
 
 	public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
 	{
+		if (!runner.IsServer) { return; }
+		if (runner.TryGetPlayerObject(player, out NetworkObject avater))
+		{
+			runner.Despawn(avater);
+		}
 	}
 
 	public void OnInput(NetworkRunner runner, NetworkInput input)
