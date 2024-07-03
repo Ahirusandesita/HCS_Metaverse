@@ -13,17 +13,8 @@ public class Ingrodients : MonoBehaviour
 
     private CommodityFactory commodityFactory;
 
-    private List<IngrodientsDetailInformation> workIngrodientsDetailInformations = new List<IngrodientsDetailInformation>();
-    private Action processingAction;
-    private float timeItTakes;
-
     private void Awake()
     {
-        foreach(IngrodientsDetailInformation ingrodientsDetailInformation in IngrodientsAsset.IngrodientsDetailInformations)
-        {
-            this.workIngrodientsDetailInformations.Add(ingrodientsDetailInformation);
-        }
-
         this.commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
     }
 
@@ -32,40 +23,12 @@ public class Ingrodients : MonoBehaviour
         this.commodityFactory = commodityFactory;
     }
 
-    private void Update()
+
+    public Commodity ProcessingStart(ProcessingType processingType)
     {
-        processingAction?.Invoke();
-    }
-
-    public void ProcessingStart(ProcessingType processingType)
-    {
-        Commodity commodity = default;
-        foreach(IngrodientsDetailInformation ingrodientsDetailInformation in workIngrodientsDetailInformations)
-        {
-            if(ingrodientsDetailInformation.ProcessingType == processingType)
-            {
-                timeItTakes = ingrodientsDetailInformation.TimeItTakes;
-
-                processingAction += () =>
-                {
-                    timeItTakes -= Time.deltaTime;
-
-                    if(timeItTakes <= 0f)
-                    {
-                        //‰ÁH‚·‚é‹@ŠB‚©‚ç‚Å‚à‚¢‚¢
-                        commodity =@commodityFactory.Generate(this, processingType);
-                        processingAction = null;
-
-                        Instantiate(commodity, this.transform.position, this.transform.rotation);
-                        Debug.Log("‰ÁHŠ®—¹");
-                        Destroy(this.gameObject);
-                    }
-                };
-            }
-        }
-    }
-    public void ProcessingInterruption()
-    {
-        processingAction = null;
+        Commodity commodity = commodityFactory.Generate(this, processingType);
+        Instantiate(commodity, this.transform.position, this.transform.rotation);
+        Destroy(this.gameObject);
+        return commodity;
     }
 }
