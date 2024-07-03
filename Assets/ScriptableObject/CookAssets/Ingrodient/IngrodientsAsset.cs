@@ -29,8 +29,12 @@ public enum ProcessingType
     Mix
 }
 
+public interface IIngrodientAsset
+{
+    void SetUp(List<IngrodientsDetailInformation> ingrodientsDetailInformation);
+}
 [CreateAssetMenu(fileName = "IngrodientAsset", menuName = "ScriptableObjects/Foods/IngrodientsAsset")]
-public class IngrodientsAsset : ScriptableObject
+public class IngrodientsAsset : ScriptableObject,IIngrodientAsset
 {
     /// <summary>
     /// ‹ïÞ‚Ì–¼‘O
@@ -42,6 +46,11 @@ public class IngrodientsAsset : ScriptableObject
 
     public IngrodientsType IngrodientsType => ingrodientsType;
     public IReadOnlyList<IngrodientsDetailInformation> IngrodientsDetailInformations => ingrodientsDetailInformations;
+
+    void IIngrodientAsset.SetUp(List<IngrodientsDetailInformation> ingrodientsDetailInformations)
+    {
+        this.ingrodientsDetailInformations = ingrodientsDetailInformations;
+    }
 }
 
 /// <summary>
@@ -70,4 +79,11 @@ public class IngrodientsDetailInformation
     public ProcessingType ProcessingType => processableType;
     public float TimeItTakes => timeItTakes;
     public Commodity Commodity => commodity;
+
+    public IngrodientsDetailInformation(ProcessingType processableType,float timeItTakes,Commodity commodity)
+    {
+        this.processableType = processableType;
+        this.timeItTakes = timeItTakes;
+        this.commodity = commodity;
+    }
 }
