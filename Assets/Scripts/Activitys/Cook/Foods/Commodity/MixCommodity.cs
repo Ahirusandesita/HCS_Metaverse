@@ -19,6 +19,11 @@ public class MixCommodity : MonoBehaviour
             if (item.CanInstanceCommodity(commodities))
             {
                 Debug.Log("ê∂ê¨â¬î\" + item.CommodityAsset.name);
+
+                foreach(Commodity commodity in commodities)
+                {
+                    Destroy(commodity.gameObject);
+                }
                 return item;
             }
         }
