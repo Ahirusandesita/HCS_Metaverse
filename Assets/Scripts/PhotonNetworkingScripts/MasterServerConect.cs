@@ -47,9 +47,12 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 
 	}
 
-	public void UpdateNetworkRunner()
+	/// <summary>
+	/// ネットワークランナーを更新する
+	/// </summary>
+	public async void UpdateNetworkRunner()
 	{
-		_networkRunner.Shutdown(true, ShutdownReason.HostMigration);
+		await _networkRunner.Shutdown(true,ShutdownReason.HostMigration);
 		// NetworkRunnerを生成する
 		_networkRunner = Instantiate(_networkRunnerPrefab);
 		// NetworkRunnerのコールバック対象に、このスクリプト（GameLauncher）を登録する
@@ -129,6 +132,17 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 
 	public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
 	{
+		runner.Shutdown(true, ShutdownReason.HostMigration);
+		//新Runnerを生成する
+		runner = Instantiate(_networkRunnerPrefab);
+		runner.AddCallbacks(this);
+
+		//新セッションに接続する
+		runner.StartGame(new StartGameArgs
+		{
+			SceneManager = runner.GetComponent<NetworkSceneManagerDefault>(),
+			HostMigrationToken = hostMigrationToken,
+		});
 	}
 
 	public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key,  System.ArraySegment<byte> data)

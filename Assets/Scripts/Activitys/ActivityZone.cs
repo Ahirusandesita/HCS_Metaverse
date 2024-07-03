@@ -1,5 +1,4 @@
 using UnityEngine;
-using Fusion;
 public class ActivityZone : MonoBehaviour
 {
 	private string sessionName;
