@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ProcessedGoodsFactory : MonoBehaviour
+public class CommodityFactory : MonoBehaviour
 {
     public void Generate(Ingrodients ingrodients,ProcessingType processingType)
     {
