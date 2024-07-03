@@ -11,7 +11,7 @@ public class Ingrodients : MonoBehaviour
     private IngrodientsAsset ingrodientsAsset;
     public IngrodientsAsset IngrodientsAsset => ingrodientsAsset;
 
-    private ProcessedGoodsFactory processedGoodsFactory;
+    private CommodityFactory processedGoodsFactory;
 
     private List<IngrodientsDetailInformation> workIngrodientsDetailInformations = new List<IngrodientsDetailInformation>();
     private Action processingAction;
@@ -25,7 +25,7 @@ public class Ingrodients : MonoBehaviour
         }
     }
 
-    public void Inject(ProcessedGoodsFactory processedGoodsFactory)
+    public void Inject(CommodityFactory processedGoodsFactory)
     {
         this.processedGoodsFactory = processedGoodsFactory;
     }

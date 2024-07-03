@@ -11,12 +11,12 @@ public class Chef : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        this.GetComponent<MixProcessedGoods>().Mix(new Commodity[] { commodity, burger });
+        MixCommodity.Mix(new Commodity[] { commodity, burger });
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
