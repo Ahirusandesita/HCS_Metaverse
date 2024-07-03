@@ -4,24 +4,12 @@ public class MixProcessedGoods : MonoBehaviour
 {
     [SerializeField]
     private AllCommodityAsset allCommodity;
-    public void Mix(ProcessedGoods right, ProcessedGoods left)
-    {
-        foreach (Commodity commodity in allCommodity.Commodities)
-        {
-            if(commodity.CanInstanceCommodity(right, left))
-            {
-                Debug.Log("生成可能" + commodity.CommodityAsset.name);
-                //生成可能な完成品　Instantiate
-                return;
-            }
-        }
-    }
 
-    public void Mix(Commodity commodity,ProcessedGoods processedGoods)
+    public void Mix(Commodity[] commodities)
     {
         foreach(Commodity item in allCommodity.Commodities)
         {
-            if (item.CanInstanceCommodity(commodity, processedGoods))
+            if (item.CanInstanceCommodity(commodities))
             {
                 Debug.Log("生成可能" + item.CommodityAsset.name);
                 //生成可能な完成品

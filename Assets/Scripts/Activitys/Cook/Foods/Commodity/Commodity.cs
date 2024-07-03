@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Commodity : MonoBehaviour
@@ -10,78 +11,43 @@ public class Commodity : MonoBehaviour
 
     public bool IsMatchCommodity(CommodityAsset commodityAsset)
     {
-        if (CommodityAsset.ProcessedGoodsAssets.Count != commodityAsset.ProcessedGoodsAssets.Count)
+        if(this.commodityAsset.CommodityID == commodityAsset.CommodityID)
         {
-            return false;
-
+            return true;
         }
-
-        for (int myProcessedGoods = 0; myProcessedGoods < this.commodityAsset.ProcessedGoodsAssets.Count; myProcessedGoods++)
-        {
-            if (!(this.commodityAsset.ProcessedGoodsAssets[myProcessedGoods].isMatchProcessedGoods(commodityAsset.ProcessedGoodsAssets[myProcessedGoods])))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-    public bool CanInstanceCommodity(ProcessedGoods right,ProcessedGoods left)
-    {
-        return IsMatch(new ProcessedGoodsAsset[] { right.ProcessedGoodsAsset, left.ProcessedGoodsAsset});
+        return false;
     }
 
-    public bool CanInstanceCommodity(Commodity commodity, ProcessedGoods processedGoods)
+    public bool CanInstanceCommodity(Commodity[] commodities)
     {
-        ProcessedGoodsAsset[] items = new ProcessedGoodsAsset[commodity.CommodityAsset.ProcessedGoodsAssets.Count + 1];
-
-        for(int i = 0; i < commodity.CommodityAsset.ProcessedGoodsAssets.Count; i++)
-        {
-            items[i] = commodity.CommodityAsset.ProcessedGoodsAssets[i];
-        }
-
-        items[items.Length - 1] = processedGoods.ProcessedGoodsAsset;
-
-        return IsMatch(items);
-    }
-
-    private bool IsMatch(ProcessedGoodsAsset[] processedGoodsAssets)
-    {
-        List<ProcessedGoodsAsset> myCommodityProcessedAssets = new List<ProcessedGoodsAsset>();
-        foreach(ProcessedGoodsAsset processedGoodsAsset in CommodityAsset.ProcessedGoodsAssets)
-        {
-            myCommodityProcessedAssets.Add(processedGoodsAsset);
-        }
-        List<ProcessedGoodsAsset> targetProcessedGoods = new List<ProcessedGoodsAsset>();
-        foreach(ProcessedGoodsAsset item in processedGoodsAssets)
-        {
-            targetProcessedGoods.Add(item);
-        }
-
-
-
-        if(myCommodityProcessedAssets.Count != processedGoodsAssets.Length)
+        if(commodityAsset.Commodities.Count != commodities.Length)
         {
             return false;
         }
+    
+        List<Commodity> targetCommodity = new List<Commodity>();
 
-        foreach(ProcessedGoodsAsset item in CommodityAsset.ProcessedGoodsAssets)
+        foreach(Commodity commodity in commodities)
         {
-            for(int i = 0; i < targetProcessedGoods.Count; i++)
+            targetCommodity.Add(commodity);
+        }
+
+        foreach(Commodity commodity in commodityAsset.Commodities)
+        {
+            foreach(Commodity target in targetCommodity)
             {
-                if (item.isMatchProcessedGoods(targetProcessedGoods[i]))
+                if(commodity.CommodityAsset.CommodityID == target.CommodityAsset.CommodityID)
                 {
-                    myCommodityProcessedAssets.Remove(item);
-                    targetProcessedGoods.Remove(targetProcessedGoods[i]);
+                    targetCommodity.Remove(target);
                     break;
                 }
             }
         }
-
-        if(myCommodityProcessedAssets.Count == 0)
+        if(targetCommodity.Count == 0)
         {
             return true;
         }
-
         return false;
+        
     }
 }

@@ -33,4 +33,33 @@ public static class InitializeAssetDatabase
         return UnityEditor.AssetDatabase.LoadAssetAtPath<InitializeAsset>(path);
     }
 }
+
+public static class CommodityAssetDatabase
+{
+    public static string[] Find()
+    {
+        string[] guids = UnityEditor.AssetDatabase.FindAssets("t:CommodityAsset");
+        if (guids.Length == 0)
+        {
+            throw new System.IO.FileNotFoundException("InitializeAsset does not found");
+        }
+        return guids;
+    }
+
+    public static IGrantableCommodityID LoadAssetAtPathFromGuid(string guid)
+    {
+        string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
+        return UnityEditor.AssetDatabase.LoadAssetAtPath<CommodityAsset>(path);
+    }
+
+    public static string GUIDToAssetPath(string guid)
+    {
+        return UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
+    }
+
+    public static IGrantableCommodityID LoadAssetAtPath(string path)
+    {
+        return UnityEditor.AssetDatabase.LoadAssetAtPath<CommodityAsset>(path);
+    }
+}
 #endif
