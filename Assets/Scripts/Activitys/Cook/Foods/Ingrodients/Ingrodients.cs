@@ -1,15 +1,25 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-
+public interface IIngrodientsModerator
+{
+    IngrodientsAsset IngrodientsAsset { set; }
+}
 /// <summary>
 /// ãÔçﬁ
 /// </summary>
-public class Ingrodients : MonoBehaviour
+public class Ingrodients : MonoBehaviour,IIngrodientsModerator
 {
     [SerializeField]
     private IngrodientsAsset ingrodientsAsset;
     public IngrodientsAsset IngrodientsAsset => ingrodientsAsset;
+    IngrodientsAsset IIngrodientsModerator.IngrodientsAsset
+    {
+        set
+        {
+            ingrodientsAsset = value;
+        }
+    }
 
     private CommodityFactory commodityFactory;
 
