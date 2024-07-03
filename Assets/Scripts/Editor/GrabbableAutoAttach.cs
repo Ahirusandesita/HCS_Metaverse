@@ -20,8 +20,8 @@ namespace UnityEditor
         private string[] displayOptions = default;
 
 
-        [MenuItem("Oculus/GrabbableAutoAttach")]
-        [MenuItem("Window/GrabbableAutoAttach")]
+        [MenuItem("Meta/Grabbable Auto Attach")]
+        [MenuItem("Window/Grabbable Auto Attach")]
         public static void OpenWindow()
         {
             var window = GetWindow<GrabbableAutoAttach>();
