@@ -1,28 +1,53 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Commodity : MonoBehaviour
 {
     [SerializeField]
     private CommodityAsset commodityAsset;
-    public CommodityAsset CommodityAsset => commodityAsset;
+    public CommodityAsset CommodityAsset => this.commodityAsset;
 
-    public bool IsMatchCommodity(CommodityAsset commodity)
+    public bool IsMatchCommodity(CommodityAsset commodityAsset)
     {
-        if (CommodityAsset.ProcessedGoodsAssets.Count != commodity.ProcessedGoodsAssets.Count)
+        if(this.commodityAsset.CommodityID == commodityAsset.CommodityID)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public bool CanInstanceCommodity(Commodity[] commodities)
+    {
+        if(commodityAsset.Commodities.Count != commodities.Length)
         {
             return false;
         }
+    
+        List<Commodity> targetCommodity = new List<Commodity>();
 
-        for (int myProcessedGoods = 0; myProcessedGoods < commodityAsset.ProcessedGoodsAssets.Count; myProcessedGoods++)
+        foreach(Commodity commodity in commodities)
         {
-            if (!(commodityAsset.ProcessedGoodsAssets[myProcessedGoods].isMatchProcessedGoods(commodity.ProcessedGoodsAssets[myProcessedGoods])))
-            {
-                return false;
-            }
+            targetCommodity.Add(commodity);
         }
 
-        return true;
+        foreach(Commodity commodity in commodityAsset.Commodities)
+        {
+            foreach(Commodity target in targetCommodity)
+            {
+                if(commodity.CommodityAsset.CommodityID == target.CommodityAsset.CommodityID)
+                {
+                    targetCommodity.Remove(target);
+                    break;
+                }
+            }
+        }
+        if(targetCommodity.Count == 0)
+        {
+            return true;
+        }
+        return false;
+        
     }
 }

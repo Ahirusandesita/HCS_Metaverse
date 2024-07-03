@@ -61,6 +61,13 @@ public class IngrodientsDetailInformation
     [SerializeField]
     private float timeItTakes;
 
+    /// <summary>
+    /// ‰ÁHŒã‚ÌŠ®¬•i
+    /// </summary>
+    [SerializeField]
+    private Commodity commodity;
+
     public ProcessingType ProcessingType => processableType;
     public float TimeItTakes => timeItTakes;
+    public Commodity Commodity => commodity;
 }
