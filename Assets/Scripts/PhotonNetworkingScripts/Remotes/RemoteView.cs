@@ -1,52 +1,28 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 using Fusion;
 
-public class RemoteView : MonoBehaviour
+public class RemoteView : NetworkBehaviour
 {
-	[SerializeField]
-	private RPCManager _rpcManager = default;
+	private Transform linkTransform = default;
 	private Transform myTransform = default;
-	private NetworkRunner _networkRunner = default;
-	private MasterServerConect _masterServerConect = default;
+	[Networked]
+	public Vector3 LinkPosition { get; set; }
 
 	private void Start()
 	{
 		myTransform = transform;
-		_masterServerConect = (MasterServerConect)FindObjectOfType(typeof(MasterServerConect));
-		_rpcManager = (RPCManager)FindObjectOfType(typeof(RPCManager));
-		_networkRunner = _rpcManager.Runner;
 	}
 
-	/// <summary>
-	/// アクティビティを開始する
-	/// </summary>
-	/// <param name="sceneName">開始するアクティビティのシーン名</param>
-	public void ActivityStart(string sceneName)
+	public void SetTransform(Transform linkTransform)
 	{
-		if (!_networkRunner.IsServer) { return; }
-
-		_rpcManager.Rpc_SessionNaming("dadadad");
-		Debug.LogWarning("ActivityStart");
-		_networkRunner.LoadScene(sceneName);
+		this.linkTransform = linkTransform;
 	}
 
-	/// <summary>
-	/// ルームに入る。ない場合は作る
-	/// </summary>
-	/// <param name="sessionName">セッション名</param>
-	public async void JoinOrCreateRoom(string sessionName)
+	public override void FixedUpdateNetwork()
 	{
-		if (_networkRunner.IsServer)
-		{
-			_masterServerConect.UpdateNetworkRunner();
-		}
-
-		await _masterServerConect.Runner.StartGame(new StartGameArgs
-		{
-			GameMode = GameMode.AutoHostOrClient,
-			SessionName = sessionName,
-			SceneManager = _masterServerConect.Runner.GetComponent<NetworkSceneManagerDefault>()
-		});
+		LinkPosition = linkTransform.position;
 	}
 
 	public void SetVector3(Vector3 vector)

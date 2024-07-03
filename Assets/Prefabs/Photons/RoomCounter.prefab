@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3324060701469087776
+--- !u!1 &2252282109152039868
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,23 +8,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5998250638352630627}
-  - component: {fileID: 5277142121672186451}
-  - component: {fileID: 5283059930006110042}
+  - component: {fileID: 7309409169485860750}
+  - component: {fileID: 4311757471499120678}
+  - component: {fileID: 4225669961810554068}
   m_Layer: 0
-  m_Name: MasterServer
+  m_Name: RoomCounter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5998250638352630627
+--- !u!4 &7309409169485860750
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3324060701469087776}
+  m_GameObject: {fileID: 2252282109152039868}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -33,44 +33,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5277142121672186451
+--- !u!114 &4311757471499120678
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3324060701469087776}
+  m_GameObject: {fileID: 2252282109152039868}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 207df659d9a51634591c7070faef4dad, type: 3}
+  m_Script: {fileID: 11500000, guid: 0faa23f57edd40544a43de4d0a0f477f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activityZone: {fileID: 0}
-  _recorder: {fileID: 0}
-  _networkRunnerPrefab: {fileID: 687033457346460161, guid: b216176172d0a434a91184485630abf8, type: 3}
-  localRemoteReparation: {fileID: 5470062202958232113, guid: b49223fc95aa3784ea2065e977a21df2, type: 3}
-  _roomCounterPrefab:
-    RawGuidValue: 00000000000000000000000000000000
-  _rpcManagerPrefab:
-    RawGuidValue: 00000000000000000000000000000000
-  activityName:
-    name: 
-    selectedIndex: 0
---- !u!114 &5283059930006110042
+--- !u!114 &4225669961810554068
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3324060701469087776}
+  m_GameObject: {fileID: 2252282109152039868}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SortKey: 2259395473
+  SortKey: 1109204785
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
-  - {fileID: 5277142121672186451}
+  - {fileID: 4311757471499120678}

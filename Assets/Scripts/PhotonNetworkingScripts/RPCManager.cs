@@ -7,6 +7,26 @@ public class RPCManager : NetworkBehaviour
 {
     public event SessionNameChanged SessionNameChangedHandler;
 
+	private static RPCManager _instance;
+	public static RPCManager Instance { get => _instance; }
+
+	private void Awake()
+	{
+		if(_instance is null)
+		{
+			_instance = this;
+			DontDestroyOnLoad(this);
+		}
+		else
+		{
+			Destroy(gameObject);
+		}
+	}
+
+	/// <summary>
+	/// 同じセッション全員のセッション名を更新する
+	/// </summary>
+	/// <param name="sessionName">変更後のセッション名</param>
 	[Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void Rpc_SessionNaming(string sessionName)
     {
