@@ -46,7 +46,7 @@ public static class CommodityAssetDatabase
         return guids;
     }
 
-    public static IGrantableCommodityID LoadAssetAtPathFromGuid(string guid)
+    public static CommodityAsset LoadAssetAtPathFromGuid(string guid)
     {
         string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
         return UnityEditor.AssetDatabase.LoadAssetAtPath<CommodityAsset>(path);
@@ -57,7 +57,7 @@ public static class CommodityAssetDatabase
         return UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
     }
 
-    public static IGrantableCommodityID LoadAssetAtPath(string path)
+    public static CommodityAsset LoadAssetAtPath(string path)
     {
         return UnityEditor.AssetDatabase.LoadAssetAtPath<CommodityAsset>(path);
     }

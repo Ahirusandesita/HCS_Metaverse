@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bce7f3acac6e4d94980145f5b11daf95, type: 3}
+  m_Name: Stage1
+  m_EditorClassIdentifier: 
+  orderDetailInformations:
+  - commodityAsset: {fileID: 11400000, guid: 7e9a209f78712894eb5a2fef5e5fbe07, type: 2}
+    orderProbability: 2
+  - commodityAsset: {fileID: 11400000, guid: 091401fa30e80064a957bdf86456dce8, type: 2}
+    orderProbability: 1
