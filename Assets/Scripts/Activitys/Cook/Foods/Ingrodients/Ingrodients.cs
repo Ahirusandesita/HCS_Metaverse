@@ -11,7 +11,7 @@ public class Ingrodients : MonoBehaviour
     private IngrodientsAsset ingrodientsAsset;
     public IngrodientsAsset IngrodientsAsset => ingrodientsAsset;
 
-    private CommodityFactory processedGoodsFactory;
+    private CommodityFactory commodityFactory;
 
     private List<IngrodientsDetailInformation> workIngrodientsDetailInformations = new List<IngrodientsDetailInformation>();
     private Action processingAction;
@@ -23,11 +23,13 @@ public class Ingrodients : MonoBehaviour
         {
             this.workIngrodientsDetailInformations.Add(ingrodientsDetailInformation);
         }
+
+        this.commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
     }
 
-    public void Inject(CommodityFactory processedGoodsFactory)
+    public void Inject(CommodityFactory commodityFactory)
     {
-        this.processedGoodsFactory = processedGoodsFactory;
+        this.commodityFactory = commodityFactory;
     }
 
     private void Update()
@@ -37,6 +39,7 @@ public class Ingrodients : MonoBehaviour
 
     public void ProcessingStart(ProcessingType processingType)
     {
+        Commodity commodity = default;
         foreach(IngrodientsDetailInformation ingrodientsDetailInformation in workIngrodientsDetailInformations)
         {
             if(ingrodientsDetailInformation.ProcessingType == processingType)
@@ -50,8 +53,12 @@ public class Ingrodients : MonoBehaviour
                     if(timeItTakes <= 0f)
                     {
                         //‰ÁH‚·‚é‹@ŠB‚©‚ç‚Å‚à‚¢‚¢
-                        processedGoodsFactory.Generate(this, processingType);
+                        commodity =@commodityFactory.Generate(this, processingType);
+                        processingAction = null;
+
+                        Instantiate(commodity, this.transform.position, this.transform.rotation);
                         Debug.Log("‰ÁHŠ®—¹");
+                        Destroy(this.gameObject);
                     }
                 };
             }

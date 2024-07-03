@@ -12,16 +12,17 @@ public class MixCommodity : MonoBehaviour
     }
 
 
-    public static void Mix(Commodity[] commodities)
+    public static Commodity Mix(Commodity[] commodities)
     {
         foreach(Commodity item in allCommodity_static.Commodities)
         {
             if (item.CanInstanceCommodity(commodities))
             {
                 Debug.Log("ê∂ê¨â¬î\" + item.CommodityAsset.name);
-                //ê∂ê¨â¬î\Ç»äÆê¨ïi
-                return;
+                return item;
             }
         }
+
+        return null;//å„Ç…NullObject
     }
 }
