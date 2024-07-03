@@ -40,7 +40,6 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
         sn.Select(itemSelectArgs);
 
         onGrabbed.WhenSelect.RemoveListener(WhenSelect);
-        onGrabbed.WhenUnselect.RemoveListener(WhenUnselect);
         onGrabbed.WhenHover.RemoveListener(WhenHover);
         onGrabbed.WhenUnhover.RemoveListener(WhenUnhover);
     }
@@ -48,6 +47,7 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
     private void WhenUnselect(PointerEvent pointerEvent)
     {
         sn.Unselect(itemSelectArgs);
+        onGrabbed.WhenUnselect.RemoveListener(WhenUnselect);
     }
 
     private void WhenHover(PointerEvent pointerEvent)
