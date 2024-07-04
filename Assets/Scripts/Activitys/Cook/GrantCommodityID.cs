@@ -9,10 +9,13 @@ public class GrantCommodityID
     public static void Initialize()
     {
         string[] guids = CommodityAssetDatabase.Find();
+
         for (int i = 0; i < guids.Length; i++)
         {
-            IGrantableCommodityID grantable = CommodityAssetDatabase.LoadAssetAtPathFromGuid(guids[i]);
+            CommodityAsset commodityAsset = CommodityAssetDatabase.LoadAssetAtPathFromGuid(guids[i]);
+            IGrantableCommodityID grantable = commodityAsset;
             grantable.GrantID(i);
+            UnityEditor.EditorUtility.SetDirty(commodityAsset);
         }
         Debug.Log("Commodity‚ÉID‚ð•t—^‚µ‚Ü‚µ‚½B");
     }

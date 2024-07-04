@@ -19,8 +19,13 @@ public interface IGrantableCommodityID
 {
     void GrantID(int id);
 }
+public interface ICommodityAssetModerator
+{
+    void SetCommodities(List<Commodity> commodities);
+}
+
 [CreateAssetMenu(fileName = "CommodityAsset", menuName = "ScriptableObjects/Foods/CommodityAsset")]
-public class CommodityAsset : ScriptableObject,IGrantableCommodityID
+public class CommodityAsset : ScriptableObject,IGrantableCommodityID,ICommodityAssetModerator
 {
     [SerializeField, HideInInspector]
     private int commodityID;
@@ -39,6 +44,11 @@ public class CommodityAsset : ScriptableObject,IGrantableCommodityID
     void IGrantableCommodityID.GrantID(int id)
     {
         commodityID = id;
+    }
+
+    void ICommodityAssetModerator.SetCommodities(List<Commodity> commodities)
+    {
+        this.commodities = commodities;
     }
    
 }
