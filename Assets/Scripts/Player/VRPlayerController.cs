@@ -1,3 +1,4 @@
+using System;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -5,7 +6,7 @@ using UnityEngine.InputSystem;
 /// <summary>
 /// プレイヤーの挙動を扱うクラス（VR)
 /// </summary>
-public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>
+public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDependencyInjector<PlayerHandDependencyInfomation>
 {
     [SerializeField]
     private Transform centerEyeTransform = default;
@@ -23,6 +24,10 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>
 
     [Tooltip("左右どちらに回転するか")]
     private FloatReactiveProperty lookDirX_RP = default;
+
+    private WarpPointer warpPointer = default;
+    private Transform leftHand = default;
+    private Action<Vector3, Vector3, float> updateAction = default;
 
 
     protected override void Reset()
@@ -42,6 +47,7 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>
         base.Awake();
 
         followTransform = centerEyeTransform;
+        warpPointer = new WarpPointer(gameObject);
 
         // Subscribe
         lookDirX_RP = new FloatReactiveProperty().AddTo(this);
@@ -67,16 +73,18 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>
             {
                 IsMovingRP.Subscribe(isMoving =>
                 {
+                    warpPointer.SetActive(isMoving);
+
                     if (isMoving)
                     {
                         // UI spawn
-                        warpSymbol.transform.position = myTransform.position;
-                        warpSymbol.enabled = true;
+                        //warpSymbol.transform.position = myTransform.position;
+                        //warpSymbol.enabled = true;
                     }
                     else
                     {
                         // UI despawn
-                        warpSymbol.enabled = false;
+                        //warpSymbol.enabled = false;
                     }
                 })
                 .AddTo(this);
@@ -125,6 +133,7 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>
             return;
         }
 
+        warpPointer.Draw(leftHand.transform.position, leftHand.transform.forward);
     }
 
     /// <summary>
@@ -134,5 +143,10 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>
     private void OnRotate(float leftOrRight)
     {
         myTransform.Rotate(Vector3.up * (playerDataAsset.RotateAngle * leftOrRight));
+    }
+
+    void IDependencyInjector<PlayerHandDependencyInfomation>.Inject(PlayerHandDependencyInfomation information)
+    {
+        leftHand = information.LeftHand;
     }
 }
