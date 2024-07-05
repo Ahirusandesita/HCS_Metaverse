@@ -25,7 +25,7 @@ public class AutoMachine : Machine
 
                     if (timeItTakes <= 0f)
                     {
-                        ingrodients.ProcessingStart(ProcessingType);
+                        ingrodients.ProcessingStart(ProcessingType,this.transform);
                         processingAction = null;
                         Debug.Log("‰ÁHŠ®—¹");
                     }

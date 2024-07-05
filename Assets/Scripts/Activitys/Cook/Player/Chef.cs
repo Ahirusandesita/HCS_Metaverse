@@ -9,6 +9,6 @@ public class Chef : MonoBehaviour
 
     private void Start()
     {
-        GameObject.FindObjectOfType<AutoMachine>().ProcessedCertification(tomato).Processing(tomato);
+        //GameObject.FindObjectOfType<AutoMachine>().ProcessedCertification(tomato).Processing(tomato);
     }
 }
