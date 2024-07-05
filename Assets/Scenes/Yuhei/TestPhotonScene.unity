@@ -1836,6 +1836,10 @@ PrefabInstance:
       propertyPath: _activityZone
       value: 
       objectReference: {fileID: 940213347}
+    - target: {fileID: 4177287145026017418, guid: 4fa54e5eec46828498093a64a48029bf, type: 3}
+      propertyPath: _testNetworkObject
+      value: 
+      objectReference: {fileID: 1940321115}
     - target: {fileID: 8157958962586161535, guid: 4fa54e5eec46828498093a64a48029bf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.1939337
@@ -6679,7 +6683,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SortKey: 2030648501
   ObjectInterest: 1
-  Flags: 262145
+  Flags: 786433
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 1940321128}

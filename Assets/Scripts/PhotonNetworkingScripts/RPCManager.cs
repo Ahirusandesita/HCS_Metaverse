@@ -1,5 +1,6 @@
 using Fusion;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public delegate void SessionNameChanged(string name);
 
@@ -38,7 +39,7 @@ public class RPCManager : NetworkBehaviour
 
 	[Rpc(RpcSources.All, RpcTargets.All)]
 	public void Rpc_ReleaseStateAuthority(NetworkObject networkObject, [RpcTarget] PlayerRef player)
-	{
+	{		
 		networkObject.ReleaseStateAuthority();
 	}
 }

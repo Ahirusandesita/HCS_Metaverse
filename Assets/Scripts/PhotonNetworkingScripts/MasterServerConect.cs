@@ -9,7 +9,7 @@ using Cysharp.Threading.Tasks;
 
 public interface IMasterServerConectable
 {
-	 UniTask Connect(string SessionName);
+	UniTask Connect(string SessionName);
 }
 
 public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMasterServerConectable
@@ -45,23 +45,27 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		await Connect("Room");
 		InitRegisterNetwork();
 
-		if (!_networkRunner.IsServer) { return; }
 		RPCManager rpcManager = _networkRunner.
 			Spawn(_rpcManagerPrefab, Vector3.zero, Quaternion.identity).
 			GetComponent<RPCManager>();
-		if(_activityZone is not null)
+		if (_activityZone is not null)
 		{
 			rpcManager.SessionNameChangedHandler += _activityZone.SetSessionName;
 		}
 
-		_networkRunner.Spawn(_roomCounterPrefab);
+		Transform myTransform = transform;
+		rpcManager.transform.parent = myTransform;
+		_networkRunner.Spawn(_roomCounterPrefab).transform.parent = myTransform;
+
 		localRemoteReparation.RemoteViewCreate(_networkRunner, _networkRunner.LocalPlayer);
+
+
 
 	}
 
 	private void InitRegisterNetwork()
 	{
-		NetworkObject[] networkObjects =  FindObjectsOfType<NetworkObject>();
+		NetworkObject[] networkObjects = FindObjectsOfType<NetworkObject>();
 		_networkRunner.RegisterSceneObjects(_networkRunner.GetSceneRef(gameObject), networkObjects);
 	}
 
@@ -82,22 +86,27 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	}
 
 	[ContextMenu("Test")]
-	private void TestTest()
+	private async UniTaskVoid TestTest()
 	{
-		GetStateAuthority(_testNetworkObject);
+		await GetStateAuthority(_testNetworkObject);
 	}
 
 	/// <summary>
-	/// 状態変更権限を取得する
+	/// 状態変更権限を自分のにする
 	/// </summary>
 	/// <param name="networkObject">取得したいオブジェクト</param>
 	/// <returns>成功したか</returns>
-	public bool GetStateAuthority(NetworkObject networkObject)
+	public async UniTask GetStateAuthority(NetworkObject networkObject)
 	{
-		if (networkObject.HasStateAuthority) { return true; }
-		RPCManager.Instance.Rpc_ReleaseStateAuthority(networkObject,networkObject.StateAuthority);
+		if (networkObject.HasStateAuthority)
+		{
+			Debug.LogWarning("has");
+			return;
+		}
+		var token = destroyCancellationToken;
+		RPCManager.Instance.Rpc_ReleaseStateAuthority(networkObject, networkObject.StateAuthority);
+		await UniTask.WaitUntil(() => networkObject.StateAuthority == PlayerRef.None, cancellationToken: token);
 		networkObject.RequestStateAuthority();
-		return true;
 	}
 
 
@@ -133,7 +142,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	private async UniTask UpdateNetworkRunner()
 	{
 		Debug.LogWarning("UpdateRunner");
-		await _networkRunner.Shutdown(true,ShutdownReason.HostMigration);
+		await _networkRunner.Shutdown(true, ShutdownReason.HostMigration);
 		// NetworkRunnerを生成する
 		_networkRunner = Instantiate(_networkRunnerPrefab);
 		// NetworkRunnerのコールバック対象に、このスクリプト（GameLauncher）を登録する
@@ -232,7 +241,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		});
 	}
 
-	public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key,  System.ArraySegment<byte> data)
+	public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, System.ArraySegment<byte> data)
 	{
 	}
 
