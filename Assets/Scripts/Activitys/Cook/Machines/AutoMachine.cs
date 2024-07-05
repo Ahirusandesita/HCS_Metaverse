@@ -11,27 +11,23 @@ public class AutoMachine : Machine
     {
         processingAction?.Invoke();
     }
-    public override void StartProcessed()
+    public override void StartProcessed(IngrodientsDetailInformation ingrodientsDetailInformation)
     {
-        foreach (IngrodientsDetailInformation ingrodientsDetailInformation in ingrodients.IngrodientsAsset.IngrodientsDetailInformations)
+        timeItTakes = ingrodientsDetailInformation.TimeItTakes;
+
+        processingAction += () =>
         {
-            if (ingrodientsDetailInformation.ProcessingType == ProcessingType)
+            timeItTakes -= Time.deltaTime;
+
+            if (timeItTakes <= 0f)
             {
-                timeItTakes = ingrodientsDetailInformation.TimeItTakes;
-
-                processingAction += () =>
-                {
-                    timeItTakes -= Time.deltaTime;
-
-                    if (timeItTakes <= 0f)
-                    {
-                        ingrodients.ProcessingStart(ProcessingType,this.transform);
-                        processingAction = null;
-                        Debug.Log("‰ÁHŠ®—¹");
-                    }
-                };
+                ingrodients.ProcessingStart(ProcessingType, this.transform);
+                processingAction = null;
+                Debug.Log("‰ÁHŠ®—¹");
             }
-        }
+        };
+
+
     }
     public void ProcessingInterruption()
     {

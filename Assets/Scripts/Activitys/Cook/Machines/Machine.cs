@@ -28,7 +28,15 @@ public abstract class Machine : MonoBehaviour,IProcessable
     {
         this.ingrodients = ingrodients;
         ingrodients.transform.position = ingrodientTransform.position;
-        StartProcessed();
+
+        foreach (IngrodientsDetailInformation ingrodientsDetailInformation in ingrodients.IngrodientsAsset.IngrodientsDetailInformations)
+        {
+            if (ingrodientsDetailInformation.ProcessingType == ProcessingType)
+            {
+                IngrodientsDetailInformation information = new IngrodientsDetailInformation(ingrodientsDetailInformation.ProcessingType, ingrodientsDetailInformation.TimeItTakes, ingrodientsDetailInformation.Commodity);
+                StartProcessed(information);
+            }
+        }
     }
 
     public IProcessable ProcessedCertification(Ingrodients ingrodients)
@@ -44,5 +52,5 @@ public abstract class Machine : MonoBehaviour,IProcessable
         return new NullMachine();
     }
 
-    public abstract void StartProcessed();
+    public abstract void StartProcessed(IngrodientsDetailInformation ingrodientsDetailInformation);
 }

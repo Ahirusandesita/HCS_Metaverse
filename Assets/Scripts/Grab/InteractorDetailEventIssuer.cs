@@ -44,7 +44,7 @@ public class InteractorDetailEventIssuer : MonoBehaviour
     {
         foreach(InteractorManager interactor in interactorManagers)
         {
-            interactor.OnInteractor += OnInteractor;
+            interactor.OnInteractor += (ida) => OnInteractor?.Invoke(ida);
         }
     }
 }

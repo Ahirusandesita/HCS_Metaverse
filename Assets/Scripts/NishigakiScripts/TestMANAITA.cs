@@ -9,6 +9,6 @@ public class TestMANAITA : MonoBehaviour, IKnifeHitEvent
 
     void IKnifeHitEvent.KnifeHitEvent()
     {
-        _cutObject.ProcessingStart(ProcessingType.Cut);
+        _cutObject.ProcessingStart(ProcessingType.Cut,this.transform);
     }
 }
