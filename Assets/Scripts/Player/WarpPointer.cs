@@ -12,6 +12,7 @@ public class WarpPointer
         var gameObject = new GameObject("WarpPointer");
         gameObject.transform.SetParent(user.transform);
         lineRenderer = gameObject.AddComponent<LineRenderer>();
+        lineRenderer.alignment = LineAlignment.View;
         lineRenderer.receiveShadows = false;
         lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         lineRenderer.loop = false;
@@ -19,11 +20,18 @@ public class WarpPointer
         lineRenderer.endWidth = 0.05f;
     }
 
-    public void Draw(Vector3 origin, Vector3 direction)
+    /// <summary>
+    /// ポインターを描画する
+    /// </summary>
+    /// <param name="origin">原点</param>
+    /// <param name="direction">方向</param>
+    /// <exception cref="System.InvalidOperationException">WarpPointerがどこにも当たらなかったとき（返す値が存在しないとき）</exception>
+    /// <returns>ポインターが当たった座標</returns>
+    public Vector3 Draw(Vector3 origin, Vector3 direction)
     {
         if (!lineRenderer.enabled)
         {
-            return;
+            return Vector3.zero;
         }
 
         direction.y = direction.y <= 0f
@@ -54,11 +62,11 @@ public class WarpPointer
             var b12 = Vector3.Lerp(p1, p2, t);
             var b012 = Vector3.Lerp(b01, b12, t);
 
-            if (Physics.Linecast(prevb012, b012, out RaycastHit hit2))
+            if (Physics.Linecast(prevb012, b012, out RaycastHit hit))
             {
                 lineRenderer.positionCount = i + 1;
-                lineRenderer.SetPosition(i, hit2.point);
-                return;
+                lineRenderer.SetPosition(i, hit.point);
+                return hit.point;
             }
             else
             {
@@ -67,16 +75,20 @@ public class WarpPointer
 
             if (i == n - 1)
             {
-                continue;
+                break;
             }
 
             prevb012 = b012;
         }
 
-        if (Physics.Raycast(p2, (p2 - prevb012).normalized, out RaycastHit hit3))
+        if (Physics.Raycast(p2, (p2 - prevb012).normalized, out RaycastHit hit2))
         {
-            lineRenderer.SetPosition(n, hit3.point);
+            lineRenderer.SetPosition(n, hit2.point);
+            return hit2.point;
         }
+
+        // この例外がthrowされることは想定していない
+        throw new System.InvalidOperationException("WarpPointerがどこにも当たっていません。");
     }
 
     public void SetActive(bool value)

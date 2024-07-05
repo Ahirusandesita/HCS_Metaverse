@@ -64,31 +64,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""HeadPosition"",
-                    ""type"": ""Value"",
-                    ""id"": ""9e6bb6e0-2070-440c-9563-ac1957416edb"",
-                    ""expectedControlType"": ""Vector3"",
+                    ""name"": ""Warp"",
+                    ""type"": ""Button"",
+                    ""id"": ""1918d55a-218a-4151-a7c4-db5d8c694fe3"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""HeadRotation"",
-                    ""type"": ""Value"",
-                    ""id"": ""f906779a-aaca-4bca-9010-9cf284efa1e3"",
-                    ""expectedControlType"": ""Quaternion"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""TrackingState"",
-                    ""type"": ""Value"",
-                    ""id"": ""0068a17c-7946-4bd3-8583-534d8547ab66"",
-                    ""expectedControlType"": ""Integer"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -270,56 +252,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""5c18d671-36fc-48ce-a065-02531889c098"",
-                    ""path"": ""<XRHMD>/centerEyeRotation"",
+                    ""id"": ""4dd29818-7479-4f38-8595-880e74284f64"",
+                    ""path"": ""<XRController>{LeftHand}/triggerPressed"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""HeadRotation"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""a8ddab8f-3e3e-4f64-b30a-d44cb2435b12"",
-                    ""path"": ""<HandheldARInputDevice>/deviceRotation"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""HeadRotation"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""cefeb0e9-682e-494b-a3df-e7ca5140decb"",
-                    ""path"": ""<XRHMD>/trackingState"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""TrackingState"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""b6e655f6-d50f-4c9f-a7d2-3581817bf8bf"",
-                    ""path"": ""<XRHMD>/centerEyePosition"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""HeadPosition"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""bc06d9a8-b685-43d3-9301-9843ac1400df"",
-                    ""path"": ""<HandheldARInputDevice>/devicePosition"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""HeadPosition"",
+                    ""action"": ""Warp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -592,9 +530,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
-        m_Player_HeadPosition = m_Player.FindAction("HeadPosition", throwIfNotFound: true);
-        m_Player_HeadRotation = m_Player.FindAction("HeadRotation", throwIfNotFound: true);
-        m_Player_TrackingState = m_Player.FindAction("TrackingState", throwIfNotFound: true);
+        m_Player_Warp = m_Player.FindAction("Warp", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Chat = m_UI.FindAction("Chat", throwIfNotFound: true);
@@ -672,9 +608,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Sprint;
-    private readonly InputAction m_Player_HeadPosition;
-    private readonly InputAction m_Player_HeadRotation;
-    private readonly InputAction m_Player_TrackingState;
+    private readonly InputAction m_Player_Warp;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -683,9 +617,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
-        public InputAction @HeadPosition => m_Wrapper.m_Player_HeadPosition;
-        public InputAction @HeadRotation => m_Wrapper.m_Player_HeadRotation;
-        public InputAction @TrackingState => m_Wrapper.m_Player_TrackingState;
+        public InputAction @Warp => m_Wrapper.m_Player_Warp;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -707,15 +639,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Sprint.started += instance.OnSprint;
             @Sprint.performed += instance.OnSprint;
             @Sprint.canceled += instance.OnSprint;
-            @HeadPosition.started += instance.OnHeadPosition;
-            @HeadPosition.performed += instance.OnHeadPosition;
-            @HeadPosition.canceled += instance.OnHeadPosition;
-            @HeadRotation.started += instance.OnHeadRotation;
-            @HeadRotation.performed += instance.OnHeadRotation;
-            @HeadRotation.canceled += instance.OnHeadRotation;
-            @TrackingState.started += instance.OnTrackingState;
-            @TrackingState.performed += instance.OnTrackingState;
-            @TrackingState.canceled += instance.OnTrackingState;
+            @Warp.started += instance.OnWarp;
+            @Warp.performed += instance.OnWarp;
+            @Warp.canceled += instance.OnWarp;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -732,15 +658,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Sprint.started -= instance.OnSprint;
             @Sprint.performed -= instance.OnSprint;
             @Sprint.canceled -= instance.OnSprint;
-            @HeadPosition.started -= instance.OnHeadPosition;
-            @HeadPosition.performed -= instance.OnHeadPosition;
-            @HeadPosition.canceled -= instance.OnHeadPosition;
-            @HeadRotation.started -= instance.OnHeadRotation;
-            @HeadRotation.performed -= instance.OnHeadRotation;
-            @HeadRotation.canceled -= instance.OnHeadRotation;
-            @TrackingState.started -= instance.OnTrackingState;
-            @TrackingState.performed -= instance.OnTrackingState;
-            @TrackingState.canceled -= instance.OnTrackingState;
+            @Warp.started -= instance.OnWarp;
+            @Warp.performed -= instance.OnWarp;
+            @Warp.canceled -= instance.OnWarp;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -962,9 +882,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnLook(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
-        void OnHeadPosition(InputAction.CallbackContext context);
-        void OnHeadRotation(InputAction.CallbackContext context);
-        void OnTrackingState(InputAction.CallbackContext context);
+        void OnWarp(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
