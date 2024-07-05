@@ -13,17 +13,18 @@ public class YanagiZako : MonoBehaviour,IGrabbableActive
     {
         if(other.TryGetComponent<Machine>(out Machine machine))
         {
+            Disable();
+            this.transform.rotation = machine.transform.rotation;
             machine.ProcessedCertification(this.GetComponent<Ingrodients>()).Processing(this.GetComponent<Ingrodients>());
-            Debug.Log("ABBBB");
         }
     }
 
     public void Enable()
     {
-        this.GetComponent<Grabbable>();
+        this.GetComponent<Grabbable>().enabled = true;
     }
     public void Disable()
     {
-
+        this.GetComponent<Grabbable>().enabled = false;
     }
 }

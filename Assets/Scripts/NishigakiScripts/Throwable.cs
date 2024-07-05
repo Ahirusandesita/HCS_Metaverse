@@ -48,6 +48,7 @@ public class Throwable : MonoBehaviour, IDependencyInjector<PlayerHandDependency
 
     private void Start()
     {
+        _interactorDetailEventIssuer = GameObject.FindObjectOfType<InteractorDetailEventIssuer>();
         // ’Í‚ñ‚¾Žž‚Ìî•ñ‚ðu“Ç‚Å‚«‚é‚æ‚¤‚É‚·‚é
         _interactorDetailEventIssuer.OnInteractor += (handler) => { 
             _detailEventsHandType = handler.HandType;
