@@ -42,31 +42,13 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "HeadPosition",
-                    "type": "Value",
-                    "id": "9e6bb6e0-2070-440c-9563-ac1957416edb",
-                    "expectedControlType": "Vector3",
+                    "name": "Warp",
+                    "type": "Button",
+                    "id": "1918d55a-218a-4151-a7c4-db5d8c694fe3",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "HeadRotation",
-                    "type": "Value",
-                    "id": "f906779a-aaca-4bca-9010-9cf284efa1e3",
-                    "expectedControlType": "Quaternion",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "TrackingState",
-                    "type": "Value",
-                    "id": "0068a17c-7946-4bd3-8583-534d8547ab66",
-                    "expectedControlType": "Integer",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -248,56 +230,12 @@
                 },
                 {
                     "name": "",
-                    "id": "5c18d671-36fc-48ce-a065-02531889c098",
-                    "path": "<XRHMD>/centerEyeRotation",
+                    "id": "4dd29818-7479-4f38-8595-880e74284f64",
+                    "path": "<XRController>{LeftHand}/triggerPressed",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "HeadRotation",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "a8ddab8f-3e3e-4f64-b30a-d44cb2435b12",
-                    "path": "<HandheldARInputDevice>/deviceRotation",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "HeadRotation",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "cefeb0e9-682e-494b-a3df-e7ca5140decb",
-                    "path": "<XRHMD>/trackingState",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackingState",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "b6e655f6-d50f-4c9f-a7d2-3581817bf8bf",
-                    "path": "<XRHMD>/centerEyePosition",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "HeadPosition",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "bc06d9a8-b685-43d3-9301-9843ac1400df",
-                    "path": "<HandheldARInputDevice>/devicePosition",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "HeadPosition",
+                    "action": "Warp",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

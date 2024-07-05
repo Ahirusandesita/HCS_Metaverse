@@ -27,7 +27,9 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 
     private WarpPointer warpPointer = default;
     private Transform leftHand = default;
-    private Action<Vector3, Vector3, float> updateAction = default;
+
+    private Vector3 warpPos = default;
+    private IDisposable isMovingDisposable = default;
 
 
     protected override void Reset()
@@ -57,6 +59,14 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
             // プレイヤーを回転させる
             .Subscribe(value => OnRotate(value));
 
+        Inputter.Player.Warp.performed += _ =>
+        {
+            if (IsMovingRP.Value)
+            {
+                Warp();
+            }
+        };
+
 #if UNITY_EDITOR
         PlayerActions.Look.AddCompositeBinding("2DVector")
             .With("Left", "<Keyboard>/k")
@@ -68,26 +78,24 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 
         moveTypeRP
             .AddTo(this)
-            .Where(value => value == VRMoveType.Warp)
             .Subscribe(value =>
             {
-                IsMovingRP.Subscribe(isMoving =>
+                // Naturalに変わったとき、購読が存在すればDispose
+                if (value == VRMoveType.Natural)
                 {
-                    warpPointer.SetActive(isMoving);
-
-                    if (isMoving)
+                    isMovingDisposable?.Dispose();
+                }
+                // Warpに変わったとき、IsMovingイベントを購読する
+                else
+                {
+                    isMovingDisposable = IsMovingRP.Subscribe(isMoving =>
                     {
-                        // UI spawn
-                        //warpSymbol.transform.position = myTransform.position;
-                        //warpSymbol.enabled = true;
-                    }
-                    else
-                    {
-                        // UI despawn
-                        //warpSymbol.enabled = false;
-                    }
-                })
-                .AddTo(this);
+                        // 入力の有無によってビューの状態を切り替える
+                        warpPointer.SetActive(isMoving);
+                        //warpSymbol.enabled = isMoving;
+                    })
+                    .AddTo(this);
+                }
             });
     }
 
@@ -133,7 +141,15 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
             return;
         }
 
-        warpPointer.Draw(leftHand.transform.position, leftHand.transform.forward);
+        warpPos = warpPointer.Draw(leftHand.position, leftHand.forward);
+        //warpSymbol.transform.position = warpPos;
+
+    }
+
+    private void Warp()
+    {
+        myTransform.position = warpPos;
+        //myTransform.rotation = 
     }
 
     /// <summary>
