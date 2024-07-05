@@ -10,13 +10,25 @@ public class KnifeStopper : MonoBehaviour, IDependencyInjector<PlayerVisualHandD
     [SerializeField, Tooltip("接触する対象のコライダー")]
     private Collider _targetCollider = default;
 
+    [SerializeField, Tooltip("ナイフが当たったときに実行したい処理を持ったオブジェクト")]
+    private GameObject _knifeHitEvent = default;
+
+    // 掴んだ時の情報を取得するためのクラスのインスタンス用変数
+    private InteractorDetailEventIssuer _detailEventer = default;
+
     // 
     private PlayerVisualHandDependencyInformation _handVisualInformation = default;
 
     // 
+    private bool _isHitTarget = false;
+
+    // 
     private bool _isGrabbing = false;
 
-    // ロックするTransform群 ---------------------------------
+    // 
+    private HandType _grabbingHandType = default;
+
+    // 停止させるTransform群 ---------------------------------
     private Transform _visualObjectTransform = default;
 
     private Transform _visualHandTransform = default;
@@ -26,7 +38,7 @@ public class KnifeStopper : MonoBehaviour, IDependencyInjector<PlayerVisualHandD
     private Transform _visualControllerHandTransform = default;
     // ------------------------------------------------------
 
-    // ロックする座標群と角度群 --------------------------------
+    // 停止する座標群と角度群 --------------------------------
     private Vector3 _visualObjectPosition = default;
     private Quaternion _visualObjectRotation = default;
 
@@ -42,14 +54,19 @@ public class KnifeStopper : MonoBehaviour, IDependencyInjector<PlayerVisualHandD
 
     private void Start()
     {
-        
+        // 掴んだ時の手の方向を講読しておく
+        _detailEventer.OnInteractor += (handler) => {_grabbingHandType = handler.HandType;};
     }
 
     private void Update()
     {
         if (_isGrabbing)
         {
-
+            if (_isHitTarget)
+            {
+                // 
+                LockTransform();
+            }
         }
     }
 
@@ -58,7 +75,20 @@ public class KnifeStopper : MonoBehaviour, IDependencyInjector<PlayerVisualHandD
         if (other == _targetCollider)
         {
             // 
-            _isGrabbing = true;
+            _isHitTarget = true;
+
+            // 
+            SetLockTransform(_grabbingHandType);
+
+            // 
+            IKnifeHitEvent knifeHitEvent;
+
+            // 
+            if (_knifeHitEvent.TryGetComponent<IKnifeHitEvent>(out knifeHitEvent))
+            {
+                // 
+                knifeHitEvent.KnifeHitEvent();
+            }
         }
     }
 
@@ -67,13 +97,83 @@ public class KnifeStopper : MonoBehaviour, IDependencyInjector<PlayerVisualHandD
         if (other == _targetCollider)
         {
             // 
-            _isGrabbing = false;
+            _isHitTarget = false;
         }
+    }
+    private void SetDetailHandTransform(HandType detailHand)
+    {
+        // 
+        switch (detailHand)
+        {
+            case HandType.Right:
+                _visualHandTransform = _handVisualInformation.VisualRightHand;
+                _visualControllerTransform = _handVisualInformation.VisualRightController;
+                _visualControllerHandTransform = _handVisualInformation.VisualRightControllerHand;
+                break;
+
+            case HandType.Left:
+                _visualHandTransform = _handVisualInformation.VisualRightHand;
+                _visualControllerTransform = _handVisualInformation.VisualRightController;
+                _visualControllerHandTransform = _handVisualInformation.VisualRightControllerHand;
+                break;
+        }
+    }
+
+    private void SetLockTransform(HandType detailHand)
+    {
+        // 
+        _visualObjectPosition = _visualObject.transform.position;
+        _visualObjectRotation = _visualObject.transform.rotation;
+
+        // 
+        switch (detailHand)
+        {
+            case HandType.Right:
+                _visualHandPosition = _handVisualInformation.VisualRightHand.position;
+                _visualHandRotation = _handVisualInformation.VisualRightHand.rotation;
+                _visualControllerPosition = _handVisualInformation.VisualRightController.position;
+                _visualControllerRotation = _handVisualInformation.VisualRightController.rotation;
+                _visualControllerHandPosition = _handVisualInformation.VisualRightControllerHand.position;
+                _visualControllerHandRotation = _handVisualInformation.VisualRightControllerHand.rotation;
+                break;
+
+            case HandType.Left:
+                _visualHandPosition = _handVisualInformation.VisualLeftHand.position;
+                _visualHandRotation = _handVisualInformation.VisualLeftHand.rotation;
+                _visualControllerPosition = _handVisualInformation.VisualLeftController.position;
+                _visualControllerRotation = _handVisualInformation.VisualLeftController.rotation;
+                _visualControllerHandPosition = _handVisualInformation.VisualLeftControllerHand.position;
+                _visualControllerHandRotation = _handVisualInformation.VisualLeftControllerHand.rotation;
+                break;
+        }
+    }
+
+    private void LockTransform()
+    {
+        // 
+        _visualObjectTransform.position = _visualObjectPosition;
+        _visualObjectTransform.rotation = _visualObjectRotation;
+        _visualHandTransform.position = _visualHandPosition;
+        _visualHandTransform.rotation = _visualHandRotation;
+        _visualControllerTransform.position = _visualControllerPosition;
+        _visualControllerTransform.rotation = _visualControllerRotation;
+        _visualControllerHandTransform.position = _visualControllerHandPosition;
+        _visualControllerHandTransform.rotation = _visualControllerHandRotation;
     }
 
     private void Select()
     {
+        // 
+        _isGrabbing = true;
 
+        // 
+        SetDetailHandTransform(_grabbingHandType);
+    }
+
+    private void UnSelect()
+    {
+        // 
+        _isGrabbing = false;
     }
 
     public void Inject(PlayerVisualHandDependencyInformation information)
