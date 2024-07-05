@@ -87,7 +87,6 @@ public class KnifeStopper : MonoBehaviour, IDependencyInjector<PlayerVisualHandD
             {
                 once = false;
             }
-            Debug.Log($"<color=red>‚ ‚½‚Á‚Ä‚é‚æ‚ñ</color>");
             // 
             _isHitTarget = true;
 
@@ -166,7 +165,6 @@ public class KnifeStopper : MonoBehaviour, IDependencyInjector<PlayerVisualHandD
     private void LockTransform()
     {
         // 
-        Debug.Log(_visualObjectPosition);
         _visualObject.transform.position = _visualObjectPosition;
         _visualObject.transform.rotation = _visualObjectRotation;
         _visualHandTransform.position = _visualHandPosition;
