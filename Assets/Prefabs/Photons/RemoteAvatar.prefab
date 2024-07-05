@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: -3226443567640152744}
   - component: {fileID: 8056157065058067080}
   - component: {fileID: 5069500392869879931}
+  - component: {fileID: 6239254122608754491}
   m_Layer: 0
   m_Name: RemoteAvatar
   m_TagString: Untagged
@@ -129,6 +130,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 347929714470228871}
   - {fileID: -3226443567640152744}
+  - {fileID: 6239254122608754491}
 --- !u!114 &347929714470228871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,6 +143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cb1ed61b3912694f91cb41799a4f186, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _LinkPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &-3226443567640152744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,3 +270,19 @@ MonoBehaviour:
     Max: 1000
     SpeedUpPerc: 5
   restartOnDeviceChange: 1
+--- !u!114 &6239254122608754491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7202047677650180228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0

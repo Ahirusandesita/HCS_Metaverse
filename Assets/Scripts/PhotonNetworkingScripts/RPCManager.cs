@@ -5,14 +5,14 @@ public delegate void SessionNameChanged(string name);
 
 public class RPCManager : NetworkBehaviour
 {
-    public event SessionNameChanged SessionNameChangedHandler;
+	public event SessionNameChanged SessionNameChangedHandler;
 
 	private static RPCManager _instance;
 	public static RPCManager Instance { get => _instance; }
 
 	private void Awake()
 	{
-		if(_instance is null)
+		if (_instance is null)
 		{
 			_instance = this;
 			DontDestroyOnLoad(this);
@@ -28,11 +28,17 @@ public class RPCManager : NetworkBehaviour
 	/// </summary>
 	/// <param name="sessionName">変更後のセッション名</param>
 	[Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void Rpc_SessionNaming(string sessionName)
-    {
-        Debug.LogWarning("RpcExecute");
+	public void Rpc_SessionNaming(string sessionName)
+	{
+		Debug.LogWarning("RpcExecute");
 
-        //実行
-        SessionNameChangedHandler?.Invoke(sessionName);
-    }
+		//実行
+		SessionNameChangedHandler?.Invoke(sessionName);
+	}
+
+	[Rpc(RpcSources.All, RpcTargets.All)]
+	public void Rpc_ReleaseStateAuthority(NetworkObject networkObject, [RpcTarget] PlayerRef player)
+	{
+		networkObject.ReleaseStateAuthority();
+	}
 }

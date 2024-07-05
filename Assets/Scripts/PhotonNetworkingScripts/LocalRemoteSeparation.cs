@@ -14,7 +14,8 @@ public class LocalRemoteSeparation : MonoBehaviour
 
 	public void RemoteViewCreate(NetworkRunner networkRunner,PlayerRef playerRef)
     {
-        NetworkObject remoteViewObject = networkRunner.Spawn(remoteViewObjectPrefab, Vector3.zero, Quaternion.identity, playerRef);
+        NetworkObject remoteViewObject
+            = networkRunner.Spawn(remoteViewObjectPrefab, Vector3.zero, Quaternion.identity, playerRef);
         RemoteView remoteView =remoteViewObject.GetComponent<RemoteView>();
 
         Instantiate(separationLifetimeScope).SeparationSetup(localGameObject, remoteView).Build();

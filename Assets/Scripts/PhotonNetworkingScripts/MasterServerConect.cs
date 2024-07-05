@@ -34,25 +34,35 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	private RegisterSceneInInspector activityName;
 
 	[SerializeField]
-	private Transform _linkTransform;
-
+	private NetworkObject _testNetworkObject;
+	//渡されたオブジェクトは生成して、おいてあるオブジェクトはその場所に生成しなおす
 
 	private async void Awake()
 	{
 		_networkRunner = Instantiate(_networkRunnerPrefab);
-
 		_networkRunner.AddCallbacks(this);
 
 		await Connect("Room");
+		InitRegisterNetwork();
 
 		if (!_networkRunner.IsServer) { return; }
-		RPCManager rpcManager = _networkRunner.Spawn(_rpcManagerPrefab, Vector3.zero, Quaternion.identity).GetComponent<RPCManager>();
+		RPCManager rpcManager = _networkRunner.
+			Spawn(_rpcManagerPrefab, Vector3.zero, Quaternion.identity).
+			GetComponent<RPCManager>();
 		if(_activityZone is not null)
 		{
 			rpcManager.SessionNameChangedHandler += _activityZone.SetSessionName;
 		}
 
 		_networkRunner.Spawn(_roomCounterPrefab);
+		localRemoteReparation.RemoteViewCreate(_networkRunner, _networkRunner.LocalPlayer);
+
+	}
+
+	private void InitRegisterNetwork()
+	{
+		NetworkObject[] networkObjects =  FindObjectsOfType<NetworkObject>();
+		_networkRunner.RegisterSceneObjects(_networkRunner.GetSceneRef(gameObject), networkObjects);
 	}
 
 	[ContextMenu("WaitTrigger")]
@@ -71,12 +81,31 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		ActivityStart(activityName);
 	}
 
+	[ContextMenu("Test")]
+	private void TestTest()
+	{
+		GetStateAuthority(_testNetworkObject);
+	}
+
+	/// <summary>
+	/// 状態変更権限を取得する
+	/// </summary>
+	/// <param name="networkObject">取得したいオブジェクト</param>
+	/// <returns>成功したか</returns>
+	public bool GetStateAuthority(NetworkObject networkObject)
+	{
+		if (networkObject.HasStateAuthority) { return true; }
+		RPCManager.Instance.Rpc_ReleaseStateAuthority(networkObject,networkObject.StateAuthority);
+		networkObject.RequestStateAuthority();
+		return true;
+	}
+
 
 	/// <summary>
 	/// アクティビティを開始する
 	/// </summary>
 	/// <param name="sceneName">開始するアクティビティのシーン名</param>
-	public void ActivityStart(string sceneName)
+	private void ActivityStart(string sceneName)
 	{
 		if (!_networkRunner.IsServer) { return; }
 
@@ -88,7 +117,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	/// ルームに入る。ない場合は作る
 	/// </summary>
 	/// <param name="sessionName">セッション名</param>
-	public async void JoinOrCreateRoom(string sessionName)
+	private async void JoinOrCreateRoom(string sessionName)
 	{
 		if (_networkRunner.IsServer)
 		{
@@ -118,7 +147,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		await _networkRunner.StartGame(new StartGameArgs
 		{
 			StartGameCancellationToken = destroyCancellationToken,
-			GameMode = GameMode.AutoHostOrClient,
+			GameMode = GameMode.Shared,
 			SessionName = SessionName,
 			SceneManager = _networkRunner.GetComponent<NetworkSceneManagerDefault>()
 		}
@@ -137,7 +166,6 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
 	{
 		if (!runner.IsServer) { return; }
-		localRemoteReparation.RemoteViewCreate(runner, player);
 	}
 
 	public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
