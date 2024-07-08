@@ -25,22 +25,21 @@ public class RPCManager : NetworkBehaviour
 	}
 
 	/// <summary>
-	/// 同じセッション全員のセッション名を更新する
+	/// セッションに参加または作成する
 	/// </summary>
-	/// <param name="sessionName">変更後のセッション名</param>
-	[Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-	public void Rpc_SessionNaming(string sessionName)
+	/// <param name="sessionName">セッション名</param>
+	[Rpc(RpcSources.All, RpcTargets.All)]
+	public void Rpc_JoinSession(string sessionName,[RpcTarget] PlayerRef player = new PlayerRef())
 	{
-		Debug.LogWarning("RpcExecute");
-
+		Debug.LogWarning("sessionName");
 		//実行
 		SessionNameChangedHandler?.Invoke(sessionName);
+
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All)]
-	public void Rpc_ReleaseStateAuthority(NetworkObject networkObject, [RpcTarget] PlayerRef player)
+	public void Rpc_ReleaseStateAuthority(NetworkObject networkObject, [RpcTarget] PlayerRef player = new PlayerRef())
 	{		
 		networkObject.ReleaseStateAuthority();
-		Debug.LogWarning("rpcadadas");
 	}
 }
