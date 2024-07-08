@@ -35,7 +35,13 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 
 	[SerializeField]
 	private NetworkObject _testNetworkObject;
-	//渡されたオブジェクトは生成して、おいてあるオブジェクトはその場所に生成しなおす
+
+	public void CookActivityJoin(int roomNumber = -1)
+	{
+		RoomManager.Instance.JoinOrCreate(WorldType.UnderCook, _networkRunner.LocalPlayer,roomNumber);
+	}
+
+
 
 	private async void Awake()
 	{
@@ -58,9 +64,6 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		_networkRunner.Spawn(_roomCounterPrefab).transform.parent = myTransform;
 
 		localRemoteReparation.RemoteViewCreate(_networkRunner, _networkRunner.LocalPlayer);
-
-
-
 	}
 
 	private void InitRegisterNetwork()
@@ -69,26 +72,29 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		_networkRunner.RegisterSceneObjects(_networkRunner.GetSceneRef(gameObject), networkObjects);
 	}
 
-	[ContextMenu("WaitTrigger")]
-	private void WaitRoomStartTrigger()
-	{
-		//アクティビティスタート
-		string sessionName = "TestRoom";
-		JoinOrCreateRoom(sessionName);
-		if (!_networkRunner.IsServer) { return; }
-		RPCManager.Instance.Rpc_SessionNaming(sessionName);
-	}
-
 	[ContextMenu("ActivityTrigger")]
 	private void ActivityStartTrigger()
 	{
+		//アクティビティスタート
+		string sessionName = "TestRoom";
+
+		JoinOrCreateSession(sessionName);
+		RPCManager.Instance.Rpc_SessionNaming(sessionName);
 		ActivityStart(activityName);
 	}
 
 	[ContextMenu("Test")]
-	private async UniTaskVoid TestTest()
+	private void TestTest()
 	{
-		await GetStateAuthority(_testNetworkObject);
+		int roomNumber = -1;
+		RoomManager.Instance.JoinOrCreate(WorldType.UnderCook, _networkRunner.LocalPlayer, roomNumber);
+	}
+
+	[ContextMenu("Test2")]
+	private void TestTestTest()
+	{
+		PlayerRef[] playerRefs = new PlayerRef[3];
+		RPCManager.Instance.Rpc_ReleaseStateAuthority(_testNetworkObject, playerRefs);
 	}
 
 	/// <summary>
@@ -103,8 +109,12 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 			Debug.LogWarning("has");
 			return;
 		}
+		if (networkObject.GetComponent<ReleaseStateAuthorityData>().IsNotReleaseStateAuthority)
+		{
+			return;
+		}
 		var token = destroyCancellationToken;
-		RPCManager.Instance.Rpc_ReleaseStateAuthority(networkObject, networkObject.StateAuthority);
+		//RPCManager.Instance.Rpc_ReleaseStateAuthority(networkObject, networkObject.StateAuthority);
 		await UniTask.WaitUntil(() => networkObject.StateAuthority == PlayerRef.None, cancellationToken: token);
 		networkObject.RequestStateAuthority();
 	}
@@ -114,9 +124,8 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	/// アクティビティを開始する
 	/// </summary>
 	/// <param name="sceneName">開始するアクティビティのシーン名</param>
-	private void ActivityStart(string sceneName)
+	public void ActivityStart(string sceneName)
 	{
-		if (!_networkRunner.IsServer) { return; }
 
 		Debug.LogWarning("ActivityStart");
 		_networkRunner.LoadScene(sceneName);
@@ -126,13 +135,9 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	/// ルームに入る。ない場合は作る
 	/// </summary>
 	/// <param name="sessionName">セッション名</param>
-	private async void JoinOrCreateRoom(string sessionName)
+	private async void JoinOrCreateSession(string sessionName)
 	{
-		if (_networkRunner.IsServer)
-		{
-			await UpdateNetworkRunner();
-		}
-
+		await UpdateNetworkRunner();
 		await Connect(sessionName);
 	}
 
@@ -174,12 +179,10 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 
 	public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
 	{
-		if (!runner.IsServer) { return; }
 	}
 
 	public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
 	{
-		if (!runner.IsServer) { return; }
 		if (runner.TryGetPlayerObject(player, out NetworkObject avater))
 		{
 			runner.Despawn(avater);
