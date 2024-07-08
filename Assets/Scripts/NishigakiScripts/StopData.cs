@@ -39,7 +39,10 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
 
     // 
     private PlayerVisualHandDependencyInformation _visualInformation = default;
-
+    private void Awake()
+    {
+        PlayerInitialize.ConsignmentInject_static(this);
+    }
     private void Start()
     {
         // 
