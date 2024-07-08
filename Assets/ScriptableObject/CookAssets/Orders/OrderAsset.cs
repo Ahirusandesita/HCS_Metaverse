@@ -12,6 +12,7 @@ public class OrderAsset : ScriptableObject
 {
     [SerializeField]
     private List<OrderDetailInformation> orderDetailInformations = new List<OrderDetailInformation>();
+    public IReadOnlyList<OrderDetailInformation> OrderDetailInformations => orderDetailInformations;
 }
 [System.Serializable]
 public class OrderDetailInformation
@@ -20,5 +21,8 @@ public class OrderDetailInformation
     private CommodityAsset commodityAsset;
     [SerializeField]
     private OrderProbabilityType orderProbability;
+
+    public CommodityAsset CommodityAsset => commodityAsset;
+    public OrderProbabilityType OrderProbabilityType => orderProbability;
 }
 

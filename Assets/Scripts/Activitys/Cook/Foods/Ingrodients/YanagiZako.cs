@@ -9,9 +9,9 @@ public interface IGrabbableActive
 }
 public class YanagiZako : MonoBehaviour,IGrabbableActive
 {
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if(other.TryGetComponent<Machine>(out Machine machine))
+        if(collision.gameObject.transform.GetChild(0).TryGetComponent<Machine>(out Machine machine))
         {
             Disable();
             this.transform.rotation = machine.transform.rotation;
@@ -26,6 +26,7 @@ public class YanagiZako : MonoBehaviour,IGrabbableActive
     }
     public void Disable()
     {
+        this.GetComponent<Rigidbody>().isKinematic = true;
         this.GetComponent<Grabbable>().enabled = false;
     }
 }

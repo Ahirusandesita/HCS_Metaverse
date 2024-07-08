@@ -60,11 +60,14 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     public event OrderInitializeHandler OnOrderInitialize;
     public event ResetOrderArrayHandler OnResetOrder;
 
-    private void Start()
+    private void Awake()
     {
         commodityAssets = new CommodityAsset[orderValue];
         commodityInformations = new CommodityInformation[orderValue];
-        OnOrderInitialize?.Invoke(new OrderInitializeEventArgs(orderValue));
+    }
+    private void Start()
+    {
+        OnOrderInitialize?.Invoke(new OrderInitializeEventArgs(orderValue));     
     }
 
     /// <summary>
@@ -100,7 +103,8 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
                 OrderEventArgs orderEventArgs = new OrderEventArgs(new CommodityInformation(commodityAssets[i]), OrderType.Submit, i);
                 commodityAssets[i] = null;
                 PackOrders();
-                OnOrder?.Invoke(orderEventArgs);
+
+                Destroy(commodity.gameObject);
                 break;
             }
         }
