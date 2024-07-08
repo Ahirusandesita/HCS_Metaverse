@@ -55,4 +55,19 @@ public class Commodity : MonoBehaviour,ICommodityModerator
         }
         return false;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.transform.root.TryGetComponent<Commodity>(out Commodity commodity))
+        {
+            if(CommodityAsset.CommodityID > commodity.CommodityAsset.CommodityID)
+            {
+                Commodity mixCommodity = MixCommodity.Mix(new Commodity[] { this, commodity });
+                if(!(mixCommodity is null))
+                {
+                    Instantiate(mixCommodity, this.transform.position, this.transform.rotation);
+                }
+            }
+        }
+    }
 }

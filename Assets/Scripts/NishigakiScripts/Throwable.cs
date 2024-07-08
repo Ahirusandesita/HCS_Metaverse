@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System;
-
+using Oculus.Interaction;
 public class Throwable : MonoBehaviour, IDependencyInjector<PlayerHandDependencyInfomation>
 {
     [SerializeField, Tooltip("©g‚ª‚ÂRigidbody")]
@@ -40,10 +40,16 @@ public class Throwable : MonoBehaviour, IDependencyInjector<PlayerHandDependency
     // ‚Â‚©‚ñ‚¾uŠÔ‚Ìî•ñ‚ğæ“¾‚·‚é‚½‚ß‚ÌƒNƒ‰ƒX
     private InteractorDetailEventIssuer _interactorDetailEventIssuer ;
 
+    private PointableUnityEventWrapper pointableUnityEventWrapper;
+
     private void Awake()
     {
         // ThrowData‚ğ¶¬‚·‚é
         _throwData = new ThrowData(_thisTransform.position);
+
+        pointableUnityEventWrapper = this.GetComponent<PointableUnityEventWrapper>();
+        pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
+        pointableUnityEventWrapper.WhenUnselect.AddListener((action) => { UnSelect(); });
     }
 
     private void Start()

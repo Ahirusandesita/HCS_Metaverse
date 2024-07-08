@@ -37,7 +37,7 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator
     public Commodity ProcessingStart(ProcessingType processingType,Transform machineTransform)
     {
         Commodity commodity = commodityFactory.Generate(this, processingType);
-        Instantiate(commodity, this.transform.position, this.transform.rotation).transform.parent = machineTransform;
+        Instantiate(commodity, this.transform.position, this.transform.rotation)/*.transform.parent = machineTransform*/;
         Destroy(this.gameObject);
         return commodity;
     }
