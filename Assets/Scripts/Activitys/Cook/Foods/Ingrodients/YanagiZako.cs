@@ -15,6 +15,7 @@ public class YanagiZako : MonoBehaviour,IGrabbableActive
         {
             Disable();
             this.transform.rotation = machine.transform.rotation;
+            this.transform.parent = machine.transform;
             machine.ProcessedCertification(this.GetComponent<Ingrodients>()).Processing(this.GetComponent<Ingrodients>());
         }
     }
