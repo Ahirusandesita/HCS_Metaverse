@@ -93,8 +93,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	[ContextMenu("Test2")]
 	private void TestTestTest()
 	{
-		PlayerRef[] playerRefs = new PlayerRef[3];
-		RPCManager.Instance.Rpc_ReleaseStateAuthority(_testNetworkObject, playerRefs);
+
 	}
 
 	/// <summary>
@@ -114,7 +113,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 			return;
 		}
 		var token = destroyCancellationToken;
-		//RPCManager.Instance.Rpc_ReleaseStateAuthority(networkObject, networkObject.StateAuthority);
+		RPCManager.Instance.Rpc_ReleaseStateAuthority(networkObject, networkObject.StateAuthority);
 		await UniTask.WaitUntil(() => networkObject.StateAuthority == PlayerRef.None, cancellationToken: token);
 		networkObject.RequestStateAuthority();
 	}
