@@ -38,7 +38,7 @@ public class RPCManager : NetworkBehaviour
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All)]
-	public void Rpc_ReleaseStateAuthority(NetworkObject networkObject, [RpcTarget] PlayerRef[] players)
+	public void Rpc_ReleaseStateAuthority(NetworkObject networkObject, [RpcTarget] PlayerRef player)
 	{		
 		networkObject.ReleaseStateAuthority();
 		Debug.LogWarning("rpcadadas");
