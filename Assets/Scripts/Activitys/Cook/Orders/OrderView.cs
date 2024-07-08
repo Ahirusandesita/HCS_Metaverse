@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
+
+
+
 public class CommodityInformation
 {
     public readonly CommodityAsset CommodityAsset;
@@ -14,27 +18,27 @@ public class OrderView : MonoBehaviour
 {
     private OrderInitializeEventArgs orderInitializeEventArgs;
     [SerializeField]
-    private List<TextMeshProUGUI> textMeshProUGUIs;
+    private List<OrderViewDetailImformation> orderViewDetailInformations;
 
     public void OrderInitializeHandler(OrderInitializeEventArgs orderInitializeEventArgs)
     {
         this.orderInitializeEventArgs = orderInitializeEventArgs;
 
-        for (int i = orderInitializeEventArgs.OrderValue; i < textMeshProUGUIs.Count; i++)
+        for (int i = 0; i < orderViewDetailInformations.Count; i++)
         {
-            textMeshProUGUIs[i].enabled = false;
+            orderViewDetailInformations[i].Reset();
         }
     }
     public void OrderHandler(OrderEventArgs orderEventArgs)
     {
         if (orderEventArgs.OrderType == OrderType.Order)
         {
-            textMeshProUGUIs[orderEventArgs.OrderIndex].text = orderEventArgs.CommodityInformation.CommodityAsset.name;
+            orderViewDetailInformations[orderEventArgs.OrderIndex].View(orderEventArgs.CommodityInformation.CommodityAsset);
         }
 
         if(orderEventArgs.OrderType == OrderType.Submit)
         {
-            textMeshProUGUIs[orderEventArgs.OrderIndex].text = "";
+            orderViewDetailInformations[orderEventArgs.OrderIndex].Reset();
         }
     }
     public void ResetOrderArrayHandler(ResetOrderArrayEventArgs resetOrderArrayEventArgs)
@@ -43,10 +47,10 @@ public class OrderView : MonoBehaviour
         {
             if(resetOrderArrayEventArgs.CommodityInformations[i] == null)
             {
-                textMeshProUGUIs[i].text = "";
+                orderViewDetailInformations[i].Reset();
                 continue;
             }
-            textMeshProUGUIs[i].text = resetOrderArrayEventArgs.CommodityInformations[i].CommodityAsset.name;
+            orderViewDetailInformations[i].View(resetOrderArrayEventArgs.CommodityInformations[i].CommodityAsset);
         }
     }
 }

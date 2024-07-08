@@ -41,6 +41,8 @@ public class CommodityAsset : ScriptableObject,IGrantableCommodityID,ICommodityA
         return new CommodityDetailAppearance(commodityAppearance, commodities);
     }
 
+    public CommodityAppearance CommodityAppearance => commodityAppearance;
+
     void IGrantableCommodityID.GrantID(int id)
     {
         commodityID = id;

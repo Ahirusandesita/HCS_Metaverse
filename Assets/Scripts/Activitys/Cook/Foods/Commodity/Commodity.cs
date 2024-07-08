@@ -55,10 +55,9 @@ public class Commodity : MonoBehaviour,ICommodityModerator
         }
         return false;
     }
-
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if(other.transform.root.TryGetComponent<Commodity>(out Commodity commodity))
+        if(collision.transform.root.TryGetComponent<Commodity>(out Commodity commodity))
         {
             if(CommodityAsset.CommodityID > commodity.CommodityAsset.CommodityID)
             {
@@ -68,6 +67,11 @@ public class Commodity : MonoBehaviour,ICommodityModerator
                     Instantiate(mixCommodity, this.transform.position, this.transform.rotation);
                 }
             }
+        }
+
+        if(collision.gameObject.TryGetComponent<SubmisionTable>(out SubmisionTable table))
+        {
+            table.Sub(this);
         }
     }
 }
