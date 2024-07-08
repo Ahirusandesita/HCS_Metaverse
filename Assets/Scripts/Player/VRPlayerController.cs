@@ -17,7 +17,7 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
     private MoveTypeReactiveProperty moveTypeRP = default;
 
     [SerializeField, HideForMoveType(nameof(moveTypeEditor), VRMoveType.Natural)]
-    private SpriteRenderer warpSymbol = default;
+    private WarpPointer warpPointer = default;
 
     [SerializeField, HideInInspector]
     private VRMoveType moveTypeEditor = default;
@@ -25,7 +25,6 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
     [Tooltip("左右どちらに回転するか")]
     private FloatReactiveProperty lookDirX_RP = default;
 
-    private WarpPointer warpPointer = default;
     private Transform leftHand = default;
 
     private Vector3 warpPos = default;
@@ -36,6 +35,7 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
     {
         base.Reset();
         centerEyeTransform ??= transform.Find("CenterEyeAnchor").transform;
+        warpPointer ??= GetComponentInChildren<WarpPointer>();
     }
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
@@ -49,7 +49,6 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
         base.Awake();
 
         followTransform = centerEyeTransform;
-        warpPointer = new WarpPointer(gameObject);
 
         // Subscribe
         lookDirX_RP = new FloatReactiveProperty().AddTo(this);
@@ -127,6 +126,10 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 
             case VRMoveType.Warp:
                 WarpMove();
+
+                // ジャンプだけは有効化したいのでジャンプ処理を記述
+                // () is order optimizated
+                characterController.Move(Vector3.up * (verticalVelocity * Time.deltaTime));
                 break;
         }
     }
@@ -141,7 +144,7 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
             return;
         }
 
-        warpPos = warpPointer.Draw(leftHand.position, leftHand.forward);
+        bool canWarp = warpPointer.Draw(leftHand.position, leftHand.forward, ref warpPos);
         //warpSymbol.transform.position = warpPos;
 
     }

@@ -32,7 +32,7 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
     [Tooltip("移動における追従先Transform")]
     protected Transform followTransform = default;
     [Tooltip("垂直方向の速度")]
-    private float verticalVelocity = default;
+    protected float verticalVelocity = default;
     [Tooltip("ジャンプタイムアウト[s]（再ジャンプを許可するまでの時間）")]
     private float jumpTimeoutDelta = default;
 
