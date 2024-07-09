@@ -12,7 +12,9 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator
 {
     [SerializeField]
     private IngrodientsAsset ingrodientsAsset;
-    public IngrodientsAsset IngrodientsAsset => ingrodientsAsset;
+
+    private IngrodientsAsset _thisIngrodientsAsset;
+    public IngrodientsAsset IngrodientsAsset => _thisIngrodientsAsset;
     IngrodientsAsset IIngrodientsModerator.IngrodientsAsset
     {
         set
@@ -26,6 +28,7 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator
     private void Awake()
     {
         this.commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
+        _thisIngrodientsAsset = new IngrodientsAsset(ingrodientsAsset);
     }
 
     public void Inject(CommodityFactory commodityFactory)
