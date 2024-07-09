@@ -51,7 +51,7 @@ public class CuttingBoardObject : MonoBehaviour, IKnifeHitEvent
                 // 
                 continue;
             }
-
+            Debug.LogWarning("A");
             bool isEndCut = thisIngrodient.IngrodientsAsset.SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType.Cut, 1);
 
             // 

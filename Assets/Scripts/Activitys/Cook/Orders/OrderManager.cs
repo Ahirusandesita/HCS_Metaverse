@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 public interface IOrderable
 {
-    void Order(CommodityAsset commodityAsset,Customer customer);
+    void Order(CommodityAsset commodityAsset,CustomerInformation customer);
 }
 public interface ISubmitable
 {
@@ -46,43 +46,43 @@ public delegate void OrderHandler(OrderEventArgs orderEventArgs);
 public delegate void OrderInitializeHandler(OrderInitializeEventArgs orderInitializeEventArgs);
 public delegate void ResetOrderArrayHandler(ResetOrderArrayEventArgs resetOrderArrayEventArgs);
 
-public class Customer
+public class CustomerInformation
 {
     public readonly int OrderCode;
-    public Customer(int orderCode)
+    public CustomerInformation(int orderCode)
     {
         this.OrderCode = orderCode;
     }
 }
 
 
+    public class OrderTicket
+    {
+        public readonly IOrderable Orderable;
+        public readonly CustomerInformation CustomerInformation;
+        public OrderTicket(IOrderable orderable,CustomerInformation customer)
+        {
+            this.Orderable = orderable;
+            this.CustomerInformation = customer;
+        }
+    }
 public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
 {
     public class NullOrderable : IOrderable
     {
-        public void Order(CommodityAsset commodityAsset, Customer customer)
+        public void Order(CommodityAsset commodityAsset, CustomerInformation customer)
         {
             
         }
     }
 
-    public class OrderTicket
-    {
-        public readonly IOrderable Orderable;
-        public readonly Customer Customer;
-        public OrderTicket(IOrderable orderable,Customer customer)
-        {
-            this.Orderable = orderable;
-            this.Customer = customer;
-        }
-    }
 
 
     [SerializeField]
     private int orderValue;
 
     private CommodityAsset[] commodityAssets;
-    private Customer[] customers;
+    private CustomerInformation[] customers;
 
     private CommodityInformation[] commodityInformations;
 
@@ -95,7 +95,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     {
         commodityAssets = new CommodityAsset[orderValue];
         commodityInformations = new CommodityInformation[orderValue];
-        customers = new Customer[orderValue];
+        customers = new CustomerInformation[orderValue];
     }
     private void Start()
     {
@@ -106,16 +106,16 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     {
         if (SearchVacantSeatOrder() == commodityAssets.Length)
         {
-            return new OrderTicket(new NullOrderable(), new Customer(-1));
+            return new OrderTicket(new NullOrderable(), new CustomerInformation(-1));
         }
-        return new OrderTicket(this, new Customer(orderCode));
+        return new OrderTicket(this, new CustomerInformation(orderCode));
     }
 
     /// <summary>
     /// íçï∂
     /// </summary>
     /// <param name="commodityAsset"></param>
-    void IOrderable.Order(CommodityAsset commodityAsset,Customer customer)
+    void IOrderable.Order(CommodityAsset commodityAsset,CustomerInformation customer)
     {
         int vacantSeatOrder = SearchVacantSeatOrder();
 
@@ -163,7 +163,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
         OnResetOrder?.Invoke(new ResetOrderArrayEventArgs(commodityInformations));
     }
 
-    public void Cancel(Customer customer)
+    public void Cancel(CustomerInformation customer)
     {
         for(int i = 0; i < customers.Length; i++)
         {

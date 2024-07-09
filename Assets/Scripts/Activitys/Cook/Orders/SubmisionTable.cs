@@ -28,8 +28,8 @@ public class SubmisionTable : MonoBehaviour
 
         int orderIndex = Random.Range(0, orderAsset.OrderDetailInformations.Count - 1);
 
-        OrderManager.OrderTicket orderTicket = orderManager.Inquiry();
-        orderTicket.Orderable.Order(orderAsset.OrderDetailInformations[orderIndex].CommodityAsset,orderTicket.Customer);
+        OrderTicket orderTicket = orderManager.Inquiry();
+        orderTicket.Orderable.Order(orderAsset.OrderDetailInformations[orderIndex].CommodityAsset,orderTicket.CustomerInformation);
     }
     private void Update()
     {
@@ -37,8 +37,8 @@ public class SubmisionTable : MonoBehaviour
         {
             foreach(OrderDetailInformation orderDetailInformation in orderAsset.OrderDetailInformations)
             {
-                OrderManager.OrderTicket orderTicket = orderManager.Inquiry();
-                orderTicket.Orderable.Order(orderDetailInformation.CommodityAsset, orderTicket.Customer);
+                OrderTicket orderTicket = orderManager.Inquiry();
+                orderTicket.Orderable.Order(orderDetailInformation.CommodityAsset, orderTicket.CustomerInformation);
             }
         }
     }
