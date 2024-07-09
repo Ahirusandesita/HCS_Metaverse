@@ -272,7 +272,7 @@ GameObject:
   - component: {fileID: 262561770}
   - component: {fileID: 262561769}
   - component: {fileID: 262561768}
-  - component: {fileID: 262561767}
+  - component: {fileID: 262561772}
   m_Layer: 0
   m_Name: yuka
   m_TagString: Untagged
@@ -280,19 +280,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &262561767
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 262561766}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 546ce1142e767524ba94b340271efa82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _stoperColliter: {fileID: 262561768}
 --- !u!65 &262561768
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -308,7 +295,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -379,6 +366,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &262561772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 262561766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24b53294159cbac4fb101009aa949a4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stoperColliter: {fileID: 262561768}
+  mode: 1
 --- !u!1 &1075137105
 GameObject:
   m_ObjectHideFlags: 0
@@ -454,6 +455,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _viewObjectTransform: {fileID: 1185760243}
+  _stoppingEventObject: {fileID: 262561766}
 --- !u!135 &1075137109
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -11204,7 +11206,7 @@ MonoBehaviour:
   centerEyeTransform: {fileID: 398319092193722064}
   moveTypeRP:
     value: 0
-  warpSymbol: {fileID: 0}
+  warpPointer: {fileID: 0}
   moveTypeEditor: 0
 --- !u!114 &7880534409253866969
 MonoBehaviour:
