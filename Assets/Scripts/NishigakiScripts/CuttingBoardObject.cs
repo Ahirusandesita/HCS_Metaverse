@@ -46,7 +46,7 @@ public class CuttingBoardObject : MonoBehaviour, IKnifeHitEvent
         foreach (Collider hitCollider in hitColliders)
         {
             // 
-            if (!hitCollider.TryGetComponent<Ingrodients>(out var thisIngrodient))
+            if (!hitCollider.transform.root.TryGetComponent<Ingrodients>(out var thisIngrodient))
             {
                 // 
                 continue;
