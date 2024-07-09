@@ -46,8 +46,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
 
     public void Unselect(SelectArgs selectArgs)
     {
-        var itemSelectArgs = selectArgs as ItemSelectArgs;
-        Destroy(itemSelectArgs.gameObject);
+
     }
 
     void IActivityNotification.OnStart()
