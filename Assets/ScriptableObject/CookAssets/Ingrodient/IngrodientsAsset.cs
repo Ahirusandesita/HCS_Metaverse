@@ -36,6 +36,12 @@ public interface IIngrodientAsset
 [CreateAssetMenu(fileName = "IngrodientAsset", menuName = "ScriptableObjects/Foods/IngrodientsAsset")]
 public class IngrodientsAsset : ScriptableObject,IIngrodientAsset
 {
+    public IngrodientsAsset(IngrodientsAsset coppyAsset)
+    {
+        this.ingrodientsType = coppyAsset.ingrodientsType;
+        this.ingrodientsDetailInformations = coppyAsset.ingrodientsDetailInformations;
+    }
+
     /// <summary>
     /// ãÔçﬁÇÃñºëO
     /// </summary>
@@ -50,6 +56,20 @@ public class IngrodientsAsset : ScriptableObject,IIngrodientAsset
     void IIngrodientAsset.SetUp(List<IngrodientsDetailInformation> ingrodientsDetailInformations)
     {
         this.ingrodientsDetailInformations = ingrodientsDetailInformations;
+    }
+
+    public bool SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType processableType, float subValue)
+    {
+        foreach (IngrodientsDetailInformation information in ingrodientsDetailInformations)
+        {
+            if (information.ProcessingType == processableType)
+            {
+                return information.SubToTimeItTakes(subValue);
+            }
+        }
+
+        Debug.Log("ProcessingTypeÇ™éwíËäO");
+        return default;
     }
 }
 
@@ -85,5 +105,19 @@ public class IngrodientsDetailInformation
         this.processableType = processableType;
         this.timeItTakes = timeItTakes;
         this.commodity = commodity;
+    }
+
+    public bool SubToTimeItTakes(float subValue)
+    {
+        timeItTakes -= subValue;
+
+        if (timeItTakes <= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
