@@ -57,20 +57,6 @@ public class IngrodientsAsset : ScriptableObject,IIngrodientAsset
     {
         this.ingrodientsDetailInformations = ingrodientsDetailInformations;
     }
-
-    public bool SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType processableType, float subValue)
-    {
-        foreach (IngrodientsDetailInformation information in ingrodientsDetailInformations)
-        {
-            if (information.ProcessingType == processableType)
-            {
-                return information.SubToTimeItTakes(subValue);
-            }
-        }
-
-        Debug.Log("ProcessingType‚ªŽw’èŠO");
-        return default;
-    }
 }
 
 /// <summary>

@@ -13,8 +13,9 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator
     [SerializeField]
     private IngrodientsAsset ingrodientsAsset;
 
-    private IngrodientsAsset _thisIngrodientsAsset;
-    public IngrodientsAsset IngrodientsAsset => _thisIngrodientsAsset;
+    private List<IngrodientsDetailInformation> ingrodientsDetailInformations;
+
+    public IngrodientsAsset IngrodientsAsset => ingrodientsAsset;
     IngrodientsAsset IIngrodientsModerator.IngrodientsAsset
     {
         set
@@ -28,12 +29,26 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator
     private void Awake()
     {
         this.commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
-        _thisIngrodientsAsset = new IngrodientsAsset(ingrodientsAsset);
+        ingrodientsDetailInformations = new List<IngrodientsDetailInformation>(IngrodientsAsset.IngrodientsDetailInformations);
     }
 
     public void Inject(CommodityFactory commodityFactory)
     {
         this.commodityFactory = commodityFactory;
+    }
+
+    public bool SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType processableType, float subValue)
+    {
+        foreach (IngrodientsDetailInformation information in ingrodientsDetailInformations)
+        {
+            if (information.ProcessingType == processableType)
+            {
+                return information.SubToTimeItTakes(subValue);
+            }
+        }
+
+        Debug.Log("ProcessingType‚ªŽw’èŠO");
+        return default;
     }
 
 

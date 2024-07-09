@@ -52,7 +52,7 @@ public class CuttingBoardObject : MonoBehaviour, IKnifeHitEvent
                 continue;
             }
 
-            bool isEndCut = thisIngrodient.IngrodientsAsset.SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType.Cut, 1);
+            bool isEndCut = thisIngrodient.SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType.Cut, 1);
 
             // 
             if (isEndCut)
