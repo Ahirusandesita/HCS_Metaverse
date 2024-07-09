@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CuttingBoardObject : MonoBehaviour, IKnifeHitEvent
 {
-    [SerializeField, Tooltip("Ø’f‚Å‚«‚é”ÍˆÍ‚ğw’è‚·‚éCollider")]
+    [SerializeField, Tooltip("åˆ‡æ–­ã§ãã‚‹ç¯„å›²ã‚’æŒ‡å®šã™ã‚‹Collider")]
     private Collider _cuttingAreaCollider = default;
 
     [SerializeField, Tooltip("")]
@@ -38,7 +38,7 @@ public class CuttingBoardObject : MonoBehaviour, IKnifeHitEvent
 
         if (hitColliders is null)
         {
-            Debug.Log($"‚È‚É‚à“–‚½‚Á‚Ä‚È‚¢‚æ‚ñ");
+            Debug.Log($"ãªã«ã‚‚å½“ãŸã£ã¦ãªã„ã‚ˆã‚“");
             return;
         }
 
@@ -51,8 +51,8 @@ public class CuttingBoardObject : MonoBehaviour, IKnifeHitEvent
                 // 
                 continue;
             }
-            Debug.LogWarning("A");
-            bool isEndCut = thisIngrodient.IngrodientsAsset.SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType.Cut, 1);
+
+            bool isEndCut = thisIngrodient.SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType.Cut, 1);
 
             // 
             if (isEndCut)
