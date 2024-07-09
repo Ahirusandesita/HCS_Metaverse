@@ -816,6 +816,8 @@ GameObject:
   - component: {fileID: 4434674871573038631}
   - component: {fileID: 5489733624676822107}
   - component: {fileID: 8273369595946936895}
+  - component: {fileID: 4944921664899151869}
+  - component: {fileID: -2200277430323428535}
   m_Layer: 0
   m_Name: Banzu
   m_TagString: Untagged
@@ -903,6 +905,31 @@ MonoBehaviour:
   _rigidbody: {fileID: 5489733624676822107}
   _kinematicWhileSelected: 1
   _throwWhenUnselected: 1
+--- !u!114 &4944921664899151869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5505800928937417532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05ed7dc8e53f68b4b89b57797675eeeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-2200277430323428535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5505800928937417532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a07834f1ca9abd4786861f09eb26ff9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onGrabbed: {fileID: 9126033889526914314}
 --- !u!1 &9059811968028275196
 GameObject:
   m_ObjectHideFlags: 0

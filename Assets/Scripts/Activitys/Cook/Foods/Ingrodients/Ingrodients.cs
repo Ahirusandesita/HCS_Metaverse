@@ -13,7 +13,7 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator
     [SerializeField]
     private IngrodientsAsset ingrodientsAsset;
 
-    private List<IngrodientsDetailInformation> ingrodientsDetailInformations;
+    private List<IngrodientsDetailInformation> ingrodientsDetailInformations = new List<IngrodientsDetailInformation>();
 
     public IngrodientsAsset IngrodientsAsset => ingrodientsAsset;
     IngrodientsAsset IIngrodientsModerator.IngrodientsAsset
@@ -29,8 +29,19 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator
     private void Awake()
     {
         this.commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
-        ingrodientsDetailInformations = new List<IngrodientsDetailInformation>(IngrodientsAsset.IngrodientsDetailInformations);
+
+        if(ingrodientsAsset == null)
+        {
+            Debug.LogError("miss");
+            return;
+        }
+
+        foreach (IngrodientsDetailInformation ingrodientsDetailInformation in ingrodientsAsset.IngrodientsDetailInformations)
+        {
+            ingrodientsDetailInformations.Add(ingrodientsDetailInformation);
+        }
     }
+
 
     public void Inject(CommodityFactory commodityFactory)
     {

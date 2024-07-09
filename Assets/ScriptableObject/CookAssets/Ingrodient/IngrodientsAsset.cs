@@ -36,11 +36,6 @@ public interface IIngrodientAsset
 [CreateAssetMenu(fileName = "IngrodientAsset", menuName = "ScriptableObjects/Foods/IngrodientsAsset")]
 public class IngrodientsAsset : ScriptableObject,IIngrodientAsset
 {
-    public IngrodientsAsset(IngrodientsAsset coppyAsset)
-    {
-        this.ingrodientsType = coppyAsset.ingrodientsType;
-        this.ingrodientsDetailInformations = coppyAsset.ingrodientsDetailInformations;
-    }
 
     /// <summary>
     /// ãÔçﬁÇÃñºëO
