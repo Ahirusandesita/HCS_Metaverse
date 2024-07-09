@@ -5,7 +5,7 @@ using UnityEngine;
 public class Stoppable : MonoBehaviour
 {
     [SerializeField, Tooltip("見た目用オブジェクトのTransform")]
-    private Transform _viewObjectTransform = default;
+    private Transform _visualObjectTransform = default;
 
     [SerializeField, Tooltip("IStoppingEventを持つGameObject")]
     private GameObject _stoppingEventObject = default;
@@ -14,7 +14,7 @@ public class Stoppable : MonoBehaviour
 
     private HandType _detailEventsHandType = default;
 
-    public Transform GetVisualObjectTransform => _viewObjectTransform;
+    public Transform GetVisualObjectTransform => _visualObjectTransform;
 
     public HandType GetDetailHandType => _detailEventsHandType;
 

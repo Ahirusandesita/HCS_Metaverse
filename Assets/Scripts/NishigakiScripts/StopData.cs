@@ -5,7 +5,7 @@ using UnityEngine;
 public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDependencyInformation>
 {
     // 
-    private bool _isHitStopper = default;
+    private bool _isHitStopper = true;
 
     // 
     private Transform _visualObjectTransform = default;
@@ -104,7 +104,7 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
 
                 default:
 
-                    return ;
+                    return;
             }
         }
         else
@@ -146,6 +146,8 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
 
                     // 
                     _visualInformation.VisualRightControllerHand.rotation = _visualControllerHandObjectRotation;
+
+                    Debug.Log($"âEéËé~ÇﬂÇƒÇÈÇÊÇÒ");
                     break;
 
                 case HandType.Left:
@@ -166,6 +168,8 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
 
                     // 
                     _visualInformation.VisualLeftControllerHand.rotation = _visualControllerHandObjectRotation;
+
+                    Debug.Log($"ç∂éËé~ÇﬂÇƒÇÈÇÊÇÒ");
                     break;
 
                 default:
@@ -173,9 +177,12 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
                     return;
             }
 
+            _isHitStopper = false;
         }
         else
         {
+            Debug.Log($"<color=red>StopDataè¡Ç¶ÇÈÇÊÇÒ</color>");
+
             // 
             Destroy(this);
         }

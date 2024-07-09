@@ -19,13 +19,24 @@ public class StoperObject : MonoBehaviour
     // 
     private string _stoppableObjectsTag = "StoppableObject";
 
+    // 
+    private enum DebugMode_StoperObject
+    {
+        FixedUpdate,
+        Update,
+        LateUpdate
+    }
+
+    [SerializeField]
+    DebugMode_StoperObject mode = DebugMode_StoperObject.Update;
+
     private void Start()
     {
         // 
         _hitBoxCenter = _stoperColliter.bounds.center;
 
         // 
-        _hitBoxSize = _stoperColliter.bounds.size;
+        _hitBoxSize = _stoperColliter.bounds.size / 2;
 
         // 
         _hitBoxRotation = this.transform.rotation;
@@ -33,30 +44,139 @@ public class StoperObject : MonoBehaviour
 
     private void Update()
     {
-        // 
-        Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);
-
-        // 
-        foreach(Collider hitCollider in hitColliders)
+        if (mode == DebugMode_StoperObject.Update)
         {
             // 
-            if (!hitCollider.TryGetComponent<Stoppable>(out var tmp))
+            Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);
+
+            bool onFlag = false;
+
+            if (hitColliders is null)
             {
-                // 
-                continue;
+                Debug.Log($"‚È‚É‚à“–‚½‚Á‚Ä‚È‚¢‚æ‚ñ");
+                return;
             }
 
             // 
-            if (hitCollider.TryGetComponent<StopData>(out var stopData))
+            foreach(Collider hitCollider in hitColliders)
             {
                 // 
-                stopData.SetIsHitStopper(true);
+                if (!hitCollider.TryGetComponent<Stoppable>(out var tmp))
+                {
+                    // 
+                    continue;
+                }
+
+                onFlag = true;
+
+                // 
+                if (hitCollider.TryGetComponent<StopData>(out var stopData))
+                {
+                    // 
+                    stopData.SetIsHitStopper(true);
+
+                    Debug.Log($"{hitCollider.gameObject.name} is Stopping now");
+                }
+                // 
+                else
+                {
+                    // 
+                    hitCollider.gameObject.AddComponent<StopData>();
+
+                    Debug.Log($"{hitCollider.gameObject.name} ‚É StopData’Ç‰Á‚µ‚½‚æ‚ñ");
+                }
             }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (mode == DebugMode_StoperObject.FixedUpdate)
+        {
             // 
-            else
+            Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);
+
+            bool onFlag = false;
+
+            // 
+            foreach (Collider hitCollider in hitColliders)
             {
                 // 
-                hitCollider.gameObject.AddComponent<StopData>();
+                if (!hitCollider.TryGetComponent<Stoppable>(out var tmp))
+                {
+                    // 
+                    continue;
+                }
+
+                onFlag = true;
+
+                // 
+                if (hitCollider.TryGetComponent<StopData>(out var stopData))
+                {
+                    // 
+                    stopData.SetIsHitStopper(true);
+
+                    Debug.Log($"{hitCollider.gameObject.name} is Stopping now");
+                }
+                // 
+                else
+                {
+                    // 
+                    hitCollider.gameObject.AddComponent<StopData>();
+
+                    Debug.Log($"{hitCollider.gameObject.name} ‚É StopData’Ç‰Á‚µ‚½‚æ‚ñ");
+                }
+            }
+
+            if (!onFlag)
+            {
+                Debug.Log($"‚È‚É‚à‚Æ‚ß‚Ä‚È‚¢‚æ‚ñ");
+            }
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (mode == DebugMode_StoperObject.LateUpdate)
+        {
+            // 
+            Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);
+
+            bool onFlag = false;
+
+            // 
+            foreach (Collider hitCollider in hitColliders)
+            {
+                // 
+                if (!hitCollider.TryGetComponent<Stoppable>(out var tmp))
+                {
+                    // 
+                    continue;
+                }
+
+                onFlag = true;
+
+                // 
+                if (hitCollider.TryGetComponent<StopData>(out var stopData))
+                {
+                    // 
+                    stopData.SetIsHitStopper(true);
+
+                    Debug.Log($"{hitCollider.gameObject.name} is Stopping now");
+                }
+                // 
+                else
+                {
+                    // 
+                    hitCollider.gameObject.AddComponent<StopData>();
+
+                    Debug.Log($"{hitCollider.gameObject.name} ‚É StopData’Ç‰Á‚µ‚½‚æ‚ñ");
+                }
+            }
+
+            if (!onFlag)
+            {
+                Debug.Log($"‚È‚É‚à‚Æ‚ß‚Ä‚È‚¢‚æ‚ñ");
             }
         }
     }
