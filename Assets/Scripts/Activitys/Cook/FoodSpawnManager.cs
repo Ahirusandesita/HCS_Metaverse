@@ -19,7 +19,10 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
     private List<GameObject> displayFoods = default;
 
     public ItemBundleAsset FoodItemAsset => foodItemAsset;
-
+    private void Awake()
+    {
+        OnStart();
+    }
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     private void Reset()
@@ -49,7 +52,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
 
     }
 
-    void IActivityNotification.OnStart()
+    public void OnStart()
     {
         displayFoods = new List<GameObject>();
 

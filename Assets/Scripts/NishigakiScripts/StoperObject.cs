@@ -83,6 +83,8 @@ public class StoperObject : MonoBehaviour
                     // 
                     hitCollider.gameObject.AddComponent<StopData>();
 
+                    tmp.StoppingEvent();
+
                     Debug.Log($"{hitCollider.gameObject.name} ‚É StopData’Ç‰Á‚µ‚½‚æ‚ñ");
                 }
             }

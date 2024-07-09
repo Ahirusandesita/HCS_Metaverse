@@ -18,21 +18,21 @@ public class Stoppable : MonoBehaviour
 
     public HandType GetDetailHandType => _detailEventsHandType;
 
-    private IStoppingEvent _iStoppingEvent = default;
+    private IKnifeHitEvent _iStoppingEvent = default;
 
     public void StoppingEvent()
     {
         if (_iStoppingEvent != default)
         {
             // 
-            _iStoppingEvent.StoppingEvent();
+            _iStoppingEvent.KnifeHitEvent();
         }
     }
 
     private void Start()
     {
         // 
-        if (_stoppingEventObject.TryGetComponent<IStoppingEvent>(out var iStoppingEvent))
+        if (_stoppingEventObject.TryGetComponent<IKnifeHitEvent>(out var iStoppingEvent))
         {
             // 
             _iStoppingEvent = iStoppingEvent;

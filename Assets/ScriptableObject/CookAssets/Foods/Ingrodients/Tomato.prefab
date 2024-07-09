@@ -265,7 +265,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  _pointableElement: {fileID: 0}
+  _pointableElement: {fileID: 4629543238778256254}
 --- !u!114 &3659175367166196178
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -293,6 +293,8 @@ GameObject:
   - component: {fileID: -6419668808093128082}
   - component: {fileID: 4950398040786217830}
   - component: {fileID: 4629543238778256254}
+  - component: {fileID: 9095391600187048371}
+  - component: {fileID: 3055862828308906116}
   m_Layer: 0
   m_Name: Tomato
   m_TagString: Untagged
@@ -354,7 +356,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -380,6 +382,31 @@ MonoBehaviour:
   _rigidbody: {fileID: 4950398040786217830}
   _kinematicWhileSelected: 1
   _throwWhenUnselected: 1
+--- !u!114 &9095391600187048371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4358447038765927267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05ed7dc8e53f68b4b89b57797675eeeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3055862828308906116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4358447038765927267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a07834f1ca9abd4786861f09eb26ff9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onGrabbed: {fileID: 1967698168634235113}
 --- !u!1 &4644511373556415613
 GameObject:
   m_ObjectHideFlags: 0

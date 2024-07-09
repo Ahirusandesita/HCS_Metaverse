@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 public interface IOrderable
 {
-    void Order(CommodityAsset commodityAsset);
+    void Order(CommodityAsset commodityAsset,Customer customer);
 }
 public interface ISubmitable
 {
@@ -46,46 +46,85 @@ public delegate void OrderHandler(OrderEventArgs orderEventArgs);
 public delegate void OrderInitializeHandler(OrderInitializeEventArgs orderInitializeEventArgs);
 public delegate void ResetOrderArrayHandler(ResetOrderArrayEventArgs resetOrderArrayEventArgs);
 
+public class Customer
+{
+    public readonly int OrderCode;
+    public Customer(int orderCode)
+    {
+        this.OrderCode = orderCode;
+    }
+}
 
 
 public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
 {
+    public class NullOrderable : IOrderable
+    {
+        public void Order(CommodityAsset commodityAsset, Customer customer)
+        {
+            
+        }
+    }
+
+    public class OrderTicket
+    {
+        public readonly IOrderable Orderable;
+        public readonly Customer Customer;
+        public OrderTicket(IOrderable orderable,Customer customer)
+        {
+            this.Orderable = orderable;
+            this.Customer = customer;
+        }
+    }
+
+
     [SerializeField]
     private int orderValue;
 
     private CommodityAsset[] commodityAssets;
+    private Customer[] customers;
+
     private CommodityInformation[] commodityInformations;
 
     public event OrderHandler OnOrder;
     public event OrderInitializeHandler OnOrderInitialize;
     public event ResetOrderArrayHandler OnResetOrder;
 
+    private int orderCode = 0;
     private void Awake()
     {
         commodityAssets = new CommodityAsset[orderValue];
         commodityInformations = new CommodityInformation[orderValue];
+        customers = new Customer[orderValue];
     }
     private void Start()
     {
         OnOrderInitialize?.Invoke(new OrderInitializeEventArgs(orderValue));     
     }
 
+    public OrderTicket Inquiry()
+    {
+        if (SearchVacantSeatOrder() == commodityAssets.Length)
+        {
+            return new OrderTicket(new NullOrderable(), new Customer(-1));
+        }
+        return new OrderTicket(this, new Customer(orderCode));
+    }
+
     /// <summary>
     /// íçï∂
     /// </summary>
     /// <param name="commodityAsset"></param>
-    public void Order(CommodityAsset commodityAsset)
+    void IOrderable.Order(CommodityAsset commodityAsset,Customer customer)
     {
-        if (SearchVacantSeatOrder() == commodityAssets.Length)
-        {
-            return;
-        }
         int vacantSeatOrder = SearchVacantSeatOrder();
 
         commodityAssets[vacantSeatOrder] = commodityAsset;
+        customers[vacantSeatOrder] = customer;
 
         OrderEventArgs orderEventArgs = new OrderEventArgs(new CommodityInformation(commodityAsset), OrderType.Order, vacantSeatOrder);
         OnOrder?.Invoke(orderEventArgs);
+        orderCode++;
     }
 
     public void Submission(Commodity commodity)
@@ -102,6 +141,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
                 Debug.Log("íÒèoäÆóπ");
                 OrderEventArgs orderEventArgs = new OrderEventArgs(new CommodityInformation(commodityAssets[i]), OrderType.Submit, i);
                 commodityAssets[i] = null;
+                customers[i] = null;
                 PackOrders();
 
                 Destroy(commodity.gameObject);
@@ -121,6 +161,19 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
         }
 
         OnResetOrder?.Invoke(new ResetOrderArrayEventArgs(commodityInformations));
+    }
+
+    public void Cancel(Customer customer)
+    {
+        for(int i = 0; i < customers.Length; i++)
+        {
+            if(customers[i].OrderCode == customer.OrderCode)
+            {
+                commodityAssets[i] = null;
+                customers[i] = null;
+                PackOrders();
+            }
+        }
     }
 
     private int SearchVacantSeatOrder()
@@ -149,6 +202,9 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
                     }
                     commodityAssets[i] = commodityAssets[k];
                     commodityAssets[k] = null;
+
+                    customers[i] = customers[k];
+                    customers[k] = null;
 
                     break;
                 }

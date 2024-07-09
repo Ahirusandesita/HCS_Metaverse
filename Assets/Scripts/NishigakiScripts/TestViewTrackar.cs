@@ -9,5 +9,6 @@ public class TestViewTrackar : MonoBehaviour
     void Update()
     {
         _view.transform.position = this.transform.position;
+        _view.transform.rotation = this.transform.rotation;
     }
 }
