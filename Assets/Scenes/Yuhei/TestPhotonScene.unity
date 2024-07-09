@@ -1817,7 +1817,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1776437351444565971, guid: 4fa54e5eec46828498093a64a48029bf, type: 3}
       propertyPath: NetworkedBehaviours.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4177287145026017418, guid: 4fa54e5eec46828498093a64a48029bf, type: 3}
       propertyPath: _activityZone
@@ -6674,6 +6674,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 1940321128}
+  - {fileID: 1940321129}
 --- !u!114 &1940321128
 MonoBehaviour:
   m_ObjectHideFlags: 0

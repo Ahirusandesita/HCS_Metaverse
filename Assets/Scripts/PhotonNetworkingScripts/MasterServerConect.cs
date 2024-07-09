@@ -56,7 +56,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 			GetComponent<RPCManager>();
 		if (_activityZone is not null)
 		{
-			rpcManager.SessionNameChangedHandler += _activityZone.SetSessionName;
+			rpcManager.SessionNameChangedHandler += JoinOrCreateSession;
 		}
 
 		Transform myTransform = transform;
@@ -78,9 +78,8 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		//アクティビティスタート
 		string sessionName = "TestRoom";
 
-		JoinOrCreateSession(sessionName);
-		RPCManager.Instance.Rpc_SessionNaming(sessionName);
-		ActivityStart(activityName);
+		RPCManager.Instance.Rpc_JoinSession(sessionName);
+		//ActivityStart(activityName);
 	}
 
 	[ContextMenu("Test")]
@@ -133,7 +132,6 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	/// <summary>
 	/// ルームに入る。ない場合は作る
 	/// </summary>
-	/// <param name="sessionName">セッション名</param>
 	private async void JoinOrCreateSession(string sessionName)
 	{
 		await UpdateNetworkRunner();
