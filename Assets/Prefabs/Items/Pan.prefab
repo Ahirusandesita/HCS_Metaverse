@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4746399782350372406}
   - component: {fileID: 4184628891180055719}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabPose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -78,7 +78,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6424932432325725265}
   - component: {fileID: 1912712061002735941}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabPose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146,7 +146,8 @@ GameObject:
   m_Component:
   - component: {fileID: 864660758092782396}
   - component: {fileID: 4586575727823505525}
-  m_Layer: 0
+  - component: {fileID: 4336201888771488430}
+  m_Layer: 7
   m_Name: CubeDistanceGrab (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -197,6 +198,28 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &4336201888771488430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1891394303789303270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43f86b14a27b52f4f9298c33015b5c26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _transferOnSecondSelection: 0
+  _addNewPointsToFront: 0
+  _forwardElement: {fileID: 0}
+  _oneGrabTransformer: {fileID: 0}
+  _twoGrabTransformer: {fileID: 0}
+  _targetTransform: {fileID: 0}
+  _maxGrabPoints: -1
+  _rigidbody: {fileID: 4586575727823505525}
+  _kinematicWhileSelected: 0
+  _throwWhenUnselected: 1
 --- !u!1 &2497524454898849919
 GameObject:
   m_ObjectHideFlags: 0
@@ -209,7 +232,7 @@ GameObject:
   - component: {fileID: 222384469387770434}
   - component: {fileID: 698039617267785188}
   - component: {fileID: 5893845486284602543}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GrabInteractable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -319,7 +342,7 @@ GameObject:
   - component: {fileID: 4203343542526476155}
   - component: {fileID: 2496456825384213155}
   - component: {fileID: 1923648779918393139}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -385,7 +408,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 584611937445547234}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Collider (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -420,7 +443,7 @@ GameObject:
   - component: {fileID: 3380222794459021544}
   - component: {fileID: 1667812867482123071}
   - component: {fileID: 516961173127180991}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabInteractable(Left)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -592,7 +615,7 @@ GameObject:
   - component: {fileID: 4922918284963219396}
   - component: {fileID: 8823446576719466711}
   - component: {fileID: 9068260869691239279}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Pan
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -788,7 +811,7 @@ GameObject:
   - component: {fileID: 6541987452116153666}
   - component: {fileID: 6188338828640202560}
   - component: {fileID: 788451889228863721}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabInteractable(Right)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -956,6 +979,10 @@ PrefabInstance:
     - target: {fileID: 1361908703428336, guid: 12350bfc702bef44499bfd46c8dbb426, type: 3}
       propertyPath: m_Name
       value: Pan (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361908703428336, guid: 12350bfc702bef44499bfd46c8dbb426, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4219352889690714, guid: 12350bfc702bef44499bfd46c8dbb426, type: 3}
       propertyPath: m_LocalScale.x

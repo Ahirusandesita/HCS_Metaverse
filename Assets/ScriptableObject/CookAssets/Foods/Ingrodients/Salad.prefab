@@ -185,6 +185,8 @@ GameObject:
   - component: {fileID: 1007244645545015487}
   - component: {fileID: 7664446410624043760}
   - component: {fileID: 6097322304720769460}
+  - component: {fileID: -4452063645714083423}
+  - component: {fileID: -1457215349039634543}
   m_Layer: 0
   m_Name: Salad
   m_TagString: Untagged
@@ -341,6 +343,31 @@ MonoBehaviour:
   _rigidbody: {fileID: 7664446410624043760}
   _kinematicWhileSelected: 1
   _throwWhenUnselected: 1
+--- !u!114 &-4452063645714083423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3206259490211938747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05ed7dc8e53f68b4b89b57797675eeeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-1457215349039634543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3206259490211938747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a07834f1ca9abd4786861f09eb26ff9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onGrabbed: {fileID: 9179721131436563138}
 --- !u!1 &3498574826486432006
 GameObject:
   m_ObjectHideFlags: 0
