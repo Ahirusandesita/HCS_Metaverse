@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
+
+
 public interface IIngrodientsModerator
 {
     IngrodientsAsset IngrodientsAsset { set; }
@@ -12,10 +15,22 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator
 {
     [SerializeField]
     private IngrodientsAsset ingrodientsAsset;
-
     private List<IngrodientsDetailInformation> ingrodientsDetailInformations = new List<IngrodientsDetailInformation>();
-
     public IngrodientsAsset IngrodientsAsset => ingrodientsAsset;
+
+    public struct TimeItTakesData
+    {
+        public readonly float MaxTimeItTakes;
+        public readonly float NowTimeItTakes;
+        public TimeItTakesData(float max, float now)
+        {
+            this.MaxTimeItTakes = max;
+            this.NowTimeItTakes = now;
+        }
+    }
+    private ReactiveProperty<TimeItTakesData> timeItTakesProperty = new ReactiveProperty<TimeItTakesData>();
+    public IReadOnlyReactiveProperty<TimeItTakesData> TimeItTakesProperty => timeItTakesProperty;
+
     IngrodientsAsset IIngrodientsModerator.IngrodientsAsset
     {
         set
@@ -48,7 +63,9 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator
         {
             if (information.ProcessingType == processableType)
             {
-                return information.SubToTimeItTakes(subValue);
+                information.SubToTimeItTakes(subValue);
+                timeItTakesProperty.Value = new TimeItTakesData(information.MaxTimeItTakes, information.TimeItTakes);
+                return information.IsProcessingFinish();
             }
         }
 
@@ -64,4 +81,6 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator
         Destroy(this.gameObject);
         return commodity;
     }
+
+
 }

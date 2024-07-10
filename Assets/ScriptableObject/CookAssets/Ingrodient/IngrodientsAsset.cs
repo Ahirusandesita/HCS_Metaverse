@@ -79,6 +79,10 @@ public class IngrodientsDetailInformation
 
     public ProcessingType ProcessingType => processableType;
     public float TimeItTakes => timeItTakes;
+
+    [System.NonSerialized]
+    public readonly float MaxTimeItTakes;
+
     public Commodity Commodity => commodity;
 
     public IngrodientsDetailInformation(ProcessingType processableType,float timeItTakes,Commodity commodity)
@@ -86,12 +90,16 @@ public class IngrodientsDetailInformation
         this.processableType = processableType;
         this.timeItTakes = timeItTakes;
         this.commodity = commodity;
+        MaxTimeItTakes = timeItTakes;
     }
 
-    public bool SubToTimeItTakes(float subValue)
+    public void SubToTimeItTakes(float subValue)
     {
         timeItTakes -= subValue;
+    }
 
+    public bool IsProcessingFinish()
+    {
         if (timeItTakes <= 0)
         {
             return true;

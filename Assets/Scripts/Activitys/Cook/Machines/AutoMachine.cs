@@ -39,7 +39,7 @@ public class AutoMachine : Machine
     }
     public override void StartProcessed(IngrodientsDetailInformation ingrodientsDetailInformation)
     {
-        timeItTakes = ingrodientsDetailInformation.TimeItTakes;
+        //timeItTakes = ingrodientsDetailInformation.TimeItTakes;
 
         processingAction += () =>
         {
@@ -47,9 +47,8 @@ public class AutoMachine : Machine
             {
                 return;
             }
-            timeItTakes -= Time.deltaTime;
 
-            if (timeItTakes <= 0f)
+            if (ingrodients.SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType, Time.deltaTime))
             {
                 ingrodients.ProcessingStart(ProcessingType, this.transform);
                 processingAction = null;
