@@ -15,19 +15,9 @@ public interface IMasterServerConectable
 public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMasterServerConectable
 {
 	[SerializeField]
-	private ActivityZone _activityZone = default;
-	[SerializeField]
 	private Recorder _recorder;
 	[SerializeField]
 	private NetworkRunner _networkRunnerPrefab;
-
-	[SerializeField]
-	private LocalRemoteSeparation localRemoteReparation;
-	[SerializeField]
-	private NetworkPrefabRef _roomCounterPrefab;
-
-	[SerializeField]
-	private NetworkPrefabRef _rpcManagerPrefab;
 
 	private NetworkRunner _networkRunner;
 	[SerializeField]
@@ -36,35 +26,12 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	[SerializeField]
 	private NetworkObject _testNetworkObject;
 
-
-
 	private async void Awake()
 	{
 		_networkRunner = Instantiate(_networkRunnerPrefab);
 		_networkRunner.AddCallbacks(this);
 
-		await Connect("Room");
-		InitRegisterNetwork();
-
-		Transform myTransform = transform;
-		_networkRunner.Spawn(_roomCounterPrefab).transform.parent = myTransform;
-
-		RPCManager rpcManager = _networkRunner.
-			Spawn(_rpcManagerPrefab, Vector3.zero, Quaternion.identity).
-			GetComponent<RPCManager>();
-		if (_activityZone is not null)
-		{
-			rpcManager.SessionNameChangedHandler += JoinOrCreateSession;
-		}
-
-		rpcManager.transform.parent = myTransform;
-		localRemoteReparation.RemoteViewCreate(_networkRunner, _networkRunner.LocalPlayer);
-	}
-
-	private void InitRegisterNetwork()
-	{
-		NetworkObject[] networkObjects = FindObjectsOfType<NetworkObject>();
-		_networkRunner.RegisterSceneObjects(_networkRunner.GetSceneRef(gameObject), networkObjects);
+		await Connect("Room");	
 	}
 
 	[ContextMenu("ActivityStart")]
@@ -72,14 +39,17 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	{
 		//アクティビティスタート
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(_networkRunner.LocalPlayer);
-
+		if(currentRoom is null) 
+		{
+			Debug.LogWarning("どのルームにも入っていません");
+			return; 
+		}
 		string sessionName = currentRoom.SessionName;
 
 		foreach (PlayerRef playerRef in currentRoom.JoinPlayer)
 		{
 			RPCManager.Instance.Rpc_JoinSession(sessionName, playerRef);
 		}
-		_networkRunner.LoadScene(activityName);
 	}
 
 	[ContextMenu("Join")]
@@ -129,7 +99,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	/// <summary>
 	/// ルームに入る。ない場合は作る
 	/// </summary>
-	private async void JoinOrCreateSession(string sessionName)
+	public async void JoinOrCreateSession(string sessionName)
 	{
 		await UpdateNetworkRunner();
 		await Connect(sessionName);
@@ -140,13 +110,12 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	/// </summary>
 	private async UniTask UpdateNetworkRunner()
 	{
-		Debug.LogWarning("UpdateRunner");
 		await _networkRunner.Shutdown(true, ShutdownReason.HostMigration);
 		// NetworkRunnerを生成する
 		_networkRunner = Instantiate(_networkRunnerPrefab);
 		// NetworkRunnerのコールバック対象に、このスクリプト（GameLauncher）を登録する
 		_networkRunner.AddCallbacks(this);
-
+		Debug.LogWarning("UpdateRunner");
 	}
 
 	public async UniTask Connect(string SessionName)
@@ -154,13 +123,14 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		// "Room"という名前のルームに参加する（ルームが存在しなければ作成して参加する）
 		await _networkRunner.StartGame(new StartGameArgs
 		{
-			StartGameCancellationToken = destroyCancellationToken,
+			//StartGameCancellationToken = destroyCancellationToken,
 			GameMode = GameMode.Shared,
 			SessionName = SessionName,
 			SceneManager = _networkRunner.GetComponent<NetworkSceneManagerDefault>()
 		}
 		);
 		_networkRunner.GetComponent<FusionVoiceClient>().PrimaryRecorder = _recorder;
+		Debug.LogWarning("Connect");
 	}
 
 	public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
@@ -173,6 +143,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 
 	public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
 	{
+		
 	}
 
 	public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)

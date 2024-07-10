@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 687033457346460161}
   - component: {fileID: 3666745950673282757}
   - component: {fileID: 2954409387120871465}
+  - component: {fileID: -1824220184546168510}
   m_Layer: 0
   m_Name: NetworkRunnner
   m_TagString: Untagged
@@ -101,3 +102,20 @@ MonoBehaviour:
   AutoConnectAndJoin: 1
   UseFusionAppSettings: 1
   UseFusionAuthValues: 1
+--- !u!114 &-1824220184546168510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6226729373576102769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d3d6acc144572a4e840d1c1a6bf775b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  localRemoteReparation: {fileID: 5470062202958232113, guid: b49223fc95aa3784ea2065e977a21df2, type: 3}
+  _roomCounterPrefab:
+    RawGuidValue: 726d4f5959095e543b40e5c7d2178b64
+  _rpcManagerPrefab:
+    RawGuidValue: a6bc06e5aeaa4014694ecdf5472de8bb
