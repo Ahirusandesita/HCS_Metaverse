@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4956976685188449460}
   - component: {fileID: 2819080424253956374}
   - component: {fileID: 1939242753523299707}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Meat_Salad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113,7 +113,7 @@ GameObject:
   - component: {fileID: 9177010188625086724}
   - component: {fileID: 7047927562830729427}
   - component: {fileID: 4943444626777599628}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabInteractable(Left)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -282,7 +282,7 @@ GameObject:
   - component: {fileID: 8018687025931117964}
   - component: {fileID: 3148136990582907916}
   - component: {fileID: 8960841500503954396}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GrabInteractable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -393,7 +393,7 @@ GameObject:
   - component: {fileID: 1482195667829012788}
   - component: {fileID: 1150697129228535638}
   - component: {fileID: 2682334153305704121}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CubeDistanceGrab (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -525,7 +525,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1460433880458075370}
   - component: {fileID: 1983175747667514157}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabPose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -593,7 +593,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4174002298843232439}
   - component: {fileID: 377518963489704204}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabPose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -661,7 +661,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3627640719645389633}
   - component: {fileID: 8717843600544707238}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -717,7 +717,7 @@ GameObject:
   - component: {fileID: 7772611107280100786}
   - component: {fileID: 7452962327269041414}
   - component: {fileID: 5512803502352838588}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabInteractable(Right)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -942,6 +942,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: niku1
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b2ae3e3b5dc176347a74b39b4ed04989, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1019,6 +1023,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f88f5f6dbbae9bf46b602861268eb662, type: 3}
       propertyPath: m_Name
       value: kusa1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f88f5f6dbbae9bf46b602861268eb662, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

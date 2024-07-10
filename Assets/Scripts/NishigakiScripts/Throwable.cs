@@ -53,6 +53,7 @@ public class Throwable : MonoBehaviour, IDependencyInjector<PlayerHandDependency
         pointableUnityEventWrapper.WhenUnselect.AddListener((action) => { UnSelect(); });
 
         _interactorDetailEventIssuer = GameObject.FindObjectOfType<InteractorDetailEventIssuer>();
+        PlayerInitialize.ConsignmentInject_static(this);
     }
 
     private void Start()

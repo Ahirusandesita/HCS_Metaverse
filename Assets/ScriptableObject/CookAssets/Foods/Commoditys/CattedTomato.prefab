@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7036487274057533249}
   - component: {fileID: 8298166205603738268}
   - component: {fileID: 1848029779295924913}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GrabInteractable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 5133051582362796013}
   - component: {fileID: 3206205169311457728}
   - component: {fileID: 7265563174234959510}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CubeDistanceGrab (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,7 +257,7 @@ GameObject:
   - component: {fileID: -4561283694819496482}
   - component: {fileID: 2463982208498696377}
   - component: {fileID: 1706377649973329699}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CattedTomato
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -357,7 +357,7 @@ GameObject:
   - component: {fileID: 8976402700687953556}
   - component: {fileID: 5540121191602664206}
   - component: {fileID: 2186511328756717897}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabInteractable(Right)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -527,7 +527,7 @@ GameObject:
   - component: {fileID: 5314415355865004051}
   - component: {fileID: 8790863484625625858}
   - component: {fileID: 3123645582144174083}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabInteractable(Left)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -694,7 +694,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5316422314918253197}
   - component: {fileID: 5213009064251502221}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabPose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -762,7 +762,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7658004111364551809}
   - component: {fileID: 8503740386988579940}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabPose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -830,7 +830,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5404843590136072129}
   - component: {fileID: 6192061198113910254}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -940,6 +940,10 @@ PrefabInstance:
     - target: {fileID: 3283801320852607428, guid: 0033046e0c84a0746ae7eeb32282a7c8, type: 3}
       propertyPath: m_Name
       value: CattedTomato
+      objectReference: {fileID: 0}
+    - target: {fileID: 3283801320852607428, guid: 0033046e0c84a0746ae7eeb32282a7c8, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

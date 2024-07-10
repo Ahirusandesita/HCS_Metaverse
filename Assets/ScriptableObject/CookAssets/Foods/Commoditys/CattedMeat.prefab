@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5528439285076767964}
   - component: {fileID: 5381516409614133769}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabPose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -81,7 +81,7 @@ GameObject:
   - component: {fileID: 771705429383368074}
   - component: {fileID: 7750917122538121838}
   - component: {fileID: 3160819129562184236}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabInteractable(Right)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -250,7 +250,7 @@ GameObject:
   - component: {fileID: 716168740496798689}
   - component: {fileID: 5976490063726520772}
   - component: {fileID: 6905242936140671549}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GrabInteractable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -362,7 +362,7 @@ GameObject:
   - component: {fileID: 3638999880395880563}
   - component: {fileID: 3654361513158222125}
   - component: {fileID: 8110704298862608404}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabInteractable(Left)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -533,7 +533,7 @@ GameObject:
   - component: {fileID: 7440123031423320290}
   - component: {fileID: 4523506480872104023}
   - component: {fileID: 8104917614159600775}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CattedMeat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -657,7 +657,7 @@ GameObject:
   - component: {fileID: 1827690491297167459}
   - component: {fileID: 6156660712182875164}
   - component: {fileID: 7878451416234610322}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CubeDistanceGrab (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -789,7 +789,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6619653770415092412}
   - component: {fileID: 7579871666590981847}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -842,7 +842,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1418870146434798755}
   - component: {fileID: 1623857605846481271}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabPose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -911,6 +911,10 @@ PrefabInstance:
     - target: {fileID: 7954520040361209771, guid: d54ff7c65445d264d91e873c346da7a1, type: 3}
       propertyPath: m_Name
       value: CuttedMeat
+      objectReference: {fileID: 0}
+    - target: {fileID: 7954520040361209771, guid: d54ff7c65445d264d91e873c346da7a1, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8566233850690297008, guid: d54ff7c65445d264d91e873c346da7a1, type: 3}
       propertyPath: m_LocalPosition.x

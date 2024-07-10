@@ -196,7 +196,7 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
     {
         // 
         _visualObjectTransform.localPosition = default;
-        _visualObjectTransform.localRotation = default;
+        _visualObjectTransform.localRotation = transform.rotation = Quaternion.Euler(0f, 90f, 0f);
     }
 
     /// <summary>
