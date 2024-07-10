@@ -44,6 +44,8 @@ public class ExampleScriptEditor : Editor
             }
             var allCommodityAsset = target as IAllCommodityAsset;
             allCommodityAsset.Commodities = commodities;
+
+            UnityEditor.EditorUtility.SetDirty(target as AllCommodityAsset);
         }
     }
 
