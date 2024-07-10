@@ -58,12 +58,10 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
             // プレイヤーを回転させる
             .Subscribe(value => OnRotate(value));
 
+        Inputter.Player.Warp.Disable();
         Inputter.Player.Warp.performed += _ =>
         {
-            if (IsMovingRP.Value)
-            {
-                Warp();
-            }
+            Warp();
         };
 
 #if UNITY_EDITOR
@@ -129,7 +127,7 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 
                 // ジャンプだけは有効化したいのでジャンプ処理を記述
                 // () is order optimizated
-                characterController.Move(Vector3.up * (verticalVelocity * Time.deltaTime));
+                //characterController.Move(new Vector3(0f, verticalVelocity, 0f) * Time.deltaTime);
                 break;
         }
     }
@@ -145,12 +143,21 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
         }
 
         bool canWarp = warpPointer.Draw(leftHand.position, leftHand.forward, ref warpPos);
+        if (canWarp)
+        {
+            Inputter.Player.Warp.Enable();
+        }
+        else
+        {
+            Inputter.Player.Warp.Disable();
+        }
         //warpSymbol.transform.position = warpPos;
 
     }
 
     private void Warp()
     {
+        warpPointer.OnWarp();
         myTransform.position = warpPos;
         //myTransform.rotation = 
     }

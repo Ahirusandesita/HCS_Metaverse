@@ -468,6 +468,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 141874817}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!143 &420112056 stripped
+CharacterController:
+  m_CorrespondingSourceObject: {fileID: 6856146247086294139, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+  m_PrefabInstance: {fileID: 1156365688}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &542508511
 GameObject:
   m_ObjectHideFlags: 0
@@ -1263,6 +1268,18 @@ PrefabInstance:
     - target: {fileID: 3706694218168684489, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: moveTypeRP.value
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4998152965892717665, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+      propertyPath: characterController
+      value: 
+      objectReference: {fileID: 420112056}
+    - target: {fileID: 4998152965892717665, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+      propertyPath: excludeLayers.m_Bits
+      value: 192
+      objectReference: {fileID: 0}
+    - target: {fileID: 7184761421259508355, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9043037264926603685, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: m_LocalPosition.x

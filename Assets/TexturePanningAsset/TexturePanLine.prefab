@@ -160,6 +160,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lineRenderer: {fileID: 2208046703087172464}
   warpSymbol: {fileID: 1380870432662029446}
+  characterController: {fileID: 0}
+  excludeLayers:
+    serializedVersion: 2
+    m_Bits: 192
 --- !u!1001 &2039326313034498640
 PrefabInstance:
   m_ObjectHideFlags: 0
