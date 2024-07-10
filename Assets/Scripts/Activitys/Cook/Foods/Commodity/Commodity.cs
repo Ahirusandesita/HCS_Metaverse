@@ -2,15 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Oculus.Interaction;
 public interface ICommodityModerator
 {
     void SetCommodityAsset(CommodityAsset commodityAsset);
 }
-public class Commodity : MonoBehaviour,ICommodityModerator
+public class Commodity : MonoBehaviour,ICommodityModerator,ISwitchableGrabbableActive
 {
     [SerializeField]
     private CommodityAsset commodityAsset;
     public CommodityAsset CommodityAsset => this.commodityAsset;
+
+    private Grabbable grabbable;
+    private IPutableOnDish putableOnDish = new NullPutableOnDish();
+
+    private void Awake()
+    {
+        grabbable = this.GetComponent<Grabbable>();
+    }
+    public void InjectGrabbable(Grabbable grabbable)
+    {
+        this.grabbable = grabbable;
+    }
+    public void InjectPutableOnDish(IPutableOnDish putableOnDish)
+    {
+        this.putableOnDish = putableOnDish;
+    }
     void ICommodityModerator.SetCommodityAsset(CommodityAsset commodityAsset)
     {
         this.commodityAsset = commodityAsset;
@@ -64,7 +81,7 @@ public class Commodity : MonoBehaviour,ICommodityModerator
                 Commodity mixCommodity = MixCommodity.Mix(new Commodity[] { this, commodity });
                 if(!(mixCommodity is null))
                 {
-                    Instantiate(mixCommodity, this.transform.position, this.transform.rotation);
+                    Instantiate(mixCommodity, this.transform.position, this.transform.rotation).PutOnDish(this.putableOnDish);
                 }
             }
         }
@@ -73,5 +90,26 @@ public class Commodity : MonoBehaviour,ICommodityModerator
         {
             table.Sub(this);
         }
+
+        if(collision.transform.root.gameObject.TryGetComponent<IPutableOnDish>(out IPutableOnDish putableOnDish))
+        {
+            this.putableOnDish = putableOnDish;
+            this.putableOnDish.PutCommodity(this);
+        }
+    }
+
+    public void Active()
+    {
+        grabbable.enabled = true;
+    }
+
+    public void Inactive()
+    {
+        grabbable.enabled = false;
+    }
+    public void PutOnDish(IPutableOnDish putableOnDish)
+    {
+        this.putableOnDish = putableOnDish;
+        this.putableOnDish.PutCommodity(this);
     }
 }

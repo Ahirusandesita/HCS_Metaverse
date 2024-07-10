@@ -30,12 +30,6 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator
     {
         this.commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
 
-        if(ingrodientsAsset == null)
-        {
-            Debug.LogError("miss");
-            return;
-        }
-
         foreach (IngrodientsDetailInformation ingrodientsDetailInformation in ingrodientsAsset.IngrodientsDetailInformations)
         {
             ingrodientsDetailInformations.Add(ingrodientsDetailInformation);

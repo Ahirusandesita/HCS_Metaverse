@@ -21,6 +21,7 @@ public class IngrodientsInitializeWindow : EditorWindow
     {
         IngrodientsInitializeWindow window = (IngrodientsInitializeWindow)EditorWindow.GetWindow(typeof(IngrodientsInitializeWindow));
         window.Show();
+
     }
 
     void OnGUI()
@@ -92,8 +93,6 @@ public class IngrodientsInitializeWindow : EditorWindow
         if (!Directory.Exists(path))
             Directory.CreateDirectory(path);
         AssetDatabase.CreateAsset(ingrodient, Path.Combine(path, fileName));
-
-
 
         if (canCreatePrefab)
         {
