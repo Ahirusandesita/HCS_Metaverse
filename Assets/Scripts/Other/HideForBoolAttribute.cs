@@ -31,25 +31,3 @@ public class HideForBoolAttribute : MultiPropertyAttribute
 #endif
 }
 
-//#if UNITY_EDITOR
-//namespace UnityEditor
-//{
-//    [CustomPropertyDrawer(typeof(HideForBoolAttribute))]
-//    public class HideForBoolAttributeDrawer : PropertyDrawer
-//    {
-//        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-//        {
-//            var hideForBoolAttribute = attribute as HideForBoolAttribute;
-//            var referenceVariableProperty = property.serializedObject.FindProperty(hideForBoolAttribute.referenceVariable);
-//            if (referenceVariableProperty is null)
-//            {
-//                return;
-//            }
-
-//            EditorGUI.BeginDisabledGroup(referenceVariableProperty.boolValue == hideForBoolAttribute.condition);
-//            EditorGUI.PropertyField(position, property, label, true);
-//            EditorGUI.EndDisabledGroup();
-//        }
-//    }
-//}
-//#endif

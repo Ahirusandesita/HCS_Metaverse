@@ -7,14 +7,14 @@ public class CustomFieldAttribute : PropertyAttribute
 {
     public enum DisplayType
     {
-        Add,
+        Append,
         Replace,
     }
 
     public readonly string displayName = default;
     public readonly DisplayType displayType = default;
 
-    public CustomFieldAttribute(string displayName, DisplayType displayType = DisplayType.Add)
+    public CustomFieldAttribute(string displayName, DisplayType displayType = DisplayType.Append)
     {
         this.displayName = displayName;
         this.displayType = displayType;
@@ -30,7 +30,7 @@ namespace UnityEditor
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             var customFieldAttribute = attribute as CustomFieldAttribute;
-            if (customFieldAttribute.displayType == CustomFieldAttribute.DisplayType.Add)
+            if (customFieldAttribute.displayType == CustomFieldAttribute.DisplayType.Append)
             {
                 label.text += $" ({customFieldAttribute.displayName})";
             }
