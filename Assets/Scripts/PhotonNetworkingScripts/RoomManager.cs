@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -12,19 +11,22 @@ public class Room
 	private WorldType _worldType = default;
 	private List<PlayerRef> _joinedPlayer = new();
 
+	public int this[PlayerRef playerRef] { get => _joinedPlayer.IndexOf(playerRef); }
+	public int LeaderIndex { get => _leaderIndex; }
 	public int Number { get => _number; }
 	public bool IsEndJoining { get => _isEndJoining; }
 	public string SessionName { get => _sessionName; }
 	public WorldType WorldType { get => _worldType; }
 	public IReadOnlyList<PlayerRef> JoinPlayer { get => _joinedPlayer; }
 
-	public Room(WorldType activityType, int roomNumber,string sessionName)
+	public Room(WorldType activityType, int roomNumber, string sessionName)
 	{
 		this._worldType = activityType;
 		this._number = roomNumber;
 		this._leaderIndex = 0;
 		this._sessionName = sessionName;
 	}
+
 	public void Join(PlayerRef playerRef)
 	{
 		_joinedPlayer.Add(playerRef);
@@ -44,14 +46,23 @@ public class Room
 
 		//部屋のメンバーがいない場合
 		if (_joinedPlayer.Count <= 0) { return RoomManager.LeftResult.Closable; }
+
+		RoomManager.LeftResult result = RoomManager.LeftResult.Success;
+
 		//↓リーダーの場合
 		if (_leaderIndex == index)
 		{
 			int nextLeaderIndex = Random.Range(0, _joinedPlayer.Count);
 			_leaderIndex = nextLeaderIndex;
+			result = RoomManager.LeftResult.LeaderChanged;
 		}
 
-		return RoomManager.LeftResult.Success;
+		return result;
+	}
+
+	public void ChengeLeader(PlayerRef nextLeaderPlayer)
+	{
+		_leaderIndex = _joinedPlayer.IndexOf(nextLeaderPlayer);
 	}
 }
 public class RoomManager : NetworkBehaviour
@@ -66,22 +77,21 @@ public class RoomManager : NetworkBehaviour
 	public enum LeftResult
 	{
 		Closable,
+		LeaderChanged,
 		Success,
 		Fail
 	}
 
 	private static RoomManager _instance = default;
-	private int[] _roomCounter;
 	private List<Room> _rooms = new();
-
-
+	private int[] _roomCounter = default;
 	public static RoomManager Instance { get => _instance; }
+
 	private void Awake()
 	{
 		if (_instance is null)
 		{
 			_instance = this;
-			DontDestroyOnLoad(this);
 		}
 		else
 		{
@@ -91,9 +101,20 @@ public class RoomManager : NetworkBehaviour
 		_roomCounter = new int[System.Enum.GetValues(typeof(WorldType)).Length];
 	}
 
-	public Room GetMyJoinedRoom(PlayerRef playerRef)
+
+	public Room GetCurrentRoom(PlayerRef playerRef)
 	{
-		return _rooms.Where(room => room.JoinPlayer.Contains(playerRef)).First();
+		if (_rooms.Count <= 0)
+		{
+			return null;
+		}
+
+		IEnumerable<Room> temp = _rooms.Where(room => room.JoinPlayer.Contains(playerRef));
+		if(temp.Count() <= 0)
+		{
+			return null;
+		}
+		return temp.First();
 	}
 
 	/// <summary>
@@ -103,7 +124,7 @@ public class RoomManager : NetworkBehaviour
 	/// <param name="playerRef">入る人の情報</param>
 	/// <param name="roomNumber">入りたい部屋の番号　マイナスの場合は入れる部屋に入る</param>
 	/// <returns>JoinまたはCreateまたはFail</returns>
-	public JoinOrCreateResult JoinOrCreate(WorldType activityType, PlayerRef playerRef, int roomNumber)
+	public JoinOrCreateResult JoinOrCreate(WorldType activityType, PlayerRef playerRef, int roomNumber = -1)
 	{
 		Room roomTemp = default;
 
@@ -134,6 +155,7 @@ public class RoomManager : NetworkBehaviour
 		}
 
 		roomTemp.Join(playerRef);
+		Debug.LogWarning("join:" + activityType + "\nroomNum:" + roomNumber + "\nPlayer:" + playerRef);
 
 		return result;
 	}
@@ -144,7 +166,8 @@ public class RoomManager : NetworkBehaviour
 	/// <param name="playerRef">退出するプレイヤー情報</param>
 	public void LeftOrClose(PlayerRef playerRef)
 	{
-		Room joinedRoom = GetMyJoinedRoom(playerRef);
+		Room joinedRoom = GetCurrentRoom(playerRef);
+		if (joinedRoom is null) { return; }
 		LeftResult result = joinedRoom.Left(playerRef);
 		if (result == LeftResult.Closable)
 		{
@@ -159,9 +182,26 @@ public class RoomManager : NetworkBehaviour
 
 	private Room Create(WorldType activityType, int roomNumber)
 	{
-		string sessionName = activityType +":"+ _roomCounter[(int)activityType];
-		_rooms.Add(new Room(activityType, roomNumber,sessionName));
-		_roomCounter[(int)activityType]++;
+		string sessionName = activityType + ":" + _roomCounter[(int)activityType];
+		_rooms.Add(new Room(activityType, roomNumber, sessionName));
+		_roomCounter[(int)activityType]++; ;
 		return _rooms.LastOrDefault();
+	}
+	public void LeaderChenge(PlayerRef leaderPlayer)
+	{
+		Room roomTemp = GetCurrentRoom(leaderPlayer);
+
+		roomTemp.ChengeLeader(leaderPlayer);
+	}
+
+	[ContextMenu("count")]
+	private void Test()
+	{
+		Room roomTemp = GetCurrentRoom(Runner.LocalPlayer);
+		if(roomTemp is not null)
+		{
+			Debug.LogWarning("・Leader:" + (roomTemp[Runner.LocalPlayer] == roomTemp.LeaderIndex));
+		}
+		Debug.LogWarning(_rooms.Count);
 	}
 }

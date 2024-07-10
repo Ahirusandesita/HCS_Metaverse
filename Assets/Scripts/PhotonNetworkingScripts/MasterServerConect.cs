@@ -36,11 +36,6 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	[SerializeField]
 	private NetworkObject _testNetworkObject;
 
-	public void CookActivityJoin(int roomNumber = -1)
-	{
-		RoomManager.Instance.JoinOrCreate(WorldType.UnderCook, _networkRunner.LocalPlayer,roomNumber);
-	}
-
 
 
 	private async void Awake()
@@ -51,6 +46,9 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		await Connect("Room");
 		InitRegisterNetwork();
 
+		Transform myTransform = transform;
+		_networkRunner.Spawn(_roomCounterPrefab).transform.parent = myTransform;
+
 		RPCManager rpcManager = _networkRunner.
 			Spawn(_rpcManagerPrefab, Vector3.zero, Quaternion.identity).
 			GetComponent<RPCManager>();
@@ -59,10 +57,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 			rpcManager.SessionNameChangedHandler += JoinOrCreateSession;
 		}
 
-		Transform myTransform = transform;
 		rpcManager.transform.parent = myTransform;
-		_networkRunner.Spawn(_roomCounterPrefab).transform.parent = myTransform;
-
 		localRemoteReparation.RemoteViewCreate(_networkRunner, _networkRunner.LocalPlayer);
 	}
 
@@ -72,27 +67,41 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		_networkRunner.RegisterSceneObjects(_networkRunner.GetSceneRef(gameObject), networkObjects);
 	}
 
-	[ContextMenu("ActivityTrigger")]
-	private void ActivityStartTrigger()
+	[ContextMenu("ActivityStart")]
+	public void ActivityStart()
 	{
 		//アクティビティスタート
-		string sessionName = "TestRoom";
+		Room currentRoom = RoomManager.Instance.GetCurrentRoom(_networkRunner.LocalPlayer);
 
-		RPCManager.Instance.Rpc_JoinSession(sessionName);
-		//ActivityStart(activityName);
+		string sessionName = currentRoom.SessionName;
+
+		foreach (PlayerRef playerRef in currentRoom.JoinPlayer)
+		{
+			RPCManager.Instance.Rpc_JoinSession(sessionName, playerRef);
+		}
+		_networkRunner.LoadScene(activityName);
 	}
 
-	[ContextMenu("Test")]
+	[ContextMenu("Join")]
 	private void TestTest()
 	{
+		Debug.LogWarning("join");
 		int roomNumber = -1;
-		RoomManager.Instance.JoinOrCreate(WorldType.UnderCook, _networkRunner.LocalPlayer, roomNumber);
+		RPCManager.Instance.Rpc_RoomJoinOrCreate(WorldType.UnderCook, _networkRunner.LocalPlayer, roomNumber);
 	}
 
-	[ContextMenu("Test2")]
+	[ContextMenu("Left")]
 	private void TestTestTest()
 	{
+		Debug.LogWarning("left");
+		RPCManager.Instance.Rpc_RoomLeftOrClose(_networkRunner.LocalPlayer);
+	}
 
+	[ContextMenu("Request")]
+	private void TestTestTestTest()
+	{
+		Debug.LogWarning("Request");
+		RPCManager.Instance.Rpc_RequestRoomData(_networkRunner.LocalPlayer);
 	}
 
 	/// <summary>
@@ -115,18 +124,6 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		RPCManager.Instance.Rpc_ReleaseStateAuthority(networkObject, networkObject.StateAuthority);
 		await UniTask.WaitUntil(() => networkObject.StateAuthority == PlayerRef.None, cancellationToken: token);
 		networkObject.RequestStateAuthority();
-	}
-
-
-	/// <summary>
-	/// アクティビティを開始する
-	/// </summary>
-	/// <param name="sceneName">開始するアクティビティのシーン名</param>
-	public void ActivityStart(string sceneName)
-	{
-
-		Debug.LogWarning("ActivityStart");
-		_networkRunner.LoadScene(sceneName);
 	}
 
 	/// <summary>
