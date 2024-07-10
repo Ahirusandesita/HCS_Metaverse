@@ -59,7 +59,7 @@ public class StoperObject : MonoBehaviour
         foreach(Collider hitCollider in hitColliders)
         {
             // 
-            if (!hitCollider.TryGetComponent<Stoppable>(out var tmp))
+            if (!hitCollider.transform.root.TryGetComponent<Stoppable>(out var tmp))
             {
                 // 
                 continue;
@@ -68,7 +68,7 @@ public class StoperObject : MonoBehaviour
             onFlag = true;
 
             // 
-            if (hitCollider.TryGetComponent<StopData>(out var stopData))
+            if (hitCollider.transform.root.TryGetComponent<StopData>(out var stopData))
             {
                 // 
                 stopData.SetIsHitStopper(true);
@@ -79,7 +79,7 @@ public class StoperObject : MonoBehaviour
             else
             {
                 // 
-                hitCollider.gameObject.AddComponent<StopData>();
+                hitCollider.transform.root.gameObject.AddComponent<StopData>();
 
                 tmp.StoppingEvent();
 
