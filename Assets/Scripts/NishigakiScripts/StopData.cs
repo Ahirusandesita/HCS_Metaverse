@@ -39,6 +39,7 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
 
     // 
     private PlayerVisualHandDependencyInformation _visualInformation = default;
+
     private void Awake()
     {
         PlayerInitialize.ConsignmentInject_static(this);
@@ -59,6 +60,9 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
 
             // 
             _detailHandType = stoppable.GetDetailHandType;
+
+            // 
+            stoppable._stopData = this;
 
             switch (_detailHandType)
             {
@@ -186,6 +190,13 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
             // 
             Destroy(this);
         }
+    }
+
+    private void OnDestroy()
+    {
+        // 
+        _visualObjectTransform.localPosition = default;
+        _visualObjectTransform.localRotation = default;
     }
 
     /// <summary>

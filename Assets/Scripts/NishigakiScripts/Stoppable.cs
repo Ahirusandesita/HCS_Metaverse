@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Oculus.Interaction;
 
 public class Stoppable : MonoBehaviour
 {
@@ -20,6 +21,12 @@ public class Stoppable : MonoBehaviour
 
     private IKnifeHitEvent _iStoppingEvent = default;
 
+    // 
+    public StopData _stopData = default;
+
+    // 掴んだ時や離した時にイベントを実行するクラス
+    private PointableUnityEventWrapper pointableUnityEventWrapper;
+
     public void StoppingEvent()
     {
         if (_iStoppingEvent != default)
@@ -29,8 +36,21 @@ public class Stoppable : MonoBehaviour
         }
     }
 
+    public void UnSelect()
+    {
+        if (_stopData is not null)
+        {
+            // 
+            Destroy(_stopData);
+        }
+    }
+
     private void Start()
     {
+        // 
+        pointableUnityEventWrapper = this.transform.root.GetComponent<PointableUnityEventWrapper>();
+        pointableUnityEventWrapper.WhenUnselect.AddListener((action) => { UnSelect(); });
+
         // 
         if (_stoppingEventObject.TryGetComponent<IKnifeHitEvent>(out var iStoppingEvent))
         {
