@@ -8,15 +8,17 @@ public class TestGameZone : MonoBehaviour, IInteraction, ISelectedNotification
     private GameFrame gameFrame;
     [SerializeField]
     private MasterServerConect _masterServer;
-    [SerializeField]
+    [SerializeField,Header("アクティビティ(ワールド)")]
     private WorldType _worldType;
+
+    [ContextMenu("Close")]
     public void Close()
     {
         Debug.Log("Nishigaki");
         gameFrame.Close();
         RPCManager.Instance.Rpc_RoomLeftOrClose(_masterServer.Runner.LocalPlayer);
     }
-
+    [ContextMenu("Open")]
     public void Open()
     {
         gameFrame.GameStart();

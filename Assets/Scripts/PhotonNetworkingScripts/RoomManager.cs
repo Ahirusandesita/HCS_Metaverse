@@ -110,7 +110,7 @@ public class RoomManager : NetworkBehaviour
 		}
 
 		IEnumerable<Room> temp = _rooms.Where(room => room.JoinPlayer.Contains(playerRef));
-		if(temp.Count() <= 0)
+		if (temp.Count() <= 0)
 		{
 			return null;
 		}
@@ -120,11 +120,11 @@ public class RoomManager : NetworkBehaviour
 	/// <summary>
 	/// アクティビティのルームに参加するまたはルームを作成する
 	/// </summary>
-	/// <param name="activityType">入りたいActivity</param>
+	/// <param name="worldType">入りたいActivity</param>
 	/// <param name="playerRef">入る人の情報</param>
 	/// <param name="roomNumber">入りたい部屋の番号　マイナスの場合は入れる部屋に入る</param>
 	/// <returns>JoinまたはCreateまたはFail</returns>
-	public JoinOrCreateResult JoinOrCreate(WorldType activityType, PlayerRef playerRef, int roomNumber = -1)
+	public JoinOrCreateResult JoinOrCreate(WorldType worldType, PlayerRef playerRef, int roomNumber = -1)
 	{
 		Room roomTemp = default;
 
@@ -146,7 +146,7 @@ public class RoomManager : NetworkBehaviour
 
 		if (roomTemp is null)
 		{
-			roomTemp = Create(activityType, roomNumber);
+			roomTemp = Create(worldType, roomNumber);
 			result = JoinOrCreateResult.Create;
 		}
 		else
@@ -155,7 +155,7 @@ public class RoomManager : NetworkBehaviour
 		}
 
 		roomTemp.Join(playerRef);
-		Debug.LogWarning("join:" + activityType + "\nroomNum:" + roomNumber + "\nPlayer:" + playerRef);
+		Debug.LogWarning("Join:" + worldType + "\nroomNum:" + roomNumber + "\nPlayer:" + playerRef);
 
 		return result;
 	}
@@ -168,6 +168,7 @@ public class RoomManager : NetworkBehaviour
 	{
 		Room joinedRoom = GetCurrentRoom(playerRef);
 		if (joinedRoom is null) { return; }
+		Debug.LogWarning("Left:" + joinedRoom.WorldType + "\nRoomNum:" + joinedRoom.Number + "\nPlayer:" + playerRef);
 		LeftResult result = joinedRoom.Left(playerRef);
 		if (result == LeftResult.Closable)
 		{
@@ -198,7 +199,7 @@ public class RoomManager : NetworkBehaviour
 	private void Test()
 	{
 		Room roomTemp = GetCurrentRoom(Runner.LocalPlayer);
-		if(roomTemp is not null)
+		if (roomTemp is not null)
 		{
 			Debug.LogWarning("・Leader:" + (roomTemp[Runner.LocalPlayer] == roomTemp.LeaderIndex));
 		}
