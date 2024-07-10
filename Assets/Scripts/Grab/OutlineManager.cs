@@ -4,6 +4,8 @@ using System;
 
 public class OutlineManager : MonoBehaviour, IDependencyInjector<PlayerBodyDependencyInformation>
 {
+    [SerializeField] private bool hide = false;
+
     private Outline outline = default;
     private IReadonlyPositionAdapter playerPositionAdapter = default;
     private Transform myTransform = default;
@@ -45,11 +47,21 @@ public class OutlineManager : MonoBehaviour, IDependencyInjector<PlayerBodyDepen
         {
             puew.WhenHover.AddListener(_ =>
             {
+                if (hide)
+                {
+                    return;
+                }
+
                 outline.enabled = true;
                 FixedUpdateAction += OutlineControl;
             });
             puew.WhenUnhover.AddListener(_ =>
             {
+                if (hide)
+                {
+                    return;
+                }
+
                 outline.enabled = false;
                 FixedUpdateAction -= OutlineControl;
             });
