@@ -24,6 +24,12 @@ public class Dish : MonoBehaviour, IPutableOnDish
         {
             return;
         }
+        if(switchable != null)
+        {
+            return;
+        }
+
+
         this.switchable = switchable;
         switchable.Inactive();
         switchable.gameObject.transform.parent = this.transform;
