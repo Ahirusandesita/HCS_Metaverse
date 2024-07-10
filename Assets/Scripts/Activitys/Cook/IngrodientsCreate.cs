@@ -93,8 +93,6 @@ public class IngrodientsInitializeWindow : EditorWindow
             Directory.CreateDirectory(path);
         AssetDatabase.CreateAsset(ingrodient, Path.Combine(path, fileName));
 
-
-
         if (canCreatePrefab)
         {
             string outputPath = $"Assets/ScriptableObject/CookAssets/Foods/Ingrodients/{assetName}.prefab";

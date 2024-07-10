@@ -32,7 +32,14 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator
 
         if(ingrodientsAsset == null)
         {
-            Debug.LogError("miss");
+            gameObject.hideFlags = HideFlags.None;
+            GameObject Cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Cube.transform.parent = this.gameObject.transform;
+            Cube.gameObject.hideFlags = HideFlags.None;
+            Debug.LogError(Cube.transform.root);
+            this.gameObject.transform.position = new Vector3(0f, 10f, 0f);
+            Debug.LogError(this.gameObject.scene.name);
+            Debug.LogError("miss"+"ÉqÉGÉâÉãÉLÅ["+this.gameObject.transform.position);
             return;
         }
 
