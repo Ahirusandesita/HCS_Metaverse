@@ -40,6 +40,7 @@ public class Throwable : MonoBehaviour, IDependencyInjector<PlayerHandDependency
     // つかんだ瞬間の情報を取得するためのクラス
     private InteractorDetailEventIssuer _interactorDetailEventIssuer ;
 
+    // 掴んだ時や離した時にイベントを実行するクラス
     private PointableUnityEventWrapper pointableUnityEventWrapper;
 
     private void Awake()
@@ -50,11 +51,12 @@ public class Throwable : MonoBehaviour, IDependencyInjector<PlayerHandDependency
         pointableUnityEventWrapper = this.GetComponent<PointableUnityEventWrapper>();
         pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
         pointableUnityEventWrapper.WhenUnselect.AddListener((action) => { UnSelect(); });
+
+        _interactorDetailEventIssuer = GameObject.FindObjectOfType<InteractorDetailEventIssuer>();
     }
 
     private void Start()
     {
-        _interactorDetailEventIssuer = GameObject.FindObjectOfType<InteractorDetailEventIssuer>();
         // 掴んだ時の情報を講読できるようにする
         _interactorDetailEventIssuer.OnInteractor += (handler) => { 
             _detailEventsHandType = handler.HandType;
@@ -79,13 +81,6 @@ public class Throwable : MonoBehaviour, IDependencyInjector<PlayerHandDependency
     /// </summary>
     public void Select()
     {
-        // 掴んだ時の手の情報がなかった場合
-        if (GetDetailHandsTransform(_detailEventsHandType) is null)
-        {
-            // 何もしない
-            return;
-        }
-
         // 掴んだ手の方向をもとにフラグを立てる
         SetGrabbingHandFlag(_detailEventsHandType, true);
 

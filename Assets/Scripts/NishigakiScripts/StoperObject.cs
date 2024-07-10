@@ -44,141 +44,46 @@ public class StoperObject : MonoBehaviour
 
     private void Update()
     {
-        if (mode == DebugMode_StoperObject.Update)
+        // 
+        Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);
+
+        bool onFlag = false;
+
+        if (hitColliders is null)
         {
-            // 
-            Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);
-
-            bool onFlag = false;
-
-            if (hitColliders is null)
-            {
-                Debug.Log($"‚È‚É‚à“–‚½‚Á‚Ä‚È‚¢‚æ‚ñ");
-                return;
-            }
-
-            // 
-            foreach(Collider hitCollider in hitColliders)
-            {
-                // 
-                if (!hitCollider.TryGetComponent<Stoppable>(out var tmp))
-                {
-                    // 
-                    continue;
-                }
-
-                onFlag = true;
-
-                // 
-                if (hitCollider.TryGetComponent<StopData>(out var stopData))
-                {
-                    // 
-                    stopData.SetIsHitStopper(true);
-
-                    Debug.Log($"{hitCollider.gameObject.name} is Stopping now");
-                }
-                // 
-                else
-                {
-                    // 
-                    hitCollider.gameObject.AddComponent<StopData>();
-
-                    tmp.StoppingEvent();
-
-                    Debug.Log($"{hitCollider.gameObject.name} ‚É StopData’Ç‰Á‚µ‚½‚æ‚ñ");
-                }
-            }
+            Debug.Log($"‚È‚É‚à“–‚½‚Á‚Ä‚È‚¢‚æ‚ñ");
+            return;
         }
-    }
 
-    private void FixedUpdate()
-    {
-        if (mode == DebugMode_StoperObject.FixedUpdate)
+        // 
+        foreach(Collider hitCollider in hitColliders)
         {
             // 
-            Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);
-
-            bool onFlag = false;
-
-            // 
-            foreach (Collider hitCollider in hitColliders)
+            if (!hitCollider.TryGetComponent<Stoppable>(out var tmp))
             {
                 // 
-                if (!hitCollider.TryGetComponent<Stoppable>(out var tmp))
-                {
-                    // 
-                    continue;
-                }
-
-                onFlag = true;
-
-                // 
-                if (hitCollider.TryGetComponent<StopData>(out var stopData))
-                {
-                    // 
-                    stopData.SetIsHitStopper(true);
-
-                    Debug.Log($"{hitCollider.gameObject.name} is Stopping now");
-                }
-                // 
-                else
-                {
-                    // 
-                    hitCollider.gameObject.AddComponent<StopData>();
-
-                    Debug.Log($"{hitCollider.gameObject.name} ‚É StopData’Ç‰Á‚µ‚½‚æ‚ñ");
-                }
+                continue;
             }
 
-            if (!onFlag)
-            {
-                Debug.Log($"‚È‚É‚à‚Æ‚ß‚Ä‚È‚¢‚æ‚ñ");
-            }
-        }
-    }
-
-    private void LateUpdate()
-    {
-        if (mode == DebugMode_StoperObject.LateUpdate)
-        {
-            // 
-            Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);
-
-            bool onFlag = false;
+            onFlag = true;
 
             // 
-            foreach (Collider hitCollider in hitColliders)
+            if (hitCollider.TryGetComponent<StopData>(out var stopData))
             {
                 // 
-                if (!hitCollider.TryGetComponent<Stoppable>(out var tmp))
-                {
-                    // 
-                    continue;
-                }
+                stopData.SetIsHitStopper(true);
 
-                onFlag = true;
-
-                // 
-                if (hitCollider.TryGetComponent<StopData>(out var stopData))
-                {
-                    // 
-                    stopData.SetIsHitStopper(true);
-
-                    Debug.Log($"{hitCollider.gameObject.name} is Stopping now");
-                }
-                // 
-                else
-                {
-                    // 
-                    hitCollider.gameObject.AddComponent<StopData>();
-
-                    Debug.Log($"{hitCollider.gameObject.name} ‚É StopData’Ç‰Á‚µ‚½‚æ‚ñ");
-                }
+                Debug.Log($"{hitCollider.gameObject.name} is Stopping now");
             }
-
-            if (!onFlag)
+            // 
+            else
             {
-                Debug.Log($"‚È‚É‚à‚Æ‚ß‚Ä‚È‚¢‚æ‚ñ");
+                // 
+                hitCollider.gameObject.AddComponent<StopData>();
+
+                tmp.StoppingEvent();
+
+                Debug.Log($"{hitCollider.gameObject.name} ‚É StopData’Ç‰Á‚µ‚½‚æ‚ñ");
             }
         }
     }
