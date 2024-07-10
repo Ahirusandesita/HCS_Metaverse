@@ -36,76 +36,79 @@ public abstract class MultiPropertyAttribute : PropertyAttribute
 }
 
 #if UNITY_EDITOR
-[CustomPropertyDrawer(typeof(MultiPropertyAttribute), true)]
-public class MultiPropertyAttributeDrawer : PropertyDrawer
+namespace UnityEditor
 {
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    [CustomPropertyDrawer(typeof(MultiPropertyAttribute), true)]
+    public class MultiPropertyAttributeDrawer : PropertyDrawer
     {
-        var attributes = GetAttributes();
-        var propertyDrawers = GetPropertyHeights();
-
-        // ”ñ•\Ž¦‚Ìê‡
-        if (attributes.Any(attr => !attr.IsVisible(property)))
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            return;
+            var attributes = GetAttributes();
+            var propertyDrawers = GetPropertyHeights();
+
+            // ”ñ•\Ž¦‚Ìê‡
+            if (attributes.Any(attr => !attr.IsVisible(property)))
+            {
+                return;
+            }
+
+            // •`‰æ
+            using var ccs = new EditorGUI.ChangeCheckScope();
+
+            foreach (var attribute in attributes)
+            {
+                attribute.OnGUI(position, property, label);
+            }
         }
 
-        // •`‰æ
-        using var ccs = new EditorGUI.ChangeCheckScope();
-
-        foreach (var attribute in attributes)
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            attribute.OnGUI(position, property, label);
-        }
-    }
+            var attributes = GetAttributes();
+            var propertyHeights = GetPropertyHeights();
 
-    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-    {
-        var attributes = GetAttributes();
-        var propertyHeights = GetPropertyHeights();
+            // ”ñ•\Ž¦‚Ìê‡
+            if (attributes.Any(attr => !attr.IsVisible(property)))
+            {
+                return -EditorGUIUtility.standardVerticalSpacing;
+            }
 
-        // ”ñ•\Ž¦‚Ìê‡
-        if (attributes.Any(attr => !attr.IsVisible(property)))
-        {
-            return -EditorGUIUtility.standardVerticalSpacing;
+            var height = propertyHeights.Length == 0
+                ? base.GetPropertyHeight(property, label)
+                : propertyHeights.Last().GetPropertyHeight(property, label);
+            return height;
         }
 
-        var height = propertyHeights.Length == 0
-            ? base.GetPropertyHeight(property, label)
-            : propertyHeights.Last().GetPropertyHeight(property, label);
-        return height;
-    }
-
-    private MultiPropertyAttribute[] GetAttributes()
-    {
-        var attr = (MultiPropertyAttribute)attribute;
-
-        if (attr.Attributes == null)
+        private MultiPropertyAttribute[] GetAttributes()
         {
-            attr.Attributes = fieldInfo
-                .GetCustomAttributes(typeof(MultiPropertyAttribute), false)
-                .Cast<MultiPropertyAttribute>()
-                .OrderBy(x => x.order)
-                .ToArray();
+            var attr = (MultiPropertyAttribute)attribute;
+
+            if (attr.Attributes == null)
+            {
+                attr.Attributes = fieldInfo
+                    .GetCustomAttributes(typeof(MultiPropertyAttribute), false)
+                    .Cast<MultiPropertyAttribute>()
+                    .OrderBy(x => x.order)
+                    .ToArray();
+            }
+
+            return attr.Attributes;
         }
 
-        return attr.Attributes;
-    }
-
-    private IGetPropertyHeight[] GetPropertyHeights()
-    {
-        var attr = (MultiPropertyAttribute)attribute;
-
-        if (attr.GetPropertyHeights == null)
+        private IGetPropertyHeight[] GetPropertyHeights()
         {
-            attr.GetPropertyHeights = fieldInfo
-                .GetCustomAttributes(typeof(MultiPropertyAttribute), false)
-                .OfType<IGetPropertyHeight>()
-                .OrderBy(x => ((MultiPropertyAttribute)x).order)
-                .ToArray();
-        }
+            var attr = (MultiPropertyAttribute)attribute;
 
-        return attr.GetPropertyHeights;
+            if (attr.GetPropertyHeights == null)
+            {
+                attr.GetPropertyHeights = fieldInfo
+                    .GetCustomAttributes(typeof(MultiPropertyAttribute), false)
+                    .OfType<IGetPropertyHeight>()
+                    .OrderBy(x => ((MultiPropertyAttribute)x).order)
+                    .ToArray();
+            }
+
+            return attr.GetPropertyHeights;
+        }
     }
 }
 #endif

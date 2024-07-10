@@ -1,9 +1,10 @@
 using UnityEngine;
+using UnityEditor;
 
 /// <summary>
 /// 引数で与えたVRMoveType変数の値によって、編集不可状態にする
 /// </summary>
-public class HideForMoveTypeAttribute : PropertyAttribute
+public class HideForMoveTypeAttribute : MultiPropertyAttribute
 {
     public readonly string referenceVariable = default;
     public readonly VRMoveType condition = default;
@@ -13,27 +14,20 @@ public class HideForMoveTypeAttribute : PropertyAttribute
         this.referenceVariable = referenceVariable;
         this.condition = condition;
     }
-}
 
 #if UNITY_EDITOR
-namespace UnityEditor
-{
-    [CustomPropertyDrawer(typeof(HideForMoveTypeAttribute))]
-    public class HideForMoveTypeAttributeDrawer : PropertyDrawer
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        var referenceVariableProperty = property.serializedObject.FindProperty(referenceVariable);
+        if (referenceVariableProperty is null)
         {
-            var hideForMoveTypeAttribute = attribute as HideForMoveTypeAttribute;
-            var referenceVariableProperty = property.serializedObject.FindProperty(hideForMoveTypeAttribute.referenceVariable);
-            if (referenceVariableProperty is null)
-            {
-                return;
-            }
-
-            EditorGUI.BeginDisabledGroup(referenceVariableProperty.enumValueIndex == (int)hideForMoveTypeAttribute.condition);
-            EditorGUI.PropertyField(position, property, label, true);
-            EditorGUI.EndDisabledGroup();
+            return;
         }
+
+        EditorGUI.BeginDisabledGroup(referenceVariableProperty.enumValueIndex == (int)condition);
+        EditorGUI.PropertyField(position, property, label, true);
+        EditorGUI.EndDisabledGroup();
+
     }
-}
 #endif
+}
