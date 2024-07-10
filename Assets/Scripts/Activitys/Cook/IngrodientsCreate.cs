@@ -21,6 +21,7 @@ public class IngrodientsInitializeWindow : EditorWindow
     {
         IngrodientsInitializeWindow window = (IngrodientsInitializeWindow)EditorWindow.GetWindow(typeof(IngrodientsInitializeWindow));
         window.Show();
+
     }
 
     void OnGUI()

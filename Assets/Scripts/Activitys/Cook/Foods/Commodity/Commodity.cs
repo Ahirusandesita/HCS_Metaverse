@@ -16,9 +16,17 @@ public class Commodity : MonoBehaviour,ICommodityModerator,ISwitchableGrabbableA
     private Grabbable grabbable;
     private IPutableOnDish putableOnDish = new NullPutableOnDish();
 
+    private void Awake()
+    {
+        grabbable = this.GetComponent<Grabbable>();
+    }
     public void InjectGrabbable(Grabbable grabbable)
     {
         this.grabbable = grabbable;
+    }
+    public void InjectPutableOnDish(IPutableOnDish putableOnDish)
+    {
+        this.putableOnDish = putableOnDish;
     }
     void ICommodityModerator.SetCommodityAsset(CommodityAsset commodityAsset)
     {
@@ -83,7 +91,7 @@ public class Commodity : MonoBehaviour,ICommodityModerator,ISwitchableGrabbableA
             table.Sub(this);
         }
 
-        if(collision.gameObject.TryGetComponent<IPutableOnDish>(out IPutableOnDish putableOnDish))
+        if(collision.transform.root.gameObject.TryGetComponent<IPutableOnDish>(out IPutableOnDish putableOnDish))
         {
             this.putableOnDish = putableOnDish;
             this.putableOnDish.PutCommodity(this);
