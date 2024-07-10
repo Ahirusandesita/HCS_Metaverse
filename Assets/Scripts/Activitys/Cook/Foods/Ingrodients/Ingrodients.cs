@@ -32,7 +32,7 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator
 
         foreach (IngrodientsDetailInformation ingrodientsDetailInformation in ingrodientsAsset.IngrodientsDetailInformations)
         {
-            ingrodientsDetailInformations.Add(ingrodientsDetailInformation);
+            ingrodientsDetailInformations.Add(new IngrodientsDetailInformation(ingrodientsDetailInformation.ProcessingType,ingrodientsDetailInformation.TimeItTakes,ingrodientsDetailInformation.Commodity));
         }
     }
 

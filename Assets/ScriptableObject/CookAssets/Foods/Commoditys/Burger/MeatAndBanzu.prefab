@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2982250042747775632}
   - component: {fileID: 7492839484379654194}
   - component: {fileID: 4615703038022593678}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabInteractable(Right)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -180,7 +180,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3921476667725530096}
   - component: {fileID: 6122719314570148672}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabPose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -248,7 +248,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9180351676801552337}
   - component: {fileID: 2577574504361312020}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -303,7 +303,7 @@ GameObject:
   - component: {fileID: 5854463742786969573}
   - component: {fileID: 2511012605141952510}
   - component: {fileID: 1141461397896251584}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: MeatAndBanzu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -403,7 +403,7 @@ GameObject:
   - component: {fileID: 2263509929806676173}
   - component: {fileID: 7817714368924764574}
   - component: {fileID: 4058356117265950349}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CubeDistanceGrab (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -538,7 +538,7 @@ GameObject:
   - component: {fileID: 3218649950380139313}
   - component: {fileID: 3137595710296796481}
   - component: {fileID: 4206078498151491402}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabInteractable(Left)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -707,7 +707,7 @@ GameObject:
   - component: {fileID: 267536592736312338}
   - component: {fileID: 3061644952877470069}
   - component: {fileID: 3783002173907181886}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GrabInteractable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -816,7 +816,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8833264774475038467}
   - component: {fileID: 3110352516590425050}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabPose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -942,6 +942,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: niku1
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b2ae3e3b5dc176347a74b39b4ed04989, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1026,9 +1030,21 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4219809526321897790, guid: 4b2d61582302a1e48a13fad15c0a40ec, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7216864067339708952, guid: 4b2d61582302a1e48a13fad15c0a40ec, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 8820349977917249677, guid: 4b2d61582302a1e48a13fad15c0a40ec, type: 3}
       propertyPath: m_Name
       value: Buns
+      objectReference: {fileID: 0}
+    - target: {fileID: 8820349977917249677, guid: 4b2d61582302a1e48a13fad15c0a40ec, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

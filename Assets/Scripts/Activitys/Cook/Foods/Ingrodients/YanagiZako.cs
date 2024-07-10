@@ -10,6 +10,7 @@ public interface ISwitchableGrabbableActive
 }
 public class YanagiZako : MonoBehaviour,ISwitchableGrabbableActive
 {
+
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.transform.GetChild(0).TryGetComponent<Machine>(out Machine machine))

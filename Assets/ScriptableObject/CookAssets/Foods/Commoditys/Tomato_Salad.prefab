@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9170506514341735147}
   - component: {fileID: 5178901707524408974}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -65,7 +65,7 @@ GameObject:
   - component: {fileID: 6870519106900872903}
   - component: {fileID: 5961400282698467207}
   - component: {fileID: 6077402614559394399}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Tomato_Salad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -165,7 +165,7 @@ GameObject:
   - component: {fileID: 3143231557256957803}
   - component: {fileID: 7394011706509632504}
   - component: {fileID: 2078753075078643727}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GrabInteractable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -276,7 +276,7 @@ GameObject:
   - component: {fileID: 8690108215161845765}
   - component: {fileID: 2484991647124543145}
   - component: {fileID: 2286313633205580032}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CubeDistanceGrab (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -411,7 +411,7 @@ GameObject:
   - component: {fileID: 5628685794591352203}
   - component: {fileID: 5258143325937744567}
   - component: {fileID: 2808173690627588542}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabInteractable(Right)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -578,7 +578,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1784914259195635672}
   - component: {fileID: 6485947462619077688}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabPose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -646,7 +646,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7980791638983013025}
   - component: {fileID: 1546084801806069326}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabPose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -717,7 +717,7 @@ GameObject:
   - component: {fileID: 3378841643726798726}
   - component: {fileID: 8026784001747767629}
   - component: {fileID: 1650793974762069195}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabInteractable(Left)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -942,6 +942,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: kusa1
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f88f5f6dbbae9bf46b602861268eb662, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1029,6 +1033,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 75a3875ca6edb4a4d903d8f0e8a2fa65, type: 3}
       propertyPath: m_Name
       value: Nazo1Burger
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 75a3875ca6edb4a4d903d8f0e8a2fa65, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
