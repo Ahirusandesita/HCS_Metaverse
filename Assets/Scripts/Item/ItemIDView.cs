@@ -80,7 +80,7 @@ namespace UnityEditor
             {
                 string content = item.Name;
 
-                if (!item.AllowVisualCatalog)
+                if (!item.IsDisplayable)
                 {
                     content += " (No Visual)";
                 }
@@ -144,7 +144,7 @@ namespace UnityEditor
             {
                 string content = item.Name;
 
-                if (!item.AllowVisualCatalog)
+                if (!item.IsDisplayable)
                 {
                     content += " (No Visual)";
                 }
