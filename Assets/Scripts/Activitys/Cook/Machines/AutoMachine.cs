@@ -5,6 +5,32 @@ using UnityEngine;
 
 public class AutoMachine : Machine
 {
+    private bool canProcessing = false;
+    public bool CanProcessing
+    {
+        get
+        {
+            return canProcessing;
+        }
+        set
+        {
+            canProcessing = value;
+        }
+    }
+
+    public bool isGrab = false;
+    public bool IsGrab
+    {
+        get
+        {
+            return isGrab;
+        }
+        set
+        {
+            isGrab = value;
+        }
+    }
+
     private Action processingAction;
 
     private void Update()
@@ -17,6 +43,10 @@ public class AutoMachine : Machine
 
         processingAction += () =>
         {
+            if (!canProcessing)
+            {
+                return;
+            }
             timeItTakes -= Time.deltaTime;
 
             if (timeItTakes <= 0f)
