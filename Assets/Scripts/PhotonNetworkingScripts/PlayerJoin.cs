@@ -6,44 +6,39 @@ using Fusion;
 public class PlayerJoin : SimulationBehaviour, IPlayerJoined
 {
 	private ActivityZone _activityZone = default;
-	private MasterServerConect _masterServer = default;
-	[SerializeField]
-	private LocalRemoteSeparation localRemoteReparation;
+	
 	[SerializeField]
 	private NetworkPrefabRef _roomCounterPrefab;
 	[SerializeField]
 	private NetworkPrefabRef _rpcManagerPrefab;
 	public void PlayerJoined(PlayerRef player)
 	{
-		_masterServer = FindObjectOfType<MasterServerConect>();
-		_activityZone = FindObjectOfType<ActivityZone>();
-		//InitRegisterNetwork();
-
-		Transform masterTransform = _masterServer.transform;
-		Runner.Spawn(_roomCounterPrefab).transform.parent = masterTransform;
-
-		Debug.LogWarning(Runner);
-		if(FindObjectOfType<RPCManager>() is null)
+		if (!Runner.IsSharedModeMasterClient) { return; }
+		MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
+		if (RPCManager.Instance != null && RoomManager.Instance != null)
 		{
+			RPCManager.Instance.SessionNameChangedHandler += masterServer.JoinOrCreateSession;
+			RPCManager.Instance.Rpc_Init(player);
+			return;
+		}
+		_activityZone = FindObjectOfType<ActivityZone>();
 
-			NetworkObject networkObject = Runner.Spawn(_rpcManagerPrefab, Vector3.zero, Quaternion.identity);
-			RPCManager rpcManager = networkObject.GetComponent<RPCManager>();
-
-			if (_activityZone is not null)
-			{
-				rpcManager.SessionNameChangedHandler += _masterServer.JoinOrCreateSession;
-			}
-			rpcManager.transform.parent = masterTransform;
+		Transform masterTransform = masterServer.transform;
+		if(FindObjectOfType<RoomManager>() == null)
+		{
+			NetworkObject networkObject = Runner.Spawn(_roomCounterPrefab);
+			RoomManager roomManager = networkObject.GetComponent<RoomManager>();
+			roomManager.transform.parent = masterTransform;
 		}
 
-
-		localRemoteReparation.RemoteViewCreate(Runner, Runner.LocalPlayer);
-		RPCManager.Instance.Rpc_RequestRoomData(player);
-	}
-
-	private void InitRegisterNetwork()
-	{
-		NetworkObject[] networkObjects = FindObjectsOfType<NetworkObject>();
-		Runner.RegisterSceneObjects(Runner.GetSceneRef(_masterServer.gameObject), networkObjects);
+		
+		if(FindObjectOfType<RPCManager>() == null)
+		{
+			NetworkObject networkObject = Runner.Spawn(_rpcManagerPrefab);
+			RPCManager rpcManager = networkObject.GetComponent<RPCManager>();
+			rpcManager.transform.parent = masterTransform;
+		}
+		RPCManager.Instance.SessionNameChangedHandler += masterServer.JoinOrCreateSession;
+		RPCManager.Instance.Rpc_Init(player);
 	}
 }

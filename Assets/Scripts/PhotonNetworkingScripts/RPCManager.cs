@@ -6,17 +6,20 @@ public delegate void SessionNameChanged(string name);
 
 public class RPCManager : NetworkBehaviour
 {
-	private sealed class NullRPCManager : RPCManager
-	{
-
-	}
 	public event SessionNameChanged SessionNameChangedHandler;
+	[SerializeField]
+	private LocalRemoteSeparation localRemoteReparation;
+	[SerializeField]
+	private GameObject _leaderObjectPrefab;
+
+	private GameObject _leaderObject;
 
 	private static RPCManager _instance;
 	public static RPCManager Instance { get => _instance; }
 
 	public override void Spawned()
 	{
+		Debug.LogError("Spawned:RPCManager");
 		_instance = this;
 	}
 
@@ -25,7 +28,7 @@ public class RPCManager : NetworkBehaviour
 	/// </summary>
 	/// <param name="sessionName">セッション名</param>
 	/// <param name="rpcTarget">RPCの対象プレイヤー</param>
-	[Rpc(RpcSources.All, RpcTargets.All)]
+	[Rpc(RpcSources.All, RpcTargets.All,InvokeLocal = false)]
 	public void Rpc_JoinSession(string sessionName, [RpcTarget] PlayerRef rpcTarget = new())
 	{
 		Debug.LogWarning("RPC_SessionName:" + sessionName);
@@ -74,8 +77,31 @@ public class RPCManager : NetworkBehaviour
 		RoomManager.Instance.JoinOrCreate(worldType, playerRef, roomNumber);
 		if (isLeader)
 		{
-			RoomManager.Instance.LeaderChenge(playerRef);
+			RoomManager.Instance.LeaderChange(playerRef);
 		}
 	}
 
+	[Rpc(RpcSources.All, RpcTargets.All)]
+	public void Rpc_InstanceLeaderObject([RpcTarget] PlayerRef rpcTarget)
+	{
+		Debug.LogWarning("Rpc_Instance:" + _leaderObject);
+		if (_leaderObject) { return; }
+		_leaderObject = Instantiate(_leaderObjectPrefab);
+	}
+
+	[Rpc(RpcSources.All, RpcTargets.All)]
+	public void Rpc_DestroyLeaderObject([RpcTarget] PlayerRef rpcTarget)
+	{
+		Debug.LogWarning("Rpc_Destroy:" + _leaderObject);
+		if (!_leaderObject) { return; }
+		Destroy(_leaderObject);
+	}
+
+	[Rpc(RpcSources.All, RpcTargets.All)]
+	public void Rpc_Init([RpcTarget] PlayerRef rpcTarget)
+	{
+		Debug.LogWarning("Rpc_Init" + rpcTarget);
+		localRemoteReparation.RemoteViewCreate(Runner, Runner.LocalPlayer);
+		_instance.Rpc_RequestRoomData(Runner.LocalPlayer);
+	}
 }

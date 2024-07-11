@@ -26,6 +26,11 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	[SerializeField]
 	private NetworkObject _testNetworkObject;
 
+	/// <summary>
+	/// このクラスはランナーとの紐づけはしないためラップする
+	/// </summary>
+	public new NetworkRunner Runner { get => _networkRunner; }
+
 	private async void Awake()
 	{
 		_networkRunner = Instantiate(_networkRunnerPrefab);
@@ -45,11 +50,13 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 			return; 
 		}
 		string sessionName = currentRoom.SessionName;
-
 		foreach (PlayerRef playerRef in currentRoom.JoinPlayer)
 		{
+			if(playerRef == _networkRunner.LocalPlayer) { continue; }
+			Debug.LogWarning(playerRef);
 			RPCManager.Instance.Rpc_JoinSession(sessionName, playerRef);
 		}
+		JoinOrCreateSession(sessionName);
 	}
 
 	[ContextMenu("Join")]

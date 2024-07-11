@@ -11,6 +11,7 @@ public class TestGameZone : MonoBehaviour, IInteraction, ISelectedNotification
     [SerializeField,Header("アクティビティ(ワールド)")]
     private WorldType _worldType;
 
+
     [ContextMenu("Close")]
     public void Close()
     {
@@ -23,7 +24,7 @@ public class TestGameZone : MonoBehaviour, IInteraction, ISelectedNotification
     {
         gameFrame.GameStart();
         //ルームに参加する
-        RPCManager.Instance.Rpc_RoomJoinOrCreate(_worldType, _masterServer.Runner.LocalPlayer);
+        RPCManager.Instance.Rpc_RoomJoinOrCreate(_worldType, _masterServer.Runner.LocalPlayer);    
     }
 
     public void Select(SelectArgs selectArgs)
