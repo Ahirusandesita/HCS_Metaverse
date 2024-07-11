@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class WarpPointer : MonoBehaviour
 {
@@ -7,9 +8,14 @@ public class WarpPointer : MonoBehaviour
     [SerializeField] private CharacterController characterController = default;
     [SerializeField] private LayerMask includeLayers = default;
     [SerializeField] private LayerMask excludeLayers = default;
+    [Space]
+    [SerializeField] private Color32 hitColor = default;
+    [SerializeField] private Color32 neutralColor = default;
+    [SerializeField] private float maxDistance = 30f;
 
-    private readonly Color32 hitColor = new Color32(0, 0, 255, 255);
-    private readonly Color32 neutralColor = new Color32(255, 0, 0, 255);
+    private Transform symbolTransform = default;
+    private Vector3 prevWarpPos = default;
+    private float movedDistance = 0f;
 
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
@@ -20,6 +26,11 @@ public class WarpPointer : MonoBehaviour
         characterController ??= GetComponentInParent<CharacterController>();
     }
 
+    private void Awake()
+    {
+        symbolTransform = warpSymbol.transform;
+    }
+
     private void Start()
     {
         lineRenderer.startColor = neutralColor;
@@ -28,8 +39,10 @@ public class WarpPointer : MonoBehaviour
         lineRenderer.endWidth = 0.05f;
 
         warpSymbol.enabled = false;
+        //prevWarpPos = Vector3.zero;
+        //Inputter.Player.Move.started += _ => 
+        //print($"<color=red>{_.control.device is Gamepad}</color>");
     }
-
     /// <summary>
     /// ポインターを描画する
     /// <br>See <see href="https://qiita.com/kousaku-maron/items/106619d0c065be155bbb"/></br>
@@ -38,7 +51,7 @@ public class WarpPointer : MonoBehaviour
     /// <param name="direction">方向</param>
     /// <exception cref="System.InvalidOperationException">WarpPointerがどこにも当たらなかったとき（返す値が存在しないとき）</exception>
     /// <returns>ワープ可能かどうか</returns>
-    public bool Draw(Vector3 origin, Vector3 direction, ref Vector3 warpPos)
+    public bool Draw(Vector3 origin, Vector3 direction, ref Vector3 warpPos, Vector2 inputDir)
     {
         // disable状態なら処理を終了
         if (!lineRenderer.enabled)
@@ -46,18 +59,27 @@ public class WarpPointer : MonoBehaviour
             return false;
         }
 
+        //movedDistance += Vector3.Distance(warpPos, prevWarpPos);
+        //if (movedDistance > 1f)
+        //{
+        //    movedDistance = 0f;
+        //    OVRInput.SetControllerVibration(0.1f, 0.1f, OVRInput.Controller.LTouch);
+        //}
+        
+
+        const float MIN_DIRECTION_Y = 0.025f;
+
         // y軸のdirectionをプラス値にクランプ
-        direction.y = direction.y <= 0f
-            ? 0.01f
+        direction.y = direction.y < MIN_DIRECTION_Y
+            ? MIN_DIRECTION_Y
             : direction.y;
 
-        const float MAX_DISTANCE = 30f;
         const float MIN_DISTANCE = 1f;
         const float DEFAULT_DROP_HEIGHT = 1f;
         const float MIDDLE_DIRECTION_Y = 0.5f;
 
         // y軸のdirectionによってdistanceを変動させる（45°に近いほど長く、遠ざかるほど短くなる）
-        float distance = MAX_DISTANCE - Mathf.Abs(MIDDLE_DIRECTION_Y - direction.y) * MAX_DISTANCE * 2;
+        float distance = maxDistance - Mathf.Abs(MIDDLE_DIRECTION_Y - direction.y) * maxDistance * 2;
         // distanceを最小値以上にクランプ
         distance = distance < MIN_DISTANCE
             ? MIN_DISTANCE
@@ -66,7 +88,7 @@ public class WarpPointer : MonoBehaviour
         // dropHeightを設定。y軸のdirectionが0に近いほど値を大きくする
         float dropHeight = DEFAULT_DROP_HEIGHT;
         dropHeight += direction.y < MIDDLE_DIRECTION_Y
-            ? (MIDDLE_DIRECTION_Y - direction.y) * 10
+            ? (MIDDLE_DIRECTION_Y - direction.y) * 5f
             : 0;
 
         // ベジェ曲線の3つの基準点を設定
@@ -110,7 +132,7 @@ public class WarpPointer : MonoBehaviour
                 if (canWarp)
                 {
                     // ワープ前の初期化処理
-                    CanWarp(warpPos);
+                    CanWarp(warpPos, inputDir);
                 }
                 else
                 {
@@ -132,11 +154,14 @@ public class WarpPointer : MonoBehaviour
 
             prevb012 = b012;
         }
+        
+        // Mathf.Infinityだとパフォーマンスよろしくないので、疑似Infinityの意。
+        const float PSEUDO_INFINITY = 10f;
 
         // for文を抜けてこのコードに到達 = まだどこにもLineが当たっていない
         // なのでそこからはまっすぐRayを飛ばし、強制的にどこかに当てる
         // ぱっと見違和感ないので、ベジェ曲線が途切れた後は直線で補完
-        if (Physics.Raycast(p2, (p2 - prevb012).normalized, out RaycastHit hit2, layerMask))
+        if (Physics.Raycast(p2, (p2 - prevb012).normalized, out RaycastHit hit2, PSEUDO_INFINITY, layerMask))
         {
             warpPos = hit2.point;
 
@@ -145,7 +170,7 @@ public class WarpPointer : MonoBehaviour
             if (canWarp)
             {
                 // ワープ前の初期化処理
-                CanWarp(warpPos);
+                CanWarp(warpPos, inputDir);
             }
             else
             {
@@ -154,11 +179,14 @@ public class WarpPointer : MonoBehaviour
 
             return canWarp;
         }
-
         // どこにも当たらなかった場合
-        return false;
+        else
+        {
+            CantWarp();
+            return false;
+        }
 
-        
+
         // 与えられた情報から、ワープ可能かどうか判定する
         bool CheckWarpable(Vector3 normal, ref Vector3 point)
         {
@@ -176,10 +204,10 @@ public class WarpPointer : MonoBehaviour
 
             // tmpPoint => point（壁）と同義。再度飛ばしたRayが壁に当たらないよう法線方向に少しずらしている
             // distance => ある程度の高さ。characterControllerの高さを参考に適当な値を設定
-            var tmpPoint = point + normal * 0.25f;
+            var tmpPoint = point + normal * 0.5f;
             float distance = characterController.height;
 
-            if (Physics.Raycast(tmpPoint, Vector3.down, out RaycastHit hit, distance))
+            if (Physics.Raycast(tmpPoint, Vector3.down, out RaycastHit hit, distance, layerMask))
             {
                 point = hit.point;
                 return true;
@@ -192,24 +220,15 @@ public class WarpPointer : MonoBehaviour
     public void SetActive(bool value)
     {
         lineRenderer.enabled = value;
-    }
-
-    /// <summary>
-    /// ワープしたときに呼び出す（ビューのリセット）
-    /// </summary>
-    public void OnWarp()
-    {
-        lineRenderer.enabled = false;
-        lineRenderer.startColor = neutralColor;
-        lineRenderer.endColor = neutralColor;
         warpSymbol.enabled = false;
     }
 
-    private void CanWarp(Vector3 warpPos)
+    private void CanWarp(Vector3 warpPos, Vector2 inputDir)
     {
         lineRenderer.startColor = hitColor;
         lineRenderer.endColor = hitColor;
-        warpSymbol.transform.position = warpPos;
+        symbolTransform.position = warpPos;
+        symbolTransform.LocalRotateBy2DVector(inputDir, Vector3.down);
         warpSymbol.enabled = true;
     }
 

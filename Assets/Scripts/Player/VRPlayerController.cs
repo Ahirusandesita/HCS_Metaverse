@@ -2,6 +2,7 @@ using System;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Cysharp.Threading.Tasks;
 
 /// <summary>
 /// プレイヤーの挙動を扱うクラス（VR)
@@ -24,11 +25,13 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 
     [Tooltip("左右どちらに回転するか")]
     private FloatReactiveProperty lookDirX_RP = default;
+    private BoolReactiveProperty canWarpRP = default;
 
     private Transform leftHand = default;
-
     private Vector3 warpPos = default;
     private IDisposable isMovingDisposable = default;
+
+    public IReadOnlyReactiveProperty<VRMoveType> MoveTypeRP => moveTypeRP;
 
 
     protected override void Reset()
@@ -58,6 +61,19 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
             // プレイヤーを回転させる
             .Subscribe(value => OnRotate(value));
 
+        canWarpRP = new BoolReactiveProperty().AddTo(this);
+        canWarpRP.Subscribe(canWarp =>
+        {
+            if (canWarp)
+            {
+                Inputter.Player.Warp.Enable();
+            }
+            else
+            {
+                Inputter.Player.Warp.Disable();
+            }
+        });
+
         Inputter.Player.Warp.Disable();
         Inputter.Player.Warp.performed += _ =>
         {
@@ -85,11 +101,11 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
                 // Warpに変わったとき、IsMovingイベントを購読する
                 else
                 {
-                    isMovingDisposable = IsMovingRP.Subscribe(isMoving =>
+                    isMovingDisposable = isMovingRP.Subscribe(isMoving =>
                     {
                         // 入力の有無によってビューの状態を切り替える
+                        // ただ、空中ではいくら入力があっても出せてはいけないため、複数条件付ける
                         warpPointer.SetActive(isMoving);
-                        //warpSymbol.enabled = isMoving;
                     })
                     .AddTo(this);
                 }
@@ -124,10 +140,6 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 
             case VRMoveType.Warp:
                 WarpMove();
-
-                // ジャンプだけは有効化したいのでジャンプ処理を記述
-                // () is order optimizated
-                //characterController.Move(new Vector3(0f, verticalVelocity, 0f) * Time.deltaTime);
                 break;
         }
     }
@@ -137,29 +149,27 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
     /// </summary>
     private void WarpMove()
     {
-        if (!IsMovingRP.Value)
+        // 入力があるときにWarpPointerを出せる
+        if (isMovingRP.Value)
         {
-            return;
+            canWarpRP.Value = warpPointer.Draw(leftHand.position, leftHand.forward, ref warpPos, moveDir);
         }
-
-        bool canWarp = warpPointer.Draw(leftHand.position, leftHand.forward, ref warpPos);
-        if (canWarp)
-        {
-            Inputter.Player.Warp.Enable();
-        }
-        else
-        {
-            Inputter.Player.Warp.Disable();
-        }
-        //warpSymbol.transform.position = warpPos;
-
     }
 
     private void Warp()
     {
-        warpPointer.OnWarp();
-        myTransform.position = warpPos;
-        //myTransform.rotation = 
+        // ワープしたのでビューは非表示に
+        warpPointer.SetActive(false);
+
+        // 座標を更新（ワープ！）
+        // そのままのWarpPosだと地面に埋まっちゃうので、足元に来るよう補正
+        myTransform.position = warpPos + Vector3.up * (characterController.height / 2 + characterController.skinWidth);
+
+        // ワープ後に入力されていた方向を向く
+        // VRの都合上代入は上手くいかないので、「向きたい角度」 - 「CenterEyeの角度」を求め、転回する
+        float targetRotationY = Calculator.GetEulerBy2DVector(moveDir, Vector3.down).y;
+        float centerEyeRotationY = centerEyeTransform.rotation.y;
+        myTransform.Rotate(Vector3.up * (targetRotationY - centerEyeRotationY));
     }
 
     /// <summary>

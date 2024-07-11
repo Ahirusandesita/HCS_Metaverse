@@ -37,7 +37,7 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
     private float jumpTimeoutDelta = default;
 
     [Tooltip("接地しているかどうか")]
-    private readonly ReactiveProperty<bool> isGroundedRP = new ReactiveProperty<bool>();
+    protected readonly ReactiveProperty<bool> isGroundedRP = new ReactiveProperty<bool>();
     [Tooltip("天井に当たっているかどうか")]
     private readonly ReactiveProperty<bool> isHitCeilingRP = new ReactiveProperty<bool>();
 
@@ -261,6 +261,7 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
 
         // プレイヤーを移動させる
         characterController.Move(inputDirection.normalized * (speed * Time.deltaTime) + new Vector3(0.0f, verticalVelocity, 0.0f) * Time.deltaTime);
+        print("<color=red>Move</color>");
     }
 
     /// <summary>
@@ -295,6 +296,7 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
 
             // 空中にいるとき、ジャンプをリセット
             isJumpInput = false;
+
         }
 
         // 現在の速度が終端速度以下のとき、重力を加算

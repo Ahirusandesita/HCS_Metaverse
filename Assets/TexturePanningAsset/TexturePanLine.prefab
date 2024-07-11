@@ -161,9 +161,19 @@ MonoBehaviour:
   lineRenderer: {fileID: 2208046703087172464}
   warpSymbol: {fileID: 1380870432662029446}
   characterController: {fileID: 0}
+  includeLayers:
+    serializedVersion: 2
+    m_Bits: 256
   excludeLayers:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 0
+  hitColor:
+    serializedVersion: 2
+    rgba: 2164227072
+  neutralColor:
+    serializedVersion: 2
+    rgba: 2147490815
+  maxDistance: 30
 --- !u!1001 &2039326313034498640
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -182,7 +192,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2247259866189118905, guid: 29153c748dd7f6248b72957796e14a1a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 2247259866189118905, guid: 29153c748dd7f6248b72957796e14a1a, type: 3}
       propertyPath: m_LocalPosition.z
