@@ -45,7 +45,6 @@ public class InteractorDetailEventIssuer : MonoBehaviour
         foreach(InteractorManager interactor in interactorManagers)
         {
             interactor.OnInteractor += (ida) => OnInteractor?.Invoke(ida);
-            interactor.OnInteractor += (ida) => Debug.LogError("yobare");
         }
     }
 }
