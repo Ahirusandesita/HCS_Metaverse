@@ -18,13 +18,14 @@ public class Dish : MonoBehaviour, IPutableOnDish
     [SerializeField]
     private Transform fixedTransform;
     private ISwitchableGrabbableActive switchable;
+    bool canPut = true;
     public void PutCommodity(ISwitchableGrabbableActive switchable)
     {
         if (!canPut)
         {
             return;
         }
-        if(switchable != null)
+        if(this.switchable != null)
         {
             return;
         }
@@ -41,7 +42,7 @@ public class Dish : MonoBehaviour, IPutableOnDish
 
     private void Update()
     {
-        if(switchable == null || !canPut)
+        if(switchable == null)
         {
             return;
         }
@@ -54,29 +55,24 @@ public class Dish : MonoBehaviour, IPutableOnDish
             switchable.gameObject.GetComponent<Rigidbody>().isKinematic = false;
             switchable.gameObject.transform.parent = null;
             switchable = null;
-            StartCoroutine(Nothing());
-            return;
+            canPut = false;
         }
 
-        if(vector3.z > 70f && vector3.z < 290f)
+        else if(vector3.z > 70f && vector3.z < 290f)
         {
             switchable.Active();
             switchable.gameObject.GetComponent<Commodity>().InjectPutableOnDish(new NullPutableOnDish());
             switchable.gameObject.GetComponent<Rigidbody>().isKinematic = false;
             switchable.gameObject.transform.parent = null;
-            StartCoroutine(Nothing());
             switchable = null;
+            canPut = false;
+        }
+        else
+        {
+            canPut = true;
         }
     }
 
-    bool canPut = true;
-    IEnumerator Nothing()
-    {
-        yield return new WaitForSeconds(1f);
-        canPut = false;
-        yield return new WaitForSeconds(1f);
-        canPut = true;
-    }
 
 
     private void OnCollisionEnter(Collision collision)
