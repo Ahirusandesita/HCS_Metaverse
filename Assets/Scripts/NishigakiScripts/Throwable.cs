@@ -31,7 +31,7 @@ public class Throwable : MonoBehaviour
     private void FixedUpdate()
     {
         // Ç«ÇøÇÁÇÃéËÇ≈Ç‡íÕÇÒÇ≈Ç¢Ç»Ç¢èÍçá
-        if (_isSelected)
+        if (!_isSelected)
         {
             // âΩÇ‡ÇµÇ»Ç¢
             return;
