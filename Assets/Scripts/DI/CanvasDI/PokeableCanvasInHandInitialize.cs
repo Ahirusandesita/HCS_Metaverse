@@ -11,7 +11,7 @@ public interface IInjectableSpecificType
 {
     void Inject(IAvailableSpecificType availableSpecificType);
 }
-public class PokeableCanvasInHandInitialize : InitializeBase, IAvailableSpecificType
+public class PokeableCanvasInHandInitialize : InitializeBase, IAvailableSpecificType,ISingletonInitializer<PokeableCanvasProvider>
 {
     [SerializeField]
     private InitializeAsset initialize;
@@ -29,6 +29,9 @@ public class PokeableCanvasInHandInitialize : InitializeBase, IAvailableSpecific
 
     private GameObject instance;
     private bool existInstance = false;
+
+    PokeableCanvasProvider ISingletonInitializer<PokeableCanvasProvider>.Provider => pokeableCanvasDependencyProvider as PokeableCanvasProvider;
+    private static PokeableCanvasProvider pokeableCanvasProvider_static;
     private void Awake()
     {
         foreach (IInjectableSpecificType injectableSpecificType in injectableSpecificTypes)
@@ -77,5 +80,15 @@ public class PokeableCanvasInHandInitialize : InitializeBase, IAvailableSpecific
         }
         UnityEditor.EditorUtility.SetDirty(this);
 #endif
+    }
+
+    public static void ConsignmentInject_static(IDependencyInjector<PokeableCanvasInformation> dependencyInjector)
+    {
+        if (pokeableCanvasProvider_static is null)
+        {
+            pokeableCanvasProvider_static = InterfaceUtils.FindObjectOfInterfaces<ISingletonInitializer<PokeableCanvasProvider>>()[0].Provider;
+        }
+        IDependencyProvider<PokeableCanvasInformation> pokeableCanvasProvider = pokeableCanvasProvider_static;
+        dependencyInjector.Inject(pokeableCanvasProvider.Information);
     }
 }

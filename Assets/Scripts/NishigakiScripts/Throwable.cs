@@ -51,16 +51,16 @@ public class Throwable : MonoBehaviour, IDependencyInjector<PlayerHandDependency
         pointableUnityEventWrapper = this.GetComponent<PointableUnityEventWrapper>();
         pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
         pointableUnityEventWrapper.WhenUnselect.AddListener((action) => { UnSelect(); });
-
-        _interactorDetailEventIssuer = GameObject.FindObjectOfType<InteractorDetailEventIssuer>();
         PlayerInitialize.ConsignmentInject_static(this);
     }
 
     private void Start()
     {
+        _interactorDetailEventIssuer = GameObject.FindObjectOfType<InteractorDetailEventIssuer>();
         // ’Í‚ñ‚¾Žž‚Ìî•ñ‚ðu“Ç‚Å‚«‚é‚æ‚¤‚É‚·‚é
         _interactorDetailEventIssuer.OnInteractor += (handler) => { 
             _detailEventsHandType = handler.HandType;
+            Debug.LogError("Yooooo!");
         };
     }
 
