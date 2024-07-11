@@ -126,7 +126,21 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
         OnOrder?.Invoke(orderEventArgs);
         orderCode++;
     }
-
+    public bool CanSubmit(Commodity commodity)
+    {
+        for (int i = 0; i < commodityAssets.Length; i++)
+        {
+            if (commodityAssets[i] == null)
+            {
+                continue;
+            }
+            if (commodity.IsMatchCommodity(commodityAssets[i]))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     public void Submission(Commodity commodity)
     {
         for (int i = 0; i < commodityAssets.Length; i++)
@@ -144,10 +158,10 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
                 customers[i] = null;
                 PackOrders();
 
-                Destroy(commodity.gameObject);
                 break;
             }
         }
+        Destroy(commodity.gameObject);
 
 
         for (int i = 0; i < commodityAssets.Length; i++)

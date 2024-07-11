@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Oculus.Interaction;
+using Oculus.Interaction.HandGrab;
+
 public interface ICommodityModerator
 {
     void SetCommodityAsset(CommodityAsset commodityAsset);
@@ -14,10 +16,30 @@ public class Commodity : MonoBehaviour,ICommodityModerator,ISwitchableGrabbableA
     public CommodityAsset CommodityAsset => this.commodityAsset;
 
     private Grabbable grabbable;
+
+    private List<MonoBehaviour> interactables = new List<MonoBehaviour>();
+
     private IPutableOnDish putableOnDish = new NullPutableOnDish();
 
     private void Awake()
     {
+        interactables.Add(this.GetComponent<Grabbable>());
+        foreach(MonoBehaviour item in this.gameObject.GetComponentsInChildren<DistanceHandGrabInteractable>())
+        {
+            interactables.Add(item);
+        }
+        foreach (MonoBehaviour item in this.gameObject.GetComponentsInChildren<DistanceGrabInteractable>())
+        {
+            interactables.Add(item);
+        }
+        foreach (MonoBehaviour item in this.gameObject.GetComponentsInChildren<HandGrabInteractable>())
+        {
+            interactables.Add(item);
+        }
+        foreach (MonoBehaviour item in this.gameObject.GetComponentsInChildren<GrabInteractable>())
+        {
+            interactables.Add(item);
+        }
         grabbable = this.GetComponent<Grabbable>();
     }
     public void InjectGrabbable(Grabbable grabbable)
@@ -88,7 +110,7 @@ public class Commodity : MonoBehaviour,ICommodityModerator,ISwitchableGrabbableA
 
         if(collision.gameObject.TryGetComponent<SubmisionTable>(out SubmisionTable table))
         {
-            table.Sub(this);
+            //table.Sub(this);
         }
 
         if(collision.transform.root.gameObject.TryGetComponent<IPutableOnDish>(out IPutableOnDish putableOnDish))
@@ -100,12 +122,18 @@ public class Commodity : MonoBehaviour,ICommodityModerator,ISwitchableGrabbableA
 
     public void Active()
     {
-        grabbable.enabled = true;
+        foreach(MonoBehaviour item in interactables)
+        {
+            item.enabled = true;
+        }
     }
 
     public void Inactive()
     {
-        grabbable.enabled = false;
+        foreach (MonoBehaviour item in interactables)
+        {
+            item.enabled = false;
+        }
     }
     public void PutOnDish(IPutableOnDish putableOnDish)
     {

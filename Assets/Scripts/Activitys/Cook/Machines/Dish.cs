@@ -77,4 +77,18 @@ public class Dish : MonoBehaviour, IPutableOnDish
         yield return new WaitForSeconds(1f);
         canPut = true;
     }
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.TryGetComponent<SubmisionTable>(out SubmisionTable table))
+        {
+            if (switchable is null)
+            {
+                return;
+            }
+            table.Submit(switchable.gameObject.GetComponent<Commodity>());
+            switchable = null;
+        }
+    }
 }

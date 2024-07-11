@@ -17,7 +17,7 @@ public class SubmisionTable : MonoBehaviour
 
     private void OrderHandler(OrderEventArgs orderEventArgs)
     {
-        if(orderEventArgs.OrderType == OrderType.Submit)
+        if (orderEventArgs.OrderType == OrderType.Submit)
         {
             StartCoroutine(NewOrder());
         }
@@ -29,13 +29,13 @@ public class SubmisionTable : MonoBehaviour
         int orderIndex = Random.Range(0, orderAsset.OrderDetailInformations.Count - 1);
 
         OrderTicket orderTicket = orderManager.Inquiry();
-        orderTicket.Orderable.Order(orderAsset.OrderDetailInformations[orderIndex].CommodityAsset,orderTicket.CustomerInformation);
+        orderTicket.Orderable.Order(orderAsset.OrderDetailInformations[orderIndex].CommodityAsset, orderTicket.CustomerInformation);
     }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.O))
         {
-            foreach(OrderDetailInformation orderDetailInformation in orderAsset.OrderDetailInformations)
+            foreach (OrderDetailInformation orderDetailInformation in orderAsset.OrderDetailInformations)
             {
                 OrderTicket orderTicket = orderManager.Inquiry();
                 orderTicket.Orderable.Order(orderDetailInformation.CommodityAsset, orderTicket.CustomerInformation);
@@ -43,7 +43,7 @@ public class SubmisionTable : MonoBehaviour
         }
     }
 
-    public void Sub(Commodity commodity)
+    public void Submit(Commodity commodity)
     {
         orderManager.Submission(commodity);
     }
