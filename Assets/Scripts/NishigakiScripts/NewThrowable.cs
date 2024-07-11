@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using Oculus.Interaction;
-public class Throwable : MonoBehaviour, IDependencyInjector<PlayerHandDependencyInfomation>
+public class NewThrowable : MonoBehaviour, IDependencyInjector<PlayerHandDependencyInfomation>
 {
     [SerializeField, Tooltip("©g‚ª‚ÂRigidbody")]
     public Rigidbody _thisRigidbody = default;
