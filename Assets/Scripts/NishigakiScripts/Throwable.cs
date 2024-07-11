@@ -22,10 +22,17 @@ public class Throwable : MonoBehaviour
     // 
     private bool _isSelected = default;
 
+    // 掴んだ時や離した時にイベントを実行するクラス
+    private PointableUnityEventWrapper pointableUnityEventWrapper;
+
     private void Awake()
     {
         // ThrowDataを生成する
         _throwData = new ThrowData(_thisTransform.position);
+
+        pointableUnityEventWrapper = this.GetComponent<PointableUnityEventWrapper>();
+        pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
+        pointableUnityEventWrapper.WhenUnselect.AddListener((action) => { UnSelect(); });
     }
 
     private void FixedUpdate()
