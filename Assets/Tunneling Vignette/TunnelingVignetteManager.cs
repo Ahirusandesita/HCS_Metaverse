@@ -111,6 +111,20 @@ public class TunnelingVignetteManager : MonoBehaviour
                 }
             })
             .AddTo(this);
+
+        VRPC.MoveTypeRP.Subscribe(moveType =>
+        {
+            switch (moveType)
+            {
+                case VRMoveType.Natural:
+                    meshRenderer.enabled = true;
+                    break;
+
+                case VRMoveType.Warp:
+                    meshRenderer.enabled = false;
+                    break;
+            }
+        });
         #endregion
     }
 
