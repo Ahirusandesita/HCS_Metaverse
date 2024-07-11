@@ -13,6 +13,7 @@ public class Room
 
 	public int this[PlayerRef playerRef] { get => _joinedPlayer.IndexOf(playerRef); }
 	public int LeaderIndex { get => _leaderIndex; }
+	public PlayerRef LeaderPlayer { get => _joinedPlayer[_leaderIndex]; }
 	public int Number { get => _number; }
 	public bool IsEndJoining { get => _isEndJoining; }
 	public string SessionName { get => _sessionName; }
@@ -42,6 +43,7 @@ public class Room
 		int index = _joinedPlayer.IndexOf(playerRef);
 		//参加していなかった場合
 		if (index < 0) { return RoomManager.LeftResult.Fail; }
+		RPCManager.Instance.Rpc_DestroyLeaderObject(_joinedPlayer[_leaderIndex]);
 		_joinedPlayer.RemoveAt(index);
 
 		//部屋のメンバーがいない場合
@@ -53,7 +55,9 @@ public class Room
 		if (_leaderIndex == index)
 		{
 			int nextLeaderIndex = Random.Range(0, _joinedPlayer.Count);
-			_leaderIndex = nextLeaderIndex;
+			RPCManager.Instance.Rpc_InstanceLeaderObject(_joinedPlayer[nextLeaderIndex]);
+			ChengeLeader(nextLeaderIndex);
+
 			result = RoomManager.LeftResult.LeaderChanged;
 		}
 
@@ -63,6 +67,10 @@ public class Room
 	public void ChengeLeader(PlayerRef nextLeaderPlayer)
 	{
 		_leaderIndex = _joinedPlayer.IndexOf(nextLeaderPlayer);
+	}
+	private void ChengeLeader(int nextLeaderIndex)
+	{
+		_leaderIndex = nextLeaderIndex;
 	}
 }
 public class RoomManager : NetworkBehaviour
@@ -87,20 +95,13 @@ public class RoomManager : NetworkBehaviour
 	private int[] _roomCounter = default;
 	public static RoomManager Instance { get => _instance; }
 
-	private void Awake()
+	public override void Spawned()
 	{
-		if (_instance is null)
-		{
-			_instance = this;
-		}
-		else
-		{
-			Destroy(gameObject);
-			return;
-		}
+		Debug.LogError("Spawned:RoomManager");
+		_instance = this;
 		_roomCounter = new int[System.Enum.GetValues(typeof(WorldType)).Length];
-	}
 
+	}
 
 	public Room GetCurrentRoom(PlayerRef playerRef)
 	{
@@ -147,6 +148,7 @@ public class RoomManager : NetworkBehaviour
 		if (roomTemp is null)
 		{
 			roomTemp = Create(worldType, roomNumber);
+			RPCManager.Instance.Rpc_InstanceLeaderObject(playerRef);
 			result = JoinOrCreateResult.Create;
 		}
 		else
@@ -188,20 +190,23 @@ public class RoomManager : NetworkBehaviour
 		_roomCounter[(int)activityType]++; ;
 		return _rooms.LastOrDefault();
 	}
-	public void LeaderChenge(PlayerRef leaderPlayer)
+	public void LeaderChange(PlayerRef leaderPlayer)
 	{
+		Debug.LogWarning(leaderPlayer);
 		Room roomTemp = GetCurrentRoom(leaderPlayer);
 
 		roomTemp.ChengeLeader(leaderPlayer);
 	}
 
-	[ContextMenu("count")]
+	[ContextMenu("DebugRoomData")]
 	private void Test()
 	{
-		Room roomTemp = GetCurrentRoom(Runner.LocalPlayer);
-		if (roomTemp is not null)
+		foreach (Room room in _rooms)
 		{
-			Debug.LogWarning("・Leader:" + (roomTemp[Runner.LocalPlayer] == roomTemp.LeaderIndex));
+			Debug.LogWarning(
+				"SessionName:" + room.SessionName +
+				"\nLeader:" + room.JoinPlayer[room.LeaderIndex] +
+				"PlayerCount:" + room.JoinPlayer.Count);
 		}
 		Debug.LogWarning(_rooms.Count);
 	}
