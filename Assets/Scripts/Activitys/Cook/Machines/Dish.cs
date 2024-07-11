@@ -4,6 +4,7 @@ using UnityEngine;
 public interface IPutableOnDish
 {
     void PutCommodity(ISwitchableGrabbableActive switchable);
+    void CommodityReset();
 }
 public class NullPutableOnDish : IPutableOnDish
 {
@@ -11,6 +12,7 @@ public class NullPutableOnDish : IPutableOnDish
     {
 
     }
+    public void CommodityReset() { }
 }
 
 public class Dish : MonoBehaviour, IPutableOnDish
@@ -21,15 +23,14 @@ public class Dish : MonoBehaviour, IPutableOnDish
     bool canPut = true;
     public void PutCommodity(ISwitchableGrabbableActive switchable)
     {
+        if (this.switchable != null)
+        {
+            return;
+        }
         if (!canPut)
         {
             return;
         }
-        if(this.switchable != null)
-        {
-            return;
-        }
-
 
         this.switchable = switchable;
         switchable.Inactive();
@@ -42,12 +43,14 @@ public class Dish : MonoBehaviour, IPutableOnDish
 
     private void Update()
     {
-        if(switchable == null)
+
+        if (switchable == null)
         {
             return;
         }
 
         Vector3 vector3 = transform.rotation.eulerAngles;
+
         if (vector3.x > 70f && vector3.x < 290f)
         {
             switchable.Active();
@@ -56,8 +59,8 @@ public class Dish : MonoBehaviour, IPutableOnDish
             switchable.gameObject.transform.parent = null;
             switchable = null;
             canPut = false;
+            StartCoroutine(NotPutOn());
         }
-
         else if(vector3.z > 70f && vector3.z < 290f)
         {
             switchable.Active();
@@ -65,14 +68,21 @@ public class Dish : MonoBehaviour, IPutableOnDish
             switchable.gameObject.GetComponent<Rigidbody>().isKinematic = false;
             switchable.gameObject.transform.parent = null;
             switchable = null;
-            canPut = false;
-        }
-        else
-        {
-            canPut = true;
+            StartCoroutine(NotPutOn());
         }
     }
 
+    private IEnumerator NotPutOn()
+    {
+        canPut = false;
+        yield return new WaitForSeconds(1f);
+        canPut = true;
+    }
+
+    public void CommodityReset()
+    {
+        switchable = null;
+    }
 
 
     private void OnCollisionEnter(Collision collision)

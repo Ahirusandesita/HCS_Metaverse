@@ -9,7 +9,7 @@ public interface ICommodityModerator
 {
     void SetCommodityAsset(CommodityAsset commodityAsset);
 }
-public class Commodity : MonoBehaviour,ICommodityModerator,ISwitchableGrabbableActive
+public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbableActive
 {
     [SerializeField]
     private CommodityAsset commodityAsset;
@@ -20,11 +20,12 @@ public class Commodity : MonoBehaviour,ICommodityModerator,ISwitchableGrabbableA
     private List<MonoBehaviour> interactables = new List<MonoBehaviour>();
 
     private IPutableOnDish putableOnDish = new NullPutableOnDish();
-
+    private bool isOnDish;
+    public bool IsOnDish => isOnDish;
     private void Awake()
     {
         interactables.Add(this.GetComponent<Grabbable>());
-        foreach(MonoBehaviour item in this.gameObject.GetComponentsInChildren<DistanceHandGrabInteractable>())
+        foreach (MonoBehaviour item in this.gameObject.GetComponentsInChildren<DistanceHandGrabInteractable>())
         {
             interactables.Add(item);
         }
@@ -48,6 +49,7 @@ public class Commodity : MonoBehaviour,ICommodityModerator,ISwitchableGrabbableA
     }
     public void InjectPutableOnDish(IPutableOnDish putableOnDish)
     {
+        isOnDish = false;
         this.putableOnDish = putableOnDish;
     }
     void ICommodityModerator.SetCommodityAsset(CommodityAsset commodityAsset)
@@ -96,25 +98,46 @@ public class Commodity : MonoBehaviour,ICommodityModerator,ISwitchableGrabbableA
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.transform.root.TryGetComponent<Commodity>(out Commodity commodity))
+        if (collision.transform.root.transform.GetComponentInChildren<Commodity>())
         {
-            if(CommodityAsset.CommodityID > commodity.CommodityAsset.CommodityID)
+            Commodity collisionCommodity = collision.transform.root.transform.GetComponentInChildren<Commodity>();
+            if (CommodityAsset.CommodityID > collisionCommodity.CommodityAsset.CommodityID)
             {
-                Commodity mixCommodity = MixCommodity.Mix(new Commodity[] { this, commodity });
-                if(!(mixCommodity is null))
+                Commodity mixCommodity = MixCommodity.Mix(new Commodity[] { this, collisionCommodity });
+                if (!(mixCommodity is null))
                 {
-                    Instantiate(mixCommodity, this.transform.position, this.transform.rotation).PutOnDish(this.putableOnDish);
+                    if (collisionCommodity.IsOnDish)
+                    {
+                        this.putableOnDish = collisionCommodity.putableOnDish;
+                    }
+                    this.putableOnDish.CommodityReset();
+                    Commodity createCommodity = Instantiate(mixCommodity, this.transform.position, this.transform.rotation);
+                    createCommodity.PutOnDish(this.putableOnDish, isOnDish);
+                    createCommodity.GetComponent<Rigidbody>().isKinematic = false;
                 }
             }
-        }
 
-        if(collision.gameObject.TryGetComponent<SubmisionTable>(out SubmisionTable table))
+        }
+        //if(collision.transform.root.TryGetComponent<Commodity>(out Commodity commodity))
+        //{
+        //    if(CommodityAsset.CommodityID > commodity.CommodityAsset.CommodityID)
+        //    {
+        //        Commodity mixCommodity = MixCommodity.Mix(new Commodity[] { this, commodity });
+        //        if(!(mixCommodity is null))
+        //        {
+        //            Instantiate(mixCommodity, this.transform.position, this.transform.rotation).PutOnDish(this.putableOnDish);
+        //        }
+        //    }
+        //}
+
+        if (collision.gameObject.TryGetComponent<SubmisionTable>(out SubmisionTable table))
         {
             //table.Sub(this);
         }
 
-        if(collision.transform.root.gameObject.TryGetComponent<IPutableOnDish>(out IPutableOnDish putableOnDish))
+        if (collision.transform.root.gameObject.TryGetComponent<IPutableOnDish>(out IPutableOnDish putableOnDish))
         {
+            isOnDish = true;
             this.putableOnDish = putableOnDish;
             this.putableOnDish.PutCommodity(this);
         }
@@ -122,7 +145,7 @@ public class Commodity : MonoBehaviour,ICommodityModerator,ISwitchableGrabbableA
 
     public void Active()
     {
-        foreach(MonoBehaviour item in interactables)
+        foreach (MonoBehaviour item in interactables)
         {
             item.enabled = true;
         }
@@ -135,8 +158,9 @@ public class Commodity : MonoBehaviour,ICommodityModerator,ISwitchableGrabbableA
             item.enabled = false;
         }
     }
-    public void PutOnDish(IPutableOnDish putableOnDish)
+    public void PutOnDish(IPutableOnDish putableOnDish, bool isOnDish)
     {
+        this.isOnDish = isOnDish;
         this.putableOnDish = putableOnDish;
         this.putableOnDish.PutCommodity(this);
     }
