@@ -1445,7 +1445,7 @@ MonoBehaviour:
   groundCheckSphere: {fileID: 8930703359202321552}
   ceilingCheckSphere: {fileID: 367663579045707972}
   centerEyeTransform: {fileID: 6508186075653536544}
-  whiteVignetteManager: {fileID: 0}
+  whiteVignetteManager: {fileID: 1480405014683855303}
   moveTypeRP:
     value: 0
   warpPointer: {fileID: 4998152965892717665}
@@ -6251,6 +6251,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f44e49bbc8c0d1945a8aa6458389c214, type: 3}
+--- !u!114 &1480405014683855303 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6096886658328734150, guid: f44e49bbc8c0d1945a8aa6458389c214, type: 3}
+  m_PrefabInstance: {fileID: 4618171593501212673}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b01071b6fe8443a40aee12330efa9205, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &9058715242321814814 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4440565845830313247, guid: f44e49bbc8c0d1945a8aa6458389c214, type: 3}
