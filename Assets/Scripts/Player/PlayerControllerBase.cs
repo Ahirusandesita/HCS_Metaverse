@@ -261,7 +261,6 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
 
         // ƒvƒŒƒCƒ„[‚ğˆÚ“®‚³‚¹‚é
         characterController.Move(inputDirection.normalized * (speed * Time.deltaTime) + new Vector3(0.0f, verticalVelocity, 0.0f) * Time.deltaTime);
-        print("<color=red>Move</color>");
     }
 
     /// <summary>

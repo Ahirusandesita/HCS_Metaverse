@@ -11,6 +11,8 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 {
     [SerializeField]
     private Transform centerEyeTransform = default;
+    [SerializeField]
+    private WhiteVignetteManager whiteVignetteManager = default;
 
     // Inspector拡張のAtrribute多め。お気になさらず！
     [Header("移動方式")]
@@ -19,6 +21,7 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 
     [SerializeField, HideForMoveType(nameof(moveTypeEditor), VRMoveType.Natural)]
     private WarpPointer warpPointer = default;
+
 
     [SerializeField, HideInInspector]
     private VRMoveType moveTypeEditor = default;
@@ -39,6 +42,7 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
         base.Reset();
         centerEyeTransform ??= transform.Find("CenterEyeAnchor").transform;
         warpPointer ??= GetComponentInChildren<WarpPointer>();
+        whiteVignetteManager ??= GetComponentInChildren<WhiteVignetteManager>();
     }
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
@@ -77,7 +81,7 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
         Inputter.Player.Warp.Disable();
         Inputter.Player.Warp.performed += _ =>
         {
-            Warp();
+            Warp().Forget();
         };
 
 #if UNITY_EDITOR
@@ -156,19 +160,24 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
         }
     }
 
-    private void Warp()
+    private async UniTaskVoid Warp()
     {
         // ワープしたのでビューは非表示に
         warpPointer.SetActive(false);
 
+        // ワープ後に入力されていた方向を向く…ための計算
+        // VRの都合上代入は上手くいかないので、「向きたい角度」 - 「CenterEyeの角度」を求め、転回する
+        // 先に計算しないと、await中にいろいろ変わってしまう
+        float targetRotationY = Calculator.GetEulerBy2DVector(moveDir, Vector3.down).y;
+        float centerEyeRotationY = centerEyeTransform.rotation.y;
+
+        // ホワイトアウトの演出（画面が一度見えなくなるまで待機）
+        await whiteVignetteManager.WhiteOut();
+
         // 座標を更新（ワープ！）
         // そのままのWarpPosだと地面に埋まっちゃうので、足元に来るよう補正
         myTransform.position = warpPos + Vector3.up * (characterController.height / 2 + characterController.skinWidth);
-
-        // ワープ後に入力されていた方向を向く
-        // VRの都合上代入は上手くいかないので、「向きたい角度」 - 「CenterEyeの角度」を求め、転回する
-        float targetRotationY = Calculator.GetEulerBy2DVector(moveDir, Vector3.down).y;
-        float centerEyeRotationY = centerEyeTransform.rotation.y;
+        // 方向を更新
         myTransform.Rotate(Vector3.up * (targetRotationY - centerEyeRotationY));
     }
 

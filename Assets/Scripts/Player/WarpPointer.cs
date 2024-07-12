@@ -1,5 +1,5 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class WarpPointer : MonoBehaviour
 {
@@ -14,7 +14,7 @@ public class WarpPointer : MonoBehaviour
     [SerializeField] private float maxDistance = 30f;
 
     private Transform symbolTransform = default;
-    private Vector3 prevWarpPos = default;
+    private Vector3 prevWarpPos = Vector3.zero;
     private float movedDistance = 0f;
 
 
@@ -39,10 +39,8 @@ public class WarpPointer : MonoBehaviour
         lineRenderer.endWidth = 0.05f;
 
         warpSymbol.enabled = false;
-        //prevWarpPos = Vector3.zero;
-        //Inputter.Player.Move.started += _ => 
-        //print($"<color=red>{_.control.device is Gamepad}</color>");
     }
+
     /// <summary>
     /// É|ÉCÉìÉ^Å[Çï`âÊÇ∑ÇÈ
     /// <br>See <see href="https://qiita.com/kousaku-maron/items/106619d0c065be155bbb"/></br>
@@ -59,13 +57,8 @@ public class WarpPointer : MonoBehaviour
             return false;
         }
 
-        //movedDistance += Vector3.Distance(warpPos, prevWarpPos);
-        //if (movedDistance > 1f)
-        //{
-        //    movedDistance = 0f;
-        //    OVRInput.SetControllerVibration(0.1f, 0.1f, OVRInput.Controller.LTouch);
-        //}
-        
+        // Vibration
+        CheckVibration(warpPos);
 
         const float MIN_DIRECTION_Y = 0.025f;
 
@@ -215,6 +208,20 @@ public class WarpPointer : MonoBehaviour
 
             return false;
         }
+
+        // ìÆÇ©ÇµÇΩãóó£Ç…ÇÊÇ¡ÇƒêUìÆÇó^Ç¶ÇÈ
+        void CheckVibration(Vector3 warpPos)
+        {
+            const float DISTANCE_INTERVAL = 7.5f;
+
+            movedDistance += Vector3.Distance(warpPos, prevWarpPos);
+            prevWarpPos = warpPos;
+            if (movedDistance > DISTANCE_INTERVAL)
+            {
+                movedDistance = 0f;
+                OnMovedVibration().Forget();
+            }
+        }
     }
 
     public void SetActive(bool value)
@@ -237,5 +244,12 @@ public class WarpPointer : MonoBehaviour
         lineRenderer.startColor = neutralColor;
         lineRenderer.endColor = neutralColor;
         warpSymbol.enabled = false;
+    }
+
+    private async UniTaskVoid OnMovedVibration()
+    {
+        OVRInput.SetControllerVibration(0.1f, 0.15f, OVRInput.Controller.LTouch);
+        await UniTask.Delay(System.TimeSpan.FromSeconds(0.04));
+        OVRInput.SetControllerVibration(0f, 0f);
     }
 }
