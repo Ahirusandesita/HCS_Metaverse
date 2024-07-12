@@ -11,6 +11,9 @@ public class Stoppable : MonoBehaviour
     [SerializeField, Tooltip("IStoppingEvent‚ğ‚ÂGameObject")]
     private GameObject _stoppingEventObject = default;
 
+    [SerializeField, Tooltip("‰ŠúˆÊ’u@—£‚µ‚½‚ç‚±‚±‚É–ß‚é")]
+    private Transform _originTransform = default;
+
     private InteractorDetailEventIssuer _detailEventIssuer = default;
 
     private HandType _detailEventsHandType = default;
@@ -43,6 +46,14 @@ public class Stoppable : MonoBehaviour
             // 
             Destroy(_stopData);
         }
+
+        // 
+        this.transform.position = _originTransform.position;
+        this.transform.rotation = _originTransform.rotation;
+
+        // 
+        _visualObjectTransform.localPosition = default;
+        _visualObjectTransform.localRotation = Quaternion.Euler(0f, 90f, 0f);
     }
 
     private void Start()
