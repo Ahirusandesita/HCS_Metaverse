@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Oculus.Interaction;
 
 public class LockedCuttingObject : MonoBehaviour, IKnifeHitEvent
 {
@@ -27,6 +28,9 @@ public class LockedCuttingObject : MonoBehaviour, IKnifeHitEvent
 
     // 
     private Ingrodients _lockingIngrodients = default;
+
+    // 
+    private Puttable _lockedPuttable = default;
 
     private void Start()
     {
@@ -64,13 +68,37 @@ public class LockedCuttingObject : MonoBehaviour, IKnifeHitEvent
             if (hitCollider.transform.root.TryGetComponent<Ingrodients>(out var ingrodient))
             {
                 // 
+                if (ingrodient.GetComponent<Rigidbody>().isKinematic)
+                {
+                    // 
+                    continue;
+                }
+
+                // 
                 GameObject lockObject = ingrodient.gameObject;
 
                 // 
                 _lockingIngrodients = ingrodient;
 
                 // 
+                lockObject.GetComponent<Grabbable>().enabled = false;
+                lockObject.GetComponent<Rigidbody>().isKinematic = true;
 
+                // 
+                lockObject.transform.position = _machineTransform.position;
+                lockObject.transform.rotation = _machineTransform.rotation;
+
+                // 
+                lockObject.GetComponent<Grabbable>().enabled = true;
+
+                // 
+                _isLockedObject = true;
+
+                // 
+                _lockedPuttable = lockObject.AddComponent<Puttable>();
+
+                // 
+                _lockedPuttable.SetLockedCuttingObject(this);
             }
         }
     }
@@ -86,7 +114,15 @@ public class LockedCuttingObject : MonoBehaviour, IKnifeHitEvent
             if (isEndCut)
             {
                 _lockingIngrodients.ProcessingStart(ProcessingType.Cut, _machineTransform);
+                _isLockedObject = false;
+                Destroy(_lockedPuttable);
             }            
         }
+    }
+
+    public void CanselCutting()
+    {
+        // 
+        _isLockedObject = false;
     }
 }
