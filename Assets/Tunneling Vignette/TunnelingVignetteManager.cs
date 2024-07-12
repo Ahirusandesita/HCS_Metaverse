@@ -63,8 +63,8 @@ public class TunnelingVignetteManager : MonoBehaviour
         vignettePropertyBlock = new MaterialPropertyBlock();
         #endregion
 
-        // Shaderのプロパティを初期値として取得
-        initialApertureSize = meshRenderer.material.GetFloat(ShaderPropertyLookup.apertureSize);
+        // Shaderのプロパティに初期値を代入
+        initialApertureSize = 0.7f;
 
         // Shaderのプロパティに初期値を設定
         meshRenderer.GetPropertyBlock(vignettePropertyBlock);
