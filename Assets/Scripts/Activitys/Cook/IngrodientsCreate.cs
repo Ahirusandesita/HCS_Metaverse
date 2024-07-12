@@ -4,7 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-
+#if UNITY_EDITOR
 public class IngrodientsInitializeWindow : EditorWindow
 {
     private string assetName;
@@ -137,4 +137,4 @@ public class IngrodientsInitializeWindow : EditorWindow
     }
 
 }
-
+#endif

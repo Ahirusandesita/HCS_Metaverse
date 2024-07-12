@@ -1610,13 +1610,13 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1443104016154582, guid: da39b72aa18fa5e48b10d7ec95000d35, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1090330014}
-    - targetCorrespondingSourceObject: {fileID: 1443104016154582, guid: da39b72aa18fa5e48b10d7ec95000d35, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1090330013}
     - targetCorrespondingSourceObject: {fileID: 1443104016154582, guid: da39b72aa18fa5e48b10d7ec95000d35, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1090330018}
+    - targetCorrespondingSourceObject: {fileID: 1443104016154582, guid: da39b72aa18fa5e48b10d7ec95000d35, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1090330021}
   m_SourcePrefab: {fileID: 100100000, guid: da39b72aa18fa5e48b10d7ec95000d35, type: 3}
 --- !u!1 &1090330012 stripped
 GameObject:
@@ -1644,20 +1644,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.97558063, y: 0.38, z: 1.5991948}
   m_Center: {x: 0, y: -0.16, z: -0.0053672194}
---- !u!114 &1090330014
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1090330012}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24b53294159cbac4fb101009aa949a4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _stoperColliter: {fileID: 1090330013}
-  mode: 1
 --- !u!4 &1090330017 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4746999718155162, guid: da39b72aa18fa5e48b10d7ec95000d35, type: 3}
@@ -1672,11 +1658,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 1090330012}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16a31afce1919c649acaabc7be687e5b, type: 3}
+  m_Script: {fileID: 11500000, guid: f1133d8b5c9be10449d9c1f02ff6bf94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cuttingAreaCollider: {fileID: 39562594}
+  _cuttingAreaCollider: {fileID: 1090330013}
   _machineTransform: {fileID: 1090330017}
+  _objectLockPosition: {fileID: 1090330017}
+--- !u!114 &1090330021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090330012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24b53294159cbac4fb101009aa949a4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stoperColliter: {fileID: 1090330013}
+  mode: 1
 --- !u!4 &1102525984 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2090552821228689597, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
@@ -1812,7 +1813,7 @@ GameObject:
   - component: {fileID: 1128976337}
   - component: {fileID: 1128976336}
   - component: {fileID: 1128976339}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HumburgerSpawner (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1905,6 +1906,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &1140685636
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1140685637}
+  m_Layer: 7
+  m_Name: Initial
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1140685637
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140685636}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -1.556, y: 2.014, z: -0.884}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1169974794 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2792310078166515419, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
@@ -2110,7 +2142,7 @@ GameObject:
   - component: {fileID: 1287199861}
   - component: {fileID: 1287199860}
   - component: {fileID: 1287199863}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HumburgerSpawner (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3604,10 +3636,26 @@ PrefabInstance:
       propertyPath: m_Center.z
       value: 0.29491296
       objectReference: {fileID: 0}
+    - target: {fileID: 3380222794459021544, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380222794459021544, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
+      propertyPath: _handGrabPoses.Array.data[0]
+      value: 
+      objectReference: {fileID: 330851313}
     - target: {fileID: 6188338828640202560, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
       propertyPath: _filter
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6541987452116153666, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6541987452116153666, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
+      propertyPath: _handGrabPoses.Array.data[0]
+      value: 
+      objectReference: {fileID: 805107773}
     - target: {fileID: 6713719002166265824, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -3620,6 +3668,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8239747737460865303, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8606863612184258515, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
       propertyPath: _handGrabPoses.Array.data[0]
       value: 
@@ -3629,8 +3681,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 3380222794459021544, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
-    - {fileID: 6541987452116153666, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
     - {fileID: 222384469387770434, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
     - {fileID: 1923648779918393139, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
     m_RemovedGameObjects:
@@ -3674,6 +3724,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _visualObjectTransform: {fileID: 67904352}
   _stoppingEventObject: {fileID: 1090330012}
+  _originTransform: {fileID: 1140685637}
   _stopData: {fileID: 0}
 --- !u!65 &1729922219
 BoxCollider:
@@ -3836,7 +3887,7 @@ GameObject:
   - component: {fileID: 1757949853}
   - component: {fileID: 1757949852}
   - component: {fileID: 1757949855}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HumburgerSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3946,7 +3997,7 @@ GameObject:
   - component: {fileID: 1803727873}
   - component: {fileID: 1803727872}
   - component: {fileID: 1803727875}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HumburgerSpawner (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4271,6 +4322,10 @@ PrefabInstance:
       propertyPath: _materialEditor
       value: 
       objectReference: {fileID: 1187225200}
+    - target: {fileID: 6856146247086294139, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 192
+      objectReference: {fileID: 0}
     - target: {fileID: 9043037264926603685, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4896,6 +4951,7 @@ SceneRoots:
   - {fileID: 8674672890707889987}
   - {fileID: 1121295338}
   - {fileID: 1729922210}
+  - {fileID: 1140685637}
   - {fileID: 1501194724}
   - {fileID: 257471537}
   - {fileID: 2002422766}

@@ -33,6 +33,8 @@ public abstract class Machine : MonoBehaviour,IProcessable
         {
             if (ingrodientsDetailInformation.ProcessingType == ProcessingType)
             {
+                ISwitchableGrabbableActive switchableGrabbableActive = ingrodients;
+                switchableGrabbableActive.Inactive();
                 IngrodientsDetailInformation information = new IngrodientsDetailInformation(ingrodientsDetailInformation.ProcessingType, ingrodientsDetailInformation.TimeItTakes, ingrodientsDetailInformation.Commodity);
                 StartProcessed(information);
             }

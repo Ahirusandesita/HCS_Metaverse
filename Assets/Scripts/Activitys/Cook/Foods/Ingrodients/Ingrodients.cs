@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
-
+using Oculus.Interaction;
+using Oculus.Interaction.HandGrab;
 
 public interface IIngrodientsModerator
 {
@@ -11,13 +12,13 @@ public interface IIngrodientsModerator
 /// <summary>
 /// ãÔçﬁ
 /// </summary>
-public class Ingrodients : MonoBehaviour,IIngrodientsModerator
+public class Ingrodients : MonoBehaviour,IIngrodientsModerator, ISwitchableGrabbableActive
 {
     [SerializeField]
     private IngrodientsAsset ingrodientsAsset;
     private List<IngrodientsDetailInformation> ingrodientsDetailInformations = new List<IngrodientsDetailInformation>();
     public IngrodientsAsset IngrodientsAsset => ingrodientsAsset;
-
+    private List<MonoBehaviour> interactables = new List<MonoBehaviour>();
     public struct TimeItTakesData
     {
         public readonly float MaxTimeItTakes;
@@ -39,6 +40,8 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator
         }
     }
 
+    GameObject ISwitchableGrabbableActive.gameObject => throw new NotImplementedException();
+
     private CommodityFactory commodityFactory;
 
     private void Awake()
@@ -48,6 +51,24 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator
         foreach (IngrodientsDetailInformation ingrodientsDetailInformation in ingrodientsAsset.IngrodientsDetailInformations)
         {
             ingrodientsDetailInformations.Add(new IngrodientsDetailInformation(ingrodientsDetailInformation.ProcessingType,ingrodientsDetailInformation.TimeItTakes,ingrodientsDetailInformation.Commodity));
+        }
+
+        interactables.Add(this.GetComponent<Grabbable>());
+        foreach (MonoBehaviour item in this.gameObject.GetComponentsInChildren<DistanceHandGrabInteractable>())
+        {
+            interactables.Add(item);
+        }
+        foreach (MonoBehaviour item in this.gameObject.GetComponentsInChildren<DistanceGrabInteractable>())
+        {
+            interactables.Add(item);
+        }
+        foreach (MonoBehaviour item in this.gameObject.GetComponentsInChildren<HandGrabInteractable>())
+        {
+            interactables.Add(item);
+        }
+        foreach (MonoBehaviour item in this.gameObject.GetComponentsInChildren<GrabInteractable>())
+        {
+            interactables.Add(item);
         }
     }
 
@@ -82,5 +103,19 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator
         return commodity;
     }
 
+    void ISwitchableGrabbableActive.Active()
+    {
+        foreach (MonoBehaviour item in interactables)
+        {
+            item.enabled = true;
+        }
+    }
 
+    void ISwitchableGrabbableActive.Inactive()
+    {
+        foreach (MonoBehaviour item in interactables)
+        {
+            item.enabled = false;
+        }
+    }
 }
