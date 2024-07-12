@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-
+#if UNITY_EDITOR
 public class CommodityInitializeWindow : EditorWindow
 {
     private string fileName;
@@ -218,3 +218,4 @@ public class CommodityInitializeWindow : EditorWindow
     }
 
 }
+#endif
