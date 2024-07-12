@@ -29,6 +29,7 @@ public enum ItemGenre
     Food,
 }
 
+#if UNITY_EDITOR
 namespace UnityEditor
 {
     [CustomEditor(typeof(ItemAsset))]
@@ -52,3 +53,4 @@ namespace UnityEditor
         }
     }
 }
+#endif

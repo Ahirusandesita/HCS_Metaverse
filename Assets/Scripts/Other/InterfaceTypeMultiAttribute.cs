@@ -1,6 +1,6 @@
-using UnityEngine;
 using System;
 using UnityEditor;
+using UnityEngine;
 
 /// <summary>
 /// 複数アトリビュートの実装をするために定義したInterfaceTypeAttribute。中身は外部ライブラリの<see cref="InterfaceTypeAttribute"/>および
@@ -19,6 +19,7 @@ public class InterfaceTypeMultiAttribute : MultiPropertyAttribute
 		this.type = type;
 	}
 
+#if UNITY_EDITOR
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         if (property.propertyType != SerializedPropertyType.ObjectReference)
@@ -76,6 +77,7 @@ public class InterfaceTypeMultiAttribute : MultiPropertyAttribute
         property.serializedObject.ApplyModifiedProperties();
 
     }
+#endif
 
     public class MonoInterfaceMulti : MonoBehaviour { }
 }
