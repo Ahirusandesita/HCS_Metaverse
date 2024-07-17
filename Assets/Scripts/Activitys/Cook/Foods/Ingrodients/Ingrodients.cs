@@ -98,9 +98,9 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator, ISwitchableGrabb
     public Commodity ProcessingStart(ProcessingType processingType,Transform machineTransform)
     {
         Commodity commodity = commodityFactory.Generate(this, processingType);
-        Instantiate(commodity, this.transform.position, this.transform.rotation)/*.transform.parent = machineTransform*/;
+        Commodity instanceCommodity = Instantiate(commodity, this.transform.position, this.transform.rotation)/*.transform.parent = machineTransform*/;
         Destroy(this.gameObject);
-        return commodity;
+        return instanceCommodity;
     }
 
     void ISwitchableGrabbableActive.Active()
