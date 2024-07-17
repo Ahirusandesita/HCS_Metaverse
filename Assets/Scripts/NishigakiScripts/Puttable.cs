@@ -26,6 +26,11 @@ public class Puttable : MonoBehaviour
 
     public void Select()
     {
+        DestroyThis();
+    }
+
+    public void DestroyThis()
+    {
         Destroy(this);
     }
 
