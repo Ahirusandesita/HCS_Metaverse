@@ -105,7 +105,8 @@ public class LockedCuttingObject : MonoBehaviour, IKnifeHitEvent
 
     public void KnifeHitEvent()
     {
-        if (_isLockedObject)
+        // 
+        if (_isLockedObject && _lockingIngrodients is not null)
         {
             // 
             bool isEndCut = _lockingIngrodients.SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType.Cut, 1);
@@ -113,9 +114,29 @@ public class LockedCuttingObject : MonoBehaviour, IKnifeHitEvent
             // 
             if (isEndCut)
             {
-                _lockingIngrodients.ProcessingStart(ProcessingType.Cut, _machineTransform);
-                _isLockedObject = false;
-                Destroy(_lockedPuttable);
+                // 
+                Commodity processedCommodity = default;
+
+                // 
+                processedCommodity = _lockingIngrodients.ProcessingStart(ProcessingType.Cut, _machineTransform);
+
+                // 
+                _lockedPuttable.DestroyThis();
+
+                // 
+                if (processedCommodity.gameObject.TryGetComponent<Ingrodients>(out Ingrodients ingrodients))
+                {
+                    // 
+                    _lockingIngrodients = ingrodients;
+                }
+                else
+                {
+                    // 
+                    _lockingIngrodients = null;
+                }
+
+                // 
+                _lockedPuttable = processedCommodity.gameObject.AddComponent<Puttable>();
             }            
         }
     }
