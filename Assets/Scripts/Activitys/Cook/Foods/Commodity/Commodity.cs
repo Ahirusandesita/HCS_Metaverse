@@ -9,6 +9,12 @@ public interface ICommodityModerator
 {
     void SetCommodityAsset(CommodityAsset commodityAsset);
 }
+public interface IPutable
+{
+    void Put();
+}
+
+
 public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbableActive
 {
     [SerializeField]
