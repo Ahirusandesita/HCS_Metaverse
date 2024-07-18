@@ -26,6 +26,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	[SerializeField]
 	private NetworkObject _testNetworkObject;
 
+
 	/// <summary>
 	/// このクラスはランナーとの紐づけはしないためラップする
 	/// </summary>
@@ -36,26 +37,32 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		_networkRunner = Instantiate(_networkRunnerPrefab);
 		_networkRunner.AddCallbacks(this);
 
-		await Connect("Room");	
+		await Connect("Room");
 	}
 
 	[ContextMenu("ActivityStart")]
-	public void ActivityStart()
+	private void Acaca()
+	{
+		ActivityStart();
+	}
+	public async void ActivityStart()
 	{
 		//アクティビティスタート
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(_networkRunner.LocalPlayer);
-		if(currentRoom is null) 
+		if (currentRoom is null)
 		{
 			Debug.LogWarning("どのルームにも入っていません");
-			return; 
+			return;
 		}
 		string sessionName = currentRoom.SessionName;
 		foreach (PlayerRef playerRef in currentRoom.JoinPlayer)
 		{
-			if(playerRef == _networkRunner.LocalPlayer) { continue; }
+			if (playerRef == _networkRunner.LocalPlayer) { continue; }
 			Debug.LogWarning(playerRef);
 			RPCManager.Instance.Rpc_JoinSession(sessionName, playerRef);
 		}
+		await UniTask.WaitUntil(() => currentRoom.JoinPlayer.Count <= 1);
+		Debug.LogWarning("dadad");
 		JoinOrCreateSession(sessionName);
 	}
 
@@ -80,6 +87,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		Debug.LogWarning("Request");
 		RPCManager.Instance.Rpc_RequestRoomData(_networkRunner.LocalPlayer);
 	}
+
 
 	/// <summary>
 	/// 状態変更権限を自分のにする
@@ -150,7 +158,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 
 	public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
 	{
-		
+
 	}
 
 	public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)

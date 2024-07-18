@@ -4,9 +4,7 @@ using UnityEngine;
 using Fusion;
 
 public class PlayerJoin : SimulationBehaviour, IPlayerJoined
-{
-	private ActivityZone _activityZone = default;
-	
+{	
 	[SerializeField]
 	private NetworkPrefabRef _roomCounterPrefab;
 	[SerializeField]
@@ -21,7 +19,6 @@ public class PlayerJoin : SimulationBehaviour, IPlayerJoined
 			RPCManager.Instance.Rpc_Init(player);
 			return;
 		}
-		_activityZone = FindObjectOfType<ActivityZone>();
 
 		Transform masterTransform = masterServer.transform;
 		if(FindObjectOfType<RoomManager>() == null)

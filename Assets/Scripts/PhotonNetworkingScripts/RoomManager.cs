@@ -7,9 +7,11 @@ public class Room
 	private bool _isEndJoining = default;
 	private int _leaderIndex = default;
 	private int _number = default;
+	private int _withLeaderSessionCount = default;
 	private readonly string _sessionName = default;
 	private WorldType _worldType = default;
 	private List<PlayerRef> _joinedPlayer = new();
+
 
 	public int this[PlayerRef playerRef] { get => _joinedPlayer.IndexOf(playerRef); }
 	public int LeaderIndex { get => _leaderIndex; }
@@ -31,6 +33,7 @@ public class Room
 	public void Join(PlayerRef playerRef)
 	{
 		_joinedPlayer.Add(playerRef);
+		
 	}
 
 	/// <summary>
@@ -97,7 +100,6 @@ public class RoomManager : NetworkBehaviour
 
 	public override void Spawned()
 	{
-		Debug.LogError("Spawned:RoomManager");
 		_instance = this;
 		_roomCounter = new int[System.Enum.GetValues(typeof(WorldType)).Length];
 

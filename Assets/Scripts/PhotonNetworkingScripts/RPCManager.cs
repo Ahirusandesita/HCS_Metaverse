@@ -19,7 +19,6 @@ public class RPCManager : NetworkBehaviour
 
 	public override void Spawned()
 	{
-		Debug.LogError("Spawned:RPCManager");
 		_instance = this;
 	}
 
@@ -31,7 +30,6 @@ public class RPCManager : NetworkBehaviour
 	[Rpc(RpcSources.All, RpcTargets.All,InvokeLocal = false)]
 	public void Rpc_JoinSession(string sessionName, [RpcTarget] PlayerRef rpcTarget = new())
 	{
-		Debug.LogWarning("RPC_SessionName:" + sessionName);
 		//é¿çs
 		SessionNameChangedHandler?.Invoke(sessionName);
 	}
@@ -62,7 +60,6 @@ public class RPCManager : NetworkBehaviour
 	[Rpc(RpcSources.All, RpcTargets.All)]
 	public void Rpc_RequestRoomData(PlayerRef requestPlayer)
 	{
-		Debug.LogWarning("Rpc_RequestRoomData");
 		Room roomTemp = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
 		if (roomTemp is null) { return; }
 		bool isLeader = roomTemp.LeaderIndex == roomTemp[Runner.LocalPlayer];
@@ -73,7 +70,6 @@ public class RPCManager : NetworkBehaviour
 	private void Rpc_SendRoomData([RpcTarget] PlayerRef rpcTarget
 		, WorldType worldType, PlayerRef playerRef, bool isLeader, int roomNumber = -1)
 	{
-		Debug.LogWarning("Rpc_SendRoomData");
 		RoomManager.Instance.JoinOrCreate(worldType, playerRef, roomNumber);
 		if (isLeader)
 		{
@@ -100,7 +96,6 @@ public class RPCManager : NetworkBehaviour
 	[Rpc(RpcSources.All, RpcTargets.All)]
 	public void Rpc_Init([RpcTarget] PlayerRef rpcTarget)
 	{
-		Debug.LogWarning("Rpc_Init" + rpcTarget);
 		localRemoteReparation.RemoteViewCreate(Runner, Runner.LocalPlayer);
 		_instance.Rpc_RequestRoomData(Runner.LocalPlayer);
 	}
