@@ -165,7 +165,7 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
         // ワープしたのでビューは非表示に
         warpPointer.SetActive(false);
 
-        // ワープ後に入力されていた方向を向く…ための計算
+        // ワープ後に入力されていた方向を向くための計算
         // VRの都合上代入は上手くいかないので、「向きたい角度」 - 「CenterEyeの角度」を求め、転回する
         // 先に計算しないと、await中にいろいろ変わってしまう
         float targetRotationY = Calculator.GetEulerBy2DVector(moveDir, Vector3.down).y;
@@ -176,7 +176,9 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 
         // 座標を更新（ワープ！）
         // そのままのWarpPosだと地面に埋まっちゃうので、足元に来るよう補正
-        myTransform.position = warpPos + Vector3.up * (characterController.height / 2 + characterController.skinWidth);
+        // 衝突判定を行ってほしいため、CharacterContorollerのMove関数を使う
+        Vector3 correctedWarpPos = warpPos + Vector3.up * (characterController.height / 2 + characterController.skinWidth);
+        characterController.Move(correctedWarpPos - myTransform.position);
         // 方向を更新
         myTransform.Rotate(Vector3.up * (targetRotationY - centerEyeRotationY));
     }

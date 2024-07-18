@@ -16,6 +16,7 @@ public class WarpPointer : MonoBehaviour
     private Transform symbolTransform = default;
     private Vector3 prevWarpPos = Vector3.zero;
     private float movedDistance = 0f;
+    private readonly Collider[] colliders = new Collider[4];
 
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
@@ -86,9 +87,9 @@ public class WarpPointer : MonoBehaviour
 
         // ベジェ曲線の3つの基準点を設定
         // p0: 始点, p1: 中間点, p2: 目標点
-        var p0 = origin;
-        var p1 = origin + direction * distance / 2;
-        var p2 = origin + direction * distance;
+        Vector3 p0 = origin;
+        Vector3 p1 = origin + direction * distance / 2;
+        Vector3 p2 = origin + direction * distance;
         p2.y = p0.y - dropHeight;
 
         // 目標点までの距離に応じてアンカーポイントを増やす
@@ -107,9 +108,9 @@ public class WarpPointer : MonoBehaviour
             // float値が欲しいためすべてキャスト。冗長ではない
             float t = (float)i / (float)(n - 1);
             // p012間を滑らかに移動する2点と、その2点間を移動する1点を求める
-            var b01 = Vector3.Lerp(p0, p1, t);
-            var b12 = Vector3.Lerp(p1, p2, t);
-            var b012 = Vector3.Lerp(b01, b12, t);
+            Vector3 b01 = Vector3.Lerp(p0, p1, t);
+            Vector3 b12 = Vector3.Lerp(p1, p2, t);
+            Vector3 b012 = Vector3.Lerp(b01, b12, t);
 
             // 途中に障害物がないか判定
             if (Physics.Linecast(prevb012, b012, out RaycastHit hit, layerMask))
@@ -147,7 +148,7 @@ public class WarpPointer : MonoBehaviour
 
             prevb012 = b012;
         }
-        
+
         // Mathf.Infinityだとパフォーマンスよろしくないので、疑似Infinityの意。
         const float PSEUDO_INFINITY = 10f;
 
@@ -181,9 +182,9 @@ public class WarpPointer : MonoBehaviour
 
 
         // 与えられた情報から、ワープ可能かどうか判定する
-        bool CheckWarpable(Vector3 normal, ref Vector3 point)
+        bool CheckWarpable(Vector3 normal, ref Vector3 warpPos)
         {
-            var angle = Vector3.Angle(Vector3.up, normal);
+            float angle = Vector3.Angle(Vector3.up, normal);
 
             // ワープ可能な角度以内であれば、true
             // CharacterControllerの値を規定値とする
@@ -197,12 +198,12 @@ public class WarpPointer : MonoBehaviour
 
             // tmpPoint => point（壁）と同義。再度飛ばしたRayが壁に当たらないよう法線方向に少しずらしている
             // distance => ある程度の高さ。characterControllerの高さを参考に適当な値を設定
-            var tmpPoint = point + normal * 0.5f;
+            Vector3 tmpPoint = warpPos + normal * characterController.radius;
             float distance = characterController.height;
 
             if (Physics.Raycast(tmpPoint, Vector3.down, out RaycastHit hit, distance, layerMask))
             {
-                point = hit.point;
+                warpPos = hit.point;
                 return true;
             }
 
