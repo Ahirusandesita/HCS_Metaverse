@@ -6,6 +6,6 @@ public class Mixer : MonoBehaviour
 {
     public void Mix(Commodity left,Commodity right)
     {
-        
+           
     }
 }
