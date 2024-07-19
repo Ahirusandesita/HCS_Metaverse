@@ -678,6 +678,7 @@ GameObject:
   - component: {fileID: 6478206286126509479}
   - component: {fileID: -1305418259555924950}
   - component: {fileID: 5645420130332732306}
+  - component: {fileID: 4328336496274317158}
   m_Layer: 7
   m_Name: Meat
   m_TagString: Untagged
@@ -806,6 +807,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ingrodients: {fileID: 694231939021845930}
   processDegreeOfProgressView: {fileID: 8770026329922108084}
+--- !u!114 &4328336496274317158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8838167042068629020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1676082f09d57134fb7c3c978b371b71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8847524376906037000
 GameObject:
   m_ObjectHideFlags: 0

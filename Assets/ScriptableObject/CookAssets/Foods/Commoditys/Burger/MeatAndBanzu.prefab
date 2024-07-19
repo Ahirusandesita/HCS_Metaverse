@@ -303,6 +303,7 @@ GameObject:
   - component: {fileID: 5854463742786969573}
   - component: {fileID: 2511012605141952510}
   - component: {fileID: 1141461397896251584}
+  - component: {fileID: -551502863899629050}
   m_Layer: 7
   m_Name: MeatAndBanzu
   m_TagString: Untagged
@@ -391,6 +392,18 @@ MonoBehaviour:
   _rigidbody: {fileID: 2511012605141952510}
   _kinematicWhileSelected: 1
   _throwWhenUnselected: 1
+--- !u!114 &-551502863899629050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2724284899508978560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1676082f09d57134fb7c3c978b371b71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3235710923864443451
 GameObject:
   m_ObjectHideFlags: 0

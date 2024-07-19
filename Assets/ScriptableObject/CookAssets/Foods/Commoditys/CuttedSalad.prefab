@@ -548,6 +548,7 @@ GameObject:
   - component: {fileID: 150610673286196248}
   - component: {fileID: 7533545359203102389}
   - component: {fileID: 8670190172222789121}
+  - component: {fileID: 9089123435767219556}
   m_Layer: 7
   m_Name: CuttedSalad
   m_TagString: Untagged
@@ -635,6 +636,18 @@ MonoBehaviour:
   _rigidbody: {fileID: 7533545359203102389}
   _kinematicWhileSelected: 1
   _throwWhenUnselected: 1
+--- !u!114 &9089123435767219556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6232795639646853607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1676082f09d57134fb7c3c978b371b71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7859801155355870210
 GameObject:
   m_ObjectHideFlags: 0
