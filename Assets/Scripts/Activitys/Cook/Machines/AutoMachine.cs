@@ -40,7 +40,7 @@ public class AutoMachine : Machine
     public override void StartProcessed(IngrodientsDetailInformation ingrodientsDetailInformation)
     {
         //timeItTakes = ingrodientsDetailInformation.TimeItTakes;
-
+        ingrodients.transform.parent = ingrodientTransform;
         processingAction += () =>
         {
             if (!canProcessing)
@@ -50,7 +50,15 @@ public class AutoMachine : Machine
 
             if (ingrodients.SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType, Time.deltaTime))
             {
-                ingrodients.ProcessingStart(ProcessingType, this.transform);
+                Commodity commodity = ingrodients.ProcessingStart(ProcessingType, this.transform);
+                commodity.transform.parent = ingrodientTransform;
+                commodity.OnPointable += (eventArgs) =>
+                {
+                    if (eventArgs.GrabType == GrabType.Grab)
+                    {
+                        commodity.transform.parent = null;
+                    }
+                };
                 processingAction = null;
                 Debug.Log("â¡çHäÆóπ");
             }

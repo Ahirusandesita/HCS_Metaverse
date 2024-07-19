@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Oculus.Interaction;
 using Oculus.Interaction.HandGrab;
+using System;
 
 public interface ICommodityModerator
 {
@@ -13,8 +14,20 @@ public interface IPutable
 {
     void Put();
 }
-
-
+public enum GrabType
+{
+    Grab,
+    UnGrab
+}
+public class GrabEventArgs : System.EventArgs
+{
+    public readonly GrabType GrabType;
+    public GrabEventArgs(GrabType grabType)
+    {
+        this.GrabType = grabType;
+    }
+}
+public delegate void PointableHandler(GrabEventArgs grabEventArgs);
 public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbableActive, IInject<ISwitchableGrabbableActive>
 {
     [SerializeField]
@@ -25,6 +38,16 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
     private bool isOnDish;
     public bool IsOnDish => isOnDish;
     private ISwitchableGrabbableActive switchableGrabbableActive;
+
+    private PointableUnityEventWrapper pointableUnityEventWrapper;
+    public event PointableHandler OnPointable;
+
+    private void Awake()
+    {
+        pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
+        pointableUnityEventWrapper.WhenSelect.AddListener((data) => OnPointable?.Invoke(new GrabEventArgs(GrabType.Grab)));
+        pointableUnityEventWrapper.WhenUnselect.AddListener((data) => OnPointable?.Invoke(new GrabEventArgs(GrabType.UnGrab)));
+    }
 
     public void InjectPutableOnDish(IPutableOnDish putableOnDish)
     {

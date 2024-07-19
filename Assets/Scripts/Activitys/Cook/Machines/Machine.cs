@@ -19,7 +19,7 @@ public abstract class Machine : MonoBehaviour,IProcessable
     public ProcessingType ProcessingType => processingType;
 
     [SerializeField]
-    private Transform ingrodientTransform;
+    protected Transform ingrodientTransform;
 
     protected Ingrodients ingrodients;
     protected float timeItTakes;
