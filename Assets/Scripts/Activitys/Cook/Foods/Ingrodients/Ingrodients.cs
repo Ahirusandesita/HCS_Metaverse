@@ -12,13 +12,13 @@ public interface IIngrodientsModerator
 /// <summary>
 /// ãÔçﬁ
 /// </summary>
-public class Ingrodients : MonoBehaviour,IIngrodientsModerator, ISwitchableGrabbableActive
+public class Ingrodients : MonoBehaviour,IIngrodientsModerator, ISwitchableGrabbableActive,IInject<ISwitchableGrabbableActive>
 {
     [SerializeField]
     private IngrodientsAsset ingrodientsAsset;
     private List<IngrodientsDetailInformation> ingrodientsDetailInformations = new List<IngrodientsDetailInformation>();
     public IngrodientsAsset IngrodientsAsset => ingrodientsAsset;
-    private List<MonoBehaviour> interactables = new List<MonoBehaviour>();
+    private ISwitchableGrabbableActive switchableGrabbableActive;
     public struct TimeItTakesData
     {
         public readonly float MaxTimeItTakes;
@@ -51,24 +51,6 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator, ISwitchableGrabb
         foreach (IngrodientsDetailInformation ingrodientsDetailInformation in ingrodientsAsset.IngrodientsDetailInformations)
         {
             ingrodientsDetailInformations.Add(new IngrodientsDetailInformation(ingrodientsDetailInformation.ProcessingType,ingrodientsDetailInformation.TimeItTakes,ingrodientsDetailInformation.Commodity));
-        }
-
-        interactables.Add(this.GetComponent<Grabbable>());
-        foreach (MonoBehaviour item in this.gameObject.GetComponentsInChildren<DistanceHandGrabInteractable>())
-        {
-            interactables.Add(item);
-        }
-        foreach (MonoBehaviour item in this.gameObject.GetComponentsInChildren<DistanceGrabInteractable>())
-        {
-            interactables.Add(item);
-        }
-        foreach (MonoBehaviour item in this.gameObject.GetComponentsInChildren<HandGrabInteractable>())
-        {
-            interactables.Add(item);
-        }
-        foreach (MonoBehaviour item in this.gameObject.GetComponentsInChildren<GrabInteractable>())
-        {
-            interactables.Add(item);
         }
     }
 
@@ -105,17 +87,16 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator, ISwitchableGrabb
 
     void ISwitchableGrabbableActive.Active()
     {
-        foreach (MonoBehaviour item in interactables)
-        {
-            item.enabled = true;
-        }
+        switchableGrabbableActive.Active();
     }
 
     void ISwitchableGrabbableActive.Inactive()
     {
-        foreach (MonoBehaviour item in interactables)
-        {
-            item.enabled = false;
-        }
+        switchableGrabbableActive.Inactive();
+    }
+
+    void IInject<ISwitchableGrabbableActive>.Inject(ISwitchableGrabbableActive t)
+    {
+        this.switchableGrabbableActive = t;
     }
 }

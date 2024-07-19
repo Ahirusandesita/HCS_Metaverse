@@ -257,6 +257,7 @@ GameObject:
   - component: {fileID: -4561283694819496482}
   - component: {fileID: 2463982208498696377}
   - component: {fileID: 1706377649973329699}
+  - component: {fileID: -33548605984697096}
   m_Layer: 7
   m_Name: CattedTomato
   m_TagString: Untagged
@@ -344,6 +345,18 @@ MonoBehaviour:
   _rigidbody: {fileID: 2463982208498696377}
   _kinematicWhileSelected: 1
   _throwWhenUnselected: 1
+--- !u!114 &-33548605984697096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1533418474943626885}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1676082f09d57134fb7c3c978b371b71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1950323892247095200
 GameObject:
   m_ObjectHideFlags: 0

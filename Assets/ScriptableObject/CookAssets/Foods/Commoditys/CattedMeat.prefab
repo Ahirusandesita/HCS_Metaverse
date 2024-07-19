@@ -534,6 +534,7 @@ GameObject:
   - component: {fileID: 4523506480872104023}
   - component: {fileID: 8104917614159600775}
   - component: {fileID: 6177614806171759728}
+  - component: {fileID: 5988882822987087304}
   m_Layer: 7
   m_Name: CattedMeat
   m_TagString: Untagged
@@ -661,6 +662,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ingrodients: {fileID: 6254293847065142255}
   processDegreeOfProgressView: {fileID: 2055407035727525297}
+--- !u!114 &5988882822987087304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4904631694389322249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1676082f09d57134fb7c3c978b371b71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4917861960608166924
 GameObject:
   m_ObjectHideFlags: 0
