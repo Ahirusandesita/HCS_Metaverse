@@ -18,12 +18,15 @@ public class Stoppable : MonoBehaviour
 
     private HandType _detailEventsHandType = default;
 
+    [HideInInspector]
     public Transform GetVisualObjectTransform => _visualObjectTransform;
 
+    [HideInInspector]
     public HandType GetDetailHandType => _detailEventsHandType;
 
     private IKnifeHitEvent _iStoppingEvent = default;
 
+    [HideInInspector]
     // 
     public StopData _stopData = default;
 

@@ -24,6 +24,9 @@ public class LockedCuttingObject : MonoBehaviour, IKnifeHitEvent
     private Quaternion _hitBoxRotation = default;
 
     // 
+    private ISwitchableGrabbableActive _grabbableActiveSwicher = default;
+
+    // 
     private bool _isLockedObject = default;
 
     // 
@@ -81,15 +84,17 @@ public class LockedCuttingObject : MonoBehaviour, IKnifeHitEvent
                 _lockingIngrodients = ingrodient;
 
                 // 
-                lockObject.GetComponent<Grabbable>().enabled = false;
-                lockObject.GetComponent<Rigidbody>().isKinematic = true;
+                _grabbableActiveSwicher = lockObject.GetComponent<ISwitchableGrabbableActive>();
+
+                // 
+                _grabbableActiveSwicher.Inactive();
 
                 // 
                 lockObject.transform.position = _machineTransform.position;
                 lockObject.transform.rotation = _machineTransform.rotation;
 
                 // 
-                lockObject.GetComponent<Grabbable>().enabled = true;
+                _grabbableActiveSwicher.Active();
 
                 // 
                 _isLockedObject = true;
@@ -145,5 +150,10 @@ public class LockedCuttingObject : MonoBehaviour, IKnifeHitEvent
     {
         // 
         _isLockedObject = false;
+    }
+
+    public void Inject(ISwitchableGrabbableActive t)
+    {
+        _grabbableActiveSwicher = t;
     }
 }
