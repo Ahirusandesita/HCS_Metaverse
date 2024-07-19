@@ -2,38 +2,99 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Fusion;
+
+public static partial class ExtensionList
+{
+	public static int IndexOf(this List<Room.RoomPlayer> list, PlayerRef playerRef)
+	{
+		for (int i = 0; i < list.Count; i++)
+		{
+			if (list[i] != playerRef) { continue; }
+			return i;
+		}
+		return -1;
+	}
+}
+
 public class Room
 {
+	public class RoomPlayer
+	{
+		private string _sessionName;
+		private PlayerRef _playerData;
+		public RoomPlayer(PlayerRef playerData, string sessionName = "")
+		{
+			_sessionName = sessionName;
+			_playerData = playerData;
+		}
+		public string SessionName { get => _sessionName; set => _sessionName = value; }
+		public PlayerRef PlayerData { get => _playerData; set => _playerData = value; }
+
+		public static bool operator ==(RoomPlayer roomPlayer, RoomPlayer roomPlayer1)
+			=> roomPlayer._playerData == roomPlayer1._playerData;
+
+		public static bool operator !=(RoomPlayer roomPlayer, RoomPlayer roomPlayer1)
+			=> roomPlayer._playerData != roomPlayer1._playerData;
+
+		public static bool operator ==(RoomPlayer roomPlayer, PlayerRef playerData)
+			=> roomPlayer._playerData == playerData;
+		public static bool operator !=(RoomPlayer roomPlayer, PlayerRef playerData)
+			=> roomPlayer._playerData == playerData;
+		public override bool Equals(object obj)
+		{
+			if (obj is PlayerRef playerRef)
+			{
+				return _playerData == playerRef;
+			}
+			else if (obj is RoomPlayer roomPlayer)
+			{
+				return this == roomPlayer;
+			}
+			return false;
+		}
+		public override int GetHashCode() => base.GetHashCode();
+	}
 	private bool _isEndJoining = default;
 	private int _leaderIndex = default;
 	private int _number = default;
-	private int _withLeaderSessionCount = default;
-	private readonly string _sessionName = default;
+	private readonly string _nextSessionName = default;
 	private WorldType _worldType = default;
-	private List<PlayerRef> _joinedPlayer = new();
+	private List<RoomPlayer> _roomPlayers = new();
 
 
-	public int this[PlayerRef playerRef] { get => _joinedPlayer.IndexOf(playerRef); }
+	public int this[PlayerRef playerRef] { get => _roomPlayers.IndexOf(playerRef); }
 	public int LeaderIndex { get => _leaderIndex; }
-	public PlayerRef LeaderPlayer { get => _joinedPlayer[_leaderIndex]; }
+	public int WithLeaderSessionCount
+	{
+		get
+		{
+			int count = 0;
+			string leaderSessionName = _roomPlayers[_leaderIndex].SessionName;
+			for (int i = 0; i < _roomPlayers.Count; i++)
+			{
+				if(i == _leaderIndex) { continue; }
+				if(_roomPlayers[i].SessionName == leaderSessionName) { count++; }
+			}
+			return count;
+		}
+	}
 	public int Number { get => _number; }
 	public bool IsEndJoining { get => _isEndJoining; }
-	public string SessionName { get => _sessionName; }
+	public string NextSessionName { get => _nextSessionName; }
 	public WorldType WorldType { get => _worldType; }
-	public IReadOnlyList<PlayerRef> JoinPlayer { get => _joinedPlayer; }
+	public List<RoomPlayer> JoinPlayer { get => _roomPlayers; }
 
-	public Room(WorldType activityType, int roomNumber, string sessionName)
+	public Room(WorldType activityType, int roomNumber, string nextSessionName)
 	{
 		this._worldType = activityType;
 		this._number = roomNumber;
 		this._leaderIndex = 0;
-		this._sessionName = sessionName;
+		this._nextSessionName = nextSessionName;
 	}
 
-	public void Join(PlayerRef playerRef)
+	public void Join(PlayerRef playerRef, string sessionName)
 	{
-		_joinedPlayer.Add(playerRef);
-		
+		_roomPlayers.Add(new RoomPlayer(playerRef, sessionName));
 	}
 
 	/// <summary>
@@ -43,22 +104,23 @@ public class Room
 	/// <returns>リザルト</returns>
 	public RoomManager.LeftResult Left(PlayerRef playerRef)
 	{
-		int index = _joinedPlayer.IndexOf(playerRef);
+
+		int index = _roomPlayers.IndexOf(playerRef);
 		//参加していなかった場合
 		if (index < 0) { return RoomManager.LeftResult.Fail; }
-		RPCManager.Instance.Rpc_DestroyLeaderObject(_joinedPlayer[_leaderIndex]);
-		_joinedPlayer.RemoveAt(index);
+		RPCManager.Instance.Rpc_DestroyLeaderObject(_roomPlayers[_leaderIndex].PlayerData);
+		_roomPlayers.RemoveAt(index);
 
 		//部屋のメンバーがいない場合
-		if (_joinedPlayer.Count <= 0) { return RoomManager.LeftResult.Closable; }
+		if (_roomPlayers.Count <= 0) { return RoomManager.LeftResult.Closable; }
 
 		RoomManager.LeftResult result = RoomManager.LeftResult.Success;
 
 		//↓リーダーの場合
 		if (_leaderIndex == index)
 		{
-			int nextLeaderIndex = Random.Range(0, _joinedPlayer.Count);
-			RPCManager.Instance.Rpc_InstanceLeaderObject(_joinedPlayer[nextLeaderIndex]);
+			int nextLeaderIndex = Random.Range(0, _roomPlayers.Count);
+			RPCManager.Instance.Rpc_InstanceLeaderObject(_roomPlayers[nextLeaderIndex].PlayerData);
 			ChengeLeader(nextLeaderIndex);
 
 			result = RoomManager.LeftResult.LeaderChanged;
@@ -69,14 +131,20 @@ public class Room
 
 	public void ChengeLeader(PlayerRef nextLeaderPlayer)
 	{
-		_leaderIndex = _joinedPlayer.IndexOf(nextLeaderPlayer);
+		_leaderIndex = _roomPlayers.IndexOf(nextLeaderPlayer);
 	}
 	private void ChengeLeader(int nextLeaderIndex)
 	{
 		_leaderIndex = nextLeaderIndex;
 	}
+
+	public void ChengeSessionName(PlayerRef playerRef, string sessionName)
+	{
+		int index = _roomPlayers.IndexOf(playerRef);
+		_roomPlayers[index].SessionName = sessionName;
+	}
 }
-public class RoomManager : NetworkBehaviour
+public class RoomManager : MonoBehaviour
 {
 	public enum JoinOrCreateResult
 	{
@@ -98,11 +166,20 @@ public class RoomManager : NetworkBehaviour
 	private int[] _roomCounter = default;
 	public static RoomManager Instance { get => _instance; }
 
-	public override void Spawned()
+	private void Awake()
 	{
+		if(_instance == null)
+		{
+			_instance = this;
+			DontDestroyOnLoad(_instance);
+		}
+		else
+		{
+			Destroy(this.gameObject);
+			return;
+		}
 		_instance = this;
 		_roomCounter = new int[System.Enum.GetValues(typeof(WorldType)).Length];
-
 	}
 
 	public Room GetCurrentRoom(PlayerRef playerRef)
@@ -112,7 +189,8 @@ public class RoomManager : NetworkBehaviour
 			return null;
 		}
 
-		IEnumerable<Room> temp = _rooms.Where(room => room.JoinPlayer.Contains(playerRef));
+		IEnumerable<Room> temp =
+			_rooms.Where(room => room.JoinPlayer.Contains(new Room.RoomPlayer(playerRef)));
 		if (temp.Count() <= 0)
 		{
 			return null;
@@ -127,7 +205,7 @@ public class RoomManager : NetworkBehaviour
 	/// <param name="playerRef">入る人の情報</param>
 	/// <param name="roomNumber">入りたい部屋の番号　マイナスの場合は入れる部屋に入る</param>
 	/// <returns>JoinまたはCreateまたはFail</returns>
-	public JoinOrCreateResult JoinOrCreate(WorldType worldType, PlayerRef playerRef, int roomNumber = -1)
+	public JoinOrCreateResult JoinOrCreate(WorldType worldType, PlayerRef playerRef, string currentSessionName, int roomNumber = -1)
 	{
 		Room roomTemp = default;
 
@@ -149,7 +227,7 @@ public class RoomManager : NetworkBehaviour
 
 		if (roomTemp is null)
 		{
-			roomTemp = Create(worldType, roomNumber);
+			roomTemp = Create(worldType, roomNumber, currentSessionName);
 			RPCManager.Instance.Rpc_InstanceLeaderObject(playerRef);
 			result = JoinOrCreateResult.Create;
 		}
@@ -158,7 +236,7 @@ public class RoomManager : NetworkBehaviour
 			result = JoinOrCreateResult.Join;
 		}
 
-		roomTemp.Join(playerRef);
+		roomTemp.Join(playerRef, currentSessionName);
 		Debug.LogWarning("Join:" + worldType + "\nroomNum:" + roomNumber + "\nPlayer:" + playerRef);
 
 		return result;
@@ -185,13 +263,21 @@ public class RoomManager : NetworkBehaviour
 		}
 	}
 
-	private Room Create(WorldType activityType, int roomNumber)
+	private Room Create(WorldType activityType, int roomNumber, string leaderSessionName)
 	{
-		string sessionName = activityType + ":" + _roomCounter[(int)activityType];
-		_rooms.Add(new Room(activityType, roomNumber, sessionName));
+		string nextSessionName = activityType + ":" + _roomCounter[(int)activityType];
+		_rooms.Add(new Room(activityType, roomNumber, nextSessionName));
 		_roomCounter[(int)activityType]++; ;
 		return _rooms.LastOrDefault();
 	}
+
+	public void ChengeSessionName(PlayerRef playerRef, string currentSessionName)
+	{
+		Debug.LogError("CurrentSessionName:" + currentSessionName);
+		Room room = GetCurrentRoom(playerRef);
+		room.ChengeSessionName(playerRef, currentSessionName);
+	}
+
 	public void LeaderChange(PlayerRef leaderPlayer)
 	{
 		Debug.LogWarning(leaderPlayer);
@@ -206,9 +292,14 @@ public class RoomManager : NetworkBehaviour
 		foreach (Room room in _rooms)
 		{
 			Debug.LogWarning(
-				"SessionName:" + room.SessionName +
+				"SessionName:" + room.NextSessionName +
+				"LeaderWithCount:" + room.WithLeaderSessionCount +
 				"\nLeader:" + room.JoinPlayer[room.LeaderIndex] +
 				"PlayerCount:" + room.JoinPlayer.Count);
+			foreach(Room.RoomPlayer roomPlayer in room.JoinPlayer)
+			{
+				Debug.LogError("SessionName:" + roomPlayer.SessionName);
+			}
 		}
 		Debug.LogWarning(_rooms.Count);
 	}

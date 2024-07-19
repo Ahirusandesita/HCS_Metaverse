@@ -54,15 +54,14 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 			Debug.LogWarning("‚Ç‚Ìƒ‹[ƒ€‚É‚à“ü‚Á‚Ä‚¢‚Ü‚¹‚ñ");
 			return;
 		}
-		string sessionName = currentRoom.SessionName;
-		foreach (PlayerRef playerRef in currentRoom.JoinPlayer)
+		string sessionName = currentRoom.NextSessionName;
+		foreach (Room.RoomPlayer roomPlayer in currentRoom.JoinPlayer)
 		{
-			if (playerRef == _networkRunner.LocalPlayer) { continue; }
-			Debug.LogWarning(playerRef);
-			RPCManager.Instance.Rpc_JoinSession(sessionName, playerRef);
+			if (roomPlayer == _networkRunner.LocalPlayer) { continue; }
+			Debug.LogWarning(roomPlayer.PlayerData);
+			RPCManager.Instance.Rpc_JoinSession(sessionName, roomPlayer.PlayerData);
 		}
-		await UniTask.WaitUntil(() => currentRoom.JoinPlayer.Count <= 1);
-		Debug.LogWarning("dadad");
+		await UniTask.WaitUntil(() => currentRoom.WithLeaderSessionCount <= 1);
 		JoinOrCreateSession(sessionName);
 	}
 

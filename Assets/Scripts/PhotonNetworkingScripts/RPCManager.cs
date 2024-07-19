@@ -19,7 +19,19 @@ public class RPCManager : NetworkBehaviour
 
 	public override void Spawned()
 	{
+		Debug.LogWarning("Spawned");
+		MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
+		SessionNameChangedHandler += masterServer.JoinOrCreateSession;
 		_instance = this;
+	}
+
+	[ContextMenu("test")]
+	private void test()
+	{
+		
+		gameObject.AddComponent<Rigidbody>();
+		return;
+		SessionNameChangedHandler?.Invoke("dad");
 	}
 
 	/// <summary>
@@ -27,11 +39,14 @@ public class RPCManager : NetworkBehaviour
 	/// </summary>
 	/// <param name="sessionName">セッション名</param>
 	/// <param name="rpcTarget">RPCの対象プレイヤー</param>
-	[Rpc(RpcSources.All, RpcTargets.All,InvokeLocal = false)]
+	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 	public void Rpc_JoinSession(string sessionName, [RpcTarget] PlayerRef rpcTarget = new())
 	{
+		Debug.LogError("RpcJoin");
+		Rpc_RoomLeftOrClose(rpcTarget);
 		//実行
 		SessionNameChangedHandler?.Invoke(sessionName);
+		RoomManager.Instance.ChengeSessionName(rpcTarget,sessionName);
 	}
 
 	/// <summary>
@@ -48,7 +63,7 @@ public class RPCManager : NetworkBehaviour
 	[Rpc(RpcSources.All, RpcTargets.All)]
 	public void Rpc_RoomJoinOrCreate(WorldType worldType, PlayerRef playerRef, int roomNumber = -1)
 	{
-		RoomManager.Instance.JoinOrCreate(worldType, playerRef, roomNumber);
+		RoomManager.Instance.JoinOrCreate(worldType, playerRef, Runner.SessionInfo.Name, roomNumber);
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All)]
@@ -63,14 +78,15 @@ public class RPCManager : NetworkBehaviour
 		Room roomTemp = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
 		if (roomTemp is null) { return; }
 		bool isLeader = roomTemp.LeaderIndex == roomTemp[Runner.LocalPlayer];
-		Rpc_SendRoomData(requestPlayer, roomTemp.WorldType, Runner.LocalPlayer, isLeader, roomTemp.Number);
+		Rpc_SendRoomData(requestPlayer, roomTemp.WorldType, Runner.LocalPlayer
+			, isLeader, Runner.SessionInfo.Name, roomTemp.Number);
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All)]
 	private void Rpc_SendRoomData([RpcTarget] PlayerRef rpcTarget
-		, WorldType worldType, PlayerRef playerRef, bool isLeader, int roomNumber = -1)
+		, WorldType worldType, PlayerRef playerRef, bool isLeader, string sessionName, int roomNumber = -1)
 	{
-		RoomManager.Instance.JoinOrCreate(worldType, playerRef, roomNumber);
+		RoomManager.Instance.JoinOrCreate(worldType, playerRef, sessionName, roomNumber);
 		if (isLeader)
 		{
 			RoomManager.Instance.LeaderChange(playerRef);

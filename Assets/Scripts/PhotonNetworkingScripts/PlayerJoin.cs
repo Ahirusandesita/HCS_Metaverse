@@ -6,7 +6,7 @@ using Fusion;
 public class PlayerJoin : SimulationBehaviour, IPlayerJoined
 {	
 	[SerializeField]
-	private NetworkPrefabRef _roomCounterPrefab;
+	private GameObject _roomManagerPrefab;
 	[SerializeField]
 	private NetworkPrefabRef _rpcManagerPrefab;
 	public void PlayerJoined(PlayerRef player)
@@ -15,18 +15,12 @@ public class PlayerJoin : SimulationBehaviour, IPlayerJoined
 		MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
 		if (RPCManager.Instance != null && RoomManager.Instance != null)
 		{
-			RPCManager.Instance.SessionNameChangedHandler += masterServer.JoinOrCreateSession;
 			RPCManager.Instance.Rpc_Init(player);
 			return;
 		}
 
 		Transform masterTransform = masterServer.transform;
-		if(FindObjectOfType<RoomManager>() == null)
-		{
-			NetworkObject networkObject = Runner.Spawn(_roomCounterPrefab);
-			RoomManager roomManager = networkObject.GetComponent<RoomManager>();
-			roomManager.transform.parent = masterTransform;
-		}
+		
 
 		
 		if(FindObjectOfType<RPCManager>() == null)
@@ -35,7 +29,7 @@ public class PlayerJoin : SimulationBehaviour, IPlayerJoined
 			RPCManager rpcManager = networkObject.GetComponent<RPCManager>();
 			rpcManager.transform.parent = masterTransform;
 		}
-		RPCManager.Instance.SessionNameChangedHandler += masterServer.JoinOrCreateSession;
+
 		RPCManager.Instance.Rpc_Init(player);
 	}
 }
