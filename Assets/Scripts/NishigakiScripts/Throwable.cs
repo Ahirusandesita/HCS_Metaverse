@@ -19,7 +19,7 @@ public class Throwable : MonoBehaviour
     // 使用中のThrowDataを格納するための変数
     public ThrowData _throwData = default;
 
-    // 
+    // オブジェクトを掴んでいるかどうかの判定用変数
     private bool _isSelected = default;
 
     // 掴んだ時や離した時にイベントを実行するクラス

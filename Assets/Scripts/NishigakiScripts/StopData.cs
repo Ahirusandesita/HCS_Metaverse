@@ -44,6 +44,7 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
     {
         PlayerInitialize.ConsignmentInject_static(this);
     }
+
     private void Start()
     {
         // 
@@ -196,7 +197,7 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
     {
         // 
         _visualObjectTransform.localPosition = default;
-        _visualObjectTransform.localRotation = transform.rotation = Quaternion.Euler(0f, 90f, 0f);
+        _visualObjectTransform.localRotation = Quaternion.Euler(0f, 90f, 0f);
     }
 
     /// <summary>
