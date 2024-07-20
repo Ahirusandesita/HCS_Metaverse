@@ -4,32 +4,20 @@ using UnityEngine;
 using Fusion;
 
 public class PlayerJoin : SimulationBehaviour, IPlayerJoined
-{	
-	[SerializeField]
-	private GameObject _roomManagerPrefab;
+{
 	[SerializeField]
 	private NetworkPrefabRef _rpcManagerPrefab;
 	public void PlayerJoined(PlayerRef player)
 	{
-		if (!Runner.IsSharedModeMasterClient) { return; }
+		if (player != Runner.LocalPlayer) { return; }
+
 		MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
-		if (RPCManager.Instance != null && RoomManager.Instance != null)
-		{
-			RPCManager.Instance.Rpc_Init(player);
-			return;
-		}
-
 		Transform masterTransform = masterServer.transform;
-		
-
-		
-		if(FindObjectOfType<RPCManager>() == null)
-		{
-			NetworkObject networkObject = Runner.Spawn(_rpcManagerPrefab);
-			RPCManager rpcManager = networkObject.GetComponent<RPCManager>();
-			rpcManager.transform.parent = masterTransform;
-		}
+		NetworkObject networkObject = Runner.Spawn(_rpcManagerPrefab);
+		RPCManager rpcManager = networkObject.GetComponent<RPCManager>();
+		rpcManager.transform.parent = masterTransform;
 
 		RPCManager.Instance.Rpc_Init(player);
+
 	}
 }
