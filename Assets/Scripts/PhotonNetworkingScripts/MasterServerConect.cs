@@ -57,7 +57,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		string sessionName = currentRoom.NextSessionName;
 		foreach (Room.RoomPlayer roomPlayer in currentRoom.JoinPlayer)
 		{
-			if (roomPlayer == _networkRunner.LocalPlayer) { continue; }
+			if (roomPlayer.PlayerData == _networkRunner.LocalPlayer) { continue; }
 			Debug.LogWarning(roomPlayer.PlayerData);
 			RPCManager.Instance.Rpc_JoinSession(sessionName, roomPlayer.PlayerData);
 		}
@@ -115,6 +115,8 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	/// </summary>
 	public async void JoinOrCreateSession(string sessionName)
 	{
+		RoomManager.Instance.ChengeSessionName(Runner.LocalPlayer, sessionName);
+		RoomManager.Instance.Initialize(Runner.LocalPlayer);
 		await UpdateNetworkRunner();
 		await Connect(sessionName);
 	}
