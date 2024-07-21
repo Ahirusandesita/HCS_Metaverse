@@ -9,12 +9,13 @@ public class PlayerJoin : SimulationBehaviour, IPlayerJoined
 	private NetworkPrefabRef _rpcManagerPrefab;
 	public void PlayerJoined(PlayerRef player)
 	{
-		if (player != Runner.LocalPlayer) { return; }
-
+		if (!Runner.IsSharedModeMasterClient) { return; }
+		RPCManager rpcManager = FindObjectOfType<RPCManager>();
+		if(rpcManager != null) { return; }
 		MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
 		Transform masterTransform = masterServer.transform;
 		NetworkObject networkObject = Runner.Spawn(_rpcManagerPrefab);
-		RPCManager rpcManager = networkObject.GetComponent<RPCManager>();
+		rpcManager = networkObject.GetComponent<RPCManager>();
 		rpcManager.transform.parent = masterTransform;
 
 		RPCManager.Instance.Rpc_Init(player);

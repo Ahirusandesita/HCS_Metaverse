@@ -9,7 +9,7 @@ public static partial class ExtensionList
 	{
 		for (int i = 0; i < list.Count; i++)
 		{
-			if (list[i] != playerRef) { continue; }
+			if (list[i].PlayerData != playerRef) { continue; }
 			return i;
 		}
 		return -1;
@@ -72,8 +72,8 @@ public class Room
 			string leaderSessionName = _roomPlayers[_leaderIndex].SessionName;
 			for (int i = 0; i < _roomPlayers.Count; i++)
 			{
-				if(i == _leaderIndex) { continue; }
-				if(_roomPlayers[i].SessionName == leaderSessionName) { count++; }
+				if (i == _leaderIndex) { continue; }
+				if (_roomPlayers[i].SessionName == leaderSessionName) { count++; }
 			}
 			return count;
 		}
@@ -141,6 +141,12 @@ public class Room
 	public void ChengeSessionName(PlayerRef playerRef, string sessionName)
 	{
 		int index = _roomPlayers.IndexOf(playerRef);
+		if (index < 0)
+		{
+			Debug.LogError("ルームに参加していません");
+			return;
+		}
+		Debug.LogWarning(index);
 		_roomPlayers[index].SessionName = sessionName;
 	}
 }
@@ -168,7 +174,7 @@ public class RoomManager : MonoBehaviour
 
 	private void Awake()
 	{
-		if(_instance == null)
+		if (_instance == null)
 		{
 			_instance = this;
 			DontDestroyOnLoad(_instance);
@@ -227,6 +233,7 @@ public class RoomManager : MonoBehaviour
 
 		if (roomTemp is null)
 		{
+			if(roomNumber < 0) { roomNumber = _rooms.Count; }
 			roomTemp = Create(worldType, roomNumber, currentSessionName);
 			RPCManager.Instance.Rpc_InstanceLeaderObject(playerRef);
 			result = JoinOrCreateResult.Create;
@@ -237,7 +244,11 @@ public class RoomManager : MonoBehaviour
 		}
 
 		roomTemp.Join(playerRef, currentSessionName);
-		Debug.LogWarning("Join:" + worldType + "\nroomNum:" + roomNumber + "\nPlayer:" + playerRef);
+		Debug.LogWarning(
+			"<color=orange>Join</color>:" + worldType +
+			"Result:" + result +
+			"roomNum:" + roomNumber +
+			"\nPlayer:" + playerRef);
 
 		return result;
 	}
@@ -250,7 +261,10 @@ public class RoomManager : MonoBehaviour
 	{
 		Room joinedRoom = GetCurrentRoom(playerRef);
 		if (joinedRoom is null) { return; }
-		Debug.LogWarning("Left:" + joinedRoom.WorldType + "\nRoomNum:" + joinedRoom.Number + "\nPlayer:" + playerRef);
+		Debug.LogWarning(
+			"<color=cyan>Left</color>:" + joinedRoom.WorldType 
+			+ "\nRoomNum:" + joinedRoom.Number 
+			+ "Player:" + playerRef);
 		LeftResult result = joinedRoom.Left(playerRef);
 		if (result == LeftResult.Closable)
 		{
@@ -286,6 +300,30 @@ public class RoomManager : MonoBehaviour
 		roomTemp.ChengeLeader(leaderPlayer);
 	}
 
+	/// <summary>
+	/// 自分以外のデータを破棄する
+	/// </summary>
+	public void Initialize(PlayerRef myPlayerRef)
+	{
+		_roomCounter = new int[System.Enum.GetValues(typeof(WorldType)).Length];
+
+		Room myRoom = GetCurrentRoom(myPlayerRef);
+		if(myRoom == null) 
+		{
+			_rooms.Clear();
+			return;
+		}
+
+		_roomCounter[(int)myRoom.WorldType]++;
+
+		IEnumerable<Room> deleteRooms = _rooms.Where(room => room != myRoom);
+		foreach(Room room in deleteRooms)
+		{
+			_rooms.Remove(room);
+		}
+
+	}
+
 	[ContextMenu("DebugRoomData")]
 	private void Test()
 	{
@@ -296,7 +334,7 @@ public class RoomManager : MonoBehaviour
 				"LeaderWithCount:" + room.WithLeaderSessionCount +
 				"\nLeader:" + room.JoinPlayer[room.LeaderIndex] +
 				"PlayerCount:" + room.JoinPlayer.Count);
-			foreach(Room.RoomPlayer roomPlayer in room.JoinPlayer)
+			foreach (Room.RoomPlayer roomPlayer in room.JoinPlayer)
 			{
 				Debug.LogError("SessionName:" + roomPlayer.SessionName);
 			}

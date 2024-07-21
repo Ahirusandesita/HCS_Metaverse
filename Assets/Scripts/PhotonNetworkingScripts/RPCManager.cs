@@ -28,8 +28,7 @@ public class RPCManager : NetworkBehaviour
 	[ContextMenu("test")]
 	private void test()
 	{
-		
-		gameObject.AddComponent<Rigidbody>();
+
 		return;
 		SessionNameChangedHandler?.Invoke("dad");
 	}
@@ -46,7 +45,6 @@ public class RPCManager : NetworkBehaviour
 		Rpc_RoomLeftOrClose(rpcTarget);
 		//é¿çs
 		SessionNameChangedHandler?.Invoke(sessionName);
-		RoomManager.Instance.ChengeSessionName(rpcTarget,sessionName);
 	}
 
 	/// <summary>
@@ -82,7 +80,7 @@ public class RPCManager : NetworkBehaviour
 			, isLeader, Runner.SessionInfo.Name, roomTemp.Number);
 	}
 
-	[Rpc(RpcSources.All, RpcTargets.All)]
+	[Rpc(RpcSources.All, RpcTargets.All,InvokeLocal = false)]
 	private void Rpc_SendRoomData([RpcTarget] PlayerRef rpcTarget
 		, WorldType worldType, PlayerRef playerRef, bool isLeader, string sessionName, int roomNumber = -1)
 	{
