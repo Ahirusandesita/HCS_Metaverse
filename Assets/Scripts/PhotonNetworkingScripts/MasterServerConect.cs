@@ -55,13 +55,13 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 			return;
 		}
 		string sessionName = currentRoom.NextSessionName;
-		foreach (Room.RoomPlayer roomPlayer in currentRoom.JoinPlayer)
+		foreach (Room.RoomPlayer roomPlayer in currentRoom.JoinRoomPlayer)
 		{
 			if (roomPlayer.PlayerData == _networkRunner.LocalPlayer) { continue; }
 			Debug.LogWarning(roomPlayer.PlayerData);
 			RPCManager.Instance.Rpc_JoinSession(sessionName, roomPlayer.PlayerData);
 		}
-		await UniTask.WaitUntil(() => currentRoom.WithLeaderSessionCount <= 1);
+		await UniTask.WaitUntil(() => currentRoom.WithLeaderSessionCount <= 0);
 		JoinOrCreateSession(sessionName);
 	}
 
@@ -115,7 +115,10 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	/// </summary>
 	public async void JoinOrCreateSession(string sessionName)
 	{
-		RoomManager.Instance.ChengeSessionName(Runner.LocalPlayer, sessionName);
+		RPCManager.Instance.Rpc_ChangeRoomSessionName(Runner.LocalPlayer, sessionName);
+		Room currentRoom = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
+		int myIndex = currentRoom[Runner.LocalPlayer];
+		await UniTask.WaitUntil(() => currentRoom.JoinRoomPlayer[myIndex].SessionName == sessionName);
 		RoomManager.Instance.Initialize(Runner.LocalPlayer);
 		await UpdateNetworkRunner();
 		await Connect(sessionName);
