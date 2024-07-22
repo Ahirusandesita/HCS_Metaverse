@@ -64,12 +64,16 @@ public class Room
 
 	public int this[PlayerRef playerRef] { get => _roomPlayers.IndexOf(playerRef); }
 	public int LeaderIndex { get => _leaderIndex; }
+	/// <summary>
+	/// リーダーは含まれない
+	/// </summary>
 	public int WithLeaderSessionCount
 	{
 		get
 		{
 			int count = 0;
 			string leaderSessionName = _roomPlayers[_leaderIndex].SessionName;
+
 			for (int i = 0; i < _roomPlayers.Count; i++)
 			{
 				if (i == _leaderIndex) { continue; }
@@ -82,7 +86,7 @@ public class Room
 	public bool IsEndJoining { get => _isEndJoining; }
 	public string NextSessionName { get => _nextSessionName; }
 	public WorldType WorldType { get => _worldType; }
-	public List<RoomPlayer> JoinPlayer { get => _roomPlayers; }
+	public List<RoomPlayer> JoinRoomPlayer { get => _roomPlayers; }
 
 	public Room(WorldType activityType, int roomNumber, string nextSessionName)
 	{
@@ -94,6 +98,7 @@ public class Room
 
 	public void Join(PlayerRef playerRef, string sessionName)
 	{
+		Debug.LogWarning("<color=black>"+sessionName+"</color>");
 		_roomPlayers.Add(new RoomPlayer(playerRef, sessionName));
 	}
 
@@ -146,7 +151,7 @@ public class Room
 			Debug.LogError("ルームに参加していません");
 			return;
 		}
-		Debug.LogWarning(index);
+		Debug.LogWarning("<color=gray>" + sessionName + "</color>");
 		_roomPlayers[index].SessionName = sessionName;
 	}
 }
@@ -196,7 +201,7 @@ public class RoomManager : MonoBehaviour
 		}
 
 		IEnumerable<Room> temp =
-			_rooms.Where(room => room.JoinPlayer.Contains(new Room.RoomPlayer(playerRef)));
+			_rooms.Where(room => room.JoinRoomPlayer.Contains(new Room.RoomPlayer(playerRef)));
 		if (temp.Count() <= 0)
 		{
 			return null;
@@ -233,7 +238,7 @@ public class RoomManager : MonoBehaviour
 
 		if (roomTemp is null)
 		{
-			if(roomNumber < 0) { roomNumber = _rooms.Count; }
+			if (roomNumber < 0) { roomNumber = _rooms.Count; }
 			roomTemp = Create(worldType, roomNumber, currentSessionName);
 			RPCManager.Instance.Rpc_InstanceLeaderObject(playerRef);
 			result = JoinOrCreateResult.Create;
@@ -247,7 +252,7 @@ public class RoomManager : MonoBehaviour
 		Debug.LogWarning(
 			"<color=orange>Join</color>:" + worldType +
 			"Result:" + result +
-			"roomNum:" + roomNumber +
+			"roomNum:" + roomTemp.Number +
 			"\nPlayer:" + playerRef);
 
 		return result;
@@ -262,8 +267,8 @@ public class RoomManager : MonoBehaviour
 		Room joinedRoom = GetCurrentRoom(playerRef);
 		if (joinedRoom is null) { return; }
 		Debug.LogWarning(
-			"<color=cyan>Left</color>:" + joinedRoom.WorldType 
-			+ "\nRoomNum:" + joinedRoom.Number 
+			"<color=cyan>Left</color>:" + joinedRoom.WorldType
+			+ "\nRoomNum:" + joinedRoom.Number
 			+ "Player:" + playerRef);
 		LeftResult result = joinedRoom.Left(playerRef);
 		if (result == LeftResult.Closable)
@@ -287,8 +292,12 @@ public class RoomManager : MonoBehaviour
 
 	public void ChengeSessionName(PlayerRef playerRef, string currentSessionName)
 	{
-		Debug.LogError("CurrentSessionName:" + currentSessionName);
 		Room room = GetCurrentRoom(playerRef);
+		if(room == null)
+		{
+			Debug.LogWarning("ルームが見つかりませんでした");
+			return;
+		}
 		room.ChengeSessionName(playerRef, currentSessionName);
 	}
 
@@ -308,7 +317,7 @@ public class RoomManager : MonoBehaviour
 		_roomCounter = new int[System.Enum.GetValues(typeof(WorldType)).Length];
 
 		Room myRoom = GetCurrentRoom(myPlayerRef);
-		if(myRoom == null) 
+		if (myRoom == null)
 		{
 			_rooms.Clear();
 			return;
@@ -317,7 +326,7 @@ public class RoomManager : MonoBehaviour
 		_roomCounter[(int)myRoom.WorldType]++;
 
 		IEnumerable<Room> deleteRooms = _rooms.Where(room => room != myRoom);
-		foreach(Room room in deleteRooms)
+		foreach (Room room in deleteRooms)
 		{
 			_rooms.Remove(room);
 		}
@@ -332,9 +341,9 @@ public class RoomManager : MonoBehaviour
 			Debug.LogWarning(
 				"SessionName:" + room.NextSessionName +
 				"LeaderWithCount:" + room.WithLeaderSessionCount +
-				"\nLeader:" + room.JoinPlayer[room.LeaderIndex] +
-				"PlayerCount:" + room.JoinPlayer.Count);
-			foreach (Room.RoomPlayer roomPlayer in room.JoinPlayer)
+				"\nLeader:" + room.JoinRoomPlayer[room.LeaderIndex].PlayerData +
+				"PlayerCount:" + room.JoinRoomPlayer.Count);
+			foreach (Room.RoomPlayer roomPlayer in room.JoinRoomPlayer)
 			{
 				Debug.LogError("SessionName:" + roomPlayer.SessionName);
 			}

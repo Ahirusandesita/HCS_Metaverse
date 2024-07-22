@@ -28,10 +28,16 @@ public class RPCManager : NetworkBehaviour
 	[ContextMenu("test")]
 	private void test()
 	{
-
-		return;
 		SessionNameChangedHandler?.Invoke("dad");
 	}
+
+	[Rpc(RpcSources.All,RpcTargets.All)]
+	public void Rpc_ChangeRoomSessionName(PlayerRef chengeTarget,string nextSessionName)
+	{
+		Debug.LogError("CurrentSessionName:" + nextSessionName);
+		RoomManager.Instance.ChengeSessionName(chengeTarget,nextSessionName);
+	}
+
 
 	/// <summary>
 	/// セッションに参加または作成する
@@ -42,7 +48,6 @@ public class RPCManager : NetworkBehaviour
 	public void Rpc_JoinSession(string sessionName, [RpcTarget] PlayerRef rpcTarget = new())
 	{
 		Debug.LogError("RpcJoin");
-		Rpc_RoomLeftOrClose(rpcTarget);
 		//実行
 		SessionNameChangedHandler?.Invoke(sessionName);
 	}
@@ -112,5 +117,11 @@ public class RPCManager : NetworkBehaviour
 	{
 		localRemoteReparation.RemoteViewCreate(Runner, Runner.LocalPlayer);
 		_instance.Rpc_RequestRoomData(Runner.LocalPlayer);
+	}
+
+	[Rpc]
+	public static void Rpc_StaticRpc(NetworkRunner networkRunner)
+	{
+		Debug.LogWarning("<color=magenta>StaticRpc</color>");
 	}
 }
