@@ -98,7 +98,7 @@ public class Room
 
 	public void Join(PlayerRef playerRef, string sessionName)
 	{
-		Debug.LogWarning("<color=black>"+sessionName+"</color>");
+		Debug.LogWarning("<color=black>" + sessionName + "</color>");
 		_roomPlayers.Add(new RoomPlayer(playerRef, sessionName));
 	}
 
@@ -151,7 +151,6 @@ public class Room
 			Debug.LogError("ÉãÅ[ÉÄÇ…éQâ¡ÇµÇƒÇ¢Ç‹ÇπÇÒ");
 			return;
 		}
-		Debug.LogWarning("<color=gray>" + sessionName + "</color>");
 		_roomPlayers[index].SessionName = sessionName;
 	}
 }
@@ -293,7 +292,7 @@ public class RoomManager : MonoBehaviour
 	public void ChengeSessionName(PlayerRef playerRef, string currentSessionName)
 	{
 		Room room = GetCurrentRoom(playerRef);
-		if(room == null)
+		if (room == null)
 		{
 			Debug.LogWarning("ÉãÅ[ÉÄÇ™å©Ç¬Ç©ÇËÇ‹ÇπÇÒÇ≈ÇµÇΩ");
 			return;
@@ -345,7 +344,9 @@ public class RoomManager : MonoBehaviour
 				"PlayerCount:" + room.JoinRoomPlayer.Count);
 			foreach (Room.RoomPlayer roomPlayer in room.JoinRoomPlayer)
 			{
-				Debug.LogError("SessionName:" + roomPlayer.SessionName);
+				Debug.LogError(
+					"SessionName:" + roomPlayer.SessionName +
+					$"PlayerName:{roomPlayer.PlayerData}");
 			}
 		}
 		Debug.LogWarning(_rooms.Count);

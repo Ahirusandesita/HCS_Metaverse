@@ -14,6 +14,8 @@ public interface IMasterServerConectable
 
 public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMasterServerConectable
 {
+	private bool _debugBool = false;
+
 	[SerializeField]
 	private Recorder _recorder;
 	[SerializeField]
@@ -26,6 +28,15 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	[SerializeField]
 	private NetworkObject _testNetworkObject;
 
+
+	/*メモ
+	 * リーダーが管理する
+	 * ↓
+	 * リーダーがメンバーにルームを変更することを通知する
+	 * メンバーがリーダーにルームデータ（セッション名）の変更を頼む
+	 * 変更されたメンバーは自分以外のルームデータを削除後、順次セッションを変更する
+	 * 
+	 */
 
 	/// <summary>
 	/// このクラスはランナーとの紐づけはしないためラップする
@@ -65,19 +76,24 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		JoinOrCreateSession(sessionName);
 	}
 
-	[ContextMenu("Join")]
+	[ContextMenu("SendRpc")]
 	private void TestTest()
 	{
-		Debug.LogWarning("join");
-		int roomNumber = -1;
-		RPCManager.Instance.Rpc_RoomJoinOrCreate(WorldType.UnderCook, _networkRunner.LocalPlayer, roomNumber);
+		Debug.LogWarning($"SendRpc:" +
+			$"{RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer).JoinRoomPlayer[1].PlayerData}");
+
+		RpcInvokeInfo rpcInvokeInfo = RPCManager.Instance
+			.Rpc_Test(RoomManager.Instance
+			.GetCurrentRoom(Runner.LocalPlayer)
+			.JoinRoomPlayer[1].PlayerData);
+
+		Debug.LogWarning($"{rpcInvokeInfo.LocalInvokeResult}:{rpcInvokeInfo.SendCullResult}:{rpcInvokeInfo.SendResult.Result}");
 	}
 
 	[ContextMenu("Left")]
 	private void TestTestTest()
 	{
 		Debug.LogWarning("left");
-		RPCManager.Instance.Rpc_RoomLeftOrClose(_networkRunner.LocalPlayer);
 	}
 
 	[ContextMenu("Request")]
@@ -117,8 +133,8 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	{
 		RPCManager.Instance.Rpc_ChangeRoomSessionName(Runner.LocalPlayer, sessionName);
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
-		int myIndex = currentRoom[Runner.LocalPlayer];
-		await UniTask.WaitUntil(() => currentRoom.JoinRoomPlayer[myIndex].SessionName == sessionName);
+		int leaderIndex = currentRoom.LeaderIndex;
+		await UniTask.WaitUntil(() => currentRoom.JoinRoomPlayer[leaderIndex].SessionName == sessionName);
 		RoomManager.Instance.Initialize(Runner.LocalPlayer);
 		await UpdateNetworkRunner();
 		await Connect(sessionName);
@@ -159,10 +175,15 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
 	{
 	}
-
-	public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
+	public async void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
 	{
-
+		if (runner.SessionInfo.PlayerCount == 2 && !_debugBool)
+		{
+			_debugBool = true;
+			await UniTask.WaitForSeconds(1f);
+			FindObjectOfType<TestGameZone>().Open();
+			
+		}
 	}
 
 	public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -215,17 +236,6 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 
 	public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
 	{
-		runner.Shutdown(true, ShutdownReason.HostMigration);
-		//新Runnerを生成する
-		runner = Instantiate(_networkRunnerPrefab);
-		runner.AddCallbacks(this);
-
-		//新セッションに接続する
-		runner.StartGame(new StartGameArgs
-		{
-			SceneManager = runner.GetComponent<NetworkSceneManagerDefault>(),
-			HostMigrationToken = hostMigrationToken,
-		});
 	}
 
 	public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, System.ArraySegment<byte> data)
