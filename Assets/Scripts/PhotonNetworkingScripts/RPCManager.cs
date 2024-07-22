@@ -25,16 +25,19 @@ public class RPCManager : NetworkBehaviour
 		_instance = this;
 	}
 
-	[ContextMenu("test")]
-	private void test()
+	[Rpc(RpcSources.All,RpcTargets.All,InvokeLocal = false)]
+	public RpcInvokeInfo Rpc_Test([RpcTarget] PlayerRef playerRef)
 	{
-		SessionNameChangedHandler?.Invoke("dad");
+		Debug.LogWarning($"<color=White>Test:{playerRef}</color>");
+		return default;
 	}
 
 	[Rpc(RpcSources.All,RpcTargets.All)]
 	public void Rpc_ChangeRoomSessionName(PlayerRef chengeTarget,string nextSessionName)
 	{
-		Debug.LogError("CurrentSessionName:" + nextSessionName);
+		Debug.LogError(
+			$"ChangeSessionName:{nextSessionName}" +
+			$"\nPlayerName:{chengeTarget}");
 		RoomManager.Instance.ChengeSessionName(chengeTarget,nextSessionName);
 	}
 
