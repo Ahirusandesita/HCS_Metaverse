@@ -17,6 +17,8 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	private bool _debugBool = false;
 
 	[SerializeField]
+	private NetworkPrefabRef _rpcManagerPrefab;
+	[SerializeField]
 	private Recorder _recorder;
 	[SerializeField]
 	private NetworkRunner _networkRunnerPrefab;
@@ -28,15 +30,9 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	[SerializeField]
 	private NetworkObject _testNetworkObject;
 
+	[SerializeField]
+	private LocalRemoteSeparation localRemoteReparation;
 
-	/*メモ
-	 * リーダーが管理する
-	 * ↓
-	 * リーダーがメンバーにルームを変更することを通知する
-	 * メンバーがリーダーにルームデータ（セッション名）の変更を頼む
-	 * 変更されたメンバーは自分以外のルームデータを削除後、順次セッションを変更する
-	 * 
-	 */
 
 	/// <summary>
 	/// このクラスはランナーとの紐づけはしないためラップする
@@ -136,16 +132,21 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		int leaderIndex = currentRoom.LeaderIndex;
 		await UniTask.WaitUntil(() => currentRoom.JoinRoomPlayer[leaderIndex].SessionName == sessionName);
 		RoomManager.Instance.Initialize(Runner.LocalPlayer);
-		await UpdateNetworkRunner();
+		NetworkRunner oldRunner = _networkRunner;
+		InstanceNetworkRunner();
 		await Connect(sessionName);
+		await oldRunner.Shutdown(true, ShutdownReason.HostMigration);
+		if (Runner.IsSharedModeMasterClient)
+		{
+			Runner.SetMasterClient(currentRoom.LeaderPlayerRef);
+		}
 	}
 
 	/// <summary>
-	/// ネットワークランナーを更新する
+	/// ネットワークランナーを生成してコールバック対象にする
 	/// </summary>
-	private async UniTask UpdateNetworkRunner()
+	private void InstanceNetworkRunner()
 	{
-		await _networkRunner.Shutdown(true, ShutdownReason.HostMigration);
 		// NetworkRunnerを生成する
 		_networkRunner = Instantiate(_networkRunnerPrefab);
 		// NetworkRunnerのコールバック対象に、このスクリプト（GameLauncher）を登録する
@@ -182,8 +183,27 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 			_debugBool = true;
 			await UniTask.WaitForSeconds(1f);
 			FindObjectOfType<TestGameZone>().Open();
-			
 		}
+
+		if (Runner.LocalPlayer != player) { return; }
+		//ここから下は本人のみ実行
+		localRemoteReparation.RemoteViewCreate(Runner, Runner.LocalPlayer);
+		if(Runner.SessionInfo.PlayerCount  > 1)
+		{
+			RPCManager.Instance.Rpc_RequestRoomData(Runner.LocalPlayer);
+		}
+
+		if (!Runner.IsSharedModeMasterClient) { return; }
+		//ここから下はマスターのみ実行
+		Debug.LogWarning($"<color=yellow>MasterJoin</color>");
+		RPCManager rpcManager = FindObjectOfType<RPCManager>();
+		if (rpcManager != null) { return; }
+		MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
+		Transform masterTransform = masterServer.transform;
+		NetworkObject networkObject = Runner.Spawn(_rpcManagerPrefab);
+		rpcManager = networkObject.GetComponent<RPCManager>();
+		rpcManager.transform.parent = masterTransform;
+
 	}
 
 	public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
