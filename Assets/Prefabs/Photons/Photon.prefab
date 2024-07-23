@@ -48,12 +48,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 207df659d9a51634591c7070faef4dad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rpcManagerPrefab:
+    RawGuidValue: a6bc06e5aeaa4014694ecdf5472de8bb
   _recorder: {fileID: 2577978684892507862}
   _networkRunnerPrefab: {fileID: 687033457346460161, guid: b216176172d0a434a91184485630abf8, type: 3}
   activityName:
     name: CookActivity
     selectedIndex: 4
   _testNetworkObject: {fileID: 0}
+  localRemoteReparation: {fileID: 5470062202958232113, guid: b49223fc95aa3784ea2065e977a21df2, type: 3}
 --- !u!114 &1776437351444565971
 MonoBehaviour:
   m_ObjectHideFlags: 0

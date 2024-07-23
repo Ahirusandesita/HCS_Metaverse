@@ -7,8 +7,7 @@ public delegate void SessionNameChanged(string name);
 public class RPCManager : NetworkBehaviour
 {
 	public event SessionNameChanged SessionNameChangedHandler;
-	[SerializeField]
-	private LocalRemoteSeparation localRemoteReparation;
+
 	[SerializeField]
 	private GameObject _leaderObjectPrefab;
 
@@ -25,20 +24,20 @@ public class RPCManager : NetworkBehaviour
 		_instance = this;
 	}
 
-	[Rpc(RpcSources.All,RpcTargets.All,InvokeLocal = false)]
+	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 	public RpcInvokeInfo Rpc_Test([RpcTarget] PlayerRef playerRef)
 	{
 		Debug.LogWarning($"<color=White>Test:{playerRef}</color>");
 		return default;
 	}
 
-	[Rpc(RpcSources.All,RpcTargets.All)]
-	public void Rpc_ChangeRoomSessionName(PlayerRef chengeTarget,string nextSessionName)
+	[Rpc(RpcSources.All, RpcTargets.All)]
+	public void Rpc_ChangeRoomSessionName(PlayerRef chengeTarget, string nextSessionName)
 	{
 		Debug.LogError(
 			$"ChangeSessionName:{nextSessionName}" +
 			$"\nPlayerName:{chengeTarget}");
-		RoomManager.Instance.ChengeSessionName(chengeTarget,nextSessionName);
+		RoomManager.Instance.ChengeSessionName(chengeTarget, nextSessionName);
 	}
 
 
@@ -78,7 +77,7 @@ public class RPCManager : NetworkBehaviour
 		RoomManager.Instance.LeftOrClose(playerRef);
 	}
 
-	[Rpc(RpcSources.All, RpcTargets.All)]
+	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 	public void Rpc_RequestRoomData(PlayerRef requestPlayer)
 	{
 		Room roomTemp = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
@@ -88,7 +87,7 @@ public class RPCManager : NetworkBehaviour
 			, isLeader, Runner.SessionInfo.Name, roomTemp.Number);
 	}
 
-	[Rpc(RpcSources.All, RpcTargets.All,InvokeLocal = false)]
+	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 	private void Rpc_SendRoomData([RpcTarget] PlayerRef rpcTarget
 		, WorldType worldType, PlayerRef playerRef, bool isLeader, string sessionName, int roomNumber = -1)
 	{
@@ -113,18 +112,5 @@ public class RPCManager : NetworkBehaviour
 		Debug.LogWarning("Rpc_Destroy:" + _leaderObject);
 		if (!_leaderObject) { return; }
 		Destroy(_leaderObject);
-	}
-
-	[Rpc(RpcSources.All, RpcTargets.All)]
-	public void Rpc_Init([RpcTarget] PlayerRef rpcTarget)
-	{
-		localRemoteReparation.RemoteViewCreate(Runner, Runner.LocalPlayer);
-		_instance.Rpc_RequestRoomData(Runner.LocalPlayer);
-	}
-
-	[Rpc]
-	public static void Rpc_StaticRpc(NetworkRunner networkRunner)
-	{
-		Debug.LogWarning("<color=magenta>StaticRpc</color>");
 	}
 }

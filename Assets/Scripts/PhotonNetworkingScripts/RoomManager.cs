@@ -54,6 +54,7 @@ public class Room
 		}
 		public override int GetHashCode() => base.GetHashCode();
 	}
+
 	private bool _isEndJoining = default;
 	private int _leaderIndex = default;
 	private int _number = default;
@@ -64,6 +65,7 @@ public class Room
 
 	public int this[PlayerRef playerRef] { get => _roomPlayers.IndexOf(playerRef); }
 	public int LeaderIndex { get => _leaderIndex; }
+	public PlayerRef LeaderPlayerRef { get => _roomPlayers[_leaderIndex].PlayerData; }
 	/// <summary>
 	/// ÉäÅ[É_Å[ÇÕä‹Ç‹ÇÍÇ»Ç¢
 	/// </summary>
@@ -181,7 +183,8 @@ public class RoomManager : MonoBehaviour
 		if (_instance == null)
 		{
 			_instance = this;
-			DontDestroyOnLoad(_instance);
+			transform.parent = null;
+			DontDestroyOnLoad(this.gameObject);
 		}
 		else
 		{
