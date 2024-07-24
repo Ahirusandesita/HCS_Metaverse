@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AutoMachine : Machine
@@ -63,8 +61,6 @@ public class AutoMachine : Machine
                 Debug.Log("â¡çHäÆóπ");
             }
         };
-
-
     }
     public void ProcessingInterruption()
     {
