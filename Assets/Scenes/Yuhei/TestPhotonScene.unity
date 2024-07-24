@@ -6681,7 +6681,6 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 1940321128}
-  - {fileID: 1940321129}
 --- !u!114 &1940321128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6710,7 +6709,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fc488fc7720cb141acefabd93634832, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _runner: {fileID: 0}
+  _object: {fileID: 0}
+  InvokeRpc: 0
+  ObjectIndex: 0
+  WordOffset: 0
+  WordCount: 0
+  DefaultReplicated: 1
   _IsNotReleaseStateAuthority: 0
+  <IsGrabbable>k__BackingField: 0
 --- !u!1 &1942162645
 GameObject:
   m_ObjectHideFlags: 0
