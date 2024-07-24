@@ -45,6 +45,10 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
     private void Awake()
     {
         pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
+        if(pointableUnityEventWrapper == null)
+        {
+            Debug.LogError(this.gameObject.name + "‚ªNull");
+        }
         pointableUnityEventWrapper.WhenSelect.AddListener((data) => OnPointable?.Invoke(new GrabEventArgs(GrabType.Grab)));
         pointableUnityEventWrapper.WhenUnselect.AddListener((data) => OnPointable?.Invoke(new GrabEventArgs(GrabType.UnGrab)));
     }
@@ -54,6 +58,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
         isOnDish = false;
         this.putableOnDish = putableOnDish;
     }
+
     void ICommodityModerator.SetCommodityAsset(CommodityAsset commodityAsset)
     {
         this.commodityAsset = commodityAsset;
@@ -118,7 +123,6 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
                     createCommodity.GetComponent<Rigidbody>().isKinematic = false;
                 }
             }
-
         }
 
         if (collision.gameObject.TryGetComponent<SubmisionTable>(out SubmisionTable table))
