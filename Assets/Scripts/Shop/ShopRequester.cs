@@ -18,16 +18,11 @@ public class ShopRequester : MonoBehaviour
     {
         [SerializeField] private int responseCode = default;
         [SerializeField] private string message = default;
-        [SerializeField] private Body body = default;
+        [SerializeField] private List<Body> body = default;
 
         public int ResponseCode => responseCode;
         public string Message => message;
-
-        public int ID => body.ID;
-        public int Price => body.Price;
-        public float Discount => body.Discount;
-        public int Stock => body.Stock;
-        public ItemSize Size => body.Size;
+        public IReadOnlyList<Body> Lineup => body;
 
         [System.Serializable]
         public class Body
@@ -49,10 +44,18 @@ public class ShopRequester : MonoBehaviour
     private const string DEFAULT_PATH = "http://10.11.39.210:8080/shop/getitemlist";
 
 
+    private async void Start()
+    {
+        await Get(0, 2, 3);
+    }
+
     public async UniTask Get(int genre, int large, int small)
     {
-        string path = $"{DEFAULT_PATH}?genre={genre}&large={large}&small={small}";
-        using var request = UnityWebRequest.Get(path);
+        WWWForm form = new WWWForm();
+        form.AddField("genre", genre);
+        form.AddField("large", large);
+        form.AddField("small", small);
+        using var request = UnityWebRequest.Post(DEFAULT_PATH, form);
         await request.SendWebRequest();
 
         switch (request.result)
@@ -65,12 +68,8 @@ public class ShopRequester : MonoBehaviour
         }
 
         var lineupData = JsonUtility.FromJson<LineupData>($"{request.downloadHandler.text}");
-        Debug.Log($"<color=green>{lineupData.ResponseCode}</color>");
-        Debug.Log($"<color=green>{lineupData.Message}</color>");
-        Debug.Log($"<color=green>{lineupData.ID}</color>");
-        Debug.Log($"<color=green>{lineupData.Price}</color>");
-        Debug.Log($"<color=green>{lineupData.Discount}</color>");
-        Debug.Log($"<color=green>{lineupData.Stock}</color>");
-        Debug.Log($"<color=green>{lineupData.Size}</color>");
+        foreach (var item in lineupData.Lineup)
+        {
+        }
     }
 }
