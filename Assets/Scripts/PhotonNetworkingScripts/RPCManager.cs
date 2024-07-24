@@ -1,6 +1,6 @@
 using Fusion;
 using UnityEngine;
-using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 
 public delegate void SessionNameChanged(string name);
 
@@ -16,19 +16,23 @@ public class RPCManager : NetworkBehaviour
 	private static RPCManager _instance;
 	public static RPCManager Instance { get => _instance; }
 
-	public override void Spawned()
+	public async override void Spawned()
 	{
-		Debug.LogWarning("Spawned");
+		Debug.LogWarning($"<color=yellow>RPCManager_Spawned</color>");
 		MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
 		SessionNameChangedHandler += masterServer.JoinOrCreateSession;
 		_instance = this;
-	}
 
-	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
-	public RpcInvokeInfo Rpc_Test([RpcTarget] PlayerRef playerRef)
-	{
-		Debug.LogWarning($"<color=White>Test:{playerRef}</color>");
-		return default;
+		if (Runner.SessionInfo.PlayerCount == 2)
+		{
+			await UniTask.WaitForSeconds(1f);
+			if (Runner.SessionInfo.PlayerCount > 1)
+			{
+				_instance.Rpc_RequestRoomData(Runner.LocalPlayer);
+			}
+		}
+		FindObjectOfType<TestGameZone>().Open();
+		masterServer.TestTestTestTest();
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All)]
@@ -54,15 +58,18 @@ public class RPCManager : NetworkBehaviour
 		SessionNameChangedHandler?.Invoke(sessionName);
 	}
 
-	/// <summary>
-	/// 状態変更権限を手放させる
-	/// </summary>
-	/// <param name="networkObject">手放すオブジェクト</param>
-	/// <param name="rpcTarget">手放すプレイヤー</param>
-	[Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-	public void Rpc_ReleaseStateAuthority(NetworkObject networkObject, [RpcTarget] PlayerRef rpcTarget = new())
+	[Rpc(RpcSources.All, RpcTargets.All)]
+	public void Rpc_StateAuthorityChanged(NetworkObject networkObject)
 	{
-		networkObject.ReleaseStateAuthority();
+		StateAuthorityData stateAuthorityData = networkObject.GetComponent<StateAuthorityData>();
+		if (networkObject.HasStateAuthority)
+		{
+			stateAuthorityData.IsGrabbable = true;
+		}
+		else
+		{
+			stateAuthorityData.IsGrabbable = false;
+		}
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All)]
@@ -80,6 +87,7 @@ public class RPCManager : NetworkBehaviour
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 	public void Rpc_RequestRoomData(PlayerRef requestPlayer)
 	{
+		Debug.LogWarning("<color=orange>Rpc_RequestRoomData</color>");
 		Room roomTemp = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
 		if (roomTemp is null) { return; }
 		bool isLeader = roomTemp.LeaderIndex == roomTemp[Runner.LocalPlayer];
@@ -101,7 +109,7 @@ public class RPCManager : NetworkBehaviour
 	[Rpc(RpcSources.All, RpcTargets.All)]
 	public void Rpc_InstanceLeaderObject([RpcTarget] PlayerRef rpcTarget)
 	{
-		Debug.LogWarning("Rpc_Instance:" + _leaderObject);
+		Debug.LogWarning("<color=orange>Rpc_InstanceLeaderObject</color>:" + _leaderObject);
 		if (_leaderObject) { return; }
 		_leaderObject = Instantiate(_leaderObjectPrefab);
 	}
@@ -109,8 +117,10 @@ public class RPCManager : NetworkBehaviour
 	[Rpc(RpcSources.All, RpcTargets.All)]
 	public void Rpc_DestroyLeaderObject([RpcTarget] PlayerRef rpcTarget)
 	{
-		Debug.LogWarning("Rpc_Destroy:" + _leaderObject);
+		Debug.LogWarning("<color=orange>Rpc_DestroyLeaderObject</color>:" + _leaderObject);
 		if (!_leaderObject) { return; }
 		Destroy(_leaderObject);
 	}
+
+	
 }

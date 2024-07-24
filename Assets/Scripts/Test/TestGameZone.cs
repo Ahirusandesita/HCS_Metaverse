@@ -3,37 +3,45 @@ using Fusion;
 
 public class TestGameZone : MonoBehaviour, IInteraction, ISelectedNotification
 {
-    public ISelectedNotification SelectedNotification => this;
-    [SerializeField]
-    private GameFrame gameFrame;
-    [SerializeField]
-    private MasterServerConect _masterServer;
-    [SerializeField,Header("アクティビティ(ワールド)")]
-    private WorldType _worldType;
+	public ISelectedNotification SelectedNotification => this;
+	[SerializeField]
+	private GameFrame gameFrame;
+	[SerializeField, Header("アクティビティ(ワールド)")]
+	private WorldType _worldType;
+	private NetworkRunner NetworkRunner => GateOfFusion.Instance.NetworkRunner;
 
+	[ContextMenu("Close")]
+	public void Close()
+	{
+		Debug.Log("Nishigaki");
+		gameFrame.Close();
+		RPCManager.Instance.Rpc_RoomLeftOrClose(NetworkRunner.LocalPlayer);
+	}
+	[ContextMenu("Open")]
+	public void Open()
+	{
+		gameFrame.GameStart();
 
-    [ContextMenu("Close")]
-    public void Close()
-    {
-        Debug.Log("Nishigaki");
-        gameFrame.Close();
-        RPCManager.Instance.Rpc_RoomLeftOrClose(_masterServer.Runner.LocalPlayer);
-    }
-    [ContextMenu("Open")]
-    public void Open()
-    {
-        gameFrame.GameStart();
-        //ルームに参加する
-        RPCManager.Instance.Rpc_RoomJoinOrCreate(_worldType, _masterServer.Runner.LocalPlayer);    
-    }
+		//ルームに参加する
+		if (NetworkRunner.SessionInfo.PlayerCount > 1)
+		{
+			RPCManager.Instance.Rpc_RoomJoinOrCreate(_worldType, NetworkRunner.LocalPlayer);
+		}
+		else
+		{
+			RoomManager.Instance.JoinOrCreate(
+				_worldType, NetworkRunner.LocalPlayer,
+				NetworkRunner.SessionInfo.Name);
+		}
+	}
 
-    public void Select(SelectArgs selectArgs)
-    {
-        
-    }
+	public void Select(SelectArgs selectArgs)
+	{
 
-    public void Unselect(SelectArgs selectArgs)
-    {
-        
-    }
+	}
+
+	public void Unselect(SelectArgs selectArgs)
+	{
+
+	}
 }

@@ -72,31 +72,33 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		JoinOrCreateSession(sessionName);
 	}
 
-	[ContextMenu("SendRpc")]
+	[ContextMenu("Grab")]
 	private void TestTest()
 	{
-		Debug.LogWarning($"SendRpc:" +
-			$"{RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer).JoinRoomPlayer[1].PlayerData}");
+		Debug.LogWarning($"Grab:");
+		StateAuthorityData stateAuthorityData = _testNetworkObject.GetComponent<StateAuthorityData>();
+		if (stateAuthorityData.IsNotReleaseStateAuthority)
+		{
+			Debug.LogWarning($"<color=red>権限がありませんでした</color>");
+			return;
+		}
+		GetStateAuthority(_testNetworkObject);
 
-		RpcInvokeInfo rpcInvokeInfo = RPCManager.Instance
-			.Rpc_Test(RoomManager.Instance
-			.GetCurrentRoom(Runner.LocalPlayer)
-			.JoinRoomPlayer[1].PlayerData);
-
-		Debug.LogWarning($"{rpcInvokeInfo.LocalInvokeResult}:{rpcInvokeInfo.SendCullResult}:{rpcInvokeInfo.SendResult.Result}");
 	}
 
-	[ContextMenu("Left")]
+
+	[ContextMenu("RequestState")]
 	private void TestTestTest()
 	{
-		Debug.LogWarning("left");
+		_testNetworkObject.RequestStateAuthority();
 	}
 
-	[ContextMenu("Request")]
-	private void TestTestTestTest()
+	[ContextMenu("Test")]
+	public void TestTestTestTest()
 	{
-		Debug.LogWarning("Request");
-		RPCManager.Instance.Rpc_RequestRoomData(_networkRunner.LocalPlayer);
+		NetworkObject[] networkObjects = new NetworkObject[1];
+		networkObjects[0] = _testNetworkObject;
+		Runner.RegisterSceneObjects(Runner.GetSceneRef(_testNetworkObject.gameObject), networkObjects);
 	}
 
 
@@ -104,21 +106,13 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	/// 状態変更権限を自分のにする
 	/// </summary>
 	/// <param name="networkObject">取得したいオブジェクト</param>
-	/// <returns>成功したか</returns>
-	public async UniTask GetStateAuthority(NetworkObject networkObject)
+	public void GetStateAuthority(NetworkObject networkObject)
 	{
 		if (networkObject.HasStateAuthority)
 		{
-			Debug.LogWarning("has");
+			Debug.LogWarning("<color=lime>自分が権限を持っています</color>");
 			return;
 		}
-		if (networkObject.GetComponent<ReleaseStateAuthorityData>().IsNotReleaseStateAuthority)
-		{
-			return;
-		}
-		var token = destroyCancellationToken;
-		RPCManager.Instance.Rpc_ReleaseStateAuthority(networkObject, networkObject.StateAuthority);
-		await UniTask.WaitUntil(() => networkObject.StateAuthority == PlayerRef.None, cancellationToken: token);
 		networkObject.RequestStateAuthority();
 	}
 
@@ -136,10 +130,6 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		InstanceNetworkRunner();
 		await Connect(sessionName);
 		await oldRunner.Shutdown(true, ShutdownReason.HostMigration);
-		if (Runner.IsSharedModeMasterClient)
-		{
-			Runner.SetMasterClient(currentRoom.LeaderPlayerRef);
-		}
 	}
 
 	/// <summary>
@@ -176,33 +166,36 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
 	{
 	}
-	public async void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
+	public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
 	{
-		if (runner.SessionInfo.PlayerCount == 2 && !_debugBool)
-		{
-			_debugBool = true;
-			await UniTask.WaitForSeconds(1f);
-			FindObjectOfType<TestGameZone>().Open();
-		}
+		
 
-		if (Runner.LocalPlayer != player) { return; }
-		//ここから下は本人のみ実行
-		localRemoteReparation.RemoteViewCreate(Runner, Runner.LocalPlayer);
-		if(Runner.SessionInfo.PlayerCount  > 1)
+		Room currentRoom = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
+		if (currentRoom != null)
 		{
-			RPCManager.Instance.Rpc_RequestRoomData(Runner.LocalPlayer);
+			if (currentRoom.LeaderPlayerRef == player && Runner.IsSharedModeMasterClient)
+			{
+				Runner.SetMasterClient(currentRoom.LeaderPlayerRef);
+			}
 		}
-
-		if (!Runner.IsSharedModeMasterClient) { return; }
-		//ここから下はマスターのみ実行
-		Debug.LogWarning($"<color=yellow>MasterJoin</color>");
 		RPCManager rpcManager = FindObjectOfType<RPCManager>();
-		if (rpcManager != null) { return; }
-		MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
-		Transform masterTransform = masterServer.transform;
-		NetworkObject networkObject = Runner.Spawn(_rpcManagerPrefab);
-		rpcManager = networkObject.GetComponent<RPCManager>();
-		rpcManager.transform.parent = masterTransform;
+		if (Runner.LocalPlayer != player) { return; }
+
+		if (Runner.IsSharedModeMasterClient)
+		{
+			//ここから下はマスターのみ実行
+			Debug.LogWarning($"<color=yellow>MasterJoin</color>");
+			if (rpcManager == null)
+			{
+				MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
+				Transform masterTransform = masterServer.transform;
+				NetworkObject networkObject = Runner.Spawn(_rpcManagerPrefab);
+				rpcManager = networkObject.GetComponent<RPCManager>();
+				rpcManager.transform.parent = masterTransform;
+			}
+		}
+		localRemoteReparation.RemoteViewCreate(Runner, Runner.LocalPlayer);
+		
 
 	}
 
