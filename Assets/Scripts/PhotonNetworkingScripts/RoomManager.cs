@@ -100,7 +100,6 @@ public class Room
 
 	public void Join(PlayerRef playerRef, string sessionName)
 	{
-		Debug.LogWarning("<color=black>" + sessionName + "</color>");
 		_roomPlayers.Add(new RoomPlayer(playerRef, sessionName));
 	}
 
@@ -115,7 +114,7 @@ public class Room
 		int index = _roomPlayers.IndexOf(playerRef);
 		//éQâ¡ÇµÇƒÇ¢Ç»Ç©Ç¡ÇΩèÍçá
 		if (index < 0) { return RoomManager.LeftResult.Fail; }
-		RPCManager.Instance.Rpc_DestroyLeaderObject(_roomPlayers[_leaderIndex].PlayerData);
+		RPCManager.Instance.Rpc_DestroyLeaderObject(LeaderPlayerRef);
 		_roomPlayers.RemoveAt(index);
 
 		//ïîâÆÇÃÉÅÉìÉoÅ[Ç™Ç¢Ç»Ç¢èÍçá
@@ -128,7 +127,7 @@ public class Room
 		{
 			int nextLeaderIndex = Random.Range(0, _roomPlayers.Count);
 			RPCManager.Instance.Rpc_InstanceLeaderObject(_roomPlayers[nextLeaderIndex].PlayerData);
-			ChengeLeader(nextLeaderIndex);
+			ChangeLeader(nextLeaderIndex);
 
 			result = RoomManager.LeftResult.LeaderChanged;
 		}
@@ -136,11 +135,12 @@ public class Room
 		return result;
 	}
 
-	public void ChengeLeader(PlayerRef nextLeaderPlayer)
+	public void ChangeLeader(PlayerRef nextLeaderPlayer)
 	{
+		
 		_leaderIndex = _roomPlayers.IndexOf(nextLeaderPlayer);
 	}
-	private void ChengeLeader(int nextLeaderIndex)
+	private void ChangeLeader(int nextLeaderIndex)
 	{
 		_leaderIndex = nextLeaderIndex;
 	}
@@ -305,10 +305,10 @@ public class RoomManager : MonoBehaviour
 
 	public void LeaderChange(PlayerRef leaderPlayer)
 	{
-		Debug.LogWarning(leaderPlayer);
+		Debug.LogWarning($"<color=lime>NewLeaderPlayer</color>:{leaderPlayer}");
 		Room roomTemp = GetCurrentRoom(leaderPlayer);
-
-		roomTemp.ChengeLeader(leaderPlayer);
+		RPCManager.Instance.Rpc_DestroyLeaderObject(roomTemp.LeaderPlayerRef);
+		roomTemp.ChangeLeader(leaderPlayer);
 	}
 
 	/// <summary>
