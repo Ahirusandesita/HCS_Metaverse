@@ -72,21 +72,23 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		JoinOrCreateSession(sessionName);
 	}
 
-	[ContextMenu("Grab")]
+	[ContextMenu("Left")]
 	private void TestTest()
 	{
-		GateOfFusion.Instance.Grab(_testNetworkObject);
+		RPCManager.Instance.Rpc_RoomLeftOrClose(Runner.LocalPlayer);
 	}
 
 	[ContextMenu("")]
 	private void TestTestTest()
 	{
+
 	}
 
 	[ContextMenu("Test")]
 	public void TestTestTestTest()
 	{
 		NetworkObject[] networkObjects = new NetworkObject[1];
+		if (_testNetworkObject == null) { return; }
 		networkObjects[0] = _testNetworkObject;
 		Runner.RegisterSceneObjects(Runner.GetSceneRef(_testNetworkObject.gameObject), networkObjects);
 	}
@@ -144,7 +146,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	}
 	public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
 	{
-		
+
 
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
 		if (currentRoom != null)
@@ -161,17 +163,16 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		{
 			//ここから下はマスターのみ実行
 			Debug.LogWarning($"<color=yellow>MasterJoin</color>");
-			if (rpcManager == null)
-			{
-				MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
-				Transform masterTransform = masterServer.transform;
-				NetworkObject networkObject = Runner.Spawn(_rpcManagerPrefab);
-				rpcManager = networkObject.GetComponent<RPCManager>();
-				rpcManager.transform.parent = masterTransform;
-			}
+
+			MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
+			Transform masterTransform = masterServer.transform;
+			NetworkObject networkObject = Runner.Spawn(_rpcManagerPrefab);
+			rpcManager = networkObject.GetComponent<RPCManager>();
+			rpcManager.transform.parent = masterTransform;
+
 		}
 		localRemoteReparation.RemoteViewCreate(Runner, Runner.LocalPlayer);
-		
+
 
 	}
 

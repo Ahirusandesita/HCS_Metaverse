@@ -19,6 +19,7 @@ public class RPCManager : NetworkBehaviour
 	public async override void Spawned()
 	{
 		Debug.LogWarning($"<color=yellow>RPCManager_Spawned</color>");
+		RoomManager.Instance.Test();
 		MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
 		SessionNameChangedHandler += masterServer.JoinOrCreateSession;
 		_instance = this;
@@ -31,7 +32,10 @@ public class RPCManager : NetworkBehaviour
 				_instance.Rpc_RequestRoomData(Runner.LocalPlayer);
 			}
 		}
-		FindObjectOfType<TestGameZone>().Open();
+		if(RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer) == null)
+		{
+			FindObjectOfType<TestGameZone>().Open();
+		}
 		masterServer.TestTestTestTest();
 	}
 
@@ -90,7 +94,7 @@ public class RPCManager : NetworkBehaviour
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 	public void Rpc_RequestRoomData(PlayerRef requestPlayer)
 	{
-		Debug.LogWarning("<color=orange>Rpc_RequestRoomData</color>");
+		Debug.LogWarning($"<color=orange>Rpc_RequestRoomData:{requestPlayer}</color>");
 		Room roomTemp = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
 		if (roomTemp is null) { return; }
 		bool isLeader = roomTemp.LeaderIndex == roomTemp[Runner.LocalPlayer];
@@ -102,6 +106,7 @@ public class RPCManager : NetworkBehaviour
 	private void Rpc_SendRoomData([RpcTarget] PlayerRef rpcTarget
 		, WorldType worldType, PlayerRef playerRef, bool isLeader, string sessionName, int roomNumber = -1)
 	{
+		Debug.LogWarning($"<color=orange>Rpc_SendRoomData</color>:{playerRef}");
 		RoomManager.Instance.JoinOrCreate(worldType, playerRef, sessionName, roomNumber);
 		if (isLeader)
 		{
