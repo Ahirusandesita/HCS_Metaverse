@@ -41,11 +41,13 @@ public class GateOfFusion
 			Debug.LogWarning("<color=lime>©•ª‚ªŒ ŒÀ‚ğ‚Á‚Ä‚¢‚Ü‚·</color>");
 			return;
 		}
+		RPCManager.Instance.Rpc_GrabStateAuthorityChanged(networkObject);
 		networkObject.RequestStateAuthority();
+
 	}
 
 	public void Release(NetworkObject networkObject)
 	{
-
+		RPCManager.Instance.Rpc_ReleseStateAuthorityChanged(networkObject);
 	}
 }

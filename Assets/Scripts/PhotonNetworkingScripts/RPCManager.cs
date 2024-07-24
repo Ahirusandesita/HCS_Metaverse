@@ -58,18 +58,21 @@ public class RPCManager : NetworkBehaviour
 		SessionNameChangedHandler?.Invoke(sessionName);
 	}
 
-	[Rpc(RpcSources.All, RpcTargets.All)]
-	public void Rpc_StateAuthorityChanged(NetworkObject networkObject)
+	[Rpc(RpcSources.All, RpcTargets.All,InvokeLocal = false)]
+	public void Rpc_GrabStateAuthorityChanged(NetworkObject networkObject)
 	{
 		StateAuthorityData stateAuthorityData = networkObject.GetComponent<StateAuthorityData>();
-		if (networkObject.HasStateAuthority)
-		{
-			stateAuthorityData.IsGrabbable = true;
-		}
-		else
+		if (!networkObject.HasStateAuthority)
 		{
 			stateAuthorityData.IsGrabbable = false;
 		}
+	}
+
+	[Rpc(RpcSources.All,RpcTargets.All,InvokeLocal = false)]
+	public void Rpc_ReleseStateAuthorityChanged(NetworkObject networkObject)
+	{
+		StateAuthorityData stateAuthorityData = networkObject.GetComponent<StateAuthorityData>();
+		stateAuthorityData.IsGrabbable = true;
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All)]
