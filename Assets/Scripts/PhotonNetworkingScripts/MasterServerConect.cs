@@ -75,22 +75,12 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	[ContextMenu("Grab")]
 	private void TestTest()
 	{
-		Debug.LogWarning($"Grab:");
-		StateAuthorityData stateAuthorityData = _testNetworkObject.GetComponent<StateAuthorityData>();
-		if (stateAuthorityData.IsNotReleaseStateAuthority)
-		{
-			Debug.LogWarning($"<color=red>権限がありませんでした</color>");
-			return;
-		}
-		GetStateAuthority(_testNetworkObject);
-
+		GateOfFusion.Instance.Grab(_testNetworkObject);
 	}
 
-
-	[ContextMenu("RequestState")]
+	[ContextMenu("")]
 	private void TestTestTest()
 	{
-		_testNetworkObject.RequestStateAuthority();
 	}
 
 	[ContextMenu("Test")]
@@ -101,20 +91,6 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		Runner.RegisterSceneObjects(Runner.GetSceneRef(_testNetworkObject.gameObject), networkObjects);
 	}
 
-
-	/// <summary>
-	/// 状態変更権限を自分のにする
-	/// </summary>
-	/// <param name="networkObject">取得したいオブジェクト</param>
-	public void GetStateAuthority(NetworkObject networkObject)
-	{
-		if (networkObject.HasStateAuthority)
-		{
-			Debug.LogWarning("<color=lime>自分が権限を持っています</color>");
-			return;
-		}
-		networkObject.RequestStateAuthority();
-	}
 
 	/// <summary>
 	/// ルームに入る。ない場合は作る
