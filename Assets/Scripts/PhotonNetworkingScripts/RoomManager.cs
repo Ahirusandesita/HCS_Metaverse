@@ -336,20 +336,20 @@ public class RoomManager : MonoBehaviour
 	}
 
 	[ContextMenu("DebugRoomData")]
-	private void Test()
+	public void Test()
 	{
 		foreach (Room room in _rooms)
 		{
 			Debug.LogWarning(
 				"SessionName:" + room.NextSessionName +
-				"LeaderWithCount:" + room.WithLeaderSessionCount +
+				",LeaderWithCount:" + room.WithLeaderSessionCount +
 				"\nLeader:" + room.JoinRoomPlayer[room.LeaderIndex].PlayerData +
-				"PlayerCount:" + room.JoinRoomPlayer.Count);
+				",PlayerCount:" + room.JoinRoomPlayer.Count);
 			foreach (Room.RoomPlayer roomPlayer in room.JoinRoomPlayer)
 			{
 				Debug.LogError(
 					"SessionName:" + roomPlayer.SessionName +
-					$"PlayerName:{roomPlayer.PlayerData}");
+					$",PlayerName:{roomPlayer.PlayerData}");
 			}
 		}
 		Debug.LogWarning(_rooms.Count);
