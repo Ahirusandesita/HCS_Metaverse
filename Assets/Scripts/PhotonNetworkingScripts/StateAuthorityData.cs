@@ -16,7 +16,7 @@ public class StateAuthorityData : NetworkBehaviour
     [Networked]
     public bool IsNotReleaseStateAuthority { get; set; }
     public event AuthrityHandler OnAuthrity;
-    private bool isGrabbable;
+    private bool isGrabbable = true;
     public bool IsGrabbable
     {
         get
