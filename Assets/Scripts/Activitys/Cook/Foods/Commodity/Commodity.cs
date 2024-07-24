@@ -41,16 +41,22 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
 
     private PointableUnityEventWrapper pointableUnityEventWrapper;
     public event PointableHandler OnPointable;
+    private GrabObjectScale grabObjectScale;
 
     private void Awake()
     {
         pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
-        if(pointableUnityEventWrapper == null)
-        {
-            Debug.LogError(this.gameObject.name + "‚ªNull");
-        }
+
         pointableUnityEventWrapper.WhenSelect.AddListener((data) => OnPointable?.Invoke(new GrabEventArgs(GrabType.Grab)));
         pointableUnityEventWrapper.WhenUnselect.AddListener((data) => OnPointable?.Invoke(new GrabEventArgs(GrabType.UnGrab)));
+        grabObjectScale = new GrabObjectScale();
+        grabObjectScale.StartSize = this.transform.lossyScale;
+    }
+
+    public void Grab()
+    {
+        this.transform.parent = null;
+        this.transform.localScale = grabObjectScale.StartSize;
     }
 
     public void InjectPutableOnDish(IPutableOnDish putableOnDish)

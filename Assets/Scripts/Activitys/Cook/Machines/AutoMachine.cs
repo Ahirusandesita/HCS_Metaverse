@@ -54,7 +54,7 @@ public class AutoMachine : Machine
                 {
                     if (eventArgs.GrabType == GrabType.Grab)
                     {
-                        commodity.transform.parent = null;
+                        commodity.Grab();
                     }
                 };
                 processingAction = null;
