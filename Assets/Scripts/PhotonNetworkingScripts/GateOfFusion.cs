@@ -55,13 +55,13 @@ public class GateOfFusion
 	public async void ActivityStart(string sceneName)
 	{
 		//アクティビティスタート
-		Room currentRoom = RoomManager.Instance.GetCurrentRoom(_networkRunner.LocalPlayer);
+		Room currentRoom = RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer);
 		if (currentRoom is null)
 		{
 			XDebug.LogWarning("どのルームにも入っていません", KumaDebugColor.ErrorColor);
 			return;
 		}
-		if (currentRoom.LeaderPlayerRef != _networkRunner.LocalPlayer)
+		if (currentRoom.LeaderPlayerRef != NetworkRunner.LocalPlayer)
 		{
 			XDebug.LogWarning("リーダーではありません", KumaDebugColor.ErrorColor);
 			return;
@@ -69,11 +69,11 @@ public class GateOfFusion
 		string sessionName = currentRoom.NextSessionName;
 		foreach (Room.RoomPlayer roomPlayer in currentRoom.JoinRoomPlayer)
 		{
-			if (roomPlayer.PlayerData == _networkRunner.LocalPlayer) { continue; }
+			if (roomPlayer.PlayerData == NetworkRunner.LocalPlayer) { continue; }
 			RPCManager.Instance.Rpc_JoinSession(sessionName, roomPlayer.PlayerData);
 		}
 		await UniTask.WaitUntil(() => currentRoom.WithLeaderSessionCount <= 0);
-		MasterServer.JoinOrCreateSession(sessionName);
-		await _networkRunner.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
+		await MasterServer.JoinOrCreateSession(sessionName);
+		await NetworkRunner.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
 	}
 }

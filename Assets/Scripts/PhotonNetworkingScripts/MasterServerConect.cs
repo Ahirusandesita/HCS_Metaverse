@@ -77,7 +77,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	/// <summary>
 	/// ƒ‹[ƒ€‚É“ü‚éB‚È‚¢ê‡‚Íì‚é
 	/// </summary>
-	public async void JoinOrCreateSession(string sessionName)
+	public async UniTask JoinOrCreateSession(string sessionName)
 	{
 		RPCManager.Instance.Rpc_ChangeRoomSessionName(Runner.LocalPlayer, sessionName);
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);

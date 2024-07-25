@@ -2,11 +2,9 @@ using Fusion;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
-public delegate void SessionNameChanged(string name);
 
 public class RPCManager : NetworkBehaviour
 {
-	public event SessionNameChanged SessionNameChangedHandler;
 
 	[SerializeField]
 	private GameObject _leaderObjectPrefab;
@@ -21,7 +19,6 @@ public class RPCManager : NetworkBehaviour
 		Debug.LogWarning($"<color=yellow>RPCManager_Spawned</color>");
 		RoomManager.Instance.Test();
 		MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
-		SessionNameChangedHandler += masterServer.JoinOrCreateSession;
 		_instance = this;
 
 		if (Runner.SessionInfo.PlayerCount == 2)
@@ -55,11 +52,11 @@ public class RPCManager : NetworkBehaviour
 	/// <param name="sessionName">セッション名</param>
 	/// <param name="rpcTarget">RPCの対象プレイヤー</param>
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
-	public void Rpc_JoinSession(string sessionName, [RpcTarget] PlayerRef rpcTarget = new())
+	public async void Rpc_JoinSession(string sessionName, [RpcTarget] PlayerRef rpcTarget = new())
 	{
 		Debug.LogError("RpcJoin");
 		//実行
-		SessionNameChangedHandler?.Invoke(sessionName);
+		await FindObjectOfType<MasterServerConect>().JoinOrCreateSession(sessionName);
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All,InvokeLocal = false)]
