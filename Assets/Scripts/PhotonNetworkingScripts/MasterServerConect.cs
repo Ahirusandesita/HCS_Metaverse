@@ -29,7 +29,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	[SerializeField]
 	private LocalRemoteSeparation localRemoteReparation;
 	[SerializeField]
-	private RegisterSceneInInspector sceneName;
+	private RegisterSceneInInspector _sceneName;
 
 
 	/// <summary>
@@ -45,46 +45,16 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		await Connect("Room");
 	}
 
-	[ContextMenu("ActivityStart")]
-	private void Acaca()
-	{
-		ActivityStart();
-	}
-	public async void ActivityStart()
-	{
-		//アクティビティスタート
-		Room currentRoom = RoomManager.Instance.GetCurrentRoom(_networkRunner.LocalPlayer);
-		if (currentRoom is null)
-		{
-			XDebug.LogColor("どのルームにも入っていません",KumaDebugColor.ErrorColor);
-			return;
-		}
-		if(currentRoom.LeaderPlayerRef != _networkRunner.LocalPlayer) 
-		{
-			XDebug.LogColor("リーダーではありません", KumaDebugColor.ErrorColor);
-			return; 
-		}
-		string sessionName = currentRoom.NextSessionName;
-		foreach (Room.RoomPlayer roomPlayer in currentRoom.JoinRoomPlayer)
-		{
-			if (roomPlayer.PlayerData == _networkRunner.LocalPlayer) { continue; }
-			RPCManager.Instance.Rpc_JoinSession(sessionName, roomPlayer.PlayerData);
-		}
-		await UniTask.WaitUntil(() => currentRoom.WithLeaderSessionCount <= 0);
-		JoinOrCreateSession(sessionName);
-		await Runner.LoadScene("CookActivity", LoadSceneMode.Single);
-	}
-
 	[ContextMenu("Left")]
 	private void TestTest()
 	{
 		RPCManager.Instance.Rpc_RoomLeftOrClose(Runner.LocalPlayer);
 	}
 
-	[ContextMenu("")]
+	[ContextMenu("klkl")]
 	private void TestTestTest()
 	{
-
+		XDebug.LogWarning(_sceneName + ":awaw", KumaDebugColor.TempColor);
 	}
 
 	[ContextMenu("Test")]

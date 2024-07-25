@@ -6,4 +6,5 @@ public static class KumaDebugColor
 	public static Color ExecuteColor => Color.yellow;
 	public static Color ExitColor => Color.cyan;
 	public static string RpcColor => "orange";
+	public static string TempColor => "lime";
 }

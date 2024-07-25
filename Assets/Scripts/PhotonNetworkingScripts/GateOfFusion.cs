@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using Cysharp.Threading.Tasks;
 
 public class GateOfFusion
 {
@@ -49,5 +50,30 @@ public class GateOfFusion
 	public void Release(NetworkObject networkObject)
 	{
 		RPCManager.Instance.Rpc_ReleseStateAuthorityChanged(networkObject);
+	}
+
+	public async void ActivityStart(string sceneName)
+	{
+		//アクティビティスタート
+		Room currentRoom = RoomManager.Instance.GetCurrentRoom(_networkRunner.LocalPlayer);
+		if (currentRoom is null)
+		{
+			XDebug.LogWarning("どのルームにも入っていません", KumaDebugColor.ErrorColor);
+			return;
+		}
+		if (currentRoom.LeaderPlayerRef != _networkRunner.LocalPlayer)
+		{
+			XDebug.LogWarning("リーダーではありません", KumaDebugColor.ErrorColor);
+			return;
+		}
+		string sessionName = currentRoom.NextSessionName;
+		foreach (Room.RoomPlayer roomPlayer in currentRoom.JoinRoomPlayer)
+		{
+			if (roomPlayer.PlayerData == _networkRunner.LocalPlayer) { continue; }
+			RPCManager.Instance.Rpc_JoinSession(sessionName, roomPlayer.PlayerData);
+		}
+		await UniTask.WaitUntil(() => currentRoom.WithLeaderSessionCount <= 0);
+		MasterServer.JoinOrCreateSession(sessionName);
+		await _networkRunner.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
 	}
 }
