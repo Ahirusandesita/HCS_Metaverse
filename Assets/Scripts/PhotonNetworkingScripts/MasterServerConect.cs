@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Photon.Voice.Unity;
 using Photon.Voice.Fusion;
 using Cysharp.Threading.Tasks;
+using UnityEngine.UI;
 
 public interface IMasterServerConectable
 {
@@ -31,7 +32,8 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	[SerializeField]
 	private RegisterSceneInInspector _sceneName;
 
-
+	[SerializeField]
+	private Text _text;
 	/// <summary>
 	/// このクラスはランナーとの紐づけはしないためラップする
 	/// </summary>
@@ -103,7 +105,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	public async UniTask Connect(string SessionName)
 	{
 		// "Room"という名前のルームに参加する（ルームが存在しなければ作成して参加する）
-		await _networkRunner.StartGame(new StartGameArgs
+		StartGameResult result = await _networkRunner.StartGame(new StartGameArgs
 		{
 			//StartGameCancellationToken = destroyCancellationToken,
 			GameMode = GameMode.Shared,
@@ -111,6 +113,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 			SceneManager = _networkRunner.GetComponent<NetworkSceneManagerDefault>()
 		}
 		);
+		_text.text = result.Ok ? "Success" : "fail" + "\n" + result.ShutdownReason + "\n" + result.ErrorMessage + "\n" + result.StackTrace;
 		_networkRunner.GetComponent<FusionVoiceClient>().PrimaryRecorder = _recorder;
 		Debug.LogWarning("Connect");
 	}
