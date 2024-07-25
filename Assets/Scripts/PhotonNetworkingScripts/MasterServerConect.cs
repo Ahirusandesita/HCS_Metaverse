@@ -124,6 +124,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	}
 	public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
 	{
+		XDebug.LogWarning($"JoinSession:{player}", KumaDebugColor.NotificationColor);
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
 		if (currentRoom != null)
 		{
