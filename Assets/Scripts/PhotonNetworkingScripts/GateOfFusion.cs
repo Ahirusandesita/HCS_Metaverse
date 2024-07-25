@@ -22,6 +22,10 @@ public class GateOfFusion
 			}
 			return _networkRunner;
 		}
+		set
+		{
+			_networkRunner = value;
+		}
 	}
 
 	/// <summary>
