@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 2316817440790014429}
   - component: {fileID: 1974665677016300141}
   - component: {fileID: -3329805760814974985}
+  - component: {fileID: 6323647407871834527}
+  - component: {fileID: 4540733175409425832}
   m_Layer: 7
   m_Name: MeatAndTomato
   m_TagString: Untagged
@@ -53,6 +55,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   commodityAsset: {fileID: 11400000, guid: b947467542ca83c4a8bbf5b5dbc81fa9, type: 2}
+  stateAuthority: {fileID: 0}
 --- !u!114 &2316817440790014429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,6 +117,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1676082f09d57134fb7c3c978b371b71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6323647407871834527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 972525112594119794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 1656941389
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 4540733175409425832}
+--- !u!114 &4540733175409425832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 972525112594119794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 826b17ef5a16c854bb99e8c9b1835040, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _IsNotReleaseStateAuthority: 0
 --- !u!1 &1161976638822330236
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,7 +13,7 @@ public class PutCanvasInHand : MonoBehaviour
 
     [SerializeField]
     private GameObject button;
-    
+
     [SerializeField]
     private Transform cameraTransform;
     [SerializeField]
@@ -23,6 +23,9 @@ public class PutCanvasInHand : MonoBehaviour
 
     [SerializeField]
     private HandType startHandType;
+
+    [SerializeField]
+    private MasterServerConect masterServerConect;
 
     private void Awake()
     {
@@ -48,6 +51,15 @@ public class PutCanvasInHand : MonoBehaviour
             Quaternion quaternion = handType == HandType.LeftHand ? Quaternion.Euler(180f, 0f, 0f) : Quaternion.Euler(0f, 0f, 0f);
             button.transform.localPosition = position;
             button.transform.localRotation = quaternion;
+        }
+    }
+
+
+    private void Update()
+    {
+        if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch))
+        {
+            masterServerConect.ActivityStart();
         }
     }
 }

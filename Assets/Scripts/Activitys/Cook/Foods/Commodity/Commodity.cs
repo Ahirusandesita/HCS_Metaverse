@@ -5,7 +5,7 @@ using UnityEngine;
 using Oculus.Interaction;
 using Oculus.Interaction.HandGrab;
 using System;
-
+using Fusion;
 public interface ICommodityModerator
 {
     void SetCommodityAsset(CommodityAsset commodityAsset);
@@ -43,14 +43,35 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
     public event PointableHandler OnPointable;
     private GrabObjectScale grabObjectScale;
 
+    [SerializeField]
+    private StateAuthorityData stateAuthority;
+    private NetworkRunner networkRunner;
     private void Awake()
     {
         pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
 
         pointableUnityEventWrapper.WhenSelect.AddListener((data) => OnPointable?.Invoke(new GrabEventArgs(GrabType.Grab)));
         pointableUnityEventWrapper.WhenUnselect.AddListener((data) => OnPointable?.Invoke(new GrabEventArgs(GrabType.UnGrab)));
+
+        pointableUnityEventWrapper.WhenSelect.AddListener((data) => GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()));
+        pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
+
         grabObjectScale = new GrabObjectScale();
         grabObjectScale.StartSize = this.transform.lossyScale;
+
+        stateAuthority.OnAuthrity += (data) =>
+        {
+            if (data.Authrity)
+            {
+                switchableGrabbableActive.Active();
+            }
+            else if (data.Authrity)
+            {
+                switchableGrabbableActive.Inactive();
+            }
+        };
+
+        networkRunner = GateOfFusion.Instance.NetworkRunner;
     }
 
     public void Grab()
@@ -124,7 +145,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
                         this.putableOnDish = collisionCommodity.putableOnDish;
                     }
                     this.putableOnDish.CommodityReset();
-                    Commodity createCommodity = Instantiate(mixCommodity, this.transform.position, this.transform.rotation);
+                    Commodity createCommodity = networkRunner.Spawn(mixCommodity.gameObject, this.transform.position, this.transform.rotation).GetComponent<Commodity>();
                     createCommodity.PutOnDish(this.putableOnDish, isOnDish);
                     createCommodity.GetComponent<Rigidbody>().isKinematic = false;
                 }

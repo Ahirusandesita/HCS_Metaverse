@@ -679,6 +679,8 @@ GameObject:
   - component: {fileID: -1305418259555924950}
   - component: {fileID: 5645420130332732306}
   - component: {fileID: 4328336496274317158}
+  - component: {fileID: 5384253706248299866}
+  - component: {fileID: 3932201002910991287}
   m_Layer: 7
   m_Name: Meat
   m_TagString: Untagged
@@ -819,6 +821,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1676082f09d57134fb7c3c978b371b71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5384253706248299866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8838167042068629020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 3773084197
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 3932201002910991287}
+--- !u!114 &3932201002910991287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8838167042068629020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 826b17ef5a16c854bb99e8c9b1835040, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _IsNotReleaseStateAuthority: 0
 --- !u!1 &8847524376906037000
 GameObject:
   m_ObjectHideFlags: 0

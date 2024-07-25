@@ -5,6 +5,7 @@ using UniRx;
 using Oculus.Interaction;
 using Oculus.Interaction.HandGrab;
 
+using Fusion;
 public interface IIngrodientsModerator
 {
     IngrodientsAsset IngrodientsAsset { set; }
@@ -44,6 +45,10 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator, ISwitchableGrabb
 
     private CommodityFactory commodityFactory;
 
+    private NetworkRunner networkRunner;
+
+    private PointableUnityEventWrapper pointableUnityEventWrapper;
+
     private void Awake()
     {
         this.commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
@@ -52,6 +57,13 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator, ISwitchableGrabb
         {
             ingrodientsDetailInformations.Add(new IngrodientsDetailInformation(ingrodientsDetailInformation.ProcessingType,ingrodientsDetailInformation.TimeItTakes,ingrodientsDetailInformation.Commodity));
         }
+
+        pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
+
+        pointableUnityEventWrapper.WhenSelect.AddListener((data) => GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()));
+        pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
+
+        networkRunner = GateOfFusion.Instance.NetworkRunner;
     }
 
 
@@ -80,8 +92,8 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator, ISwitchableGrabb
     public Commodity ProcessingStart(ProcessingType processingType,Transform machineTransform)
     {
         Commodity commodity = commodityFactory.Generate(this, processingType);
-        Commodity instanceCommodity = Instantiate(commodity, this.transform.position, this.transform.rotation)/*.transform.parent = machineTransform*/;
-        Destroy(this.gameObject);
+        Commodity instanceCommodity = networkRunner.Spawn(commodity.gameObject, this.transform.position, this.transform.rotation).GetComponent<Commodity>();//NetworkRunnnerSpawn /*.transform.parent = machineTransform*/;
+        networkRunner.Despawn(this.gameObject.GetComponent<NetworkObject>());
         return instanceCommodity;
     }
 

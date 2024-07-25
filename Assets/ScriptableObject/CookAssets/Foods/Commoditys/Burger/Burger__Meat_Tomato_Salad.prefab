@@ -787,6 +787,8 @@ GameObject:
   - component: {fileID: 422721559500762382}
   - component: {fileID: 4541445745333329430}
   - component: {fileID: -5415064089113941893}
+  - component: {fileID: 2229241782196394284}
+  - component: {fileID: 5819859796100409102}
   m_Layer: 7
   m_Name: Burger__Meat_Tomato_Salad
   m_TagString: Untagged
@@ -829,6 +831,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   commodityAsset: {fileID: 11400000, guid: e49a6d8d8420a9d4293987c725d26019, type: 2}
+  stateAuthority: {fileID: 0}
 --- !u!114 &422721559500762382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -890,6 +893,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1676082f09d57134fb7c3c978b371b71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2229241782196394284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8890433767066406274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 826b17ef5a16c854bb99e8c9b1835040, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _IsNotReleaseStateAuthority: 0
+--- !u!114 &5819859796100409102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8890433767066406274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 3292729784
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 2229241782196394284}
 --- !u!1001 &467851581089265451
 PrefabInstance:
   m_ObjectHideFlags: 0
