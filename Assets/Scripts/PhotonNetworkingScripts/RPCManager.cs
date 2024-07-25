@@ -32,10 +32,10 @@ public class RPCManager : NetworkBehaviour
 				_instance.Rpc_RequestRoomData(Runner.LocalPlayer);
 			}
 		}
-		if(RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer) == null)
-		{
-			FindObjectOfType<TestGameZone>().Open();
-		}
+		//if(RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer) == null)
+		//{
+		//	FindObjectOfType<TestGameZone>().Open();
+		//}
 		masterServer.TestTestTestTest();
 	}
 
