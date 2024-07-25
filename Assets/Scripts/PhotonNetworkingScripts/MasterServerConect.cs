@@ -50,6 +50,11 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	{
 		RPCManager.Instance.Rpc_RoomLeftOrClose(Runner.LocalPlayer);
 	}
+	[ContextMenu("ActivityStart")]
+	private void Test()
+	{
+		GateOfFusion.Instance.ActivityStart(_sceneName);
+	}
 
 	[ContextMenu("klkl")]
 	private void TestTestTest()
