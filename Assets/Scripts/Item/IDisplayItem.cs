@@ -46,5 +46,47 @@ public interface IDisplayItem
         displayItem.InjectSelectedNotification(caller);
         return displayItem;
     }
+
+    private static Fusion.NetworkRunner NetworkRunner => GateOfFusion.Instance.NetworkRunner;
+
+    static IDisplayItem InstantiateSync(ItemAsset item, ISelectedNotification caller)
+    {
+        var displayItem = NetworkRunner.Spawn(item.DisplayItem.gameObject).GetComponent<IDisplayItem>();
+        var itemSelectArgs = new ItemSelectArgs(id: item.ID, name: item.Name, gameObject: displayItem.gameObject);
+        displayItem.InjectItemSelectArgs(itemSelectArgs);
+        displayItem.InjectSelectedNotification(caller);
+        return displayItem;
+    }
+
+    static IDisplayItem InstantiateSync(ItemAsset item, Transform parent, ISelectedNotification caller)
+    {
+        var tmpDisplayItem = NetworkRunner.Spawn(item.DisplayItem.gameObject);
+        tmpDisplayItem.transform.SetParent(parent);
+        var displayItem = tmpDisplayItem.GetComponent<IDisplayItem>();
+        var itemSelectArgs = new ItemSelectArgs(id: item.ID, name: item.Name, gameObject: displayItem.gameObject);
+        displayItem.InjectItemSelectArgs(itemSelectArgs);
+        displayItem.InjectSelectedNotification(caller);
+        return displayItem;
+    }
+
+    static IDisplayItem InstantiateSync(ItemAsset item, Vector3 position, Quaternion rotation, ISelectedNotification caller)
+    {
+        var displayItem = NetworkRunner.Spawn(item.DisplayItem.gameObject, position, rotation).GetComponent<IDisplayItem>();
+        var itemSelectArgs = new ItemSelectArgs(item.ID, item.Name, position, displayItem.gameObject);
+        displayItem.InjectItemSelectArgs(itemSelectArgs);
+        displayItem.InjectSelectedNotification(caller);
+        return displayItem;
+    }
+
+    static IDisplayItem InstantiateSync(ItemAsset item, Vector3 position, Quaternion rotation, Transform parent, ISelectedNotification caller)
+    {
+        var tmpDisplayItem = NetworkRunner.Spawn(item.DisplayItem.gameObject, position, rotation);
+        tmpDisplayItem.transform.SetParent(parent);
+        var displayItem = tmpDisplayItem.GetComponent<IDisplayItem>();
+        var itemSelectArgs = new ItemSelectArgs(item.ID, item.Name, position, displayItem.gameObject);
+        displayItem.InjectItemSelectArgs(itemSelectArgs);
+        displayItem.InjectSelectedNotification(caller);
+        return displayItem;
+    }
     #endregion
 }
