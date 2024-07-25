@@ -14,8 +14,6 @@ public interface IMasterServerConectable
 
 public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMasterServerConectable
 {
-	private bool _debugBool = false;
-
 	[SerializeField]
 	private NetworkPrefabRef _rpcManagerPrefab;
 	[SerializeField]
@@ -24,14 +22,14 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	private NetworkRunner _networkRunnerPrefab;
 
 	private NetworkRunner _networkRunner;
-	[SerializeField]
-	private RegisterSceneInInspector activityName;
 
 	[SerializeField]
 	private NetworkObject _testNetworkObject;
 
 	[SerializeField]
 	private LocalRemoteSeparation localRemoteReparation;
+	[SerializeField]
+	private RegisterSceneInInspector sceneName;
 
 
 	/// <summary>
@@ -58,18 +56,23 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(_networkRunner.LocalPlayer);
 		if (currentRoom is null)
 		{
-			Debug.LogWarning("どのルームにも入っていません");
+			XDebug.LogColor("どのルームにも入っていません",KumaDebugColor.ErrorColor);
 			return;
+		}
+		if(currentRoom.LeaderPlayerRef != _networkRunner.LocalPlayer) 
+		{
+			XDebug.LogColor("リーダーではありません", KumaDebugColor.ErrorColor);
+			return; 
 		}
 		string sessionName = currentRoom.NextSessionName;
 		foreach (Room.RoomPlayer roomPlayer in currentRoom.JoinRoomPlayer)
 		{
 			if (roomPlayer.PlayerData == _networkRunner.LocalPlayer) { continue; }
-			Debug.LogWarning(roomPlayer.PlayerData);
 			RPCManager.Instance.Rpc_JoinSession(sessionName, roomPlayer.PlayerData);
 		}
 		await UniTask.WaitUntil(() => currentRoom.WithLeaderSessionCount <= 0);
 		JoinOrCreateSession(sessionName);
+		await Runner.LoadScene("CookActivity", LoadSceneMode.Single);
 	}
 
 	[ContextMenu("Left")]
@@ -146,8 +149,6 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	}
 	public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
 	{
-
-
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
 		if (currentRoom != null)
 		{
@@ -158,22 +159,17 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		}
 		RPCManager rpcManager = FindObjectOfType<RPCManager>();
 		if (Runner.LocalPlayer != player) { return; }
-
 		if (Runner.IsSharedModeMasterClient)
 		{
 			//ここから下はマスターのみ実行
 			Debug.LogWarning($"<color=yellow>MasterJoin</color>");
-
 			MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
 			Transform masterTransform = masterServer.transform;
 			NetworkObject networkObject = Runner.Spawn(_rpcManagerPrefab);
 			rpcManager = networkObject.GetComponent<RPCManager>();
 			rpcManager.transform.parent = masterTransform;
-
 		}
 		localRemoteReparation.RemoteViewCreate(Runner, Runner.LocalPlayer);
-
-
 	}
 
 	public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
