@@ -48,7 +48,7 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator, ISwitchableGrabb
     private NetworkRunner networkRunner;
 
     private PointableUnityEventWrapper pointableUnityEventWrapper;
-
+    private StateAuthorityData stateAuthority;
     private void Awake()
     {
         this.commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
@@ -64,6 +64,19 @@ public class Ingrodients : MonoBehaviour,IIngrodientsModerator, ISwitchableGrabb
         pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
 
         networkRunner = GateOfFusion.Instance.NetworkRunner;
+
+        this.stateAuthority = this.GetComponent<StateAuthorityData>();
+        stateAuthority.OnAuthrity += (data) =>
+        {
+            if (data.Authrity)
+            {
+                switchableGrabbableActive.Active();
+            }
+            else if (data.Authrity)
+            {
+                switchableGrabbableActive.Inactive();
+            }
+        };
     }
 
 

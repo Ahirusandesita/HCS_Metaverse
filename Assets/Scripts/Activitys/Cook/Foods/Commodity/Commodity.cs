@@ -59,6 +59,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
         grabObjectScale = new GrabObjectScale();
         grabObjectScale.StartSize = this.transform.lossyScale;
 
+        this.stateAuthority = this.GetComponent<StateAuthorityData>();
         stateAuthority.OnAuthrity += (data) =>
         {
             if (data.Authrity)
