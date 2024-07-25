@@ -42,7 +42,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
         var itemSelectArgs = selectArgs as ItemSelectArgs;
         var asset = foodItemAsset.GetItemAssetByID(itemSelectArgs.id);
         var position = itemSelectArgs.position;
-        var foodItem = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
+        var foodItem = IDisplayItem.InstantiateSync(asset, position, Quaternion.identity, this);
         displayFoods.Add(foodItem.gameObject);
         displayFoods.Remove(itemSelectArgs.gameObject);
     }
