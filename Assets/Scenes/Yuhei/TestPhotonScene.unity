@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731713, g: 0.13414738, b: 0.121078536, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1828,6 +1828,10 @@ PrefabInstance:
       propertyPath: _testNetworkObject
       value: 
       objectReference: {fileID: 1940321115}
+    - target: {fileID: 4177287145026017418, guid: 4fa54e5eec46828498093a64a48029bf, type: 3}
+      propertyPath: activityName.selectedIndex
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8157958962586161535, guid: 4fa54e5eec46828498093a64a48029bf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.1939337
