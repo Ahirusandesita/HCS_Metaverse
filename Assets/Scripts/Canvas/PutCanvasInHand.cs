@@ -57,7 +57,7 @@ public class PutCanvasInHand : MonoBehaviour
 
     private void Update()
     {
-        if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch))
+        if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch)|| Input.GetKeyDown(KeyCode.W))
         {
             Debug.LogError("EEE");
             GateOfFusion.Instance.ActivityStart("CookActivity");
