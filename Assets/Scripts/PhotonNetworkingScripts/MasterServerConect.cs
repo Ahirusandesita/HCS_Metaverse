@@ -99,6 +99,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		_networkRunner = Instantiate(_networkRunnerPrefab);
 		// NetworkRunnerのコールバック対象に、このスクリプト（GameLauncher）を登録する
 		_networkRunner.AddCallbacks(this);
+		GateOfFusion.Instance.NetworkRunner = _networkRunner;
 		Debug.LogWarning("UpdateRunner");
 	}
 
