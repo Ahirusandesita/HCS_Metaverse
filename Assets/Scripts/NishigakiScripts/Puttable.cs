@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 public class Puttable : MonoBehaviour
 {
-    private LockedCuttingObject _parentLockedCuttingObject = default;
+    private LockedCuttingBoard _parentLockedCuttingObject = default;
 
     // 掴んだ時や離した時にイベントを実行するクラス
     private PointableUnityEventWrapper _pointableUnityEventWrapper;
@@ -18,7 +18,7 @@ public class Puttable : MonoBehaviour
        
     }
 
-    public void SetLockedCuttingObject(LockedCuttingObject lockedCuttingObject)
+    public void SetLockedCuttingObject(LockedCuttingBoard lockedCuttingObject)
     {
         // 
         _parentLockedCuttingObject = lockedCuttingObject;

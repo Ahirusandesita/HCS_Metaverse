@@ -30,6 +30,7 @@ public class Throwable : MonoBehaviour
         // ThrowDataを生成する
         _throwData = new ThrowData(_thisTransform.position);
 
+        // VRのEventに処理を登録する
         pointableUnityEventWrapper = this.GetComponent<PointableUnityEventWrapper>();
         pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
         pointableUnityEventWrapper.WhenUnselect.AddListener((action) => { UnSelect(); });
@@ -56,7 +57,7 @@ public class Throwable : MonoBehaviour
         // 情報の初期化を行う
         _throwData.ReSetThrowData(_thisTransform.position);
 
-        // 
+        // 掴んでいる状態にする
         _isSelected = true;
     }
 
@@ -74,7 +75,7 @@ public class Throwable : MonoBehaviour
         // 1フレーム後にベクトルを上書きする
         StartCoroutine(OverwriteVelocity(throwVector));
 
-        // 
+        // 離している状態にする
         _isSelected = false;
     }
 
