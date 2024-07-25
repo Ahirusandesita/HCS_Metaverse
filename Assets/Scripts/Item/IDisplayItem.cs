@@ -1,6 +1,7 @@
 using UnityEngine;
 using Oculus.Interaction;
 using Fusion;
+using Cysharp.Threading.Tasks;
 
 public interface IDisplayItem
 {
@@ -79,9 +80,11 @@ public interface IDisplayItem
     /// <summary>
     /// ‚±‚ê•ÊƒNƒ‰ƒX‚É•ª‚¯‚é
     /// </summary>
-    static IDisplayItem InstantiateSync(ItemAsset item, Vector3 position, Quaternion rotation, ISelectedNotification caller)
+    static async UniTask<IDisplayItem> InstantiateSync(ItemAsset item, Vector3 position, Quaternion rotation, ISelectedNotification caller)
     {
-        var displayItem = NetworkRunner.Spawn(item.DisplayItem.gameObject, position, rotation).GetComponent<IDisplayItem>();
+        XDebug.LogError($"Item:{NetworkRunner},Interface:{item.DisplayItem.gameObject.name}", Color.black);
+        var a = await  NetworkRunner.SpawnAsync(item.DisplayItem.gameObject, position, rotation);
+        var displayItem =a.GetComponent<IDisplayItem>();
         var itemSelectArgs = new ItemSelectArgs(item.ID, item.Name, position, displayItem.gameObject);
         displayItem.InjectItemSelectArgs(itemSelectArgs);
         displayItem.InjectSelectedNotification(caller);

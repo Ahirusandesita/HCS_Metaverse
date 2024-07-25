@@ -37,12 +37,12 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
 #endif
     }
 
-    public void Select(SelectArgs selectArgs)
+    public async void Select(SelectArgs selectArgs)
     {
         var itemSelectArgs = selectArgs as ItemSelectArgs;
         var asset = foodItemAsset.GetItemAssetByID(itemSelectArgs.id);
         var position = itemSelectArgs.position;
-        var foodItem = IDisplayItem.InstantiateSync(asset, position, Quaternion.identity, this);
+        var foodItem = await IDisplayItem.InstantiateSync(asset, position, Quaternion.identity, this);
         displayFoods.Add(foodItem.gameObject);
         displayFoods.Remove(itemSelectArgs.gameObject);
     }
@@ -52,7 +52,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
 
     }
 
-    public void OnStart()
+    public async void OnStart()
     {
         displayFoods = new List<GameObject>();
 
@@ -60,7 +60,8 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
         {
             var asset = foodItemAsset.GetItemAssetByID(food.FoodID);
             var position = food.FoodBox.position + Vector3.up;
-            var foodItem = IDisplayItem.InstantiateSync(asset, position, Quaternion.identity, this);
+
+            var foodItem = await IDisplayItem.InstantiateSync(asset, position, Quaternion.identity, this);
             displayFoods.Add(foodItem.gameObject);
         }
     }
