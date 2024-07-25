@@ -14,32 +14,22 @@ public class RPCManager : NetworkBehaviour
 	private static RPCManager _instance;
 	public static RPCManager Instance { get => _instance; }
 
-	public async override void Spawned()
+	public override void Spawned()
 	{
 		Debug.LogWarning($"<color=yellow>RPCManager_Spawned</color>");
 		RoomManager.Instance.Test();
-		MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
 		_instance = this;
 
-		if (Runner.SessionInfo.PlayerCount == 2)
+		if (GateOfFusion.Instance.NetworkRunner.SessionInfo.PlayerCount > 1)
 		{
-			await UniTask.WaitForSeconds(1f);
-			if (Runner.SessionInfo.PlayerCount > 1)
-			{
-				_instance.Rpc_RequestRoomData(Runner.LocalPlayer);
-			}
+			_instance.Rpc_RequestRoomData(GateOfFusion.Instance.NetworkRunner.LocalPlayer);
 		}
-		//if(RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer) == null)
-		//{
-		//	FindObjectOfType<TestGameZone>().Open();
-		//}
-		masterServer.TestTestTestTest();
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All)]
 	public void Rpc_ChangeRoomSessionName(PlayerRef chengeTarget, string nextSessionName)
 	{
-		Debug.LogError(
+		Debug.LogWarning(
 			$"ChangeSessionName:{nextSessionName}" +
 			$"\nPlayerName:{chengeTarget}");
 		RoomManager.Instance.ChengeSessionName(chengeTarget, nextSessionName);
@@ -59,7 +49,7 @@ public class RPCManager : NetworkBehaviour
 		await FindObjectOfType<MasterServerConect>().JoinOrCreateSession(sessionName);
 	}
 
-	[Rpc(RpcSources.All, RpcTargets.All,InvokeLocal = false)]
+	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 	public void Rpc_GrabStateAuthorityChanged(NetworkObject networkObject)
 	{
 		StateAuthorityData stateAuthorityData = networkObject.GetComponent<StateAuthorityData>();
@@ -69,7 +59,7 @@ public class RPCManager : NetworkBehaviour
 		}
 	}
 
-	[Rpc(RpcSources.All,RpcTargets.All,InvokeLocal = false)]
+	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 	public void Rpc_ReleseStateAuthorityChanged(NetworkObject networkObject)
 	{
 		StateAuthorityData stateAuthorityData = networkObject.GetComponent<StateAuthorityData>();
@@ -127,5 +117,5 @@ public class RPCManager : NetworkBehaviour
 		Destroy(_leaderObject);
 	}
 
-	
+
 }

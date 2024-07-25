@@ -347,7 +347,7 @@ public class RoomManager : MonoBehaviour
 				",PlayerCount:" + room.JoinRoomPlayer.Count);
 			foreach (Room.RoomPlayer roomPlayer in room.JoinRoomPlayer)
 			{
-				Debug.LogError(
+				Debug.LogWarning(
 					"SessionName:" + roomPlayer.SessionName +
 					$",PlayerName:{roomPlayer.PlayerData}");
 			}
