@@ -251,11 +251,11 @@ public class RoomManager : MonoBehaviour
 		}
 
 		roomTemp.Join(playerRef, currentSessionName);
-		Debug.LogWarning(
-			"<color=orange>Join</color>:" + worldType +
-			"Result:" + result +
-			"roomNum:" + roomTemp.Number +
-			"\nPlayer:" + playerRef);
+
+		XDebug.LogWarning($"Join:{worldType}," +
+			$"Result:{result}\nRoomNum:{roomTemp.Number}," +
+			$"Player:{playerRef}",
+			KumaDebugColor.NotificationColor);
 
 		return result;
 	}
@@ -268,10 +268,10 @@ public class RoomManager : MonoBehaviour
 	{
 		Room joinedRoom = GetCurrentRoom(playerRef);
 		if (joinedRoom is null) { return; }
-		Debug.LogWarning(
-			"<color=cyan>Left</color>:" + joinedRoom.WorldType
-			+ "\nRoomNum:" + joinedRoom.Number
-			+ "Player:" + playerRef);
+		XDebug.LogWarning(
+			$"Left:{joinedRoom.WorldType}" +
+			$"\nRoomNum:{joinedRoom.Number}" +
+			$"Player:{playerRef}", KumaDebugColor.NotificationColor);
 		LeftResult result = joinedRoom.Left(playerRef);
 		if (result == LeftResult.Closable)
 		{
@@ -280,7 +280,7 @@ public class RoomManager : MonoBehaviour
 		}
 		else if (result == LeftResult.Fail)
 		{
-			Debug.LogError("参加していません");
+			XDebug.LogError("ルームに参加していません", KumaDebugColor.ErrorColor);
 		}
 	}
 
@@ -297,7 +297,7 @@ public class RoomManager : MonoBehaviour
 		Room room = GetCurrentRoom(playerRef);
 		if (room == null)
 		{
-			Debug.LogWarning("ルームが見つかりませんでした");
+			XDebug.LogError("ルームが見つかりませんでした", KumaDebugColor.ErrorColor);
 			return;
 		}
 		room.ChengeSessionName(playerRef, currentSessionName);
@@ -305,7 +305,7 @@ public class RoomManager : MonoBehaviour
 
 	public void LeaderChange(PlayerRef leaderPlayer)
 	{
-		Debug.LogWarning($"<color=lime>NewLeaderPlayer</color>:{leaderPlayer}");
+		XDebug.LogWarning($"NewLeader{leaderPlayer}", KumaDebugColor.NotificationColor);
 		Room roomTemp = GetCurrentRoom(leaderPlayer);
 		RPCManager.Instance.Rpc_DestroyLeaderObject(roomTemp.LeaderPlayerRef);
 		roomTemp.ChangeLeader(leaderPlayer);
@@ -340,18 +340,16 @@ public class RoomManager : MonoBehaviour
 	{
 		foreach (Room room in _rooms)
 		{
-			Debug.LogWarning(
-				"SessionName:" + room.NextSessionName +
-				",LeaderWithCount:" + room.WithLeaderSessionCount +
-				"\nLeader:" + room.JoinRoomPlayer[room.LeaderIndex].PlayerData +
-				",PlayerCount:" + room.JoinRoomPlayer.Count);
+			XDebug.LogWarning(
+				$"RoomData::,NextSessionName:{room.NextSessionName}" +
+				$",LeaderWithCount:{room.WithLeaderSessionCount}\n" +
+				$"Leader:{room.LeaderPlayerRef}," +
+				$"PlayerCount{room.JoinRoomPlayer.Count}",KumaDebugColor.InformationColor);
 			foreach (Room.RoomPlayer roomPlayer in room.JoinRoomPlayer)
 			{
-				Debug.LogWarning(
-					"SessionName:" + roomPlayer.SessionName +
-					$",PlayerName:{roomPlayer.PlayerData}");
+				XDebug.LogWarning($"RoomPlayer:{roomPlayer.PlayerData}" +
+					$"PlayerSessionData:{roomPlayer.SessionName}",KumaDebugColor.InformationColor);
 			}
 		}
-		Debug.LogWarning(_rooms.Count);
 	}
 }
