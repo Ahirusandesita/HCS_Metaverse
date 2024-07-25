@@ -18,7 +18,6 @@ namespace UnityEditor
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             label = EditorGUI.BeginProperty(position, label, property);
-            EditorGUI.BeginChangeCheck();
 
             // èââÒÇÃÇ›é¿çs
             if (!isExecuted)
@@ -37,11 +36,8 @@ namespace UnityEditor
 
             // InspectorÇÃï\é¶Çägí£
             int newValue = EditorGUI.Popup(position, label.text, seletedIndexProperty.intValue, sceneNames);
-            if (EditorGUI.EndChangeCheck())
-            {
-                seletedIndexProperty.intValue = newValue;
-                nameProperty.stringValue = sceneNames[seletedIndexProperty.intValue];
-            }
+            seletedIndexProperty.intValue = newValue;
+            nameProperty.stringValue = sceneNames[seletedIndexProperty.intValue];
             EditorGUI.EndProperty();
         }
 
