@@ -43,7 +43,12 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	{
 		_networkRunner = Instantiate(_networkRunnerPrefab);
 		_networkRunner.AddCallbacks(this);
-
+		if (FindObjectsOfType<MasterServerConect>().Length > 1)
+		{
+			Destroy(this.gameObject);
+			return;
+		}
+		DontDestroyOnLoad(this.gameObject);
 		await Connect("Room");
 	}
 
@@ -61,7 +66,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	[ContextMenu("klkl")]
 	private void TestTestTest()
 	{
-		XDebug.LogWarning(_sceneName + ":awaw", KumaDebugColor.TempColor);
+		Runner.LoadScene(_sceneName, LoadSceneMode.Single);
 	}
 
 	[ContextMenu("Test")]
@@ -85,7 +90,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		await UniTask.WaitUntil(() => currentRoom.JoinRoomPlayer[leaderIndex].SessionName == sessionName);
 		RoomManager.Instance.Initialize(Runner.LocalPlayer);
 		NetworkRunner oldRunner = _networkRunner;
-		InstanceNetworkRunner();
+		await InstanceNetworkRunner();
 		await Connect(sessionName);
 		await oldRunner.Shutdown(true, ShutdownReason.HostMigration);
 	}
@@ -93,10 +98,12 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	/// <summary>
 	/// ネットワークランナーを生成してコールバック対象にする
 	/// </summary>
-	private void InstanceNetworkRunner()
+	private async UniTask InstanceNetworkRunner()
 	{
 		// NetworkRunnerを生成する
-		_networkRunner = Instantiate(_networkRunnerPrefab);
+		AsyncInstantiateOperation<NetworkRunner> objectTemp = InstantiateAsync(_networkRunnerPrefab);
+		 await objectTemp;
+		_networkRunner = objectTemp.Result[0];
 		// NetworkRunnerのコールバック対象に、このスクリプト（GameLauncher）を登録する
 		_networkRunner.AddCallbacks(this);
 		GateOfFusion.Instance.NetworkRunner = _networkRunner;
@@ -178,6 +185,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 
 	public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
 	{
+		XDebug.LogError("DisconnectedFromServer:", Color.red);
 	}
 
 	public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
