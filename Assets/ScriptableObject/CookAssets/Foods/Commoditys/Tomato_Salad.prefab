@@ -66,6 +66,8 @@ GameObject:
   - component: {fileID: 5961400282698467207}
   - component: {fileID: 6077402614559394399}
   - component: {fileID: -2684237547625597780}
+  - component: {fileID: 2938523740343983687}
+  - component: {fileID: 2317295252069589833}
   m_Layer: 7
   m_Name: Tomato_Salad
   m_TagString: Untagged
@@ -106,6 +108,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   commodityAsset: {fileID: 11400000, guid: b90e43066cb74c249b26645819e04740, type: 2}
+  stateAuthority: {fileID: 0}
 --- !u!114 &5961400282698467207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,6 +170,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1676082f09d57134fb7c3c978b371b71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2938523740343983687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 714584066099676930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 826b17ef5a16c854bb99e8c9b1835040, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _IsNotReleaseStateAuthority: 0
+--- !u!114 &2317295252069589833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 714584066099676930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 2580883556
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 2938523740343983687}
 --- !u!1 &1284005424269174316
 GameObject:
   m_ObjectHideFlags: 0

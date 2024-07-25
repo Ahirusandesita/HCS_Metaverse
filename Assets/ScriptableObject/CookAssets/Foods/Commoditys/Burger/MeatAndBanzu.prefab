@@ -304,6 +304,8 @@ GameObject:
   - component: {fileID: 2511012605141952510}
   - component: {fileID: 1141461397896251584}
   - component: {fileID: -551502863899629050}
+  - component: {fileID: 6480760792959233836}
+  - component: {fileID: 6734508259967496177}
   m_Layer: 7
   m_Name: MeatAndBanzu
   m_TagString: Untagged
@@ -344,6 +346,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   commodityAsset: {fileID: 11400000, guid: 7d8d1b46b76435d4988820fd4309fa90, type: 2}
+  stateAuthority: {fileID: 0}
 --- !u!54 &2511012605141952510
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -405,6 +408,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1676082f09d57134fb7c3c978b371b71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6480760792959233836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2724284899508978560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 826b17ef5a16c854bb99e8c9b1835040, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _IsNotReleaseStateAuthority: 0
+--- !u!114 &6734508259967496177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2724284899508978560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 220856226
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 6480760792959233836}
 --- !u!1 &3235710923864443451
 GameObject:
   m_ObjectHideFlags: 0

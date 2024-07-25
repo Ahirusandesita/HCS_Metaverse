@@ -719,6 +719,8 @@ GameObject:
   - component: {fileID: 7538559038176088847}
   - component: {fileID: 7117650539179240230}
   - component: {fileID: -5602784213941617851}
+  - component: {fileID: 9041009894086853715}
+  - component: {fileID: 8274921827486224630}
   m_Layer: 7
   m_Name: BakedMeat
   m_TagString: Untagged
@@ -758,6 +760,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   commodityAsset: {fileID: 11400000, guid: fed1cbe3148278244b5f7f4b4b5c8a31, type: 2}
+  stateAuthority: {fileID: 0}
 --- !u!54 &7538559038176088847
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -819,6 +822,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1676082f09d57134fb7c3c978b371b71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &9041009894086853715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8160667927022990374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 1678516796
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 8274921827486224630}
+--- !u!114 &8274921827486224630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8160667927022990374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 826b17ef5a16c854bb99e8c9b1835040, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _IsNotReleaseStateAuthority: 0
 --- !u!1 &8190632699224079982
 GameObject:
   m_ObjectHideFlags: 0
