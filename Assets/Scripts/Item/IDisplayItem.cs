@@ -1,5 +1,6 @@
 using UnityEngine;
 using Oculus.Interaction;
+using Fusion;
 
 public interface IDisplayItem
 {
@@ -47,8 +48,11 @@ public interface IDisplayItem
         return displayItem;
     }
 
-    private static Fusion.NetworkRunner NetworkRunner => GateOfFusion.Instance.NetworkRunner;
+    private static NetworkRunner NetworkRunner => GateOfFusion.Instance.NetworkRunner;
 
+    /// <summary>
+    /// これ別クラスに分ける
+    /// </summary>
     static IDisplayItem InstantiateSync(ItemAsset item, ISelectedNotification caller)
     {
         var displayItem = NetworkRunner.Spawn(item.DisplayItem.gameObject).GetComponent<IDisplayItem>();
@@ -58,6 +62,9 @@ public interface IDisplayItem
         return displayItem;
     }
 
+    /// <summary>
+    /// これ別クラスに分ける
+    /// </summary>
     static IDisplayItem InstantiateSync(ItemAsset item, Transform parent, ISelectedNotification caller)
     {
         var tmpDisplayItem = NetworkRunner.Spawn(item.DisplayItem.gameObject);
@@ -69,6 +76,9 @@ public interface IDisplayItem
         return displayItem;
     }
 
+    /// <summary>
+    /// これ別クラスに分ける
+    /// </summary>
     static IDisplayItem InstantiateSync(ItemAsset item, Vector3 position, Quaternion rotation, ISelectedNotification caller)
     {
         var displayItem = NetworkRunner.Spawn(item.DisplayItem.gameObject, position, rotation).GetComponent<IDisplayItem>();
@@ -78,15 +88,18 @@ public interface IDisplayItem
         return displayItem;
     }
 
-    static IDisplayItem InstantiateSync(ItemAsset item, Vector3 position, Quaternion rotation, Transform parent, ISelectedNotification caller)
+    /// <summary>
+    /// これ別クラスに分ける
+    /// </summary>
+    static NetworkObject InstantiateSync(ItemAsset item, Vector3 position, Quaternion rotation, Transform parent, ISelectedNotification caller)
     {
-        var tmpDisplayItem = NetworkRunner.Spawn(item.DisplayItem.gameObject, position, rotation);
-        tmpDisplayItem.transform.SetParent(parent);
-        var displayItem = tmpDisplayItem.GetComponent<IDisplayItem>();
+        var networkObject = NetworkRunner.Spawn(item.DisplayItem.gameObject, position, rotation);
+        networkObject.transform.SetParent(parent);
+        var displayItem = networkObject.GetComponent<IDisplayItem>();
         var itemSelectArgs = new ItemSelectArgs(item.ID, item.Name, position, displayItem.gameObject);
         displayItem.InjectItemSelectArgs(itemSelectArgs);
         displayItem.InjectSelectedNotification(caller);
-        return displayItem;
+        return networkObject;
     }
     #endregion
 }
