@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 
 public class GateOfFusion
 {
+	private bool _canUsePhoton = default;
 	private NetworkRunner _networkRunner = default;
 	private static GateOfFusion _instance = default;
 	private MasterServerConect _masterServer = default;
@@ -27,6 +28,8 @@ public class GateOfFusion
 			_networkRunner = value;
 		}
 	}
+
+	public bool IsCanUsePhoton { get => _canUsePhoton; set => _canUsePhoton = value; }
 
 	/// <summary>
 	/// ’Í‚Þ‚Æ‚«‚ÉŒÄ‚Ô

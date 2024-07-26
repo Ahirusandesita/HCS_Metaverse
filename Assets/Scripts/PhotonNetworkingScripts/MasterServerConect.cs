@@ -102,12 +102,12 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	{
 		// NetworkRunnerを生成する
 		AsyncInstantiateOperation<NetworkRunner> objectTemp = InstantiateAsync(_networkRunnerPrefab);
-		 await objectTemp;
+		await objectTemp;
 		_networkRunner = objectTemp.Result[0];
 		// NetworkRunnerのコールバック対象に、このスクリプト（GameLauncher）を登録する
 		_networkRunner.AddCallbacks(this);
 		GateOfFusion.Instance.NetworkRunner = _networkRunner;
-		XDebug.LogWarning("UpdateRunner",KumaDebugColor.NotificationColor);
+		XDebug.LogWarning("UpdateRunner", KumaDebugColor.NotificationColor);
 	}
 
 	public async UniTask Connect(string SessionName)
@@ -121,9 +121,12 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 			SceneManager = _networkRunner.GetComponent<NetworkSceneManagerDefault>()
 		}
 		);
-		_text.text = result.Ok ? "Success" : "fail" + "\n" + result.ShutdownReason + "\n" + result.ErrorMessage + "\n" + result.StackTrace;
+		_text.text = result.Ok ? "Success" : "Fail" + "\n" + result.ShutdownReason + "\n" + result.ErrorMessage + "\n" + result.StackTrace;
 		_networkRunner.GetComponent<FusionVoiceClient>().PrimaryRecorder = _recorder;
-		XDebug.LogWarning("Connect",KumaDebugColor.NotificationColor);
+
+		GateOfFusion.Instance.IsCanUsePhoton = result.Ok;
+
+		XDebug.LogWarning("Connect:" + (result.Ok ? "Success" : "Fail"), KumaDebugColor.NotificationColor);
 	}
 
 	public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
