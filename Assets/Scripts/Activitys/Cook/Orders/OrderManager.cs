@@ -117,6 +117,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
         instance.InjectOrderManager(this);
 
         customer.InjectRemoteOrder(instance);
+        Debug.LogWarning("PoPo");
     }
     private void Start()
     {
