@@ -260,6 +260,7 @@ GameObject:
   - component: {fileID: -33548605984697096}
   - component: {fileID: 8545687421581469319}
   - component: {fileID: 2693829979260616583}
+  - component: {fileID: 6943009862222842888}
   m_Layer: 7
   m_Name: CattedTomato
   m_TagString: Untagged
@@ -379,6 +380,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 2693829979260616583}
+  - {fileID: 6943009862222842888}
 --- !u!114 &2693829979260616583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -392,6 +394,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _IsNotReleaseStateAuthority: 0
+--- !u!114 &6943009862222842888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1533418474943626885}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
 --- !u!1 &1950323892247095200
 GameObject:
   m_ObjectHideFlags: 0
