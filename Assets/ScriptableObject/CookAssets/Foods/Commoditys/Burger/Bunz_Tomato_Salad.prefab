@@ -185,6 +185,7 @@ GameObject:
   - component: {fileID: -7345644606966183578}
   - component: {fileID: 3923057885528642976}
   - component: {fileID: 4747855238827818000}
+  - component: {fileID: 8260877868949621766}
   m_Layer: 7
   m_Name: Bunz_Tomato_Salad
   m_TagString: Untagged
@@ -306,6 +307,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 4747855238827818000}
+  - {fileID: 8260877868949621766}
 --- !u!114 &4747855238827818000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -319,6 +321,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _IsNotReleaseStateAuthority: 0
+--- !u!114 &8260877868949621766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 563161898823742931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
 --- !u!1 &1626570583806510247
 GameObject:
   m_ObjectHideFlags: 0

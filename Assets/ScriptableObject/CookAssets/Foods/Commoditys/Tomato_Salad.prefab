@@ -68,6 +68,7 @@ GameObject:
   - component: {fileID: -2684237547625597780}
   - component: {fileID: 2938523740343983687}
   - component: {fileID: 2317295252069589833}
+  - component: {fileID: 2223922523349407298}
   m_Layer: 7
   m_Name: Tomato_Salad
   m_TagString: Untagged
@@ -201,6 +202,23 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 2938523740343983687}
+  - {fileID: 2223922523349407298}
+--- !u!114 &2223922523349407298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 714584066099676930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
 --- !u!1 &1284005424269174316
 GameObject:
   m_ObjectHideFlags: 0

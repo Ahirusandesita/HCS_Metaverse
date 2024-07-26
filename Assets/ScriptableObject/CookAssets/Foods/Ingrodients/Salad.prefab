@@ -191,6 +191,7 @@ GameObject:
   - component: {fileID: 601657627656894596}
   - component: {fileID: 2156384550907591629}
   - component: {fileID: 8276699945407225908}
+  - component: {fileID: 263063388803635081}
   m_Layer: 7
   m_Name: Salad
   m_TagString: Untagged
@@ -431,6 +432,23 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 2156384550907591629}
+  - {fileID: 263063388803635081}
+--- !u!114 &263063388803635081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3206259490211938747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
 --- !u!1 &3498574826486432006
 GameObject:
   m_ObjectHideFlags: 0
