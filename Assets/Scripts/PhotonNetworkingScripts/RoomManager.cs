@@ -114,7 +114,6 @@ public class Room
 		int index = _roomPlayers.IndexOf(playerRef);
 		//参加していなかった場合
 		if (index < 0) { return RoomManager.LeftResult.Fail; }
-		RPCManager.Instance.Rpc_DestroyLeaderObject(LeaderPlayerRef);
 		_roomPlayers.RemoveAt(index);
 
 		//部屋のメンバーがいない場合
@@ -126,7 +125,7 @@ public class Room
 		if (_leaderIndex == index)
 		{
 			int nextLeaderIndex = Random.Range(0, _roomPlayers.Count);
-			RPCManager.Instance.Rpc_InstanceLeaderObject(_roomPlayers[nextLeaderIndex].PlayerData);
+			RoomManager.Instance.DestroyLeaderObject();
 			ChangeLeader(nextLeaderIndex);
 
 			result = RoomManager.LeftResult.LeaderChanged;
@@ -137,7 +136,6 @@ public class Room
 
 	public void ChangeLeader(PlayerRef nextLeaderPlayer)
 	{
-		
 		_leaderIndex = _roomPlayers.IndexOf(nextLeaderPlayer);
 	}
 	private void ChangeLeader(int nextLeaderIndex)
@@ -173,6 +171,9 @@ public class RoomManager : MonoBehaviour
 		Fail
 	}
 
+	[SerializeField]
+	private GameObject _leaderObjectPrefab;
+	private GameObject _leaderObject;
 	private static RoomManager _instance = default;
 	private List<Room> _rooms = new();
 	private int[] _roomCounter = default;
@@ -242,7 +243,7 @@ public class RoomManager : MonoBehaviour
 		{
 			if (roomNumber < 0) { roomNumber = _rooms.Count; }
 			roomTemp = Create(worldType, roomNumber, currentSessionName);
-			RPCManager.Instance.Rpc_InstanceLeaderObject(playerRef);
+			InstantiateLeaderObject();
 			result = JoinOrCreateResult.Create;
 		}
 		else
@@ -258,6 +259,18 @@ public class RoomManager : MonoBehaviour
 			KumaDebugColor.NotificationColor);
 
 		return result;
+	}
+
+	public void InstantiateLeaderObject()
+	{
+		if (_leaderObject) { return; }
+		_leaderObject = Instantiate(_leaderObjectPrefab);
+	}
+
+	public void DestroyLeaderObject()
+	{
+		if (!_leaderObject) { return; }
+		Destroy(_leaderObject);
 	}
 
 	/// <summary>
@@ -307,7 +320,12 @@ public class RoomManager : MonoBehaviour
 	{
 		XDebug.LogWarning($"NewLeader{leaderPlayer}", KumaDebugColor.NotificationColor);
 		Room roomTemp = GetCurrentRoom(leaderPlayer);
+		//前のリーダーのリーダーオブジェクトを破棄する
 		RPCManager.Instance.Rpc_DestroyLeaderObject(roomTemp.LeaderPlayerRef);
+		if(leaderPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer)
+		{
+			InstantiateLeaderObject();
+		}
 		roomTemp.ChangeLeader(leaderPlayer);
 	}
 

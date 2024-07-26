@@ -5,10 +5,6 @@ using UnityEngine;
 public class RPCManager : NetworkBehaviour
 {
 
-	[SerializeField]
-	private GameObject _leaderObjectPrefab;
-
-	private GameObject _leaderObject;
 
 	private static RPCManager _instance;
 	public static RPCManager Instance { get => _instance; }
@@ -100,20 +96,18 @@ public class RPCManager : NetworkBehaviour
 		}
 	}
 
-	[Rpc(RpcSources.All, RpcTargets.All)]
+	[Rpc(RpcSources.All, RpcTargets.All,InvokeLocal = false)]
 	public void Rpc_InstanceLeaderObject([RpcTarget] PlayerRef rpcTarget)
 	{
-		Debug.LogWarning("<color=orange>Rpc_InstanceLeaderObject</color>:" + _leaderObject);
-		if (_leaderObject) { return; }
-		_leaderObject = Instantiate(_leaderObjectPrefab);
+		Debug.LogWarning($"<color=orange>Rpc_InstanceLeaderObject</color>:{rpcTarget}");
+		RoomManager.Instance.InstantiateLeaderObject();
 	}
 
-	[Rpc(RpcSources.All, RpcTargets.All)]
+	[Rpc(RpcSources.All, RpcTargets.All,InvokeLocal =false)]
 	public void Rpc_DestroyLeaderObject([RpcTarget] PlayerRef rpcTarget)
 	{
-		Debug.LogWarning("<color=orange>Rpc_DestroyLeaderObject</color>:" + _leaderObject);
-		if (!_leaderObject) { return; }
-		Destroy(_leaderObject);
+		Debug.LogWarning("<color=orange>Rpc_DestroyLeaderObject</color>:" + rpcTarget);
+		RoomManager.Instance.DestroyLeaderObject();
 	}
 
 
