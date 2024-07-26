@@ -78,6 +78,14 @@ public class GateOfFusion
 		}
 		await UniTask.WaitUntil(() => currentRoom.WithLeaderSessionCount <= 0);
 		await MasterServer.JoinOrCreateSession(sessionName);
-		await NetworkRunner.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
+		if (currentRoom.LeaderPlayerRef == NetworkRunner.LocalPlayer)
+		{
+			await UniTask.WaitUntil(() => NetworkRunner.IsSharedModeMasterClient);
+			await NetworkRunner.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
+		}
+		else if (NetworkRunner.IsSharedModeMasterClient)
+		{
+			NetworkRunner.SetMasterClient(currentRoom.LeaderPlayerRef);
+		}
 	}
 }
