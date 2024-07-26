@@ -107,7 +107,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		// NetworkRunnerのコールバック対象に、このスクリプト（GameLauncher）を登録する
 		_networkRunner.AddCallbacks(this);
 		GateOfFusion.Instance.NetworkRunner = _networkRunner;
-		Debug.LogWarning("UpdateRunner");
+		XDebug.LogWarning("UpdateRunner",KumaDebugColor.NotificationColor);
 	}
 
 	public async UniTask Connect(string SessionName)
@@ -123,7 +123,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		);
 		_text.text = result.Ok ? "Success" : "fail" + "\n" + result.ShutdownReason + "\n" + result.ErrorMessage + "\n" + result.StackTrace;
 		_networkRunner.GetComponent<FusionVoiceClient>().PrimaryRecorder = _recorder;
-		Debug.LogWarning("Connect");
+		XDebug.LogWarning("Connect",KumaDebugColor.NotificationColor);
 	}
 
 	public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
@@ -137,13 +137,6 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	{
 		XDebug.LogWarning($"JoinSession:{player}", KumaDebugColor.NotificationColor);
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
-		if (currentRoom != null)
-		{
-			if (currentRoom.LeaderPlayerRef == player && Runner.IsSharedModeMasterClient)
-			{
-				Runner.SetMasterClient(currentRoom.LeaderPlayerRef);
-			}
-		}
 		RPCManager rpcManager = FindObjectOfType<RPCManager>();
 		if (Runner.LocalPlayer != player) { return; }
 		if (Runner.IsSharedModeMasterClient)
