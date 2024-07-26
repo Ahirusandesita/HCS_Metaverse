@@ -6,6 +6,7 @@ using Oculus.Interaction;
 using Oculus.Interaction.HandGrab;
 using System;
 using Fusion;
+using Cysharp.Threading.Tasks;
 public interface ICommodityModerator
 {
     void SetCommodityAsset(CommodityAsset commodityAsset);
@@ -131,7 +132,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
         }
         return false;
     }
-    private void OnCollisionEnter(Collision collision)
+    private async void OnCollisionEnter(Collision collision)
     {
         if (collision.transform.root.transform.GetComponentInChildren<Commodity>())
         {
@@ -146,7 +147,8 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
                         this.putableOnDish = collisionCommodity.putableOnDish;
                     }
                     this.putableOnDish.CommodityReset();
-                    Commodity createCommodity = networkRunner.Spawn(mixCommodity.gameObject, this.transform.position, this.transform.rotation).GetComponent<Commodity>();
+                    NetworkObject networkObject = await networkRunner.SpawnAsync(mixCommodity.gameObject, this.transform.position, this.transform.rotation);
+                    Commodity createCommodity = networkObject.GetComponent<Commodity>();
                     createCommodity.PutOnDish(this.putableOnDish, isOnDish);
                     createCommodity.GetComponent<Rigidbody>().isKinematic = false;
                 }

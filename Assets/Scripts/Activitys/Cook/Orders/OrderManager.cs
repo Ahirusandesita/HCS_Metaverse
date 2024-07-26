@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 public interface IOrderable
 {
-    void Order(CommodityAsset commodityAsset,CustomerInformation customer);
+    void Order(CommodityAsset commodityAsset, CustomerInformation customer);
 }
 public interface ISubmitable
 {
@@ -56,23 +56,30 @@ public class CustomerInformation
 }
 
 
-    public class OrderTicket
+public class OrderTicket
+{
+    public readonly IOrderable Orderable;
+    public readonly CustomerInformation CustomerInformation;
+    public OrderTicket(IOrderable orderable, CustomerInformation customer)
     {
-        public readonly IOrderable Orderable;
-        public readonly CustomerInformation CustomerInformation;
-        public OrderTicket(IOrderable orderable,CustomerInformation customer)
-        {
-            this.Orderable = orderable;
-            this.CustomerInformation = customer;
-        }
+        this.Orderable = orderable;
+        this.CustomerInformation = customer;
     }
+}
 public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
 {
+    //Test
+    [SerializeField]
+    private OrderAsset orderAsset;
+    [SerializeField]
+    private Customer customer;
+    //
+
     public class NullOrderable : IOrderable
     {
         public void Order(CommodityAsset commodityAsset, CustomerInformation customer)
         {
-            
+
         }
     }
 
@@ -91,15 +98,29 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     public event ResetOrderArrayHandler OnResetOrder;
 
     private int orderCode = 0;
+    [SerializeField]
+    private RemoteOrder remoteOrder;
     private void Awake()
     {
         commodityAssets = new CommodityAsset[orderValue];
         commodityInformations = new CommodityInformation[orderValue];
         customers = new CustomerInformation[orderValue];
+
+        if (GameObject.FindObjectOfType<Leader>())
+            Initialize();
+    }
+    private async void Initialize()
+    {
+        Fusion.NetworkObject networkObject = await GateOfFusion.Instance.NetworkRunner.SpawnAsync(remoteOrder.gameObject);
+        RemoteOrder instance = networkObject.GetComponent<RemoteOrder>();
+        instance.InjectOrderAsset(orderAsset);
+        instance.InjectOrderManager(this);
+
+        customer.InjectRemoteOrder(instance);
     }
     private void Start()
     {
-        OnOrderInitialize?.Invoke(new OrderInitializeEventArgs(orderValue));     
+        OnOrderInitialize?.Invoke(new OrderInitializeEventArgs(orderValue));
     }
 
     public OrderTicket Inquiry()
@@ -115,7 +136,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     /// íçï∂
     /// </summary>
     /// <param name="commodityAsset"></param>
-    void IOrderable.Order(CommodityAsset commodityAsset,CustomerInformation customer)
+    void IOrderable.Order(CommodityAsset commodityAsset, CustomerInformation customer)
     {
         int vacantSeatOrder = SearchVacantSeatOrder();
 
@@ -145,7 +166,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     {
         for (int i = 0; i < commodityAssets.Length; i++)
         {
-            if(commodityAssets[i] == null)
+            if (commodityAssets[i] == null)
             {
                 continue;
             }
@@ -179,9 +200,9 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
 
     public void Cancel(CustomerInformation customer)
     {
-        for(int i = 0; i < customers.Length; i++)
+        for (int i = 0; i < customers.Length; i++)
         {
-            if(customers[i].OrderCode == customer.OrderCode)
+            if (customers[i].OrderCode == customer.OrderCode)
             {
                 commodityAssets[i] = null;
                 customers[i] = null;
