@@ -6,6 +6,8 @@ public class Customer : MonoBehaviour
 {
     [SerializeField]
     private OrderAsset orderAsset;
+    [SerializeField]
+    private OrderManager orderManager;
     private RemoteOrder remoteOrder;
     public void Order(int index)
     {
@@ -23,5 +25,11 @@ public class Customer : MonoBehaviour
         {
             Order(0);
         }
+    }
+
+    public void RemoteOrder(int index)
+    {
+        OrderTicket orderTicket = orderManager.Inquiry();
+        orderTicket.Orderable.Order(orderAsset.OrderDetailInformations[index].CommodityAsset, orderTicket.CustomerInformation);
     }
 }

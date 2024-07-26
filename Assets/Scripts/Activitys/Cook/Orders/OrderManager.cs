@@ -113,8 +113,6 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     {
         Fusion.NetworkObject networkObject = await GateOfFusion.Instance.NetworkRunner.SpawnAsync(remoteOrder.gameObject);
         RemoteOrder instance = networkObject.GetComponent<RemoteOrder>();
-        instance.InjectOrderAsset(orderAsset);
-        instance.InjectOrderManager(this);
 
         customer.InjectRemoteOrder(instance);
         Debug.LogWarning("PoPo");
