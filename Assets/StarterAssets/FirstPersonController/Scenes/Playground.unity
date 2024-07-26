@@ -631,6 +631,7 @@ GameObject:
   m_Component:
   - component: {fileID: 661716114}
   - component: {fileID: 661716113}
+  - component: {fileID: 661716115}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -665,6 +666,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &661716115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 661716112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87fc806031c790046bdc991a04487244, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fishPool:
+  - fishAsset: {fileID: 11400000, guid: c5df236845920c944ba8bd702b17271b, type: 2}
+    percent: 3
+  - fishAsset: {fileID: 11400000, guid: ff2fb9aac2cba3c4586109164293a5d4, type: 2}
+    percent: 2
+  - fishAsset: {fileID: 11400000, guid: 7c546ebdda004464ead71da8bbb554a5, type: 2}
+    percent: 1
+  minTimeToHit: 5
+  maxTimeToHit: 10
 --- !u!114 &713291050 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4025533044892575554, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
