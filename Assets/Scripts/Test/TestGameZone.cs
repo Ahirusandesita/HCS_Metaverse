@@ -15,7 +15,7 @@ public class TestGameZone : MonoBehaviour, IInteraction, ISelectedNotification
 	{
 		Debug.Log("Nishigaki");
 		gameFrame.Close();
-		RPCManager.Instance.Rpc_RoomLeftOrClose(NetworkRunner.LocalPlayer);
+		RPCManager.Instance.Rpc_LeftOrCloseRoom(NetworkRunner.LocalPlayer);
 	}
 	[ContextMenu("Open")]
 	public void Open()
@@ -25,7 +25,7 @@ public class TestGameZone : MonoBehaviour, IInteraction, ISelectedNotification
 		//ƒ‹[ƒ€‚ÉŽQ‰Á‚·‚é
 		if (NetworkRunner.SessionInfo.PlayerCount > 1)
 		{
-			RPCManager.Instance.Rpc_RoomJoinOrCreate(_worldType, NetworkRunner.LocalPlayer);
+			RPCManager.Instance.Rpc_JoinOrCreateRoom(_worldType, NetworkRunner.LocalPlayer);
 		}
 		else
 		{

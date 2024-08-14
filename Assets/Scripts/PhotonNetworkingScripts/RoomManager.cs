@@ -28,7 +28,7 @@ public class Room
 			_playerData = playerData;
 		}
 		public string SessionName { get => _sessionName; set => _sessionName = value; }
-		public PlayerRef PlayerData { get => _playerData; set => _playerData = value; }
+		public PlayerRef PlayerData { get => _playerData; }
 
 		public static bool operator ==(RoomPlayer roomPlayer, RoomPlayer roomPlayer1)
 			=> roomPlayer._playerData == roomPlayer1._playerData;
@@ -57,13 +57,12 @@ public class Room
 
 	private bool _isEndJoining = default;
 	private int _leaderIndex = default;
-	private int _number = default;
+	private int _roomNumber = default;
 	private readonly string _nextSessionName = default;
 	private WorldType _worldType = default;
 	private List<RoomPlayer> _roomPlayers = new();
 
 
-	public int this[PlayerRef playerRef] { get => _roomPlayers.IndexOf(playerRef); }
 	public int LeaderIndex { get => _leaderIndex; }
 	public PlayerRef LeaderPlayerRef { get => _roomPlayers[_leaderIndex].PlayerData; }
 	/// <summary>
@@ -84,7 +83,7 @@ public class Room
 			return count;
 		}
 	}
-	public int Number { get => _number; }
+	public int RoomNumber { get => _roomNumber; }
 	public bool IsEndJoining { get => _isEndJoining; }
 	public string NextSessionName { get => _nextSessionName; }
 	public WorldType WorldType { get => _worldType; }
@@ -93,9 +92,14 @@ public class Room
 	public Room(WorldType activityType, int roomNumber, string nextSessionName)
 	{
 		this._worldType = activityType;
-		this._number = roomNumber;
+		this._roomNumber = roomNumber;
 		this._leaderIndex = 0;
 		this._nextSessionName = nextSessionName;
+	}
+
+	public int GetPlayerIndex(PlayerRef playerRef)
+	{
+		return _roomPlayers.IndexOf(playerRef);
 	}
 
 	public void Join(PlayerRef playerRef, string sessionName)
@@ -143,7 +147,7 @@ public class Room
 		_leaderIndex = nextLeaderIndex;
 	}
 
-	public void ChengeSessionName(PlayerRef playerRef, string sessionName)
+	public void ChangeSessionName(PlayerRef playerRef, string sessionName)
 	{
 		int index = _roomPlayers.IndexOf(playerRef);
 		if (index < 0)
@@ -232,7 +236,7 @@ public class RoomManager : MonoBehaviour
 			}
 			else
 			{
-				roomTemp = _rooms.Where(room => room.Number == roomNumber).First();
+				roomTemp = _rooms.Where(room => room.RoomNumber == roomNumber).First();
 				//éwíËÇµÇΩïîâÆî‘çÜÇ…ì¸ÇÍÇ»Ç¢ÇΩÇﬂé∏îs
 				if (roomTemp.IsEndJoining) { return JoinOrCreateResult.Fail; }
 			}
@@ -254,7 +258,7 @@ public class RoomManager : MonoBehaviour
 		roomTemp.Join(playerRef, currentSessionName);
 
 		XDebug.LogWarning($"Join:{worldType}," +
-			$"Result:{result}\nRoomNum:{roomTemp.Number}," +
+			$"Result:{result}\nRoomNum:{roomTemp.RoomNumber}," +
 			$"Player:{playerRef}",
 			KumaDebugColor.NotificationColor);
 
@@ -283,7 +287,7 @@ public class RoomManager : MonoBehaviour
 		if (joinedRoom is null) { return; }
 		XDebug.LogWarning(
 			$"Left:{joinedRoom.WorldType}" +
-			$"\nRoomNum:{joinedRoom.Number}" +
+			$"\nRoomNum:{joinedRoom.RoomNumber}" +
 			$"Player:{playerRef}", KumaDebugColor.NotificationColor);
 		LeftResult result = joinedRoom.Left(playerRef);
 		if (result == LeftResult.Closable)
@@ -313,7 +317,7 @@ public class RoomManager : MonoBehaviour
 			XDebug.LogError("ÉãÅ[ÉÄÇ™å©Ç¬Ç©ÇËÇ‹ÇπÇÒÇ≈ÇµÇΩ", KumaDebugColor.ErrorColor);
 			return;
 		}
-		room.ChengeSessionName(playerRef, currentSessionName);
+		room.ChangeSessionName(playerRef, currentSessionName);
 	}
 
 	public void LeaderChange(PlayerRef leaderPlayer)

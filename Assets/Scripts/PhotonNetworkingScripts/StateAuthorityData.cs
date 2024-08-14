@@ -4,29 +4,29 @@ using UnityEngine;
 using Fusion;
 public class AuthrityEventArgs : System.EventArgs
 {
-    public readonly bool Authrity;
-    public AuthrityEventArgs(bool authrity)
-    {
-        this.Authrity = authrity;
-    }
+	public readonly bool Authrity;
+	public AuthrityEventArgs(bool authrity)
+	{
+		this.Authrity = authrity;
+	}
 }
 public delegate void AuthrityHandler(AuthrityEventArgs authrityEventArgs);
-public class StateAuthorityData : NetworkBehaviour 
+public class StateAuthorityData : NetworkBehaviour
 {
-    [Networked]
-    public bool IsNotReleaseStateAuthority { get; set; }
-    public event AuthrityHandler OnAuthrity;
-    private bool isGrabbable = true;
-    public bool IsGrabbable
-    {
-        get
-        {
-            return isGrabbable;
-        }
-        set
-        {
-            isGrabbable = value;
-            OnAuthrity?.Invoke(new AuthrityEventArgs(value));
-        }
-    }
+	[Networked]
+	public bool IsNotReleaseStateAuthority { get; set; }
+	public event AuthrityHandler OnAuthrity;
+	private bool isGrabbable = true;
+	public bool IsGrabbable
+	{
+		get
+		{
+			return isGrabbable;
+		}
+		set
+		{
+			isGrabbable = value;
+			OnAuthrity?.Invoke(new AuthrityEventArgs(value));
+		}
+	}
 }

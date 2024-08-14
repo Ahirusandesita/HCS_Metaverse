@@ -12,7 +12,7 @@ public class RPCManager : NetworkBehaviour
 	public override void Spawned()
 	{
 		Debug.LogWarning($"<color=yellow>RPCManager_Spawned</color>");
-		RoomManager.Instance.Test();
+		//RoomManager.Instance.Test();
 		_instance = this;
 
 		if (GateOfFusion.Instance.NetworkRunner.SessionInfo.PlayerCount > 1)
@@ -62,13 +62,13 @@ public class RPCManager : NetworkBehaviour
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All)]
-	public void Rpc_RoomJoinOrCreate(WorldType worldType, PlayerRef playerRef, int roomNumber = -1)
+	public void Rpc_JoinOrCreateRoom(WorldType worldType, PlayerRef playerRef, int roomNumber = -1)
 	{
 		RoomManager.Instance.JoinOrCreate(worldType, playerRef, Runner.SessionInfo.Name, roomNumber);
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All)]
-	public void Rpc_RoomLeftOrClose(PlayerRef playerRef)
+	public void Rpc_LeftOrCloseRoom(PlayerRef playerRef)
 	{
 		RoomManager.Instance.LeftOrClose(playerRef);
 	}
@@ -79,9 +79,9 @@ public class RPCManager : NetworkBehaviour
 		Debug.LogWarning($"<color=orange>Rpc_RequestRoomData:{requestPlayer}</color>");
 		Room roomTemp = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
 		if (roomTemp is null) { return; }
-		bool isLeader = roomTemp.LeaderIndex == roomTemp[Runner.LocalPlayer];
+		bool isLeader = roomTemp.LeaderIndex == roomTemp.GetPlayerIndex(Runner.LocalPlayer);
 		Rpc_SendRoomData(requestPlayer, roomTemp.WorldType, Runner.LocalPlayer
-			, isLeader, Runner.SessionInfo.Name, roomTemp.Number);
+			, isLeader, Runner.SessionInfo.Name, roomTemp.RoomNumber);
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
@@ -94,13 +94,6 @@ public class RPCManager : NetworkBehaviour
 		{
 			RoomManager.Instance.LeaderChange(playerRef);
 		}
-	}
-
-	[Rpc(RpcSources.All, RpcTargets.All,InvokeLocal = false)]
-	public void Rpc_InstanceLeaderObject([RpcTarget] PlayerRef rpcTarget)
-	{
-		Debug.LogWarning($"<color=orange>Rpc_InstanceLeaderObject</color>:{rpcTarget}");
-		RoomManager.Instance.InstantiateLeaderObject();
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All,InvokeLocal =false)]
