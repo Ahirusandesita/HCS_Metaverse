@@ -3,21 +3,21 @@ using Fusion;
 
 public class LocalRemoteSeparation : MonoBehaviour
 {
-    [SerializeField]
-    private SeparationLifetimeScope separationLifetimeScope;
+	[SerializeField]
+	private SeparationLifetimeScope separationLifetimeScope;
 
-    [SerializeField]
-    private GameObject localGameObject;
+	[SerializeField]
+	private GameObject localGameObject;
 
-    [SerializeField]
-    private NetworkPrefabRef remoteViewObjectPrefab;
+	[SerializeField]
+	private NetworkPrefabRef remoteViewObjectPrefab;
 
-	public void RemoteViewCreate(NetworkRunner networkRunner,PlayerRef playerRef)
-    {
-        NetworkObject remoteViewObject
-            = networkRunner.Spawn(remoteViewObjectPrefab, Vector3.zero, Quaternion.identity, playerRef);
-        RemoteView remoteView = remoteViewObject.GetComponent<RemoteView>();
+	public void RemoteViewCreate(NetworkRunner networkRunner, PlayerRef playerRef)
+	{
+		NetworkObject remoteViewObject
+			= networkRunner.Spawn(remoteViewObjectPrefab, Vector3.zero, Quaternion.identity, playerRef);
+		RemoteView remoteView = remoteViewObject.GetComponent<RemoteView>();
 
-        Instantiate(separationLifetimeScope).SeparationSetup(localGameObject, remoteView).Build();
-    }
+		Instantiate(separationLifetimeScope).SeparationSetup(localGameObject, remoteView).Build();
+	}
 }

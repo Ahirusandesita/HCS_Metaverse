@@ -22,18 +22,11 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	[SerializeField]
 	private NetworkRunner _networkRunnerPrefab;
 
-	private NetworkRunner _networkRunner;
-
-	[SerializeField]
-	private NetworkObject _testNetworkObject;
-
 	[SerializeField]
 	private LocalRemoteSeparation localRemoteReparation;
-	[SerializeField]
-	private RegisterSceneInInspector _sceneName;
 
-	[SerializeField]
-	private Text _text;
+	private NetworkRunner _networkRunner;
+
 	/// <summary>
 	/// このクラスはランナーとの紐づけはしないためラップする
 	/// </summary>
@@ -52,31 +45,31 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		await Connect("Room");
 	}
 
-	[ContextMenu("Left")]
-	private void TestTest()
-	{
-		RPCManager.Instance.Rpc_RoomLeftOrClose(Runner.LocalPlayer);
-	}
-	[ContextMenu("ActivityStart")]
-	private void Test()
-	{
-		GateOfFusion.Instance.ActivityStart(_sceneName);
-	}
+	//[ContextMenu("Left")]
+	//private void TestTest()
+	//{
+	//	RPCManager.Instance.Rpc_LeftOrCloseRoom(Runner.LocalPlayer);
+	//}
+	//[ContextMenu("ActivityStart")]
+	//private void Test()
+	//{
+	//	GateOfFusion.Instance.ActivityStart(_sceneName);
+	//}
 
-	[ContextMenu("klkl")]
-	private void TestTestTest()
-	{
-		Runner.LoadScene(_sceneName, LoadSceneMode.Single);
-	}
+	//[ContextMenu("klkl")]
+	//private void TestTestTest()
+	//{
+	//	Runner.LoadScene(_sceneName, LoadSceneMode.Single);
+	//}
 
-	[ContextMenu("Test")]
-	public void TestTestTestTest()
-	{
-		NetworkObject[] networkObjects = new NetworkObject[1];
-		if (_testNetworkObject == null) { return; }
-		networkObjects[0] = _testNetworkObject;
-		Runner.RegisterSceneObjects(Runner.GetSceneRef(_testNetworkObject.gameObject), networkObjects);
-	}
+	//[ContextMenu("Test")]
+	//public void TestTestTestTest()
+	//{
+	//	NetworkObject[] networkObjects = new NetworkObject[1];
+	//	if (_testNetworkObject == null) { return; }
+	//	networkObjects[0] = _testNetworkObject;
+	//	Runner.RegisterSceneObjects(Runner.GetSceneRef(_testNetworkObject.gameObject), networkObjects);
+	//}
 
 
 	/// <summary>
@@ -121,7 +114,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 			SceneManager = _networkRunner.GetComponent<NetworkSceneManagerDefault>()
 		}
 		);
-		_text.text = result.Ok ? "Success" : "Fail" + "\n" + result.ShutdownReason + "\n" + result.ErrorMessage + "\n" + result.StackTrace;
+		//_text.text = result.Ok ? "Success" : "Fail" + "\n" + result.ShutdownReason + "\n" + result.ErrorMessage + "\n" + result.StackTrace;
 		_networkRunner.GetComponent<FusionVoiceClient>().PrimaryRecorder = _recorder;
 
 		GateOfFusion.Instance.IsCanUsePhoton = result.Ok;

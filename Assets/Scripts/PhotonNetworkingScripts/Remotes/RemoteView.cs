@@ -6,13 +6,13 @@ using Fusion;
 public class RemoteView : NetworkBehaviour
 {
 	private Transform _playerTransform;
-	private Transform _myTransform;
+	private Transform _viewTransform;
 
 	public override void Spawned()
 	{
 		base.Spawned();
 		_playerTransform = FindObjectOfType<VRPlayerController>().transform;
-		_myTransform = transform;
+		_viewTransform = transform;
 	}
 
 	public void SetVector3(Vector3 vector)
@@ -24,6 +24,6 @@ public class RemoteView : NetworkBehaviour
 	public override void FixedUpdateNetwork()
 	{
 		base.FixedUpdateNetwork();
-		_myTransform.position = _playerTransform.position;
+		_viewTransform.position = _playerTransform.position;
 	}
 }
