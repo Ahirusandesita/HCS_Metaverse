@@ -6,18 +6,16 @@ using Cysharp.Threading.Tasks;
 
 namespace HCSMeta.Network
 {
-
-
-
 	public class GateOfFusion
 	{
 		private bool _canUsePhoton = default;
 		private NetworkRunner _networkRunner = default;
 		private static GateOfFusion _instance = default;
 		private MasterServerConect _masterServer = default;
-		public static GateOfFusion Instance => _instance ??= new GateOfFusion();
-		private MasterServerConect MasterServer => _masterServer ??= Object.FindObjectOfType<MasterServerConect>();
 
+		public static GateOfFusion Instance => _instance ??= new GateOfFusion();
+		private MasterServerConect MasterServer 
+			=> _masterServer ??= Object.FindObjectOfType<MasterServerConect>();
 		public NetworkRunner NetworkRunner
 		{
 			get
@@ -33,7 +31,6 @@ namespace HCSMeta.Network
 				_networkRunner = value;
 			}
 		}
-
 		public bool IsCanUsePhoton { get => _canUsePhoton; set => _canUsePhoton = value; }
 
 		/// <summary>
@@ -42,16 +39,16 @@ namespace HCSMeta.Network
 		/// <param name="networkObject">掴んだオブジェクト</param>
 		public void Grab(NetworkObject networkObject)
 		{
-			Debug.LogWarning($"Grab:");
+			XDebug.LogWarning($"Grab:{networkObject.name}",KumaDebugColor.InformationColor);
 			StateAuthorityData stateAuthorityData = networkObject.GetComponent<StateAuthorityData>();
 			if (stateAuthorityData.IsNotReleaseStateAuthority)
 			{
-				Debug.LogWarning($"<color=red>権限がありませんでした</color>");
+				XDebug.LogWarning($"権限がありませんでした",KumaDebugColor.ErrorColor);
 				return;
 			}
 			if (networkObject.HasStateAuthority)
 			{
-				Debug.LogWarning("<color=lime>自分が権限を持っています</color>");
+				XDebug.LogWarning($"自分が権限を持っています",KumaDebugColor.WarningColor);
 				return;
 			}
 			RPCManager.Instance.Rpc_GrabStateAuthorityChanged(networkObject);

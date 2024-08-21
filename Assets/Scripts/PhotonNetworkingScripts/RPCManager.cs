@@ -1,5 +1,4 @@
 using Fusion;
-using UnityEngine;
 
 namespace HCSMeta.Network
 {
@@ -10,7 +9,7 @@ namespace HCSMeta.Network
 
 		public override void Spawned()
 		{
-			Debug.LogWarning($"<color=yellow>RPCManager_Spawned</color>");
+			XDebug.LogWarning($"RPCManager_Spawned",KumaDebugColor.RpcColor);
 			//RoomManager.Instance.Test();
 			_instance = this;
 
@@ -23,9 +22,9 @@ namespace HCSMeta.Network
 		[Rpc(RpcSources.All, RpcTargets.All)]
 		public void Rpc_ChangeRoomSessionName(PlayerRef chengeTarget, string nextSessionName)
 		{
-			Debug.LogWarning(
+			XDebug.LogWarning(
 				$"ChangeSessionName:{nextSessionName}" +
-				$"\nPlayerName:{chengeTarget}");
+				$"\nPlayerName:{chengeTarget}",KumaDebugColor.RpcColor);
 			RoomManager.Instance.ChengeSessionName(chengeTarget, nextSessionName);
 		}
 
@@ -38,7 +37,7 @@ namespace HCSMeta.Network
 		[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 		public async void Rpc_JoinSession(string sessionName, [RpcTarget] PlayerRef rpcTarget = new())
 		{
-			Debug.LogError("RpcJoin");
+			XDebug.LogError("RpcJoin",KumaDebugColor.SuccessColor);
 			//é¿çs
 			await FindObjectOfType<MasterServerConect>().JoinOrCreateSession(sessionName);
 		}
@@ -75,7 +74,7 @@ namespace HCSMeta.Network
 		[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 		public void Rpc_RequestRoomData(PlayerRef requestPlayer)
 		{
-			Debug.LogWarning($"<color=orange>Rpc_RequestRoomData:{requestPlayer}</color>");
+			XDebug.LogWarning($"Rpc_RequestRoomData:{requestPlayer}",KumaDebugColor.RpcColor);
 			Room roomTemp = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
 			if (roomTemp is null) { return; }
 			bool isLeader = roomTemp.LeaderIndex == roomTemp.GetPlayerIndex(Runner.LocalPlayer);
@@ -87,7 +86,7 @@ namespace HCSMeta.Network
 		private void Rpc_SendRoomData([RpcTarget] PlayerRef rpcTarget
 			, WorldType worldType, PlayerRef playerRef, bool isLeader, string sessionName, int roomNumber = -1)
 		{
-			Debug.LogWarning($"<color=orange>Rpc_SendRoomData</color>:{playerRef}");
+			XDebug.LogWarning($"Rpc_SendRoomData:{playerRef}",KumaDebugColor.RpcColor);
 			RoomManager.Instance.JoinOrCreate(worldType, playerRef, sessionName, roomNumber);
 			if (isLeader)
 			{
@@ -98,7 +97,7 @@ namespace HCSMeta.Network
 		[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 		public void Rpc_DestroyLeaderObject([RpcTarget] PlayerRef rpcTarget)
 		{
-			Debug.LogWarning("<color=orange>Rpc_DestroyLeaderObject</color>:" + rpcTarget);
+			XDebug.LogWarning("Rpc_DestroyLeaderObject:" + rpcTarget,KumaDebugColor.RpcColor);
 			RoomManager.Instance.DestroyLeaderObject();
 		}
 	}
