@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using Oculus.Interaction;
 
-namespace HCSMeta.Function
+namespace HCSMeta.Player.Object
 {
     public class Throwable : MonoBehaviour
     {

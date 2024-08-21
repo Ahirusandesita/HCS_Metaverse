@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace HCSMeta.Activity
+namespace HCSMeta.Activity.Cook
 {
     public class StoperObject : MonoBehaviour
     {
