@@ -1,47 +1,50 @@
 using UnityEngine;
 using Fusion;
-
-public class TestGameZone : MonoBehaviour, IInteraction, ISelectedNotification
+using HCSMeta.Network;
+namespace HCSMeta.Activity
 {
-	public ISelectedNotification SelectedNotification => this;
-	[SerializeField]
-	private GameFrame gameFrame;
-	[SerializeField, Header("アクティビティ(ワールド)")]
-	private WorldType _worldType;
-	private NetworkRunner NetworkRunner => GateOfFusion.Instance.NetworkRunner;
-
-	[ContextMenu("Close")]
-	public void Close()
+	public class TestGameZone : MonoBehaviour, IInteraction, ISelectedNotification
 	{
-		Debug.Log("Nishigaki");
-		gameFrame.Close();
-		RPCManager.Instance.Rpc_LeftOrCloseRoom(NetworkRunner.LocalPlayer);
-	}
-	[ContextMenu("Open")]
-	public void Open()
-	{
-		gameFrame.GameStart();
+		public ISelectedNotification SelectedNotification => this;
+		[SerializeField]
+		private GameFrame gameFrame;
+		[SerializeField, Header("アクティビティ(ワールド)")]
+		private WorldType _worldType;
+		private NetworkRunner NetworkRunner => GateOfFusion.Instance.NetworkRunner;
 
-		//ルームに参加する
-		if (NetworkRunner.SessionInfo.PlayerCount > 1)
+		[ContextMenu("Close")]
+		public void Close()
 		{
-			RPCManager.Instance.Rpc_JoinOrCreateRoom(_worldType, NetworkRunner.LocalPlayer);
+			Debug.Log("Nishigaki");
+			gameFrame.Close();
+			RPCManager.Instance.Rpc_LeftOrCloseRoom(NetworkRunner.LocalPlayer);
 		}
-		else
+		[ContextMenu("Open")]
+		public void Open()
 		{
-			RoomManager.Instance.JoinOrCreate(
-				_worldType, NetworkRunner.LocalPlayer,
-				NetworkRunner.SessionInfo.Name);
+			gameFrame.GameStart();
+
+			//ルームに参加する
+			if (NetworkRunner.SessionInfo.PlayerCount > 1)
+			{
+				RPCManager.Instance.Rpc_JoinOrCreateRoom(_worldType, NetworkRunner.LocalPlayer);
+			}
+			else
+			{
+				RoomManager.Instance.JoinOrCreate(
+					_worldType, NetworkRunner.LocalPlayer,
+					NetworkRunner.SessionInfo.Name);
+			}
 		}
-	}
 
-	public void Select(SelectArgs selectArgs)
-	{
+		public void Select(SelectArgs selectArgs)
+		{
 
-	}
+		}
 
-	public void Unselect(SelectArgs selectArgs)
-	{
+		public void Unselect(SelectArgs selectArgs)
+		{
 
+		}
 	}
 }
