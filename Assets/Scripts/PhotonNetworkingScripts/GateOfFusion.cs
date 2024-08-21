@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using Cysharp.Threading.Tasks;
+using Kuma;
 
 namespace HCSMeta.Network
 {
