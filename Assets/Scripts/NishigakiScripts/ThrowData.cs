@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace HCSMeta.Function
+namespace HCSMeta.Player.Object
 {
     /// <summary>
     /// 投擲するために必要な情報をまとめたクラス
