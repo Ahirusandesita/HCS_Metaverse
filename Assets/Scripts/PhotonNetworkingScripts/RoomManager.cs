@@ -56,7 +56,7 @@ namespace HCSMeta.Network
 			}
 
 			IEnumerable<Room> temp =
-				_rooms.Where(room => room.JoinRoomPlayer.Contains(new Room.RoomPlayer(playerRef)));
+				_rooms.Where(room => room.JoinRoomPlayer.Contains(new RoomPlayer(playerRef)));
 			if (temp.Count() <= 0)
 			{
 				return null;
@@ -215,7 +215,7 @@ namespace HCSMeta.Network
 					$",LeaderWithCount:{room.WithLeaderSessionCount}\n" +
 					$"Leader:{room.LeaderPlayerRef}," +
 					$"PlayerCount{room.JoinRoomPlayer.Count}", KumaDebugColor.InformationColor);
-				foreach (Room.RoomPlayer roomPlayer in room.JoinRoomPlayer)
+				foreach (RoomPlayer roomPlayer in room.JoinRoomPlayer)
 				{
 					XDebug.LogWarning($"RoomPlayer:{roomPlayer.PlayerData}" +
 						$"PlayerSessionData:{roomPlayer.SessionName}", KumaDebugColor.InformationColor);

@@ -77,7 +77,7 @@ namespace HCSMeta.Network
 				return;
 			}
 			string sessionName = currentRoom.NextSessionName;
-			foreach (Room.RoomPlayer roomPlayer in currentRoom.JoinRoomPlayer)
+			foreach (RoomPlayer roomPlayer in currentRoom.JoinRoomPlayer)
 			{
 				if (roomPlayer.PlayerData == NetworkRunner.LocalPlayer) { continue; }
 				RPCManager.Instance.Rpc_JoinSession(sessionName, roomPlayer.PlayerData);
