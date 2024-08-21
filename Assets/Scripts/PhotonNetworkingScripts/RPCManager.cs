@@ -1,4 +1,5 @@
 using Fusion;
+using Kuma;
 
 namespace HCSMeta.Network
 {

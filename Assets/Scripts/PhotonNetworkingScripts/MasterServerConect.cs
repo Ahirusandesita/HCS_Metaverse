@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Photon.Voice.Unity;
 using Photon.Voice.Fusion;
 using Cysharp.Threading.Tasks;
+using Kuma;
 
 namespace HCSMeta.Network
 {
