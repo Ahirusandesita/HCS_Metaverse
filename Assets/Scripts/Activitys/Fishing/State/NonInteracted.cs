@@ -3,20 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using IceMilkTea.StateMachine;
 
-public partial class FishingManager
+namespace HCSMeta.Activity.Fishing
 {
-    private class NonInteracted : ImtStateMachine<FishingManager, EventID>.State
+    public partial class FishingManager
     {
-        protected internal override void Enter()
+        private class NonInteracted : ImtStateMachine<FishingManager, EventID>.State
         {
-            XDebug.Log(GetType().Name, "red");
-        }
-
-        protected internal override void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.L))
+            protected internal override void Enter()
             {
-                stateMachine.SendEvent(EventID.Start);
+                XDebug.Log(GetType().Name, "red");
+            }
+
+            protected internal override void Update()
+            {
+                if (Input.GetKeyDown(KeyCode.L))
+                {
+                    stateMachine.SendEvent(EventID.Start);
+                }
             }
         }
     }

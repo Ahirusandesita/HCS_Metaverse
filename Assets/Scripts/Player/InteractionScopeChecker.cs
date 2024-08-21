@@ -1,35 +1,39 @@
+using HCSMeta.Activity;
 using System;
 using UniRx;
 using UnityEngine;
 
-public class InteractionScopeChecker : MonoBehaviour
+namespace HCSMeta.Player
 {
-    private readonly Subject<IInteraction> onInteractionEnter = new Subject<IInteraction>();
-    private readonly Subject<Unit> onInteractionExit = new Subject<Unit>();
-
-    public IObservable<IInteraction> OnInteractionEnter => onInteractionEnter;
-    public IObservable<Unit> OnInteractionExit => onInteractionExit;
-
-
-    private void Awake()
+    public class InteractionScopeChecker : MonoBehaviour
     {
-        onInteractionEnter.AddTo(this);
-        onInteractionExit.AddTo(this);
-    }
+        private readonly Subject<IInteraction> onInteractionEnter = new Subject<IInteraction>();
+        private readonly Subject<Unit> onInteractionExit = new Subject<Unit>();
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.TryGetComponent(out IInteraction interaction))
+        public IObservable<IInteraction> OnInteractionEnter => onInteractionEnter;
+        public IObservable<Unit> OnInteractionExit => onInteractionExit;
+
+
+        private void Awake()
         {
-            onInteractionEnter.OnNext(interaction);
+            onInteractionEnter.AddTo(this);
+            onInteractionExit.AddTo(this);
         }
-    }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.TryGetComponent(out IInteraction _))
+        private void OnTriggerEnter(Collider other)
         {
-            onInteractionExit.OnNext(Unit.Default);
+            if (other.TryGetComponent(out IInteraction interaction))
+            {
+                onInteractionEnter.OnNext(interaction);
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.TryGetComponent(out IInteraction _))
+            {
+                onInteractionExit.OnNext(Unit.Default);
+            }
         }
     }
 }

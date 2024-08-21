@@ -1,31 +1,34 @@
 using UnityEngine;
 
-public abstract class SelectArgs
+namespace HCSMeta.Activity
 {
-    private static SelectArgs s_empty = default;
-    public static SelectArgs Empty
+    public abstract class SelectArgs
     {
-        get
+        private static SelectArgs s_empty = default;
+        public static SelectArgs Empty
         {
-            s_empty ??= new NullSelectArgs();
-            return s_empty;
+            get
+            {
+                s_empty ??= new NullSelectArgs();
+                return s_empty;
+            }
         }
     }
-}
-public class NullSelectArgs : SelectArgs { }
+    public class NullSelectArgs : SelectArgs { }
 
-public class ItemSelectArgs : SelectArgs
-{
-    public readonly int id = default;
-    public readonly string name = default;
-    public readonly Vector3 position = default;
-    public readonly GameObject gameObject = default;
-
-    public ItemSelectArgs(int id, string name, Vector3 position = default, GameObject gameObject = null)
+    public class ItemSelectArgs : SelectArgs
     {
-        this.id = id;
-        this.name = name;
-        this.position = position;
-        this.gameObject = gameObject;
+        public readonly int id = default;
+        public readonly string name = default;
+        public readonly Vector3 position = default;
+        public readonly GameObject gameObject = default;
+
+        public ItemSelectArgs(int id, string name, Vector3 position = default, GameObject gameObject = null)
+        {
+            this.id = id;
+            this.name = name;
+            this.position = position;
+            this.gameObject = gameObject;
+        }
     }
 }

@@ -2,35 +2,40 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// このInterfaceはエディタクラスからのみアクセスすること
-/// </summary>
-public interface IEditorItemBundleAsset
+namespace HCSMeta.Activity
 {
-    List<ItemAsset> EditorItems { set; }
-    ItemGenre GenresHandled { get; }
-}
-
-[CreateAssetMenu(fileName = "ItemBundleData", menuName = "ScriptableObjects/ItemAsset/Bundle")]
-public class ItemBundleAsset : ScriptableObject, IEditorItemBundleAsset
-{
-    [SerializeField] private List<ItemAsset> items = default;
-    [SerializeField] private ItemGenre genresHandled = default;
-
-    public IReadOnlyList<ItemAsset> Items => items;
-    public ItemGenre GenresHandled => genresHandled;
-
-    List<ItemAsset> IEditorItemBundleAsset.EditorItems { set => items = value; }
-
-    public ItemAsset GetItemAssetByID(int id)
+    /// <summary>
+    /// このInterfaceはエディタクラスからのみアクセスすること
+    /// </summary>
+    public interface IEditorItemBundleAsset
     {
-        return items.Where(item => item.ID == id).First();
+        List<ItemAsset> EditorItems { set; }
+        ItemGenre GenresHandled { get; }
+    }
+
+    [CreateAssetMenu(fileName = "ItemBundleData", menuName = "ScriptableObjects/ItemAsset/Bundle")]
+    public class ItemBundleAsset : ScriptableObject, IEditorItemBundleAsset
+    {
+        [SerializeField] private List<ItemAsset> items = default;
+        [SerializeField] private ItemGenre genresHandled = default;
+
+        public IReadOnlyList<ItemAsset> Items => items;
+        public ItemGenre GenresHandled => genresHandled;
+
+        List<ItemAsset> IEditorItemBundleAsset.EditorItems { set => items = value; }
+
+        public ItemAsset GetItemAssetByID(int id)
+        {
+            return items.Where(item => item.ID == id).First();
+        }
     }
 }
 
 #if UNITY_EDITOR
 namespace UnityEditor
 {
+    using HCSMeta.Activity;
+
     [CustomEditor(typeof(ItemBundleAsset))]
     public class ItemBundleAssetEditor : Editor
     {

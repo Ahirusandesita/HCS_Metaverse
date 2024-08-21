@@ -1,26 +1,30 @@
+using HCSMeta.Activity;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SelectedNotificationDI : MonoBehaviour
+namespace HCSMeta.Function.Injection
 {
-    public void DependencyInjection(IInteraction interaction,ISelectedNotificationInjectable injectable)
+    public class SelectedNotificationDI : MonoBehaviour
     {
-        Injection(interaction, new ISelectedNotificationInjectable[] { injectable });
-    }
-    public void DependencyInjection(IInteraction interaction,ISelectedNotificationInjectable[] injectables)
-    {
-        Injection(interaction, injectables);
-    }
-    public void DependencyInjection(IInteraction interaction, List<ISelectedNotificationInjectable> injectables)
-    {
-        Injection(interaction, injectables.ToArray());
-    }
-
-    private void Injection(IInteraction interaction,ISelectedNotificationInjectable[] injectables)
-    {
-        foreach(ISelectedNotificationInjectable injectable in injectables)
+        public void DependencyInjection(IInteraction interaction, ISelectedNotificationInjectable injectable)
         {
-            injectable.Inject(interaction.SelectedNotification);
+            Injection(interaction, new ISelectedNotificationInjectable[] { injectable });
+        }
+        public void DependencyInjection(IInteraction interaction, ISelectedNotificationInjectable[] injectables)
+        {
+            Injection(interaction, injectables);
+        }
+        public void DependencyInjection(IInteraction interaction, List<ISelectedNotificationInjectable> injectables)
+        {
+            Injection(interaction, injectables.ToArray());
+        }
+
+        private void Injection(IInteraction interaction, ISelectedNotificationInjectable[] injectables)
+        {
+            foreach (ISelectedNotificationInjectable injectable in injectables)
+            {
+                injectable.Inject(interaction.SelectedNotification);
+            }
         }
     }
 }

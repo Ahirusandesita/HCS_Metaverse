@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using HCSMeta.Function;
 
 #if UNITY_EDITOR
 using System.IO;
@@ -59,25 +60,28 @@ namespace UnityEditor
 }
 #endif
 
-/// <summary>
-/// Inspectorでシーン情報を設定するクラス
-/// <br>- 必ず変数をシリアライズ化すること</br>
-/// </summary>
-[Serializable]
-public class RegisterSceneInInspector
+namespace HCSMeta.Function
 {
-    // Editorからのみアクセスさせる
-    [SerializeField] private string name;
-    [SerializeField] private int selectedIndex;
-
     /// <summary>
-    /// シーン名
-    /// <br>- BuildSettingsに登録されているシーン名をプルダウンで登録</br>
+    /// Inspectorでシーン情報を設定するクラス
+    /// <br>- 必ず変数をシリアライズ化すること</br>
     /// </summary>
-    public string Name => name;
-
-    public static implicit operator string(RegisterSceneInInspector rsi)
+    [Serializable]
+    public class RegisterSceneInInspector
     {
-        return rsi.Name;
+        // Editorからのみアクセスさせる
+        [SerializeField] private string name;
+        [SerializeField] private int selectedIndex;
+
+        /// <summary>
+        /// シーン名
+        /// <br>- BuildSettingsに登録されているシーン名をプルダウンで登録</br>
+        /// </summary>
+        public string Name => name;
+
+        public static implicit operator string(RegisterSceneInInspector rsi)
+        {
+            return rsi.Name;
+        }
     }
 }
