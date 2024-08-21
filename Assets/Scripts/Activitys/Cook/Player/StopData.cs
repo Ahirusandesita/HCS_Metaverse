@@ -1,6 +1,7 @@
 using HCSMeta.Function.Initialize;
 using System.Collections;
 using System.Collections.Generic;
+using HCSMeta.Activity;
 using UnityEngine;
 
 public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDependencyInformation>
