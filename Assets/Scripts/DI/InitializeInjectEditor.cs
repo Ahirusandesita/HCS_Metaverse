@@ -1,20 +1,23 @@
 using UnityEditor;
 using UnityEngine;
 
+namespace HCSMeta.Function.Initialize
+{
 #if UNITY_EDITOR
 
-[CustomEditor(typeof(InitializeBase),true)]
-public class InitializeInjectEditor : Editor
-{
-    public override void OnInspectorGUI()
+    [CustomEditor(typeof(InitializeBase), true)]
+    public class InitializeInjectEditor : Editor
     {
-        base.OnInspectorGUI();
-
-        if (GUILayout.Button("依存データを注入"))
+        public override void OnInspectorGUI()
         {
-            InitializeBase Initialize = (InitializeBase)target;
-            Initialize.Initialize();
+            base.OnInspectorGUI();
+
+            if (GUILayout.Button("依存データを注入"))
+            {
+                InitializeBase Initialize = (InitializeBase)target;
+                Initialize.Initialize();
+            }
         }
     }
-}
 #endif
+}

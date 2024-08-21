@@ -2,34 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Customer : MonoBehaviour
+namespace HCSMeta.Activity.Cook
 {
-    [SerializeField]
-    private OrderAsset orderAsset;
-    [SerializeField]
-    private OrderManager orderManager;
-    private RemoteOrder remoteOrder;
-    public void Order(int index)
+    public class Customer : MonoBehaviour
     {
-        remoteOrder.RPC_Order(index);
-    }
-
-    public void InjectRemoteOrder(RemoteOrder remoteOrder)
-    {
-        this.remoteOrder = remoteOrder;
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.C))
+        [SerializeField]
+        private OrderAsset orderAsset;
+        [SerializeField]
+        private OrderManager orderManager;
+        private RemoteOrder remoteOrder;
+        public void Order(int index)
         {
-            Order(0);
+            remoteOrder.RPC_Order(index);
         }
-    }
 
-    public void RemoteOrder(int index)
-    {
-        OrderTicket orderTicket = orderManager.Inquiry();
-        orderTicket.Orderable.Order(orderAsset.OrderDetailInformations[index].CommodityAsset, orderTicket.CustomerInformation);
+        public void InjectRemoteOrder(RemoteOrder remoteOrder)
+        {
+            this.remoteOrder = remoteOrder;
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                Order(0);
+            }
+        }
+
+        public void RemoteOrder(int index)
+        {
+            OrderTicket orderTicket = orderManager.Inquiry();
+            orderTicket.Orderable.Order(orderAsset.OrderDetailInformations[index].CommodityAsset, orderTicket.CustomerInformation);
+        }
     }
 }

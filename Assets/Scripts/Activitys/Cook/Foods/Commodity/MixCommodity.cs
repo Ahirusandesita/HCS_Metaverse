@@ -1,51 +1,54 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MixCommodity : MonoBehaviour
+namespace HCSMeta.Activity.Cook
 {
-    [SerializeField]
-    private AllCommodityAsset allCommodity;
-    private static AllCommodityAsset allCommodity_static;
-
-    private void Awake()
+    public class MixCommodity : MonoBehaviour
     {
-        allCommodity_static = allCommodity;
-    }
+        [SerializeField]
+        private AllCommodityAsset allCommodity;
+        private static AllCommodityAsset allCommodity_static;
 
-
-    public static Commodity Mix(Commodity[] commodities)
-    {
-        List<Commodity> workCommodity = new List<Commodity>();
-
-        foreach(Commodity item in commodities)
+        private void Awake()
         {
-            if(item.CommodityAsset.Commodities.Count == 0)
-            {
-                workCommodity.Add(item);
-            }
-            else
-            {
-                foreach(Commodity item2 in item.CommodityAsset.Commodities)
-                {
-                    workCommodity.Add(item2);
-                }
-            }
+            allCommodity_static = allCommodity;
         }
 
-        foreach(Commodity item in allCommodity_static.Commodities)
+
+        public static Commodity Mix(Commodity[] commodities)
         {
-            if (item.CanInstanceCommodity(workCommodity.ToArray()))
+            List<Commodity> workCommodity = new List<Commodity>();
+
+            foreach (Commodity item in commodities)
             {
-                Debug.Log("ê∂ê¨â¬î\" + item.CommodityAsset.name);
-
-                foreach(Commodity commodity in commodities)
+                if (item.CommodityAsset.Commodities.Count == 0)
                 {
-                    Destroy(commodity.gameObject);
+                    workCommodity.Add(item);
                 }
-                return item;
+                else
+                {
+                    foreach (Commodity item2 in item.CommodityAsset.Commodities)
+                    {
+                        workCommodity.Add(item2);
+                    }
+                }
             }
-        }
 
-        return null;//å„Ç…NullObject
+            foreach (Commodity item in allCommodity_static.Commodities)
+            {
+                if (item.CanInstanceCommodity(workCommodity.ToArray()))
+                {
+                    Debug.Log("ê∂ê¨â¬î\" + item.CommodityAsset.name);
+
+                    foreach (Commodity commodity in commodities)
+                    {
+                        Destroy(commodity.gameObject);
+                    }
+                    return item;
+                }
+            }
+
+            return null;//å„Ç…NullObject
+        }
     }
 }

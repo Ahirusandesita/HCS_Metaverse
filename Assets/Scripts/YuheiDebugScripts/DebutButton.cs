@@ -3,41 +3,47 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using HCSMeta.Function.Initialize.Interface;
 
-public interface ICanvasDeploymentAndConvergence
+namespace HCSMeta.Function.Touch
 {
-    /// <summary>
-    /// “WŠJ
-    /// </summary>
-    void Deployment();
-    /// <summary>
-    /// Žû‘©
-    /// </summary>
-    void Convergence();
-    /// <summary>
-    /// “WŠJ’†‚©
-    /// </summary>
-    bool IsDeployment { get; }
+    public interface ICanvasDeploymentAndConvergence
+    {
+        /// <summary>
+        /// “WŠJ
+        /// </summary>
+        void Deployment();
+        /// <summary>
+        /// Žû‘©
+        /// </summary>
+        void Convergence();
+        /// <summary>
+        /// “WŠJ’†‚©
+        /// </summary>
+        bool IsDeployment { get; }
+    }
 }
-
-public class DebutButton : MonoBehaviour, IInjectableSpecificType
+namespace HCSMeta.Function.Touch
 {
-    private IAvailableSpecificType availableSpecificType;
-    private OVRCanvasManager OVRCanvasManager;
-
-    public void Inject(IAvailableSpecificType availableSpecificType)
+    public class DebutButton : MonoBehaviour, IInjectableSpecificType
     {
-        this.availableSpecificType = availableSpecificType;
-        FindOVRCanvasManager().Forget();
-    }
+        private IAvailableSpecificType availableSpecificType;
+        private OVRCanvasManager OVRCanvasManager;
 
-    public void Selected()
-    {
-        OVRCanvasManager.ChangeCanvasDeployment();
-    }
+        public void Inject(IAvailableSpecificType availableSpecificType)
+        {
+            this.availableSpecificType = availableSpecificType;
+            FindOVRCanvasManager().Forget();
+        }
 
-    private async UniTaskVoid FindOVRCanvasManager()
-    {
-        OVRCanvasManager = await availableSpecificType.WaitForSpecificTypeAsync<OVRCanvasManager>();
+        public void Selected()
+        {
+            OVRCanvasManager.ChangeCanvasDeployment();
+        }
+
+        private async UniTaskVoid FindOVRCanvasManager()
+        {
+            OVRCanvasManager = await availableSpecificType.WaitForSpecificTypeAsync<OVRCanvasManager>();
+        }
     }
 }
