@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using HCSMeta.Network;
 
 public class ServerJoinButton : MonoBehaviour,IPointerUpRegistrable
 {

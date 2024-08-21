@@ -2,7 +2,7 @@ using Cysharp.Threading.Tasks;
 using Fusion;
 using Oculus.Interaction;
 using UnityEngine;
-
+using HCSMeta.Network;
 public interface IDisplayItem
 {
     GameObject gameObject { get; }

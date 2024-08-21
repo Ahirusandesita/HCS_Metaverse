@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using HCSMeta.Network;
 public class PutCanvasInHand : MonoBehaviour
 {
     public enum HandType
