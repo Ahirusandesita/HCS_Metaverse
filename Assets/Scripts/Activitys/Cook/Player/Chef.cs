@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class Chef : MonoBehaviour
+namespace HCSMeta.Activity.Cook
 {
-    [SerializeField]
-    private Ingrodients tomato;
-
-    private void Start()
+    public class Chef : MonoBehaviour
     {
-        //GameObject.FindObjectOfType<AutoMachine>().ProcessedCertification(tomato).Processing(tomato);
+        [SerializeField]
+        private Ingrodients tomato;
+
+        private void Start()
+        {
+            //GameObject.FindObjectOfType<AutoMachine>().ProcessedCertification(tomato).Processing(tomato);
+        }
     }
 }

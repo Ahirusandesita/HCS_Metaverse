@@ -2,13 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
-public class RemoteOrder : NetworkBehaviour
+namespace HCSMeta.Activity.Cook
 {
-    private Customer customer;
-    [Rpc(RpcSources.All, RpcTargets.All)]
-    public void RPC_Order(int index)
+    public class RemoteOrder : NetworkBehaviour
     {
-        customer = GameObject.FindObjectOfType<Customer>();
-        customer.RemoteOrder(index);
+        private Customer customer;
+        [Rpc(RpcSources.All, RpcTargets.All)]
+        public void RPC_Order(int index)
+        {
+            customer = GameObject.FindObjectOfType<Customer>();
+            customer.RemoteOrder(index);
+        }
     }
 }

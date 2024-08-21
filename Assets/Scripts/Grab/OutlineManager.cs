@@ -1,6 +1,7 @@
 using Oculus.Interaction;
 using UnityEngine;
 using System;
+using HCSMeta.Function.Initialize;
 
 public class OutlineManager : MonoBehaviour, IDependencyInjector<PlayerBodyDependencyInformation>
 {

@@ -6,122 +6,133 @@ using Oculus.Interaction;
 using Oculus.Interaction.HandGrab;
 
 using Fusion;
-public interface IIngrodientsModerator
+using HCSMeta.Activity.Cook.Interface;
+using HCSMeta.Player.VR.Interface;
+using HCSMeta.Function.Injection;
+
+namespace HCSMeta.Activity.Cook.Interface
 {
-    IngrodientsAsset IngrodientsAsset { set; }
+    public interface IIngrodientsModerator
+    {
+        IngrodientsAsset IngrodientsAsset { set; }
+    }
 }
-/// <summary>
-/// 具材
-/// </summary>
-public class Ingrodients : MonoBehaviour,IIngrodientsModerator, ISwitchableGrabbableActive,IInject<ISwitchableGrabbableActive>
+
+namespace HCSMeta.Activity.Cook
 {
-    [SerializeField]
-    private IngrodientsAsset ingrodientsAsset;
-    private List<IngrodientsDetailInformation> ingrodientsDetailInformations = new List<IngrodientsDetailInformation>();
-    public IngrodientsAsset IngrodientsAsset => ingrodientsAsset;
-    private ISwitchableGrabbableActive switchableGrabbableActive;
-    public struct TimeItTakesData
+    /// <summary>
+    /// 具材
+    /// </summary>
+    public class Ingrodients : MonoBehaviour, IIngrodientsModerator, ISwitchableGrabbableActive, IInject<ISwitchableGrabbableActive>
     {
-        public readonly float MaxTimeItTakes;
-        public readonly float NowTimeItTakes;
-        public TimeItTakesData(float max, float now)
+        [SerializeField]
+        private IngrodientsAsset ingrodientsAsset;
+        private List<IngrodientsDetailInformation> ingrodientsDetailInformations = new List<IngrodientsDetailInformation>();
+        public IngrodientsAsset IngrodientsAsset => ingrodientsAsset;
+        private ISwitchableGrabbableActive switchableGrabbableActive;
+        public struct TimeItTakesData
         {
-            this.MaxTimeItTakes = max;
-            this.NowTimeItTakes = now;
-        }
-    }
-    private ReactiveProperty<TimeItTakesData> timeItTakesProperty = new ReactiveProperty<TimeItTakesData>();
-    public IReadOnlyReactiveProperty<TimeItTakesData> TimeItTakesProperty => timeItTakesProperty;
-
-    IngrodientsAsset IIngrodientsModerator.IngrodientsAsset
-    {
-        set
-        {
-            ingrodientsAsset = value;
-        }
-    }
-
-    GameObject ISwitchableGrabbableActive.gameObject => throw new NotImplementedException();
-
-    private CommodityFactory commodityFactory;
-
-    private NetworkRunner networkRunner;
-
-    private PointableUnityEventWrapper pointableUnityEventWrapper;
-    private StateAuthorityData stateAuthority;
-    private void Awake()
-    {
-        this.commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
-
-        foreach (IngrodientsDetailInformation ingrodientsDetailInformation in ingrodientsAsset.IngrodientsDetailInformations)
-        {
-            ingrodientsDetailInformations.Add(new IngrodientsDetailInformation(ingrodientsDetailInformation.ProcessingType,ingrodientsDetailInformation.TimeItTakes,ingrodientsDetailInformation.Commodity));
-        }
-
-        pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
-
-        pointableUnityEventWrapper.WhenSelect.AddListener((data) => GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()));
-        pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
-
-        networkRunner = GateOfFusion.Instance.NetworkRunner;
-
-        this.stateAuthority = this.GetComponent<StateAuthorityData>();
-        stateAuthority.OnAuthrity += (data) =>
-        {
-            if (data.Authrity)
+            public readonly float MaxTimeItTakes;
+            public readonly float NowTimeItTakes;
+            public TimeItTakesData(float max, float now)
             {
-                switchableGrabbableActive.Active();
+                this.MaxTimeItTakes = max;
+                this.NowTimeItTakes = now;
             }
-            else if (data.Authrity)
-            {
-                switchableGrabbableActive.Inactive();
-            }
-        };
-    }
+        }
+        private ReactiveProperty<TimeItTakesData> timeItTakesProperty = new ReactiveProperty<TimeItTakesData>();
+        public IReadOnlyReactiveProperty<TimeItTakesData> TimeItTakesProperty => timeItTakesProperty;
 
-
-    public void Inject(CommodityFactory commodityFactory)
-    {
-        this.commodityFactory = commodityFactory;
-    }
-
-    public bool SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType processableType, float subValue)
-    {
-        foreach (IngrodientsDetailInformation information in ingrodientsDetailInformations)
+        IngrodientsAsset IIngrodientsModerator.IngrodientsAsset
         {
-            if (information.ProcessingType == processableType)
+            set
             {
-                information.SubToTimeItTakes(subValue);
-                timeItTakesProperty.Value = new TimeItTakesData(information.MaxTimeItTakes, information.TimeItTakes);
-                return information.IsProcessingFinish();
+                ingrodientsAsset = value;
             }
         }
 
-        Debug.Log("ProcessingTypeが指定外");
-        return default;
-    }
+        GameObject ISwitchableGrabbableActive.gameObject => throw new NotImplementedException();
+
+        private CommodityFactory commodityFactory;
+
+        private NetworkRunner networkRunner;
+
+        private PointableUnityEventWrapper pointableUnityEventWrapper;
+        private StateAuthorityData stateAuthority;
+        private void Awake()
+        {
+            this.commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
+
+            foreach (IngrodientsDetailInformation ingrodientsDetailInformation in ingrodientsAsset.IngrodientsDetailInformations)
+            {
+                ingrodientsDetailInformations.Add(new IngrodientsDetailInformation(ingrodientsDetailInformation.ProcessingType, ingrodientsDetailInformation.TimeItTakes, ingrodientsDetailInformation.Commodity));
+            }
+
+            pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
+
+            pointableUnityEventWrapper.WhenSelect.AddListener((data) => GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()));
+            pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
+
+            networkRunner = GateOfFusion.Instance.NetworkRunner;
+
+            this.stateAuthority = this.GetComponent<StateAuthorityData>();
+            stateAuthority.OnAuthrity += (data) =>
+            {
+                if (data.Authrity)
+                {
+                    switchableGrabbableActive.Active();
+                }
+                else if (data.Authrity)
+                {
+                    switchableGrabbableActive.Inactive();
+                }
+            };
+        }
 
 
-    public Commodity ProcessingStart(ProcessingType processingType,Transform machineTransform)
-    {
-        Commodity commodity = commodityFactory.Generate(this, processingType);
-        Commodity instanceCommodity = networkRunner.Spawn(commodity.gameObject, this.transform.position, this.transform.rotation).GetComponent<Commodity>();//NetworkRunnnerSpawn /*.transform.parent = machineTransform*/;
-        networkRunner.Despawn(this.gameObject.GetComponent<NetworkObject>());
-        return instanceCommodity;
-    }
+        public void Inject(CommodityFactory commodityFactory)
+        {
+            this.commodityFactory = commodityFactory;
+        }
 
-    void ISwitchableGrabbableActive.Active()
-    {
-        switchableGrabbableActive.Active();
-    }
+        public bool SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType processableType, float subValue)
+        {
+            foreach (IngrodientsDetailInformation information in ingrodientsDetailInformations)
+            {
+                if (information.ProcessingType == processableType)
+                {
+                    information.SubToTimeItTakes(subValue);
+                    timeItTakesProperty.Value = new TimeItTakesData(information.MaxTimeItTakes, information.TimeItTakes);
+                    return information.IsProcessingFinish();
+                }
+            }
 
-    void ISwitchableGrabbableActive.Inactive()
-    {
-        switchableGrabbableActive.Inactive();
-    }
+            Debug.Log("ProcessingTypeが指定外");
+            return default;
+        }
 
-    void IInject<ISwitchableGrabbableActive>.Inject(ISwitchableGrabbableActive t)
-    {
-        this.switchableGrabbableActive = t;
+
+        public Commodity ProcessingStart(ProcessingType processingType, Transform machineTransform)
+        {
+            Commodity commodity = commodityFactory.Generate(this, processingType);
+            Commodity instanceCommodity = networkRunner.Spawn(commodity.gameObject, this.transform.position, this.transform.rotation).GetComponent<Commodity>();//NetworkRunnnerSpawn /*.transform.parent = machineTransform*/;
+            networkRunner.Despawn(this.gameObject.GetComponent<NetworkObject>());
+            return instanceCommodity;
+        }
+
+        void ISwitchableGrabbableActive.Active()
+        {
+            switchableGrabbableActive.Active();
+        }
+
+        void ISwitchableGrabbableActive.Inactive()
+        {
+            switchableGrabbableActive.Inactive();
+        }
+
+        void IInject<ISwitchableGrabbableActive>.Inject(ISwitchableGrabbableActive t)
+        {
+            this.switchableGrabbableActive = t;
+        }
     }
 }

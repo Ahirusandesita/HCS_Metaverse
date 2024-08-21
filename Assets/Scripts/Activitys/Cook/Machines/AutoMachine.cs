@@ -1,69 +1,71 @@
 using System;
 using UnityEngine;
-
-public class AutoMachine : Machine
+namespace HCSMeta.Activity.Cook
 {
-    private bool canProcessing = false;
-    public bool CanProcessing
+    public class AutoMachine : Machine
     {
-        get
+        private bool canProcessing = false;
+        public bool CanProcessing
         {
-            return canProcessing;
-        }
-        set
-        {
-            canProcessing = value;
-        }
-    }
-
-    public bool isGrab = false;
-    public bool IsGrab
-    {
-        get
-        {
-            return isGrab;
-        }
-        set
-        {
-            isGrab = value;
-        }
-    }
-
-    private Action processingAction;
-
-    private void Update()
-    {
-        processingAction?.Invoke();
-    }
-    public override void StartProcessed(IngrodientsDetailInformation ingrodientsDetailInformation)
-    {
-        //timeItTakes = ingrodientsDetailInformation.TimeItTakes;
-        ingrodients.transform.parent = ingrodientTransform;
-        processingAction += () =>
-        {
-            if (!canProcessing)
+            get
             {
-                return;
+                return canProcessing;
             }
-
-            if (ingrodients.SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType, Time.deltaTime))
+            set
             {
-                Commodity commodity = ingrodients.ProcessingStart(ProcessingType, this.transform);
-                commodity.transform.parent = ingrodientTransform;
-                commodity.OnPointable += (eventArgs) =>
+                canProcessing = value;
+            }
+        }
+
+        public bool isGrab = false;
+        public bool IsGrab
+        {
+            get
+            {
+                return isGrab;
+            }
+            set
+            {
+                isGrab = value;
+            }
+        }
+
+        private Action processingAction;
+
+        private void Update()
+        {
+            processingAction?.Invoke();
+        }
+        public override void StartProcessed(IngrodientsDetailInformation ingrodientsDetailInformation)
+        {
+            //timeItTakes = ingrodientsDetailInformation.TimeItTakes;
+            ingrodients.transform.parent = ingrodientTransform;
+            processingAction += () =>
+            {
+                if (!canProcessing)
                 {
-                    if (eventArgs.GrabType == GrabType.Grab)
+                    return;
+                }
+
+                if (ingrodients.SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType, Time.deltaTime))
+                {
+                    Commodity commodity = ingrodients.ProcessingStart(ProcessingType, this.transform);
+                    commodity.transform.parent = ingrodientTransform;
+                    commodity.OnPointable += (eventArgs) =>
                     {
-                        commodity.Grab();
-                    }
-                };
-                processingAction = null;
-                Debug.Log("â¡çHäÆóπ");
-            }
-        };
-    }
-    public void ProcessingInterruption()
-    {
-        processingAction = null;
+                        if (eventArgs.GrabType == GrabType.Grab)
+                        {
+                            commodity.Grab();
+                        }
+                    };
+                    processingAction = null;
+                    Debug.Log("â¡çHäÆóπ");
+                }
+            };
+        }
+        public void ProcessingInterruption()
+        {
+            processingAction = null;
+        }
     }
 }

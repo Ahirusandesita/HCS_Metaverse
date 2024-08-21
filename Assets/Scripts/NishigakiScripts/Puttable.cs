@@ -4,39 +4,42 @@ using UnityEngine;
 using Oculus.Interaction;
 using System.Threading.Tasks;
 
-public class Puttable : MonoBehaviour
+namespace HCSMeta.Activity.Cook
 {
-    private LockedCuttingBoard _parentLockedCuttingObject = default;
-
-    // 掴んだ時や離した時にイベントを実行するクラス
-    private PointableUnityEventWrapper _pointableUnityEventWrapper;
-
-    private void Awake()
+    public class Puttable : MonoBehaviour
     {
-        _pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
-        _pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
-       
-    }
+        private LockedCuttingBoard _parentLockedCuttingObject = default;
 
-    public void SetLockedCuttingObject(LockedCuttingBoard lockedCuttingObject)
-    {
-        // 
-        _parentLockedCuttingObject = lockedCuttingObject;
-    }
+        // 掴んだ時や離した時にイベントを実行するクラス
+        private PointableUnityEventWrapper _pointableUnityEventWrapper;
 
-    public void Select()
-    {
-        DestroyThis();
-    }
+        private void Awake()
+        {
+            _pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
+            _pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
 
-    public void DestroyThis()
-    {
-        Destroy(this);
-    }
+        }
 
-    private void OnDestroy()
-    {
-        _pointableUnityEventWrapper.WhenSelect.RemoveListener((action) => { Select(); });
-        _parentLockedCuttingObject.CanselCutting();
+        public void SetLockedCuttingObject(LockedCuttingBoard lockedCuttingObject)
+        {
+            // 
+            _parentLockedCuttingObject = lockedCuttingObject;
+        }
+
+        public void Select()
+        {
+            DestroyThis();
+        }
+
+        public void DestroyThis()
+        {
+            Destroy(this);
+        }
+
+        private void OnDestroy()
+        {
+            _pointableUnityEventWrapper.WhenSelect.RemoveListener((action) => { Select(); });
+            _parentLockedCuttingObject.CanselCutting();
+        }
     }
 }

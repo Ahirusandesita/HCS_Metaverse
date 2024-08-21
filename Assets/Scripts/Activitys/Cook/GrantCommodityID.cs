@@ -1,23 +1,27 @@
+using HCSMeta.Activity.Cook.Interface;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-#if UNITY_EDITOR
-public class GrantCommodityID
+namespace HCSMeta.Activity.Cook
 {
-    [MenuItem("Initialize/Activity/Cook/CommodityID %h")]
-    public static void Initialize()
+#if UNITY_EDITOR
+    public class GrantCommodityID
     {
-        string[] guids = CommodityAssetDatabase.Find();
-
-        for (int i = 0; i < guids.Length; i++)
+        [MenuItem("Initialize/Activity/Cook/CommodityID %h")]
+        public static void Initialize()
         {
-            CommodityAsset commodityAsset = CommodityAssetDatabase.LoadAssetAtPathFromGuid(guids[i]);
-            IGrantableCommodityID grantable = commodityAsset;
-            grantable.GrantID(i);
-            UnityEditor.EditorUtility.SetDirty(commodityAsset);
+            string[] guids = CommodityAssetDatabase.Find();
+
+            for (int i = 0; i < guids.Length; i++)
+            {
+                CommodityAsset commodityAsset = CommodityAssetDatabase.LoadAssetAtPathFromGuid(guids[i]);
+                IGrantableCommodityID grantable = commodityAsset;
+                grantable.GrantID(i);
+                UnityEditor.EditorUtility.SetDirty(commodityAsset);
+            }
+            Debug.Log("Commodity‚ÉID‚ð•t—^‚µ‚Ü‚µ‚½B");
         }
-        Debug.Log("Commodity‚ÉID‚ð•t—^‚µ‚Ü‚µ‚½B");
     }
-}
 #endif
+}

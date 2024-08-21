@@ -1,18 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class AllObjectInitialize : InitializeBase
+namespace HCSMeta.Function.Initialize
 {
-    public override void Initialize()
+    public class AllObjectInitialize : InitializeBase
     {
-        foreach(InitializeBase initialize in GetComponentsInChildren<InitializeBase>())
+        public override void Initialize()
         {
-            if(initialize == this)
+            foreach (InitializeBase initialize in GetComponentsInChildren<InitializeBase>())
             {
-                continue;
+                if (initialize == this)
+                {
+                    continue;
+                }
+                initialize.Initialize();
             }
-            initialize.Initialize();
         }
     }
 }

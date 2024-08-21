@@ -1,22 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public interface IAllCommodityAsset
-{
-    List<Commodity> Commodities { set; }
-}
-[CreateAssetMenu(fileName = "AllCommodityAsset", menuName = "ScriptableObjects/Foods/AllCommodityAsset")]
-public class AllCommodityAsset : ScriptableObject,IAllCommodityAsset
-{
-    [SerializeField]
-    private List<Commodity> commodities = new List<Commodity>();
-    public IReadOnlyList<Commodity> Commodities => commodities;
+using HCSMeta.Activity.Cook.Interface;
 
-    List<Commodity> IAllCommodityAsset.Commodities
+namespace HCSMeta.Activity.Cook.Interface
+{
+    public interface IAllCommodityAsset
     {
-        set
+        List<Commodity> Commodities { set; }
+    }
+}
+
+namespace HCSMeta.Activity.Cook
+{
+    [CreateAssetMenu(fileName = "AllCommodityAsset", menuName = "ScriptableObjects/Foods/AllCommodityAsset")]
+    public class AllCommodityAsset : ScriptableObject, IAllCommodityAsset
+    {
+        [SerializeField]
+        private List<Commodity> commodities = new List<Commodity>();
+        public IReadOnlyList<Commodity> Commodities => commodities;
+
+        List<Commodity> IAllCommodityAsset.Commodities
         {
-            commodities = value;
+            set
+            {
+                commodities = value;
+            }
         }
     }
 }

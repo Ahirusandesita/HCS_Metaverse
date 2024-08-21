@@ -1,37 +1,41 @@
+using HCSMeta.Function.Initialize;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CanvasLookAtPlayer : MonoBehaviour,IDependencyInjector<PokeableCanvasInformation>
+namespace HCSMeta.Function.PlayerCanvas
 {
-    private Transform cameraTransform = default;
-
-    private bool isInject = false;
-
-    public void Inject(PokeableCanvasInformation information)
+    public class CanvasLookAtPlayer : MonoBehaviour, IDependencyInjector<PokeableCanvasInformation>
     {
-        cameraTransform = information.CameraTransform;
-        isInject = true;
-    }
+        private Transform cameraTransform = default;
 
-    void Start()
-    {
-        PokeableCanvasInHandInitialize.ConsignmentInject_static(this);
-    }
+        private bool isInject = false;
 
-    void Update()
-    {
-        if (!isInject)
+        public void Inject(PokeableCanvasInformation information)
         {
-            return;
+            cameraTransform = information.CameraTransform;
+            isInject = true;
         }
 
-        this.transform.LookAt(cameraTransform.position, this.transform.forward);
-        Vector2 nowRotate = this.transform.rotation.eulerAngles;
-        nowRotate.x = 0;
-        this.transform.rotation = Quaternion.Euler(nowRotate);
-        this.transform.Rotate(0f, 180f, 0f);
+        void Start()
+        {
+            PokeableCanvasInHandInitialize.ConsignmentInject_static(this);
+        }
 
-        //this.transform.position = new Vector3(0f, this.transform.position.y, 0f);
+        void Update()
+        {
+            if (!isInject)
+            {
+                return;
+            }
+
+            this.transform.LookAt(cameraTransform.position, this.transform.forward);
+            Vector2 nowRotate = this.transform.rotation.eulerAngles;
+            nowRotate.x = 0;
+            this.transform.rotation = Quaternion.Euler(nowRotate);
+            this.transform.Rotate(0f, 180f, 0f);
+
+            //this.transform.position = new Vector3(0f, this.transform.position.y, 0f);
+        }
     }
 }
