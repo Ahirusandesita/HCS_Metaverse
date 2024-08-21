@@ -1,90 +1,92 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class StoperObject : MonoBehaviour
+namespace HCSMeta.Activity
 {
-    [SerializeField, Tooltip("ê⁄êGîªíËÇçsÇ§Collider")]
-    private Collider _stoperColliter = default;
-
-    // 
-    private Vector3 _hitBoxCenter = default;
-
-    // 
-    private Vector3 _hitBoxSize = default;
-
-    // 
-    private Quaternion _hitBoxRotation = default;
-
-    // 
-    private string _stoppableObjectsTag = "StoppableObject";
-
-    // 
-    private enum DebugMode_StoperObject
+    public class StoperObject : MonoBehaviour
     {
-        FixedUpdate,
-        Update,
-        LateUpdate
-    }
-
-    [SerializeField]
-    DebugMode_StoperObject mode = DebugMode_StoperObject.Update;
-
-    private void Start()
-    {
-        // 
-        _hitBoxCenter = _stoperColliter.bounds.center;
+        [SerializeField, Tooltip("ê⁄êGîªíËÇçsÇ§Collider")]
+        private Collider _stoperColliter = default;
 
         // 
-        _hitBoxSize = _stoperColliter.bounds.size / 2;
+        private Vector3 _hitBoxCenter = default;
 
         // 
-        _hitBoxRotation = this.transform.rotation;
-    }
+        private Vector3 _hitBoxSize = default;
 
-    private void Update()
-    {
         // 
-        Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);
+        private Quaternion _hitBoxRotation = default;
 
-        bool onFlag = false;
+        // 
+        private string _stoppableObjectsTag = "StoppableObject";
 
-        if (hitColliders is null)
+        // 
+        private enum DebugMode_StoperObject
         {
-            Debug.Log($"Ç»Ç…Ç‡ìñÇΩÇ¡ÇƒÇ»Ç¢ÇÊÇÒ");
-            return;
+            FixedUpdate,
+            Update,
+            LateUpdate
         }
 
-        // 
-        foreach(Collider hitCollider in hitColliders)
+        [SerializeField]
+        DebugMode_StoperObject mode = DebugMode_StoperObject.Update;
+
+        private void Start()
         {
             // 
-            if (!hitCollider.transform.root.TryGetComponent<Stoppable>(out var tmp))
-            {
-                // 
-                continue;
-            }
-
-            onFlag = true;
+            _hitBoxCenter = _stoperColliter.bounds.center;
 
             // 
-            if (hitCollider.transform.root.TryGetComponent<StopData>(out var stopData))
-            {
-                // 
-                stopData.SetIsHitStopper(true);
+            _hitBoxSize = _stoperColliter.bounds.size / 2;
 
-                Debug.Log($"{hitCollider.gameObject.name} is Stopping now");
-            }
             // 
-            else
+            _hitBoxRotation = this.transform.rotation;
+        }
+
+        private void Update()
+        {
+            // 
+            Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);
+
+            bool onFlag = false;
+
+            if (hitColliders is null)
+            {
+                Debug.Log($"Ç»Ç…Ç‡ìñÇΩÇ¡ÇƒÇ»Ç¢ÇÊÇÒ");
+                return;
+            }
+
+            // 
+            foreach (Collider hitCollider in hitColliders)
             {
                 // 
-                hitCollider.transform.root.gameObject.AddComponent<StopData>();
+                if (!hitCollider.transform.root.TryGetComponent<Stoppable>(out var tmp))
+                {
+                    // 
+                    continue;
+                }
 
-                tmp.StoppingEvent();
+                onFlag = true;
 
-                Debug.Log($"{hitCollider.gameObject.name} Ç… StopDataí«â¡ÇµÇΩÇÊÇÒ");
+                // 
+                if (hitCollider.transform.root.TryGetComponent<StopData>(out var stopData))
+                {
+                    // 
+                    stopData.SetIsHitStopper(true);
+
+                    Debug.Log($"{hitCollider.gameObject.name} is Stopping now");
+                }
+                // 
+                else
+                {
+                    // 
+                    hitCollider.transform.root.gameObject.AddComponent<StopData>();
+
+                    tmp.StoppingEvent();
+
+                    Debug.Log($"{hitCollider.gameObject.name} Ç… StopDataí«â¡ÇµÇΩÇÊÇÒ");
+                }
             }
         }
     }
+
 }
