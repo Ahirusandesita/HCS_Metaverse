@@ -1,4 +1,9 @@
-public interface ISelectedNotificationInjectable
+using HCSMeta.Activity;
+
+namespace HCSMeta.Function.Injection
 {
-    void Inject(ISelectedNotification selectedNotification);
+    public interface ISelectedNotificationInjectable
+    {
+        void Inject(ISelectedNotification selectedNotification);
+    }
 }

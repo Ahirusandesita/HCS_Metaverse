@@ -37,7 +37,6 @@ public class ModelSettingChanger : EditorWindow
     private void OnGUI()
     {
         target.Update();
-        scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
 
 
         if (mode == WindowMode.Serach)
@@ -71,10 +70,14 @@ public class ModelSettingChanger : EditorWindow
         }
         else
         {
+            scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
+
             foreach (var path in targetsPath)
             {
-                EditorGUILayout.LabelField(path + "\n");
+                GUILayout.Label(path);
             }
+
+            EditorGUILayout.EndScrollView();
 
             if (GUILayout.Button("Yes"))
             {
@@ -82,7 +85,6 @@ public class ModelSettingChanger : EditorWindow
             }
         }
 
-        EditorGUILayout.EndScrollView();
         target.ApplyModifiedProperties();
     }
 

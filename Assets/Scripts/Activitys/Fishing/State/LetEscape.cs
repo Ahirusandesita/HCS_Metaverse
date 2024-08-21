@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using IceMilkTea.StateMachine;
 
-public partial class FishingManager
+namespace HCSMeta.Activity.Fishing
 {
-    private class LetEscape : ImtStateMachine<FishingManager, EventID>.State
+    public partial class FishingManager
     {
-        protected internal override void Enter()
+        private class LetEscape : ImtStateMachine<FishingManager, EventID>.State
         {
-            XDebug.Log(GetType().Name, "red");
+            protected internal override void Enter()
+            {
+                XDebug.Log(GetType().Name, "red");
+            }
         }
     }
 }

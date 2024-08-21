@@ -1,62 +1,65 @@
 using Oculus.Interaction;
 using UnityEngine;
 
-[RequireComponent(typeof(OutlineManager))]
-public class DisplayItem : MonoBehaviour, IDisplayItem
+namespace HCSMeta.Activity
 {
-    [SerializeField] private PointableUnityEventWrapper onGrabbed = default;
-    private ItemSelectArgs itemSelectArgs = default;
-    private ISelectedNotification sn = default;
-
-
-    [System.Diagnostics.Conditional("UNITY_EDITOR")]
-    private void Reset()
+    [RequireComponent(typeof(OutlineManager))]
+    public class DisplayItem : MonoBehaviour, IDisplayItem
     {
-        onGrabbed ??= GetComponent<PointableUnityEventWrapper>();
-    }
+        [SerializeField] private PointableUnityEventWrapper onGrabbed = default;
+        private ItemSelectArgs itemSelectArgs = default;
+        private ISelectedNotification sn = default;
 
-    void IDisplayItem.InjectItemSelectArgs(ItemSelectArgs itemSelectArgs)
-    {
-        this.itemSelectArgs = itemSelectArgs;
-    }
 
-    void IDisplayItem.InjectSelectedNotification(ISelectedNotification sn)
-    {
-        this.sn = sn;
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
+        private void Reset()
+        {
+            onGrabbed ??= GetComponent<PointableUnityEventWrapper>();
+        }
 
-        onGrabbed.WhenSelect.AddListener(WhenSelect);
-        onGrabbed.WhenUnselect.AddListener(WhenUnselect);
-        onGrabbed.WhenHover.AddListener(WhenHover);
-        onGrabbed.WhenUnhover.AddListener(WhenUnhover);
-    }
+        void IDisplayItem.InjectItemSelectArgs(ItemSelectArgs itemSelectArgs)
+        {
+            this.itemSelectArgs = itemSelectArgs;
+        }
 
-    void IDisplayItem.InjectPointableUnityEventWrapper(PointableUnityEventWrapper puew)
-    {
-        onGrabbed = puew;
-    }
+        void IDisplayItem.InjectSelectedNotification(ISelectedNotification sn)
+        {
+            this.sn = sn;
 
-    private void WhenSelect(PointerEvent pointerEvent)
-    {
-        sn.Select(itemSelectArgs);
+            onGrabbed.WhenSelect.AddListener(WhenSelect);
+            onGrabbed.WhenUnselect.AddListener(WhenUnselect);
+            onGrabbed.WhenHover.AddListener(WhenHover);
+            onGrabbed.WhenUnhover.AddListener(WhenUnhover);
+        }
 
-        onGrabbed.WhenSelect.RemoveListener(WhenSelect);
-        onGrabbed.WhenHover.RemoveListener(WhenHover);
-        onGrabbed.WhenUnhover.RemoveListener(WhenUnhover);
-    }
+        void IDisplayItem.InjectPointableUnityEventWrapper(PointableUnityEventWrapper puew)
+        {
+            onGrabbed = puew;
+        }
 
-    private void WhenUnselect(PointerEvent pointerEvent)
-    {
-        sn.Unselect(itemSelectArgs);
-        onGrabbed.WhenUnselect.RemoveListener(WhenUnselect);
-    }
+        private void WhenSelect(PointerEvent pointerEvent)
+        {
+            sn.Select(itemSelectArgs);
 
-    private void WhenHover(PointerEvent pointerEvent)
-    {
-        sn.Hover(itemSelectArgs);
-    }
+            onGrabbed.WhenSelect.RemoveListener(WhenSelect);
+            onGrabbed.WhenHover.RemoveListener(WhenHover);
+            onGrabbed.WhenUnhover.RemoveListener(WhenUnhover);
+        }
 
-    private void WhenUnhover(PointerEvent pointerEvent)
-    {
-        sn.Unhover(itemSelectArgs);
+        private void WhenUnselect(PointerEvent pointerEvent)
+        {
+            sn.Unselect(itemSelectArgs);
+            onGrabbed.WhenUnselect.RemoveListener(WhenUnselect);
+        }
+
+        private void WhenHover(PointerEvent pointerEvent)
+        {
+            sn.Hover(itemSelectArgs);
+        }
+
+        private void WhenUnhover(PointerEvent pointerEvent)
+        {
+            sn.Unhover(itemSelectArgs);
+        }
     }
 }

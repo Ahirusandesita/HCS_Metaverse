@@ -1,15 +1,18 @@
 using UnityEngine;
 
-/// <summary>
-/// プーリングするオブジェクトのデータ
-/// </summary>
-[CreateAssetMenu(fileName = "PoolObjectData", menuName = "ScriptableObjects/PoolObjectAsset/Prefab")]
-public class PoolObjectAsset : ScriptableObject
+namespace HCSMeta.Function
 {
-    [Space]
-    [SerializeField] private PoolObject prefab = default;
-    [SerializeField, Min(0)] private int maxCreateCount = 10;
+    /// <summary>
+    /// プーリングするオブジェクトのデータ
+    /// </summary>
+    [CreateAssetMenu(fileName = "PoolObjectData", menuName = "ScriptableObjects/PoolObjectAsset/Prefab")]
+    public class PoolObjectAsset : ScriptableObject
+    {
+        [Space]
+        [SerializeField] private PoolObject prefab = default;
+        [SerializeField, Min(0)] private int maxCreateCount = 10;
 
-    public PoolObject Prefab => prefab;
-    public int MaxCreateCount => maxCreateCount;
+        public PoolObject Prefab => prefab;
+        public int MaxCreateCount => maxCreateCount;
+    }
 }
