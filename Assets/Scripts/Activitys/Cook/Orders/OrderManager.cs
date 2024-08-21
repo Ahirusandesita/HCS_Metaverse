@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using HCSMeta.Activity.Cook.Interface;
+using HCSMeta.Network;
 
 namespace HCSMeta.Activity.Cook.Interface
 {

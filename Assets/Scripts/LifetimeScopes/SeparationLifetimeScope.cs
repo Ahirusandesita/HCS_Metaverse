@@ -1,6 +1,7 @@
 using VContainer;
 using VContainer.Unity;
 using UnityEngine;
+using HCSMeta.Network;
 
 public class SeparationLifetimeScope : LifetimeScope
 {

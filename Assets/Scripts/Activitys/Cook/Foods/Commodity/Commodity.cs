@@ -11,6 +11,7 @@ using Cysharp.Threading.Tasks;
 using HCSMeta.Activity.Cook.Interface;
 using HCSMeta.Player.VR.Interface;
 using HCSMeta.Function.Injection;
+using HCSMeta.Network;
 
 namespace HCSMeta.Activity.Cook.Interface
 {
