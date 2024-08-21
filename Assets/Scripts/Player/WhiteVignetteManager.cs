@@ -15,7 +15,6 @@ namespace HCSMeta.Player.View
             public static readonly int vignetteColorBlend = Shader.PropertyToID("_VignetteColorBlend");
         }
 
-        [SerializeField] private bool enableWhiteout = true;
         [Tooltip("Easeinの所要時間[s]")]
         [SerializeField, Min(0f)] private float easeInDuration = 0.25f;
         [Tooltip("EaseOutの所要時間[s]")]
@@ -60,8 +59,8 @@ namespace HCSMeta.Player.View
                 // DOTweenでフェードインを表現
                 DOVirtual.Float(from: 0f, to: 1f, duration: easeInDuration, onVirtualUpdate: value =>
                 {
-                // 値の更新
-                vignettePropertyBlock.SetColor(ShaderPropertyLookup.vignetteColor, new Color(1f, 1f, 1f, value));
+                    // 値の更新
+                    vignettePropertyBlock.SetColor(ShaderPropertyLookup.vignetteColor, new Color(1f, 1f, 1f, value));
                     vignettePropertyBlock.SetColor(ShaderPropertyLookup.vignetteColorBlend, new Color(1f, 1f, 1f, value));
                     meshRenderer.SetPropertyBlock(vignettePropertyBlock);
                 }).OnComplete(() =>
@@ -79,8 +78,8 @@ namespace HCSMeta.Player.View
                 // DOTweenでフェードアウトを表現
                 DOVirtual.Float(from: 1f, to: 0f, duration: easeOutDuration, onVirtualUpdate: value =>
                 {
-                // 値の更新
-                vignettePropertyBlock.SetColor(ShaderPropertyLookup.vignetteColor, new Color(1f, 1f, 1f, value));
+                    // 値の更新
+                    vignettePropertyBlock.SetColor(ShaderPropertyLookup.vignetteColor, new Color(1f, 1f, 1f, value));
                     vignettePropertyBlock.SetColor(ShaderPropertyLookup.vignetteColorBlend, new Color(1f, 1f, 1f, value));
                     meshRenderer.SetPropertyBlock(vignettePropertyBlock);
                 });
