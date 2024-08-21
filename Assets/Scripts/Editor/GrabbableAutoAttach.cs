@@ -1,3 +1,4 @@
+using HCSMeta.Activity;
 using Oculus.Interaction;
 using Oculus.Interaction.HandGrab;
 using System;

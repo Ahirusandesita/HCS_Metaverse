@@ -1,3 +1,5 @@
+using HCSMeta.Function.Injection;
+using HCSMeta.Player;
 using System.Collections.Generic;
 using UnityEngine;
 /// <summary>
