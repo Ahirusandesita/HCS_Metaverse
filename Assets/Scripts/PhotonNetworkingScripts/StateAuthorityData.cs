@@ -1,32 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Fusion;
-public class AuthrityEventArgs : System.EventArgs
+
+namespace HCSMeta.Network
 {
-	public readonly bool Authrity;
-	public AuthrityEventArgs(bool authrity)
+	public class AuthrityEventArgs : System.EventArgs
 	{
-		this.Authrity = authrity;
-	}
-}
-public delegate void AuthrityHandler(AuthrityEventArgs authrityEventArgs);
-public class StateAuthorityData : NetworkBehaviour
-{
-	[Networked]
-	public bool IsNotReleaseStateAuthority { get; set; }
-	public event AuthrityHandler OnAuthrity;
-	private bool isGrabbable = true;
-	public bool IsGrabbable
-	{
-		get
+		public readonly bool Authrity;
+		public AuthrityEventArgs(bool authrity)
 		{
-			return isGrabbable;
+			this.Authrity = authrity;
 		}
-		set
+	}
+	public delegate void AuthrityHandler(AuthrityEventArgs authrityEventArgs);
+	public class StateAuthorityData : NetworkBehaviour
+	{
+		[Networked]
+		public bool IsNotReleaseStateAuthority { get; set; }
+		public event AuthrityHandler OnAuthrity;
+		private bool isGrabbable = true;
+		public bool IsGrabbable
 		{
-			isGrabbable = value;
-			OnAuthrity?.Invoke(new AuthrityEventArgs(value));
+			get
+			{
+				return isGrabbable;
+			}
+			set
+			{
+				isGrabbable = value;
+				OnAuthrity?.Invoke(new AuthrityEventArgs(value));
+			}
 		}
 	}
 }

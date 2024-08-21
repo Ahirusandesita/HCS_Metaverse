@@ -3,27 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using Fusion;
 
-public class RemoteView : NetworkBehaviour
+namespace HCSMeta.Network
 {
-	private Transform _playerTransform;
-	private Transform _viewTransform;
-
-	public override void Spawned()
+	public class RemoteView : NetworkBehaviour
 	{
-		base.Spawned();
-		_playerTransform = FindObjectOfType<VRPlayerController>().transform;
-		_viewTransform = transform;
-	}
+		private Transform _playerTransform;
+		private Transform _viewTransform;
 
-	public void SetVector3(Vector3 vector)
-	{
-		//Debug.LogWarning(vector);
+		public override void Spawned()
+		{
+			base.Spawned();
+			_playerTransform = FindObjectOfType<VRPlayerController>().transform;
+			_viewTransform = transform;
+		}
 
-	}
+		public void SetVector3(Vector3 vector)
+		{
+			//Debug.LogWarning(vector);
+		}
 
-	public override void FixedUpdateNetwork()
-	{
-		base.FixedUpdateNetwork();
-		_viewTransform.position = _playerTransform.position;
+		public override void FixedUpdateNetwork()
+		{
+			base.FixedUpdateNetwork();
+			_viewTransform.position = _playerTransform.position;
+		}
 	}
 }
