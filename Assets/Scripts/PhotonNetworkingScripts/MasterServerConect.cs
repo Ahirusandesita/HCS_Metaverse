@@ -101,7 +101,7 @@ namespace HCSMeta.Network
 			// NetworkRunnerのコールバック対象に、このスクリプト（GameLauncher）を登録する
 			_networkRunner.AddCallbacks(this);
 			GateOfFusion.Instance.NetworkRunner = _networkRunner;
-			XDebug.LogWarning("UpdateRunner", KumaDebugColor.NotificationColor);
+			XDebug.LogWarning("UpdateRunner", KumaDebugColor.SuccessColor);
 		}
 
 		public async UniTask Connect(string SessionName)
@@ -120,7 +120,7 @@ namespace HCSMeta.Network
 
 			GateOfFusion.Instance.IsCanUsePhoton = result.Ok;
 
-			XDebug.LogWarning("Connect:" + (result.Ok ? "Success" : "Fail"), KumaDebugColor.NotificationColor);
+			XDebug.LogWarning("Connect:" + (result.Ok ? "Success" : "Fail"), KumaDebugColor.InformationColor);
 		}
 
 		public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
@@ -132,14 +132,14 @@ namespace HCSMeta.Network
 		}
 		public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
 		{
-			XDebug.LogWarning($"JoinSession:{player}", KumaDebugColor.NotificationColor);
+			XDebug.LogWarning($"JoinSession:{player}", KumaDebugColor.InformationColor);
 			Room currentRoom = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
 			RPCManager rpcManager = FindObjectOfType<RPCManager>();
 			if (Runner.LocalPlayer != player) { return; }
 			if (Runner.IsSharedModeMasterClient)
 			{
 				//ここから下はマスターのみ実行
-				Debug.LogWarning($"<color=yellow>MasterJoin</color>");
+				XDebug.LogWarning($"MasterJoin",KumaDebugColor.SuccessColor);
 				MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
 				Transform masterTransform = masterServer.transform;
 				NetworkObject networkObject = Runner.Spawn(_rpcManagerPrefab);
@@ -175,7 +175,7 @@ namespace HCSMeta.Network
 
 		public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
 		{
-			XDebug.LogError("DisconnectedFromServer:", Color.red);
+			XDebug.LogError("DisconnectedFromServer:", KumaDebugColor.ErrorColor);
 		}
 
 		public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)

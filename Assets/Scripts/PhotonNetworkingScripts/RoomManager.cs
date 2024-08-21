@@ -151,7 +151,7 @@ namespace HCSMeta.Network
 			int index = _roomPlayers.IndexOf(playerRef);
 			if (index < 0)
 			{
-				Debug.LogError("ルームに参加していません");
+				XDebug.LogWarning("ルームに参加していません",KumaDebugColor.ErrorColor);
 				return;
 			}
 			_roomPlayers[index].SessionName = sessionName;
@@ -259,7 +259,7 @@ namespace HCSMeta.Network
 			XDebug.LogWarning($"Join:{worldType}," +
 				$"Result:{result}\nRoomNum:{roomTemp.RoomNumber}," +
 				$"Player:{playerRef}",
-				KumaDebugColor.NotificationColor);
+				KumaDebugColor.InformationColor);
 
 			return result;
 		}
@@ -287,7 +287,7 @@ namespace HCSMeta.Network
 			XDebug.LogWarning(
 				$"Left:{joinedRoom.WorldType}" +
 				$"\nRoomNum:{joinedRoom.RoomNumber}" +
-				$"Player:{playerRef}", KumaDebugColor.NotificationColor);
+				$"Player:{playerRef}", KumaDebugColor.InformationColor);
 			LeftResult result = joinedRoom.Left(playerRef);
 			if (result == LeftResult.Closable)
 			{
@@ -321,7 +321,7 @@ namespace HCSMeta.Network
 
 		public void LeaderChange(PlayerRef leaderPlayer)
 		{
-			XDebug.LogWarning($"NewLeader{leaderPlayer}", KumaDebugColor.NotificationColor);
+			XDebug.LogWarning($"NewLeader{leaderPlayer}", KumaDebugColor.InformationColor);
 			Room roomTemp = GetCurrentRoom(leaderPlayer);
 			//前のリーダーのリーダーオブジェクトを破棄する
 			RPCManager.Instance.Rpc_DestroyLeaderObject(roomTemp.LeaderPlayerRef);
