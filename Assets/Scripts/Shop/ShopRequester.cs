@@ -5,74 +5,71 @@ using Cysharp.Threading.Tasks;
 using UnityEngine.Networking;
 using Result = UnityEngine.Networking.UnityWebRequest.Result;
 
-namespace HCSMeta.Activity.Shop
+public enum ItemSize
 {
-    public enum ItemSize
+    Small = 0,
+    Large = 1
+}
+
+public class ShopRequester : MonoBehaviour
+{
+    [System.Serializable]
+    private class LineupData
     {
-        Small = 0,
-        Large = 1
+        [SerializeField] private int responseCode = default;
+        [SerializeField] private string message = default;
+        [SerializeField] private List<Body> body = default;
+
+        public int ResponseCode => responseCode;
+        public string Message => message;
+        public IReadOnlyList<Body> Lineup => body;
+
+        [System.Serializable]
+        public class Body
+        {
+            [SerializeField] private int id = default;
+            [SerializeField] private int price = default;
+            [SerializeField] private float discount = default;
+            [SerializeField] private int stock = default;
+            [SerializeField] private ItemSize size = default;
+
+            public int ID => id;
+            public int Price => price;
+            public float Discount => discount;
+            public int Stock => stock;
+            public ItemSize Size => size;
+        }
     }
 
-    public class ShopRequester : MonoBehaviour
+    private const string DEFAULT_PATH = "http://10.11.39.210:8080/shop/getitemlist";
+
+
+    private async void Start()
     {
-        [System.Serializable]
-        private class LineupData
+        await Get(0, 2, 3);
+    }
+
+    public async UniTask Get(int genre, int large, int small)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("genre", genre);
+        form.AddField("large", large);
+        form.AddField("small", small);
+        using var request = UnityWebRequest.Post(DEFAULT_PATH, form);
+        await request.SendWebRequest();
+
+        switch (request.result)
         {
-            [SerializeField] private int responseCode = default;
-            [SerializeField] private string message = default;
-            [SerializeField] private List<Body> body = default;
+            case Result.InProgress:
+                throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
 
-            public int ResponseCode => responseCode;
-            public string Message => message;
-            public IReadOnlyList<Body> Lineup => body;
-
-            [System.Serializable]
-            public class Body
-            {
-                [SerializeField] private int id = default;
-                [SerializeField] private int price = default;
-                [SerializeField] private float discount = default;
-                [SerializeField] private int stock = default;
-                [SerializeField] private ItemSize size = default;
-
-                public int ID => id;
-                public int Price => price;
-                public float Discount => discount;
-                public int Stock => stock;
-                public ItemSize Size => size;
-            }
+            case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+                throw new System.InvalidOperationException(request.error);
         }
 
-        private const string DEFAULT_PATH = "http://10.11.39.210:8080/shop/getitemlist";
-
-
-        private async void Start()
+        var lineupData = JsonUtility.FromJson<LineupData>($"{request.downloadHandler.text}");
+        foreach (var item in lineupData.Lineup)
         {
-            await Get(0, 2, 3);
-        }
-
-        public async UniTask Get(int genre, int large, int small)
-        {
-            WWWForm form = new WWWForm();
-            form.AddField("genre", genre);
-            form.AddField("large", large);
-            form.AddField("small", small);
-            using var request = UnityWebRequest.Post(DEFAULT_PATH, form);
-            await request.SendWebRequest();
-
-            switch (request.result)
-            {
-                case Result.InProgress:
-                    throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
-
-                case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
-                    throw new System.InvalidOperationException(request.error);
-            }
-
-            var lineupData = JsonUtility.FromJson<LineupData>($"{request.downloadHandler.text}");
-            foreach (var item in lineupData.Lineup)
-            {
-            }
         }
     }
 }

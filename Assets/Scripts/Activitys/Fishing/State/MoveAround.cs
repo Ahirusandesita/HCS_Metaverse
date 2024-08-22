@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using IceMilkTea.StateMachine;
 
-namespace HCSMeta.Activity.Fishing
+public partial class FishingManager
 {
-    public partial class FishingManager
+    private class MoveAround : ImtStateMachine<FishingManager, EventID>.State
     {
-        private class MoveAround : ImtStateMachine<FishingManager, EventID>.State
+        protected internal override void Enter()
         {
-            protected internal override void Enter()
-            {
-                GetType().Name.Print("red");
-            }
+            GetType().Name.Print("red");
         }
     }
 }

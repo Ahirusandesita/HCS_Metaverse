@@ -2,7 +2,7 @@ using System.IO;
 using UnityEngine;
 
 #if UNITY_EDITOR
-namespace UnityEditor
+namespace UnityEditor.HCSMeta
 {
     public static class EditorSaveSystem
     {
