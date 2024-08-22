@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-using UnityEngine;
 using DG.Tweening;
+using System;
+using UnityEngine;
 
 [RequireComponent(typeof(OutlineManager))]
 public class BuyArea : MonoBehaviour
