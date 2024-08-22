@@ -10,6 +10,18 @@ using UnityEngine;
 [RequireComponent(typeof(InteractionScopeChecker))]
 public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : PlayerDataAssetBase
 {
+    protected enum DeviceType
+    {
+        Mouse,
+        GamepadOrXR,
+#if UNITY_EDITOR
+        /// <summary>
+        /// Editor only
+        /// </summary>
+        Debug,
+#endif
+    }
+
     [SerializeField] protected CharacterController characterController = default;
     [SerializeField] protected TData playerDataAsset = default;
     [Tooltip("接地判定を行う球の原点となるターゲット")]
@@ -341,16 +353,4 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour where TData : 
         Gizmos.DrawSphere(ceilingCheckSphere.position, DecisionRadius);
     }
 
-}
-
-public enum DeviceType
-{
-    Mouse,
-    GamepadOrXR,
-#if UNITY_EDITOR
-    /// <summary>
-    /// Editor only
-    /// </summary>
-    Debug,
-#endif
 }

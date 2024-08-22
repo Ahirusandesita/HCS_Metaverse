@@ -5,12 +5,6 @@ using Cysharp.Threading.Tasks;
 using UnityEngine.Networking;
 using Result = UnityEngine.Networking.UnityWebRequest.Result;
 
-public enum ItemSize
-{
-    Small = 0,
-    Large = 1
-}
-
 public class ShopRequester : MonoBehaviour
 {
     [System.Serializable]

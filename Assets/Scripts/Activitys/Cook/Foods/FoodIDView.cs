@@ -1,38 +1,22 @@
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
-public class ItemIDView
-{
-    [SerializeField] protected int id = default;
-    [SerializeField] protected string displayName = default;
-    [SerializeField] protected int selectedIndex = default;
-
-    public int ID => id;
-
-    public static implicit operator int(ItemIDView itemID)
-    {
-        return itemID.id;
-    }
-
-    public static explicit operator ItemIDView(int id)
-    {
-        return new ItemIDView() { id = id };
-    }
-}
+public class FoodIDView : ItemIDView { }
 
 #if UNITY_EDITOR
 namespace UnityEditor.HCSMeta
 {
-    [CustomPropertyDrawer(typeof(ItemIDView))]
-    public class ItemIDViewDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(FoodIDView))]
+    public class FoodIDViewDrawer : PropertyDrawer
     {
         private SerializedProperty idProperty = default;
         private SerializedProperty nameProperty = default;
         private SerializedProperty selectedIndexProperty = default;
         private static ItemBundleAsset allItemAsset = default;
         private static string[] displayedOptions = default;
+
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -50,7 +34,7 @@ namespace UnityEditor.HCSMeta
                 allItemAsset = AssetDatabase.FindAssets($"t:{nameof(ItemBundleAsset)}")
                     .Select(AssetDatabase.GUIDToAssetPath)
                     .Select(AssetDatabase.LoadAssetAtPath<ItemBundleAsset>)
-                    .Where(asset => asset.GenresHandled == ItemGenre.All)
+                    .Where(asset => asset.GenresHandled == ItemGenre.Food)
                     .First();
                 UpdateDisplayOptions();
             }
@@ -67,9 +51,6 @@ namespace UnityEditor.HCSMeta
             EditorGUI.EndProperty();
         }
 
-        /// <summary>
-        /// Popupの表示内容を更新する
-        /// </summary>
         public static void UpdateDisplayOptions()
         {
             var tmpList = new List<string>();
@@ -80,10 +61,6 @@ namespace UnityEditor.HCSMeta
                 if (!item.IsDisplayable)
                 {
                     content += " (No Visual)";
-                }
-                else if (item.Genre != ItemGenre.All)
-                {
-                    content += $" ({item.Genre})";
                 }
                 tmpList.Add(content);
             }
