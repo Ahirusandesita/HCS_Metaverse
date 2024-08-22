@@ -2,21 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace HCSMeta.Activity.Cook
+
+public class OrderPresenter : MonoBehaviour
 {
-    public class OrderPresenter : MonoBehaviour
+
+    [SerializeField]
+    private OrderManager orderManager;
+    [SerializeField]
+    private OrderView orderView;
+
+    private void Awake()
     {
-
-        [SerializeField]
-        private OrderManager orderManager;
-        [SerializeField]
-        private OrderView orderView;
-
-        private void Awake()
-        {
-            orderManager.OnOrderInitialize += orderView.OrderInitializeHandler;
-            orderManager.OnOrder += orderView.OrderHandler;
-            orderManager.OnResetOrder += orderView.ResetOrderArrayHandler;
-        }
+        orderManager.OnOrderInitialize += orderView.OrderInitializeHandler;
+        orderManager.OnOrder += orderView.OrderHandler;
+        orderManager.OnResetOrder += orderView.ResetOrderArrayHandler;
     }
 }

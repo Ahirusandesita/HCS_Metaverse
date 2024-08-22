@@ -1,124 +1,113 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using HCSMeta.Activity.Cook.Interface;
 
-namespace HCSMeta.Activity.Cook
+public enum ProcessingType
 {
-    public enum ProcessingType
-    {
-        /// <summary>
-        /// èƒÇ≠
-        /// </summary>
-        Bake,
-        /// <summary>
-        /// êÿÇÈ
-        /// </summary>
-        Cut,
-        /// <summary>
-        /// ógÇ∞ÇÈ
-        /// </summary>
-        Fry,
-        /// <summary>
-        /// êUÇÈ
-        /// </summary>
-        Shake,
-        /// <summary>
-        /// êÜÇ≠
-        /// </summary>
-        Boil,
-        /// <summary>
-        /// ç¨Ç∫ÇÈ
-        /// </summary>
-        Mix
-    }
+    /// <summary>
+    /// èƒÇ≠
+    /// </summary>
+    Bake,
+    /// <summary>
+    /// êÿÇÈ
+    /// </summary>
+    Cut,
+    /// <summary>
+    /// ógÇ∞ÇÈ
+    /// </summary>
+    Fry,
+    /// <summary>
+    /// êUÇÈ
+    /// </summary>
+    Shake,
+    /// <summary>
+    /// êÜÇ≠
+    /// </summary>
+    Boil,
+    /// <summary>
+    /// ç¨Ç∫ÇÈ
+    /// </summary>
+    Mix
 }
 
-namespace HCSMeta.Activity.Cook.Interface
+public interface IIngrodientAsset
 {
-    public interface IIngrodientAsset
-    {
-        void SetUp(List<IngrodientsDetailInformation> ingrodientsDetailInformation);
-    }
+    void SetUp(List<IngrodientsDetailInformation> ingrodientsDetailInformation);
 }
-
-namespace HCSMeta.Activity.Cook
+[CreateAssetMenu(fileName = "IngrodientAsset", menuName = "ScriptableObjects/Foods/IngrodientsAsset")]
+public class IngrodientsAsset : ScriptableObject, IIngrodientAsset
 {
-    [CreateAssetMenu(fileName = "IngrodientAsset", menuName = "ScriptableObjects/Foods/IngrodientsAsset")]
-    public class IngrodientsAsset : ScriptableObject, IIngrodientAsset
-    {
-
-        /// <summary>
-        /// ãÔçﬁÇÃñºëO
-        /// </summary>
-        [SerializeField]
-        private IngrodientsType ingrodientsType;
-        [SerializeField]
-        private List<IngrodientsDetailInformation> ingrodientsDetailInformations = new List<IngrodientsDetailInformation>();
-
-        public IngrodientsType IngrodientsType => ingrodientsType;
-        public IReadOnlyList<IngrodientsDetailInformation> IngrodientsDetailInformations => ingrodientsDetailInformations;
-
-        void IIngrodientAsset.SetUp(List<IngrodientsDetailInformation> ingrodientsDetailInformations)
-        {
-            this.ingrodientsDetailInformations = ingrodientsDetailInformations;
-        }
-    }
 
     /// <summary>
-    /// ãÔçﬁÇÃè⁄ç◊èÓïÒ
+    /// ãÔçﬁÇÃñºëO
     /// </summary>
-    [System.Serializable]
-    public class IngrodientsDetailInformation
+    [SerializeField]
+    private IngrodientsType ingrodientsType;
+    [SerializeField]
+    private List<IngrodientsDetailInformation> ingrodientsDetailInformations = new List<IngrodientsDetailInformation>();
+
+    public IngrodientsType IngrodientsType => ingrodientsType;
+    public IReadOnlyList<IngrodientsDetailInformation> IngrodientsDetailInformations => ingrodientsDetailInformations;
+
+    void IIngrodientAsset.SetUp(List<IngrodientsDetailInformation> ingrodientsDetailInformations)
     {
-        /// <summary>
-        /// â¡çHâ¬î\Ç»É^ÉCÉv
-        /// </summary>
-        [SerializeField]
-        private ProcessingType processableType;
-        /// <summary>
-        /// â¡çHÇ…ä|Ç©ÇÈéûä‘
-        /// </summary>
-        [SerializeField]
-        private float timeItTakes;
+        this.ingrodientsDetailInformations = ingrodientsDetailInformations;
+    }
+}
 
-        /// <summary>
-        /// â¡çHå„ÇÃäÆê¨ïi
-        /// </summary>
-        [SerializeField]
-        private Commodity commodity;
+/// <summary>
+/// ãÔçﬁÇÃè⁄ç◊èÓïÒ
+/// </summary>
+[System.Serializable]
+public class IngrodientsDetailInformation
+{
+    /// <summary>
+    /// â¡çHâ¬î\Ç»É^ÉCÉv
+    /// </summary>
+    [SerializeField]
+    private ProcessingType processableType;
+    /// <summary>
+    /// â¡çHÇ…ä|Ç©ÇÈéûä‘
+    /// </summary>
+    [SerializeField]
+    private float timeItTakes;
 
-        public ProcessingType ProcessingType => processableType;
-        public float TimeItTakes => timeItTakes;
+    /// <summary>
+    /// â¡çHå„ÇÃäÆê¨ïi
+    /// </summary>
+    [SerializeField]
+    private Commodity commodity;
 
-        [System.NonSerialized]
-        public readonly float MaxTimeItTakes;
+    public ProcessingType ProcessingType => processableType;
+    public float TimeItTakes => timeItTakes;
 
-        public Commodity Commodity => commodity;
+    [System.NonSerialized]
+    public readonly float MaxTimeItTakes;
 
-        public IngrodientsDetailInformation(ProcessingType processableType, float timeItTakes, Commodity commodity)
+    public Commodity Commodity => commodity;
+
+    public IngrodientsDetailInformation(ProcessingType processableType, float timeItTakes, Commodity commodity)
+    {
+        this.processableType = processableType;
+        this.timeItTakes = timeItTakes;
+        this.commodity = commodity;
+        MaxTimeItTakes = timeItTakes;
+    }
+
+    public void SubToTimeItTakes(float subValue)
+    {
+        timeItTakes -= subValue;
+    }
+
+    public bool IsProcessingFinish()
+    {
+        if (timeItTakes <= 0)
         {
-            this.processableType = processableType;
-            this.timeItTakes = timeItTakes;
-            this.commodity = commodity;
-            MaxTimeItTakes = timeItTakes;
+            return true;
         }
-
-        public void SubToTimeItTakes(float subValue)
+        else
         {
-            timeItTakes -= subValue;
-        }
-
-        public bool IsProcessingFinish()
-        {
-            if (timeItTakes <= 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return false;
         }
     }
 }
