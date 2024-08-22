@@ -1,10 +1,7 @@
 using System.Collections;
-using UniRx;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
-using System;
 using Oculus.Interaction;
+using HCSMeta.Function.Initialize;
 
 public class NewThrowable : MonoBehaviour, IDependencyInjector<PlayerHandDependencyInfomation>
 {
@@ -41,48 +38,30 @@ public class NewThrowable : MonoBehaviour, IDependencyInjector<PlayerHandDepende
     // つかんだ瞬間の情報を取得するためのクラス
     private InteractorDetailEventIssuer _interactorDetailEventIssuer;
 
-        // 掴みフラグ　現在掴んでいるかどうかの判定に用いる
-        private bool _isSelected = false;
+    // 掴んだ時や離した時にイベントを実行するクラス
+    private PointableUnityEventWrapper pointableUnityEventWrapper;
 
-    // 
+    // 掴みフラグ　現在掴んでいるかどうかの判定に用いる
     private bool _isSelected = false;
 
-            // 掴んだ時のイベントを登録する
-            pointableUnityEventWrapper = this.GetComponent<PointableUnityEventWrapper>();
-            pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
-            pointableUnityEventWrapper.WhenUnselect.AddListener((action) => { UnSelect(); });
-            PlayerInitialize.ConsignmentInject_static(this);
-        }
+    private void Awake()
+    {
+        // ThrowDataを生成する
+        _throwData = new ThrowData(_thisTransform.position);
 
-        private void Start()
-        {
-            _interactorDetailEventIssuer = GameObject.FindObjectOfType<InteractorDetailEventIssuer>();
-            // 掴んだ時の情報を講読できるようにする
-            _interactorDetailEventIssuer.OnInteractor += (handler) => {
-                // 掴んでいる場合
-                if (_isSelected)
-                {
-                    // 掴んだ手の方向をもとにフラグを立てる
-                    SetGrabbingHandFlag(handler.HandType, true);
-
-                    // 掴んだ時のTransformを現在掴んでいる手として登録する
-                    _grabbingHandTransform = GetDetailHandsTransform(_detailEventsHandType);
-
-                    // 情報の初期化を行う
-                    _throwData.ReSetThrowData(_grabbingHandTransform.position);
-
-                    // 掴みフラグを消す
-                    _isSelected = false;
-                }
-            };
-        }
+        // 掴んだ時のイベントを登録する
+        pointableUnityEventWrapper = this.GetComponent<PointableUnityEventWrapper>();
+        pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
+        pointableUnityEventWrapper.WhenUnselect.AddListener((action) => { UnSelect(); });
+        PlayerInitialize.ConsignmentInject_static(this);
+    }
 
     private void Start()
     {
         _interactorDetailEventIssuer = GameObject.FindObjectOfType<InteractorDetailEventIssuer>();
         // 掴んだ時の情報を講読できるようにする
-        _interactorDetailEventIssuer.OnInteractor += (handler) =>
-        {
+        _interactorDetailEventIssuer.OnInteractor += (handler) => {
+            // 掴んでいる場合
             if (_isSelected)
             {
                 // 掴んだ手の方向をもとにフラグを立てる
@@ -94,10 +73,9 @@ public class NewThrowable : MonoBehaviour, IDependencyInjector<PlayerHandDepende
                 // 情報の初期化を行う
                 _throwData.ReSetThrowData(_grabbingHandTransform.position);
 
-                // 
+                // 掴みフラグを消す
                 _isSelected = false;
             }
-            Debug.LogError("Yooooo!");
         };
     }
 
@@ -106,8 +84,8 @@ public class NewThrowable : MonoBehaviour, IDependencyInjector<PlayerHandDepende
         // どちらの手でも掴んでいない場合
         if (!_isGrabbingRightHand && !_isGrabbingLeftHand)
         {
-            // 掴みフラグを立てる
-            _isSelected = true;
+            // 何もしない
+            return;
         }
 
         // 現在の座標を保存する
@@ -119,7 +97,7 @@ public class NewThrowable : MonoBehaviour, IDependencyInjector<PlayerHandDepende
     /// </summary>
     public void Select()
     {
-        // 
+        // 掴みフラグを立てる
         _isSelected = true;
     }
 
