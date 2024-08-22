@@ -1,17 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 
-public class CommodityInformation
-{
-    public readonly CommodityAsset CommodityAsset;
-    public CommodityInformation(CommodityAsset commodityAsset)
-    {
-        this.CommodityAsset = commodityAsset;
-    }
-}
 public class OrderView : MonoBehaviour
 {
     private OrderInitializeEventArgs orderInitializeEventArgs;

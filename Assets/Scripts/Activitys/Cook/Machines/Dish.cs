@@ -2,11 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IPutableOnDish
-{
-    void PutCommodity(ISwitchableGrabbableActive switchable);
-    void CommodityReset();
-}
 public class NullPutableOnDish : IPutableOnDish
 {
     public void PutCommodity(ISwitchableGrabbableActive switchable)

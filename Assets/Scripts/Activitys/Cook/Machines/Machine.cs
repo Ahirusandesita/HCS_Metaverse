@@ -1,10 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IProcessable
-{
-    void Processing(Ingrodients ingrodients);
-}
+
 public class NullMachine : IProcessable
 {
     void IProcessable.Processing(Ingrodients ingrodients)
