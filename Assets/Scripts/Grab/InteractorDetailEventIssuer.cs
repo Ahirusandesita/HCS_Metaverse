@@ -3,16 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Oculus.Interaction;
 using System;
-public enum HandType
-{
-    Left,
-    Right
-}
-public enum InteractorType
-{
-    Select,
-    UnSelect
-}
+
 public class InteractorDetailEventArgs : EventArgs
 {
     public readonly HandType HandType;
