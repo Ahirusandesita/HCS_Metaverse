@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using Oculus.Interaction;
-using HCSMeta.Function.Initialize;
 
 public class NewThrowable : MonoBehaviour, IDependencyInjector<PlayerHandDependencyInfomation>
 {
