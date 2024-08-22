@@ -4,14 +4,6 @@ using UnityEngine;
 using Oculus.Interaction.HandGrab;
 using Oculus.Interaction;
 
-public interface IActivatableDistance
-{
-    float ActiveDistance { get; }
-    void Active();
-    void Passive();
-
-    GameObject gameObject { get; }
-}
 
 public class DistanceInteractableActivatable : MonoBehaviour, IActivatableDistance
 {

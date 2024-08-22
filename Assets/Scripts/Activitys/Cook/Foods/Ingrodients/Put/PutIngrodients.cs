@@ -3,14 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ISwitchableGrabbableActive
-{
-    void Active();
-    void Inactive();
-    GameObject gameObject { get; }
-}
 
-public class YanagiZako : MonoBehaviour, ISwitchableGrabbableActive
+public class PutIngrodients : MonoBehaviour, ISwitchableGrabbableActive
 {
 
     private void OnCollisionEnter(Collision collision)

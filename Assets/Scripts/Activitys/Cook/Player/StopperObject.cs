@@ -1,62 +1,58 @@
 using UnityEngine;
 
-namespace HCSMeta.Activity
+public class StopperObject : MonoBehaviour
 {
-    public class StopperObject : MonoBehaviour
+    [SerializeField, Tooltip("ê⁄êGîªíËÇçsÇ§Collider")]
+    private Collider _stoperColliter = default;
+
+    // 
+    private Vector3 _hitBoxCenter = default;
+
+    // 
+    private Vector3 _hitBoxSize = default;
+
+    // 
+    private Quaternion _hitBoxRotation = default;
+
+    private void Start()
     {
-        [SerializeField, Tooltip("ê⁄êGîªíËÇçsÇ§Collider")]
-        private Collider _stoperColliter = default;
+        // 
+        _hitBoxCenter = _stoperColliter.bounds.center;
 
         // 
-        private Vector3 _hitBoxCenter = default;
+        _hitBoxSize = _stoperColliter.bounds.size;
 
         // 
-        private Vector3 _hitBoxSize = default;
+        _hitBoxRotation = this.transform.rotation;
+    }
+
+    private void Update()
+    {
+        // 
+        Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);
 
         // 
-        private Quaternion _hitBoxRotation = default;
-
-        private void Start()
+        foreach (Collider hitCollider in hitColliders)
         {
             // 
-            _hitBoxCenter = _stoperColliter.bounds.center;
-
-            // 
-            _hitBoxSize = _stoperColliter.bounds.size;
-
-            // 
-            _hitBoxRotation = this.transform.rotation;
-        }
-
-        private void Update()
-        {
-            // 
-            Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);
-
-            // 
-            foreach (Collider hitCollider in hitColliders)
+            if (!hitCollider.TryGetComponent<Stoppable>(out var tmp))
             {
                 // 
-                if (!hitCollider.TryGetComponent<Stoppable>(out var tmp))
-                {
-                    // 
-                    continue;
-                }
+                continue;
+            }
 
+            // 
+            if (hitCollider.TryGetComponent<StopData>(out var stopData))
+            {
                 // 
-                if (hitCollider.TryGetComponent<StopData>(out var stopData))
-                {
-                    // 
-                    stopData.SetIsHitStopper(true);
-                }
+                stopData.SetIsHitStopper(true);
+            }
+            // 
+            else
+            {
                 // 
-                else
-                {
-                    // 
-                    hitCollider.gameObject.AddComponent<StopData>();
-                }
+                hitCollider.gameObject.AddComponent<StopData>();
             }
         }
     }
-
 }

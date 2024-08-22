@@ -3,14 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
 using Oculus.Interaction;
-using Oculus.Interaction.HandGrab;
-
 using Fusion;
-
-public interface IIngrodientsModerator
-{
-    IngrodientsAsset IngrodientsAsset { set; }
-}
 
 /// <summary>
 /// ãÔçﬁ

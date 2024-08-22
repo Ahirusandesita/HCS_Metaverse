@@ -1,75 +1,6 @@
 using UnityEngine;
 using System;
 
-public interface IOrderable
-{
-    void Order(CommodityAsset commodityAsset, CustomerInformation customer);
-}
-public interface ISubmitable
-{
-    void Submission(Commodity commodity);
-}
-
-public enum OrderType
-{
-    Order,
-    Submit
-}
-
-
-public class OrderEventArgs : System.EventArgs
-{
-    public readonly CommodityInformation CommodityInformation;
-    public readonly OrderType OrderType;
-    public readonly int OrderIndex;
-    public OrderEventArgs(CommodityInformation commodityInformation, OrderType orderType, int orderIndex)
-    {
-        this.CommodityInformation = commodityInformation;
-        this.OrderType = orderType;
-        this.OrderIndex = orderIndex;
-    }
-}
-public class OrderInitializeEventArgs : System.EventArgs
-{
-    public readonly int OrderValue;
-    public OrderInitializeEventArgs(int orderValue)
-    {
-        this.OrderValue = orderValue;
-    }
-}
-public class ResetOrderArrayEventArgs : System.EventArgs
-{
-    public readonly CommodityInformation[] CommodityInformations;
-    public ResetOrderArrayEventArgs(CommodityInformation[] commodityInformations)
-    {
-        this.CommodityInformations = commodityInformations;
-    }
-}
-
-public delegate void OrderHandler(OrderEventArgs orderEventArgs);
-public delegate void OrderInitializeHandler(OrderInitializeEventArgs orderInitializeEventArgs);
-public delegate void ResetOrderArrayHandler(ResetOrderArrayEventArgs resetOrderArrayEventArgs);
-
-public class CustomerInformation
-{
-    public readonly int OrderCode;
-    public CustomerInformation(int orderCode)
-    {
-        this.OrderCode = orderCode;
-    }
-}
-
-
-public class OrderTicket
-{
-    public readonly IOrderable Orderable;
-    public readonly CustomerInformation CustomerInformation;
-    public OrderTicket(IOrderable orderable, CustomerInformation customer)
-    {
-        this.Orderable = orderable;
-        this.CustomerInformation = customer;
-    }
-}
 public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
 {
     //Test
@@ -77,8 +8,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     private OrderAsset orderAsset;
     [SerializeField]
     private Customer customer;
-    //
-
+    
     public class NullOrderable : IOrderable
     {
         public void Order(CommodityAsset commodityAsset, CustomerInformation customer)
@@ -86,8 +16,6 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
 
         }
     }
-
-
 
     [SerializeField]
     private int orderValue;

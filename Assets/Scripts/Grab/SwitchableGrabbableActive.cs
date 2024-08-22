@@ -3,10 +3,6 @@ using Oculus.Interaction.HandGrab;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IInject<T>
-{
-    void Inject(T t);
-}
 
 public class SwitchableGrabbableActive : MonoBehaviour, ISwitchableGrabbableActive
 {
