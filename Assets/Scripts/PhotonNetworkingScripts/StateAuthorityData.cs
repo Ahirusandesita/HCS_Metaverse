@@ -1,13 +1,5 @@
 using Fusion;
 
-public class AuthrityEventArgs : System.EventArgs
-{
-	public readonly bool Authrity;
-	public AuthrityEventArgs(bool authrity)
-	{
-		this.Authrity = authrity;
-	}
-}
 public delegate void AuthrityHandler(AuthrityEventArgs authrityEventArgs);
 public class StateAuthorityData : NetworkBehaviour
 {
