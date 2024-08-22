@@ -192,6 +192,7 @@ namespace Photon.Voice
                     }
                     break;
                 default:
+                    Debug.LogWarning($"<color=black>{this.ClientState}</color>");
                     this.Logger.Log(LogLevel.Warning, "Leader joined room, Voice client is busy ({0}). Is this expected?", this.ClientState);
                     break;
             }

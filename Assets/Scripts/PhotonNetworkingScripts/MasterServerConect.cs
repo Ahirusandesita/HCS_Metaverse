@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Fusion;
 using Fusion.Sockets;
 using System.Collections.Generic;
@@ -36,6 +35,7 @@ namespace HCSMeta.Network
 
 		private async void Awake()
 		{
+			XDebug.LogWarning("MasterServerConnectAwake", KumaDebugColor.MessageColor);
 			_networkRunner = Instantiate(_networkRunnerPrefab);
 			_networkRunner.AddCallbacks(this);
 			if (FindObjectsOfType<MasterServerConect>().Length > 1)
@@ -46,33 +46,6 @@ namespace HCSMeta.Network
 			DontDestroyOnLoad(this.gameObject);
 			await Connect("Room");
 		}
-
-		//[ContextMenu("Left")]
-		//private void TestTest()
-		//{
-		//	RPCManager.Instance.Rpc_LeftOrCloseRoom(Runner.LocalPlayer);
-		//}
-		//[ContextMenu("ActivityStart")]
-		//private void Test()
-		//{
-		//	GateOfFusion.Instance.ActivityStart(_sceneName);
-		//}
-
-		//[ContextMenu("klkl")]
-		//private void TestTestTest()
-		//{
-		//	Runner.LoadScene(_sceneName, LoadSceneMode.Single);
-		//}
-
-		//[ContextMenu("Test")]
-		//public void TestTestTestTest()
-		//{
-		//	NetworkObject[] networkObjects = new NetworkObject[1];
-		//	if (_testNetworkObject == null) { return; }
-		//	networkObjects[0] = _testNetworkObject;
-		//	Runner.RegisterSceneObjects(Runner.GetSceneRef(_testNetworkObject.gameObject), networkObjects);
-		//}
-
 
 		/// <summary>
 		/// ÉãÅ[ÉÄÇ…ì¸ÇÈÅBÇ»Ç¢èÍçáÇÕçÏÇÈ
@@ -116,7 +89,6 @@ namespace HCSMeta.Network
 				SceneManager = _networkRunner.GetComponent<NetworkSceneManagerDefault>()
 			}
 			);
-			//_text.text = result.Ok ? "Success" : "Fail" + "\n" + result.ShutdownReason + "\n" + result.ErrorMessage + "\n" + result.StackTrace;
 			_networkRunner.GetComponent<FusionVoiceClient>().PrimaryRecorder = _recorder;
 
 			GateOfFusion.Instance.IsCanUsePhoton = result.Ok;
