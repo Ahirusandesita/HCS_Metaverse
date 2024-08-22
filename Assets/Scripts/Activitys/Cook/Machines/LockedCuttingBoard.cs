@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Oculus.Interaction;
 using HCSMeta.Player.VR.Interface;
 
 namespace HCSMeta.Activity.Cook
