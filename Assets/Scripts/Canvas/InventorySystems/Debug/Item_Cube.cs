@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Oculus.Interaction;
-using HCSMeta.Function.Injection;
-using HCSMeta.Activity;
 
 public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable, ISelectedNotificationInjectable
 {
