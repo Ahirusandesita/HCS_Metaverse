@@ -3,56 +3,52 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using HCSMeta.Activity.Cook.Interface;
 
-namespace HCSMeta.Activity.Cook
+public class CommodityInformation
 {
-    public class CommodityInformation
+    public readonly CommodityAsset CommodityAsset;
+    public CommodityInformation(CommodityAsset commodityAsset)
     {
-        public readonly CommodityAsset CommodityAsset;
-        public CommodityInformation(CommodityAsset commodityAsset)
+        this.CommodityAsset = commodityAsset;
+    }
+}
+public class OrderView : MonoBehaviour
+{
+    private OrderInitializeEventArgs orderInitializeEventArgs;
+    [SerializeField]
+    private List<OrderViewDetailImformation> orderViewDetailInformations;
+
+    public void OrderInitializeHandler(OrderInitializeEventArgs orderInitializeEventArgs)
+    {
+        this.orderInitializeEventArgs = orderInitializeEventArgs;
+
+        for (int i = 0; i < orderViewDetailInformations.Count; i++)
         {
-            this.CommodityAsset = commodityAsset;
+            orderViewDetailInformations[i].Reset();
         }
     }
-    public class OrderView : MonoBehaviour
+    public void OrderHandler(OrderEventArgs orderEventArgs)
     {
-        private OrderInitializeEventArgs orderInitializeEventArgs;
-        [SerializeField]
-        private List<OrderViewDetailImformation> orderViewDetailInformations;
-
-        public void OrderInitializeHandler(OrderInitializeEventArgs orderInitializeEventArgs)
+        if (orderEventArgs.OrderType == OrderType.Order)
         {
-            this.orderInitializeEventArgs = orderInitializeEventArgs;
+            orderViewDetailInformations[orderEventArgs.OrderIndex].View(orderEventArgs.CommodityInformation.CommodityAsset);
+        }
 
-            for (int i = 0; i < orderViewDetailInformations.Count; i++)
+        if (orderEventArgs.OrderType == OrderType.Submit)
+        {
+            orderViewDetailInformations[orderEventArgs.OrderIndex].Reset();
+        }
+    }
+    public void ResetOrderArrayHandler(ResetOrderArrayEventArgs resetOrderArrayEventArgs)
+    {
+        for (int i = 0; i < resetOrderArrayEventArgs.CommodityInformations.Length; i++)
+        {
+            if (resetOrderArrayEventArgs.CommodityInformations[i] == null)
             {
                 orderViewDetailInformations[i].Reset();
+                continue;
             }
-        }
-        public void OrderHandler(OrderEventArgs orderEventArgs)
-        {
-            if (orderEventArgs.OrderType == OrderType.Order)
-            {
-                orderViewDetailInformations[orderEventArgs.OrderIndex].View(orderEventArgs.CommodityInformation.CommodityAsset);
-            }
-
-            if (orderEventArgs.OrderType == OrderType.Submit)
-            {
-                orderViewDetailInformations[orderEventArgs.OrderIndex].Reset();
-            }
-        }
-        public void ResetOrderArrayHandler(ResetOrderArrayEventArgs resetOrderArrayEventArgs)
-        {
-            for (int i = 0; i < resetOrderArrayEventArgs.CommodityInformations.Length; i++)
-            {
-                if (resetOrderArrayEventArgs.CommodityInformations[i] == null)
-                {
-                    orderViewDetailInformations[i].Reset();
-                    continue;
-                }
-                orderViewDetailInformations[i].View(resetOrderArrayEventArgs.CommodityInformations[i].CommodityAsset);
-            }
+            orderViewDetailInformations[i].View(resetOrderArrayEventArgs.CommodityInformations[i].CommodityAsset);
         }
     }
 }

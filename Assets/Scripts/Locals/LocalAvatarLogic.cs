@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using VContainer;
-using HCSMeta.Network;
 
 public class LocalAvatarLogic : MonoBehaviour
 {

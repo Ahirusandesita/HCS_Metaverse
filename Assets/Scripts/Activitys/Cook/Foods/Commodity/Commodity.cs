@@ -8,18 +8,11 @@ using System;
 using Fusion;
 using Cysharp.Threading.Tasks;
 
-using HCSMeta.Activity.Cook.Interface;
-using HCSMeta.Player.VR.Interface;
-using HCSMeta.Function.Injection;
-using HCSMeta.Network;
 
-namespace HCSMeta.Activity.Cook.Interface
-{
     public interface ICommodityModerator
     {
         void SetCommodityAsset(CommodityAsset commodityAsset);
     }
-}
 
 
 public interface IPutable
@@ -40,9 +33,6 @@ public class GrabEventArgs : System.EventArgs
     }
 }
 public delegate void PointableHandler(GrabEventArgs grabEventArgs);
-
-namespace HCSMeta.Activity.Cook
-{
     public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbableActive, IInject<ISwitchableGrabbableActive>
     {
         [SerializeField]
@@ -203,4 +193,3 @@ namespace HCSMeta.Activity.Cook
             this.switchableGrabbableActive = t;
         }
     }
-}
