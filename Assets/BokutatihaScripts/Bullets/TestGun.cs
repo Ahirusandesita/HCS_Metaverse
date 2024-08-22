@@ -10,7 +10,7 @@ public class TestGun : MonoBehaviour
     {
         if (OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger))
         {
-            Instantiate(IBullet,this.transform.position,this.transform.rotation);
+            Instantiate(IBullet, this.transform.position, this.transform.rotation);
         }
     }
 }

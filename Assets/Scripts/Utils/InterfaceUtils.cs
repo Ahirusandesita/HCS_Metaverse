@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-
 /// <summary>
 /// Interface•Ö—˜ƒNƒ‰ƒX
 /// </summary>

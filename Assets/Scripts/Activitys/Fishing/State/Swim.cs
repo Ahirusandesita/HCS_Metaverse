@@ -10,12 +10,12 @@ namespace HCSMeta.Activity.Fishing
     {
         private class Swim : ImtStateMachine<FishingManager, EventID>.State
         {
-            private SyncWaiter syncWaiter = default;
+            //private SyncWaiter syncWaiter = default;
             private float waitTime = default;
 
             protected internal override void Enter()
             {
-                syncWaiter ??= new SyncWaiter();
+                //syncWaiter ??= new SyncWaiter();
 
                 GetType().Name.Print("red");
                 // 魚プールからランダムで選出
@@ -26,12 +26,12 @@ namespace HCSMeta.Activity.Fishing
 
             protected internal override void Update()
             {
-                bool result = syncWaiter.WaitSecounds(waitTime);
-                if (result)
-                {
-                    syncWaiter.Reset();
-                    stateMachine.SendEvent(EventID.Hit);
-                }
+                //bool result = syncWaiter.WaitSecounds(waitTime);
+                //if (result)
+                //{
+                //    syncWaiter.Reset();
+                //    stateMachine.SendEvent(EventID.Hit);
+                //}
             }
         }
     }

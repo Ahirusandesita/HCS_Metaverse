@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Diagnostics;
 using UniRx;
 using UnityEngine;
+using HCSMeta.Player;
 
 namespace HCSMeta.Player.View
 {

@@ -1165,7 +1165,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05ed7dc8e53f68b4b89b57797675eeeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hide: 0
 --- !u!4 &418327220 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9058465498115444519, guid: f25db58ef230d3e408bc64c00ff54147, type: 3}
@@ -1920,7 +1919,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1776437351444565971, guid: 4fa54e5eec46828498093a64a48029bf, type: 3}
       propertyPath: NetworkedBehaviours.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4177287145026017418, guid: 4fa54e5eec46828498093a64a48029bf, type: 3}
       propertyPath: _text
@@ -2112,6 +2111,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 13264d633d3544946b062a9df1e2e40f, type: 3}
+--- !u!114 &678293185 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2603567562183655465, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+  m_PrefabInstance: {fileID: 921979061}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ae60cfa43388e449a7518f36418f81c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &730792366
 GameObject:
   m_ObjectHideFlags: 0
@@ -2312,7 +2322,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f792be92fbc45e24195dafe6067cff31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IMasterServerConectable: {fileID: 0}
 --- !u!1 &774491967 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8638150186148857965, guid: a6fd54d2e46963a4dbb0c4501e891235, type: 3}
@@ -2710,7 +2719,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05ed7dc8e53f68b4b89b57797675eeeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hide: 0
 --- !u!1001 &849426835
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3216,6 +3224,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3124954649803771443, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+      propertyPath: _controller
+      value: 
+      objectReference: {fileID: 678293185}
     - target: {fileID: 7398685987471483529, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: masterServerConect
       value: 
@@ -6513,7 +6525,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05ed7dc8e53f68b4b89b57797675eeeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hide: 0
 --- !u!1001 &1860992351
 PrefabInstance:
   m_ObjectHideFlags: 0
