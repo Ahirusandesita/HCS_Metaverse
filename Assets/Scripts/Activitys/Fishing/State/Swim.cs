@@ -4,34 +4,31 @@ using UnityEngine;
 using IceMilkTea.StateMachine;
 using HCSMeta.Function;
 
-namespace HCSMeta.Activity.Fishing
+public partial class FishingManager
 {
-    public partial class FishingManager
+    private class Swim : ImtStateMachine<FishingManager, EventID>.State
     {
-        private class Swim : ImtStateMachine<FishingManager, EventID>.State
+        private SyncWaiter syncWaiter = default;
+        private float waitTime = default;
+
+        protected internal override void Enter()
         {
-            private SyncWaiter syncWaiter = default;
-            private float waitTime = default;
+            syncWaiter ??= new SyncWaiter();
 
-            protected internal override void Enter()
+            GetType().Name.Print("red");
+            // 魚プールからランダムで選出
+            Context.LotteryForFish();
+
+            waitTime = Random.Range(Context.minTimeToHit, Context.maxTimeToHit);
+        }
+
+        protected internal override void Update()
+        {
+            bool result = syncWaiter.WaitSecounds(waitTime);
+            if (result)
             {
-                syncWaiter ??= new SyncWaiter();
-
-                GetType().Name.Print("red");
-                // 魚プールからランダムで選出
-                Context.LotteryForFish();
-
-                waitTime = Random.Range(Context.minTimeToHit, Context.maxTimeToHit);
-            }
-
-            protected internal override void Update()
-            {
-                bool result = syncWaiter.WaitSecounds(waitTime);
-                if (result)
-                {
-                    syncWaiter.Reset();
-                    stateMachine.SendEvent(EventID.Hit);
-                }
+                syncWaiter.Reset();
+                stateMachine.SendEvent(EventID.Hit);
             }
         }
     }

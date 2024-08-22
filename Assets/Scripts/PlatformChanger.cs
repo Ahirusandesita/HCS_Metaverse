@@ -5,9 +5,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 #if UNITY_EDITOR
-namespace UnityEditor
+namespace UnityEditor.HCSMeta
 {
-    using UnityEditor.SceneManagement;
+    using SceneManagement;
 
     /// <summary>
     /// プラットフォームに応じてシーンのPrefabを切り替えるエディタ拡張

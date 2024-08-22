@@ -22,7 +22,7 @@ public class CustomFieldAttribute : PropertyAttribute
 }
 
 #if UNITY_EDITOR
-namespace UnityEditor
+namespace UnityEditor.HCSMeta
 {
     [CustomPropertyDrawer(typeof(CustomFieldAttribute))]
     public class CustomFieldAttributeDrawer : PropertyDrawer

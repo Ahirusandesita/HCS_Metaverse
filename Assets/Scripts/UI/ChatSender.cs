@@ -3,49 +3,44 @@ using TMPro;
 using UniRx;
 using UnityEngine;
 
-namespace HCSMeta.UI
+[RequireComponent(typeof(TMP_InputField))]
+public class ChatSender : MonoBehaviour
 {
-    using Player;
+    [SerializeField] private TMP_InputField inputField = default;
+    [SerializeField] private ChatSystem chatSystem = default;
 
-    [RequireComponent(typeof(TMP_InputField))]
-    public class ChatSender : MonoBehaviour
+    private PlayerInputActions.UIActions UIActions => Inputter.UI;
+
+
+    [Conditional("UNITY_EDITOR")]
+    private void Reset()
     {
-        [SerializeField] private TMP_InputField inputField = default;
-        [SerializeField] private ChatSystem chatSystem = default;
+        inputField ??= GetComponent<TMP_InputField>();
+        chatSystem ??= FindObjectOfType<ChatSystem>();
+    }
 
-        private PlayerInputActions.UIActions UIActions => Inputter.UI;
-
-
-        [Conditional("UNITY_EDITOR")]
-        private void Reset()
+    private void Awake()
+    {
+        // 入力完了時のコールバックを設定
+        inputField.onSubmit.AddListener(_ =>
         {
-            inputField ??= GetComponent<TMP_InputField>();
-            chatSystem ??= FindObjectOfType<ChatSystem>();
-        }
+                // ChatSystemに入力内容を送信
+                chatSystem.SendManually(inputField.text);
+            inputField.text = string.Empty;
+        });
 
-        private void Awake()
+        // InputFieldのアクティブ状態を切り替える
+        UIActions.Enable();
+        UIActions.Chat.performed += isChatOpen =>
         {
-            // 入力完了時のコールバックを設定
-            inputField.onSubmit.AddListener(_ =>
+            if (inputField.isFocused)
             {
-            // ChatSystemに入力内容を送信
-            chatSystem.SendManually(inputField.text);
-                inputField.text = string.Empty;
-            });
-
-            // InputFieldのアクティブ状態を切り替える
-            UIActions.Enable();
-            UIActions.Chat.performed += isChatOpen =>
+                inputField.ActivateInputField();
+            }
+            else if (inputField.text.Equals(string.Empty))
             {
-                if (inputField.isFocused)
-                {
-                    inputField.ActivateInputField();
-                }
-                else if (inputField.text.Equals(string.Empty))
-                {
-                    inputField.DeactivateInputField();
-                }
-            };
-        }
+                inputField.DeactivateInputField();
+            }
+        };
     }
 }

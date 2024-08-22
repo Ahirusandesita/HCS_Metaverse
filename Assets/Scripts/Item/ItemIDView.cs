@@ -2,40 +2,32 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace HCSMeta.Activity
+[System.Serializable]
+public class ItemIDView
 {
-    [System.Serializable]
-    public class ItemIDView
+    [SerializeField] protected int id = default;
+    [SerializeField] protected string displayName = default;
+    [SerializeField] protected int selectedIndex = default;
+
+    public int ID => id;
+
+    public static implicit operator int(ItemIDView itemID)
     {
-        [SerializeField] protected int id = default;
-        [SerializeField] protected string displayName = default;
-        [SerializeField] protected int selectedIndex = default;
-
-        public int ID => id;
-
-        public static implicit operator int(ItemIDView itemID)
-        {
-            return itemID.id;
-        }
-
-        public static explicit operator ItemIDView(int id)
-        {
-            return new ItemIDView() { id = id };
-        }
+        return itemID.id;
     }
 
-    namespace Cook
+    public static explicit operator ItemIDView(int id)
     {
-        [System.Serializable]
-        public class FoodIDView : ItemIDView { }
+        return new ItemIDView() { id = id };
     }
 }
 
-#if UNITY_EDITOR
-namespace UnityEditor
-{
-    using HCSMeta.Activity;
+[System.Serializable]
+public class FoodIDView : ItemIDView { }
 
+#if UNITY_EDITOR
+namespace UnityEditor.HCSMeta
+{
     [CustomPropertyDrawer(typeof(ItemIDView))]
     public class ItemIDViewDrawer : PropertyDrawer
     {
@@ -102,7 +94,7 @@ namespace UnityEditor
         }
     }
 
-    [CustomPropertyDrawer(typeof(HCSMeta.Activity.Cook.FoodIDView))]
+    [CustomPropertyDrawer(typeof(FoodIDView))]
     public class FoodIDViewDrawer : PropertyDrawer
     {
         private SerializedProperty idProperty = default;

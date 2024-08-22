@@ -6,7 +6,7 @@ using UnityEngine;
 public class PrefabFieldAttribute : PropertyAttribute { }
 
 #if UNITY_EDITOR
-namespace UnityEditor
+namespace UnityEditor.HCSMeta
 {
     [CustomPropertyDrawer(typeof(PrefabFieldAttribute))]
     public class PrefabFieldAttributeDrawer : PropertyDrawer

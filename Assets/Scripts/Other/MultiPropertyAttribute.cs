@@ -36,7 +36,7 @@ public abstract class MultiPropertyAttribute : PropertyAttribute
 }
 
 #if UNITY_EDITOR
-namespace UnityEditor
+namespace UnityEditor.HCSMeta
 {
     [CustomPropertyDrawer(typeof(MultiPropertyAttribute), true)]
     public class MultiPropertyAttributeDrawer : PropertyDrawer

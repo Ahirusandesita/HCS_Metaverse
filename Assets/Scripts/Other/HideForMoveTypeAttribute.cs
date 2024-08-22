@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEditor;
-using HCSMeta.Player;
 
 /// <summary>
 /// 引数で与えたVRMoveType変数の値によって、編集不可状態にする

@@ -5,57 +5,49 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using Oculus.Interaction;
-using HCSMeta.Function.Initialize;
 
-namespace HCSMeta.Player.Object
+public class NewThrowable : MonoBehaviour, IDependencyInjector<PlayerHandDependencyInfomation>
 {
-    public class NewThrowable : MonoBehaviour, IDependencyInjector<PlayerHandDependencyInfomation>
-    {
-        [SerializeField, Tooltip("©g‚ª‚ÂRigidbody")]
-        public Rigidbody _thisRigidbody = default;
+    [SerializeField, Tooltip("è‡ªèº«ãŒæŒã¤Rigidbody")]
+    public Rigidbody _thisRigidbody = default;
 
-        [SerializeField, Tooltip("©g‚ª‚ÂTransform")]
-        public Transform _thisTransform = default;
+    [SerializeField, Tooltip("è‡ªèº«ãŒæŒã¤Transform")]
+    public Transform _thisTransform = default;
 
-        [SerializeField, Tooltip("‘¬“xŒW”")]
-        private float _velocityCoefficient = 1f;
+    [SerializeField, Tooltip("é€Ÿåº¦ä¿‚æ•°")]
+    private float _velocityCoefficient = 1f;
 
-        // Œ»İ’Í‚ñ‚Å‚¢‚éè‚ÌTransform
-        private Transform _grabbingHandTransform = default;
+    // ç¾åœ¨æ´ã‚“ã§ã„ã‚‹æ‰‹ã®Transform
+    private Transform _grabbingHandTransform = default;
 
-        // ‰Eè‚ÌTransform
-        private Transform _rightHandTransform = default;
+    // å³æ‰‹ã®Transform
+    private Transform _rightHandTransform = default;
 
-        // ¶è‚ÌTransform
-        private Transform _leftHandTransform = default;
+    // å·¦æ‰‹ã®Transform
+    private Transform _leftHandTransform = default;
 
-        // ’Í‚ñ‚¾‚É“n‚³‚ê‚éè‚Ì•ûŒü‚ğŠi”[‚·‚é•Ï”
-        private HandType _detailEventsHandType = default;
+    // æ´ã‚“ã æ™‚ã«æ¸¡ã•ã‚Œã‚‹æ‰‹ã®æ–¹å‘ã‚’æ ¼ç´ã™ã‚‹å¤‰æ•°
+    private HandType _detailEventsHandType = default;
 
-        // g—p’†‚ÌThrowData‚ğŠi”[‚·‚é‚½‚ß‚Ì•Ï”
-        public ThrowData _throwData = default;
+    // ä½¿ç”¨ä¸­ã®ThrowDataã‚’æ ¼ç´ã™ã‚‹ãŸã‚ã®å¤‰æ•°
+    public ThrowData _throwData = default;
 
-        // Œ»İ‰Eè‚Å’Í‚ñ‚Å‚¢‚é‚©‚Ç‚¤‚©
-        private bool _isGrabbingRightHand = false;
+    // ç¾åœ¨å³æ‰‹ã§æ´ã‚“ã§ã„ã‚‹ã‹ã©ã†ã‹
+    private bool _isGrabbingRightHand = false;
 
-        // Œ»İ¶è‚Å’Í‚ñ‚Å‚¢‚é‚©‚Ç‚¤‚©
-        private bool _isGrabbingLeftHand = false;
+    // ç¾åœ¨å·¦æ‰‹ã§æ´ã‚“ã§ã„ã‚‹ã‹ã©ã†ã‹
+    private bool _isGrabbingLeftHand = false;
 
-        // ‚Â‚©‚ñ‚¾uŠÔ‚Ìî•ñ‚ğæ“¾‚·‚é‚½‚ß‚ÌƒNƒ‰ƒX
-        private InteractorDetailEventIssuer _interactorDetailEventIssuer;
+    // ã¤ã‹ã‚“ã ç¬é–“ã®æƒ…å ±ã‚’å–å¾—ã™ã‚‹ãŸã‚ã®ã‚¯ãƒ©ã‚¹
+    private InteractorDetailEventIssuer _interactorDetailEventIssuer;
 
-        // ’Í‚ñ‚¾‚â—£‚µ‚½‚ÉƒCƒxƒ“ƒg‚ğÀs‚·‚éƒNƒ‰ƒX
-        private PointableUnityEventWrapper pointableUnityEventWrapper;
-
-        // ’Í‚İƒtƒ‰ƒO@Œ»İ’Í‚ñ‚Å‚¢‚é‚©‚Ç‚¤‚©‚Ì”»’è‚É—p‚¢‚é
+        // æ´ã¿ãƒ•ãƒ©ã‚°ã€€ç¾åœ¨æ´ã‚“ã§ã„ã‚‹ã‹ã©ã†ã‹ã®åˆ¤å®šã«ç”¨ã„ã‚‹
         private bool _isSelected = false;
 
-        private void Awake()
-        {
-            // ThrowData‚ğ¶¬‚·‚é
-            _throwData = new ThrowData(_thisTransform.position);
+    // 
+    private bool _isSelected = false;
 
-            // ’Í‚ñ‚¾‚ÌƒCƒxƒ“ƒg‚ğ“o˜^‚·‚é
+            // æ´ã‚“ã æ™‚ã®ã‚¤ãƒ™ãƒ³ãƒˆã‚’ç™»éŒ²ã™ã‚‹
             pointableUnityEventWrapper = this.GetComponent<PointableUnityEventWrapper>();
             pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
             pointableUnityEventWrapper.WhenUnselect.AddListener((action) => { UnSelect(); });
@@ -65,177 +57,200 @@ namespace HCSMeta.Player.Object
         private void Start()
         {
             _interactorDetailEventIssuer = GameObject.FindObjectOfType<InteractorDetailEventIssuer>();
-            // ’Í‚ñ‚¾‚Ìî•ñ‚ğu“Ç‚Å‚«‚é‚æ‚¤‚É‚·‚é
+            // æ´ã‚“ã æ™‚ã®æƒ…å ±ã‚’è¬›èª­ã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹
             _interactorDetailEventIssuer.OnInteractor += (handler) => {
-                // ’Í‚ñ‚Å‚¢‚éê‡
+                // æ´ã‚“ã§ã„ã‚‹å ´åˆ
                 if (_isSelected)
                 {
-                    // ’Í‚ñ‚¾è‚Ì•ûŒü‚ğ‚à‚Æ‚Éƒtƒ‰ƒO‚ğ—§‚Ä‚é
+                    // æ´ã‚“ã æ‰‹ã®æ–¹å‘ã‚’ã‚‚ã¨ã«ãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹
                     SetGrabbingHandFlag(handler.HandType, true);
 
-                    // ’Í‚ñ‚¾‚ÌTransform‚ğŒ»İ’Í‚ñ‚Å‚¢‚éè‚Æ‚µ‚Ä“o˜^‚·‚é
+                    // æ´ã‚“ã æ™‚ã®Transformã‚’ç¾åœ¨æ´ã‚“ã§ã„ã‚‹æ‰‹ã¨ã—ã¦ç™»éŒ²ã™ã‚‹
                     _grabbingHandTransform = GetDetailHandsTransform(_detailEventsHandType);
 
-                    // î•ñ‚Ì‰Šú‰»‚ğs‚¤
+                    // æƒ…å ±ã®åˆæœŸåŒ–ã‚’è¡Œã†
                     _throwData.ReSetThrowData(_grabbingHandTransform.position);
 
-                    // ’Í‚İƒtƒ‰ƒO‚ğÁ‚·
+                    // æ´ã¿ãƒ•ãƒ©ã‚°ã‚’æ¶ˆã™
                     _isSelected = false;
                 }
             };
         }
 
-        private void FixedUpdate()
+    private void Start()
+    {
+        _interactorDetailEventIssuer = GameObject.FindObjectOfType<InteractorDetailEventIssuer>();
+        // æ´ã‚“ã æ™‚ã®æƒ…å ±ã‚’è¬›èª­ã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹
+        _interactorDetailEventIssuer.OnInteractor += (handler) =>
         {
-            // ‚Ç‚¿‚ç‚Ìè‚Å‚à’Í‚ñ‚Å‚¢‚È‚¢ê‡
-            if (!_isGrabbingRightHand && !_isGrabbingLeftHand)
+            if (_isSelected)
             {
-                // ‰½‚à‚µ‚È‚¢
-                return;
+                // æ´ã‚“ã æ‰‹ã®æ–¹å‘ã‚’ã‚‚ã¨ã«ãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹
+                SetGrabbingHandFlag(handler.HandType, true);
+
+                // æ´ã‚“ã æ™‚ã®Transformã‚’ç¾åœ¨æ´ã‚“ã§ã„ã‚‹æ‰‹ã¨ã—ã¦ç™»éŒ²ã™ã‚‹
+                _grabbingHandTransform = GetDetailHandsTransform(_detailEventsHandType);
+
+                // æƒ…å ±ã®åˆæœŸåŒ–ã‚’è¡Œã†
+                _throwData.ReSetThrowData(_grabbingHandTransform.position);
+
+                // 
+                _isSelected = false;
             }
+            Debug.LogError("Yooooo!");
+        };
+    }
 
-            // Œ»İ‚ÌÀ•W‚ğ•Û‘¶‚·‚é
-            _throwData.SetOrbitPosition(_grabbingHandTransform.position);
-        }
-
-        /// <summary>
-        /// ‚Â‚©‚Ü‚ê‚½‚Æ‚«‚ÉÀs‚·‚éƒƒ\ƒbƒh
-        /// </summary>
-        public void Select()
+    private void FixedUpdate()
+    {
+        // ã©ã¡ã‚‰ã®æ‰‹ã§ã‚‚æ´ã‚“ã§ã„ãªã„å ´åˆ
+        if (!_isGrabbingRightHand && !_isGrabbingLeftHand)
         {
-            // ’Í‚İƒtƒ‰ƒO‚ğ—§‚Ä‚é
+            // æ´ã¿ãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹
             _isSelected = true;
         }
 
-        /// <summary>
-        /// —£‚³‚ê‚½‚Æ‚«‚ÉÀs‚·‚éƒƒ\ƒbƒh
-        /// </summary>
-        public void UnSelect()
+        // ç¾åœ¨ã®åº§æ¨™ã‚’ä¿å­˜ã™ã‚‹
+        _throwData.SetOrbitPosition(_grabbingHandTransform.position);
+    }
+
+    /// <summary>
+    /// ã¤ã‹ã¾ã‚ŒãŸã¨ãã«å®Ÿè¡Œã™ã‚‹ãƒ¡ã‚½ãƒƒãƒ‰
+    /// </summary>
+    public void Select()
+    {
+        // 
+        _isSelected = true;
+    }
+
+    /// <summary>
+    /// é›¢ã•ã‚ŒãŸã¨ãã«å®Ÿè¡Œã™ã‚‹ãƒ¡ã‚½ãƒƒãƒ‰
+    /// </summary>
+    public void UnSelect()
+    {
+        // æ´ã‚“ã æ‰‹ã®æ–¹å‘ã‚’ã‚‚ã¨ã«ãƒ•ãƒ©ã‚°ã‚’æ¶ˆã™
+        SetGrabbingHandFlag(_detailEventsHandType, false);
+
+        // ã¾ã ã©ã¡ã‚‰ã‹ã®æ‰‹ã§æ´ã¿ç¶šã‘ã¦ã„ãŸå ´åˆ
+        if (_isGrabbingRightHand || _isGrabbingLeftHand)
         {
-            // ’Í‚ñ‚¾è‚Ì•ûŒü‚ğ‚à‚Æ‚Éƒtƒ‰ƒO‚ğÁ‚·
-            SetGrabbingHandFlag(_detailEventsHandType, false);
+            // ã¾ã ã¤ã‹ã‚“ã§ã„ã‚‹æ–¹ã®æ‰‹ã®Transform
+            Transform nowGrabbingHand = default;
 
-            // ‚Ü‚¾‚Ç‚¿‚ç‚©‚Ìè‚Å’Í‚İ‘±‚¯‚Ä‚¢‚½ê‡
-            if (_isGrabbingRightHand || _isGrabbingLeftHand)
+            // ã¾ã æ´ã‚“ã§ã„ã‚‹æ–¹ã®æ‰‹ã®æƒ…å ±ã‚’åˆ¤åˆ¥ã™ã‚‹
+            if (_isGrabbingRightHand)
             {
-                // ‚Ü‚¾‚Â‚©‚ñ‚Å‚¢‚é•û‚Ìè‚ÌTransform
-                Transform nowGrabbingHand = default;
+                // å³æ‰‹ã®Transformã‚’ä»£å…¥
+                nowGrabbingHand = GetDetailHandsTransform(HandType.Right);
+            }
+            else
+            {
+                // å·¦æ‰‹ã®Transformã‚’ä»£å…¥
+                nowGrabbingHand = GetDetailHandsTransform(HandType.Left);
+            }
 
-                // ‚Ü‚¾’Í‚ñ‚Å‚¢‚é•û‚Ìè‚Ìî•ñ‚ğ”»•Ê‚·‚é
-                if (_isGrabbingRightHand)
-                {
-                    // ‰Eè‚ÌTransform‚ğ‘ã“ü
-                    nowGrabbingHand = GetDetailHandsTransform(HandType.Right);
-                }
-                else
-                {
-                    // ¶è‚ÌTransform‚ğ‘ã“ü
-                    nowGrabbingHand = GetDetailHandsTransform(HandType.Left);
-                }
+            // ã¾ã æ´ã‚“ã§ã„ã‚‹æ‰‹ã®æƒ…å ±ã§åˆæœŸåŒ–ã‚’è¡Œã†
+            _throwData.ReSetThrowData(nowGrabbingHand.position);
 
-                // ‚Ü‚¾’Í‚ñ‚Å‚¢‚éè‚Ìî•ñ‚Å‰Šú‰»‚ğs‚¤
-                _throwData.ReSetThrowData(nowGrabbingHand.position);
+            // æŠ•ã’ãªã„ã§çµ‚äº†ã™ã‚‹
+            return;
+        }
 
-                // “Š‚°‚È‚¢‚ÅI—¹‚·‚é
+        // Kinematicã‚’ç„¡åŠ¹ã«ã™ã‚‹
+        _thisRigidbody.isKinematic = false;
+
+        // æŠ•æ“²ãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—ã™ã‚‹
+        Vector3 throwVector = _throwData.GetThrowVector() * _velocityCoefficient;
+
+        // 1ãƒ•ãƒ¬ãƒ¼ãƒ å¾Œã«ãƒ™ã‚¯ãƒˆãƒ«ã‚’ä¸Šæ›¸ãã™ã‚‹
+        StartCoroutine(OverwriteVelocity(throwVector));
+    }
+
+    /// <summary>
+    /// æ´ã‚“ã§ã„ã‚‹æ‰‹ã®ãƒ•ãƒ©ã‚°ã‚’å¤‰æ›´ã™ã‚‹ãŸã‚ã®ãƒ¡ã‚½ãƒƒãƒ‰
+    /// </summary>
+    /// <param name="handType">æ‰‹ã®æ–¹å‘</param>
+    /// <param name="setState">å¤‰æ›´ã™ã‚‹å€¤</param>
+    private void SetGrabbingHandFlag(HandType handType, bool setState)
+    {
+        // æ´ã‚“ã æ‰‹ã®æ–¹å‘ã‚’ã‚‚ã¨ã«ãƒ•ãƒ©ã‚°ã‚’å¤‰æ›´ã™ã‚‹
+        switch (handType)
+        {
+            // å³æ‰‹ã®å ´åˆ
+            case HandType.Right:
+                // å³æ‰‹ã®æ´ã‚“ã§ã„ã‚‹ã‹ã©ã†ã‹ã®ãƒ•ãƒ©ã‚°ã‚’å¤‰æ›´ã™ã‚‹
+                _isGrabbingRightHand = setState;
+                break;
+
+            // å·¦æ‰‹ã®å ´åˆ
+            case HandType.Left:
+                // å·¦æ‰‹ã®æ´ã‚“ã§ã„ã‚‹ã‹ã©ã†ã‹ã®ãƒ•ãƒ©ã‚°ã‚’å¤‰æ›´ã™ã‚‹
+                _isGrabbingLeftHand = setState;
+                break;
+
+            // ä¾‹å¤–å‡¦ç†
+            default:
+                // ä½•ã‚‚ã—ãªã„
+                Debug.LogError($"SetGrabbingHandFlagã«ã¦æ‰‹ã®æ–¹å‘ã«ä¾‹å¤–ãŒç™ºç”Ÿã€€æ‰‹ã®æ–¹å‘ï¼š{handType}");
                 return;
-            }
-
-            // Kinematic‚ğ–³Œø‚É‚·‚é
-            _thisRigidbody.isKinematic = false;
-
-            // “Š±ƒxƒNƒgƒ‹‚ğæ“¾‚·‚é
-            Vector3 throwVector = _throwData.GetThrowVector() * _velocityCoefficient;
-
-            // 1ƒtƒŒ[ƒ€Œã‚ÉƒxƒNƒgƒ‹‚ğã‘‚«‚·‚é
-            StartCoroutine(OverwriteVelocity(throwVector));
         }
+    }
 
-        /// <summary>
-        /// ’Í‚ñ‚Å‚¢‚éè‚Ìƒtƒ‰ƒO‚ğ•ÏX‚·‚é‚½‚ß‚Ìƒƒ\ƒbƒh
-        /// </summary>
-        /// <param name="handType">è‚Ì•ûŒü</param>
-        /// <param name="setState">•ÏX‚·‚é’l</param>
-        private void SetGrabbingHandFlag(HandType handType, bool setState)
+    /// <summary>
+    /// æ´ã‚“ã æ‰‹ã®Transformã‚’è¿”ã™ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
+    /// </summary>
+    /// <param name="handType">æ‰‹ã®æ–¹å‘</param>
+    /// <returns>æ´ã‚“ã æ‰‹ã®Transform</returns>
+    private Transform GetDetailHandsTransform(HandType handType)
+    {
+        // æ‰‹ã®æ–¹å‘ã‚’ã‚‚ã¨ã«åˆ†å²
+        switch (handType)
         {
-            // ’Í‚ñ‚¾è‚Ì•ûŒü‚ğ‚à‚Æ‚Éƒtƒ‰ƒO‚ğ•ÏX‚·‚é
-            switch (handType)
-            {
-                // ‰Eè‚Ìê‡
-                case HandType.Right:
-                    // ‰Eè‚Ì’Í‚ñ‚Å‚¢‚é‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒO‚ğ•ÏX‚·‚é
-                    _isGrabbingRightHand = setState;
-                    break;
+            // å³æ‰‹ã®å ´åˆ
+            case HandType.Right:
+                // å³æ‰‹ã®Transformã‚’è¿”ã™
+                return _rightHandTransform;
 
-                // ¶è‚Ìê‡
-                case HandType.Left:
-                    // ¶è‚Ì’Í‚ñ‚Å‚¢‚é‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒO‚ğ•ÏX‚·‚é
-                    _isGrabbingLeftHand = setState;
-                    break;
+            // å·¦æ‰‹ã®å ´åˆ
+            case HandType.Left:
+                // å·¦æ‰‹ã®Transformã‚’è¿”ã™
+                return _leftHandTransform;
 
-                // —áŠOˆ—
-                default:
-                    // ‰½‚à‚µ‚È‚¢
-                    Debug.LogError($"SetGrabbingHandFlag‚É‚Äè‚Ì•ûŒü‚É—áŠO‚ª”­¶@è‚Ì•ûŒüF{handType}");
-                    return;
-            }
+            // ä¾‹å¤–å‡¦ç†
+            default:
+                // ä½•ã‚‚è¿”ã•ãªã„
+                Debug.LogError($"GetDetailHandsTransformã«ã¦æ‰‹ã®æ–¹å‘ã«ä¾‹å¤–ãŒç™ºç”Ÿã€€æ‰‹ã®æ–¹å‘ï¼š{handType}");
+                return null;
         }
+    }
 
-        /// <summary>
-        /// ’Í‚ñ‚¾è‚ÌTransform‚ğ•Ô‚·ƒvƒƒpƒeƒB
-        /// </summary>
-        /// <param name="handType">è‚Ì•ûŒü</param>
-        /// <returns>’Í‚ñ‚¾è‚ÌTransform</returns>
-        private Transform GetDetailHandsTransform(HandType handType)
-        {
-            // è‚Ì•ûŒü‚ğ‚à‚Æ‚É•ªŠò
-            switch (handType)
-            {
-                // ‰Eè‚Ìê‡
-                case HandType.Right:
-                    // ‰Eè‚ÌTransform‚ğ•Ô‚·
-                    return _rightHandTransform;
+    /// <summary>
+    /// æŠ•æ“²è£œæ­£ã‚’è¡Œã†ã‹ã©ã†ã‹ã‚’åˆ¤å®šã™ã‚‹ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
+    /// </summary>
+    /// <returns></returns>
+    private bool DoAimedThrow()
+    {
+        return false;
+    }
 
-                // ¶è‚Ìê‡
-                case HandType.Left:
-                    // ¶è‚ÌTransform‚ğ•Ô‚·
-                    return _leftHandTransform;
+    /// <summary>
+    /// æŠ•æ“²é€Ÿåº¦ã‚’ä¸Šæ›¸ãã™ã‚‹ãŸã‚ã®ã‚³ãƒ«ãƒ¼ãƒãƒ³
+    /// </summary>
+    /// <param name="throwVector">æŠ•æ“²é€Ÿåº¦</param>
+    /// <returns></returns>
+    private IEnumerator OverwriteVelocity(Vector3 throwVector)
+    {
+        // 1ãƒ•ãƒ¬ãƒ¼ãƒ å¾…æ©Ÿã™ã‚‹ã€€1ãƒ•ãƒ¬ãƒ¼ãƒ å¾…æ©Ÿã—ãªã„ã¨OVRã«æ¶ˆã•ã‚Œã‚‹
+        yield return new WaitForEndOfFrame();
 
-                // —áŠOˆ—
-                default:
-                    // ‰½‚à•Ô‚³‚È‚¢
-                    Debug.LogError($"GetDetailHandsTransform‚É‚Äè‚Ì•ûŒü‚É—áŠO‚ª”­¶@è‚Ì•ûŒüF{handType}");
-                    return null;
-            }
-        }
+        // æŠ•æ“²ãƒ™ã‚¯ãƒˆãƒ«ã‚’é€Ÿåº¦ã«ä¸Šæ›¸ãã™ã‚‹
+        _thisRigidbody.velocity = throwVector;
+    }
 
-        /// <summary>
-        /// “Š±•â³‚ğs‚¤‚©‚Ç‚¤‚©‚ğ”»’è‚·‚éƒvƒƒpƒeƒB
-        /// </summary>
-        /// <returns></returns>
-        private bool DoAimedThrow()
-        {
-            return false;
-        }
-
-        /// <summary>
-        /// “Š±‘¬“x‚ğã‘‚«‚·‚é‚½‚ß‚ÌƒRƒ‹[ƒ`ƒ“
-        /// </summary>
-        /// <param name="throwVector">“Š±‘¬“x</param>
-        /// <returns></returns>
-        private IEnumerator OverwriteVelocity(Vector3 throwVector)
-        {
-            // 1ƒtƒŒ[ƒ€‘Ò‹@‚·‚é@1ƒtƒŒ[ƒ€‘Ò‹@‚µ‚È‚¢‚ÆOVR‚ÉÁ‚³‚ê‚é
-            yield return new WaitForEndOfFrame();
-
-            // “Š±ƒxƒNƒgƒ‹‚ğ‘¬“x‚Éã‘‚«‚·‚é
-            _thisRigidbody.velocity = throwVector;
-        }
-
-        public void Inject(PlayerHandDependencyInfomation information)
-        {
-            // è‚ÌTransform‚ğ“o˜^‚·‚é
-            _rightHandTransform = information.RightHand;
-            _leftHandTransform = information.LeftHand;
-        }
+    public void Inject(PlayerHandDependencyInfomation information)
+    {
+        // æ‰‹ã®Transformã‚’ç™»éŒ²ã™ã‚‹
+        _rightHandTransform = information.RightHand;
+        _leftHandTransform = information.LeftHand;
     }
 }

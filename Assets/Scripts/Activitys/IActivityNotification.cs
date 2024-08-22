@@ -1,9 +1,6 @@
 
-namespace HCSMeta.Activity
+public interface IActivityNotification
 {
-    public interface IActivityNotification
-    {
-        void OnStart();
-        void OnFinish();
-    }
+    void OnStart();
+    void OnFinish();
 }

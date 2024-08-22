@@ -1,35 +1,32 @@
 using TMPro;
 using UnityEngine;
 
-namespace HCSMeta.UI
+public class NotificationUIManager : MonoBehaviour
 {
-    public class NotificationUIManager : MonoBehaviour
+    private static NotificationUIManager s_instance = default;
+    public static NotificationUIManager Instance => s_instance;
+
+    [SerializeField] private TextMeshProUGUI text = default;
+
+
+    private void Awake()
     {
-        private static NotificationUIManager s_instance = default;
-        public static NotificationUIManager Instance => s_instance;
-
-        [SerializeField] private TextMeshProUGUI text = default;
-
-
-        private void Awake()
+        if (s_instance is not null)
         {
-            if (s_instance is not null)
-            {
-                Destroy(this);
-                return;
-            }
-
-            s_instance = this;
+            Destroy(this);
+            return;
         }
 
-        public void DisplayInteraction()
-        {
-            text.text = "Interact";
-        }
+        s_instance = this;
+    }
 
-        public void HideInteraction()
-        {
-            text.text = string.Empty;
-        }
+    public void DisplayInteraction()
+    {
+        text.text = "Interact";
+    }
+
+    public void HideInteraction()
+    {
+        text.text = string.Empty;
     }
 }
