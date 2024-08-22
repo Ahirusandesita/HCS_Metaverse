@@ -1,64 +1,62 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using HCSMeta.Activity;
 
-public class StopperObject : MonoBehaviour
+namespace HCSMeta.Activity
 {
-    [SerializeField, Tooltip("ê⁄êGîªíËÇçsÇ§Collider")]
-    private Collider _stoperColliter = default;
-
-    // 
-    private Vector3 _hitBoxCenter = default;
-
-    // 
-    private Vector3 _hitBoxSize = default;
-
-    // 
-    private Quaternion _hitBoxRotation = default;
-
-    // 
-    private string _stoppableObjectsTag = "StoppableObject";
-
-    private void Start()
+    public class StopperObject : MonoBehaviour
     {
-        // 
-        _hitBoxCenter = _stoperColliter.bounds.center;
+        [SerializeField, Tooltip("ê⁄êGîªíËÇçsÇ§Collider")]
+        private Collider _stoperColliter = default;
 
         // 
-        _hitBoxSize = _stoperColliter.bounds.size;
+        private Vector3 _hitBoxCenter = default;
 
         // 
-        _hitBoxRotation = this.transform.rotation;
-    }
-
-    private void Update()
-    {
-        // 
-        Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);
+        private Vector3 _hitBoxSize = default;
 
         // 
-        foreach(Collider hitCollider in hitColliders)
+        private Quaternion _hitBoxRotation = default;
+
+        private void Start()
         {
             // 
-            if (!hitCollider.TryGetComponent<Stoppable>(out var tmp))
-            {
-                // 
-                continue;
-            }
+            _hitBoxCenter = _stoperColliter.bounds.center;
 
             // 
-            if (hitCollider.TryGetComponent<StopData>(out var stopData))
-            {
-                // 
-                stopData.SetIsHitStopper(true);
-            }
+            _hitBoxSize = _stoperColliter.bounds.size;
+
             // 
-            else
+            _hitBoxRotation = this.transform.rotation;
+        }
+
+        private void Update()
+        {
+            // 
+            Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);
+
+            // 
+            foreach (Collider hitCollider in hitColliders)
             {
                 // 
-                hitCollider.gameObject.AddComponent<StopData>();
+                if (!hitCollider.TryGetComponent<Stoppable>(out var tmp))
+                {
+                    // 
+                    continue;
+                }
+
+                // 
+                if (hitCollider.TryGetComponent<StopData>(out var stopData))
+                {
+                    // 
+                    stopData.SetIsHitStopper(true);
+                }
+                // 
+                else
+                {
+                    // 
+                    hitCollider.gameObject.AddComponent<StopData>();
+                }
             }
         }
     }
+
 }

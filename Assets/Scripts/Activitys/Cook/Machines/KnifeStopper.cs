@@ -59,7 +59,7 @@ namespace HCSMeta.Activity
             _detailEventer = GameObject.FindObjectOfType<InteractorDetailEventIssuer>();
 
             // ’Í‚ñ‚¾Žž‚ÌŽè‚Ì•ûŒü‚ðu“Ç‚µ‚Ä‚¨‚­
-            _detailEventer.OnInteractor += (handler) => { _grabbingHandType = handler.HandType; Debug.LogWarning(handler.HandType); };
+            _detailEventer.OnInteractor += (handler) => { _grabbingHandType = handler.HandType; };
 
         }
 
