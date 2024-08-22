@@ -47,7 +47,7 @@ namespace HCSMeta.Player.Object
         // 掴んだ時や離した時にイベントを実行するクラス
         private PointableUnityEventWrapper pointableUnityEventWrapper;
 
-        // 
+        // 掴みフラグ　現在掴んでいるかどうかの判定に用いる
         private bool _isSelected = false;
 
         private void Awake()
@@ -55,6 +55,7 @@ namespace HCSMeta.Player.Object
             // ThrowDataを生成する
             _throwData = new ThrowData(_thisTransform.position);
 
+            // 掴んだ時のイベントを登録する
             pointableUnityEventWrapper = this.GetComponent<PointableUnityEventWrapper>();
             pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
             pointableUnityEventWrapper.WhenUnselect.AddListener((action) => { UnSelect(); });
@@ -66,6 +67,7 @@ namespace HCSMeta.Player.Object
             _interactorDetailEventIssuer = GameObject.FindObjectOfType<InteractorDetailEventIssuer>();
             // 掴んだ時の情報を講読できるようにする
             _interactorDetailEventIssuer.OnInteractor += (handler) => {
+                // 掴んでいる場合
                 if (_isSelected)
                 {
                     // 掴んだ手の方向をもとにフラグを立てる
@@ -77,10 +79,9 @@ namespace HCSMeta.Player.Object
                     // 情報の初期化を行う
                     _throwData.ReSetThrowData(_grabbingHandTransform.position);
 
-                    // 
+                    // 掴みフラグを消す
                     _isSelected = false;
                 }
-                Debug.LogError("Yooooo!");
             };
         }
 
@@ -102,7 +103,7 @@ namespace HCSMeta.Player.Object
         /// </summary>
         public void Select()
         {
-            // 
+            // 掴みフラグを立てる
             _isSelected = true;
         }
 
