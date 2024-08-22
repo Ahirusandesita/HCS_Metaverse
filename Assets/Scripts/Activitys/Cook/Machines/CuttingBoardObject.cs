@@ -1,64 +1,66 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
-public class CuttingBoardObject : MonoBehaviour, IKnifeHitEvent
+namespace HCSMeta.Activity.Cook
 {
-    [SerializeField, Tooltip("切断できる範囲を指定するCollider")]
-    private Collider _cuttingAreaCollider = default;
-
-    [SerializeField, Tooltip("")]
-    private Transform _machineTransform = default;
-
-    // 
-    private Vector3 _hitBoxCenter = default;
-
-    // 
-    private Vector3 _hitBoxSize = default;
-
-    // 
-    private Quaternion _hitBoxRotation = default;
-
-    private void Start()
+    public class CuttingBoardObject : MonoBehaviour, IKnifeHitEvent
     {
-        // 
-        _hitBoxCenter = _cuttingAreaCollider.bounds.center;
+        [SerializeField, Tooltip("切断できる範囲を指定するCollider")]
+        private Collider _cuttingAreaCollider = default;
+
+        [SerializeField, Tooltip("")]
+        private Transform _machineTransform = default;
 
         // 
-        _hitBoxSize = _cuttingAreaCollider.bounds.size / 2;
+        private Vector3 _hitBoxCenter = default;
 
         // 
-        _hitBoxRotation = this.transform.rotation;
-    }
+        private Vector3 _hitBoxSize = default;
 
-    public void KnifeHitEvent()
-    {
         // 
-        Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);
+        private Quaternion _hitBoxRotation = default;
 
-        if (hitColliders is null)
+        private void Start()
         {
-            Debug.Log($"なにも当たってないよん");
-            return;
+            // 
+            _hitBoxCenter = _cuttingAreaCollider.bounds.center;
+
+            // 
+            _hitBoxSize = _cuttingAreaCollider.bounds.size / 2;
+
+            // 
+            _hitBoxRotation = this.transform.rotation;
         }
 
-        // 
-        foreach (Collider hitCollider in hitColliders)
+        public void KnifeHitEvent()
         {
             // 
-            if (!hitCollider.transform.root.TryGetComponent<Ingrodients>(out var thisIngrodient))
+            Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);
+
+            if (hitColliders is null)
             {
-                // 
-                continue;
+                Debug.Log($"なにも当たってないよん");
+                return;
             }
 
-            bool isEndCut = thisIngrodient.SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType.Cut, 1);
-
             // 
-            if (isEndCut)
+            foreach (Collider hitCollider in hitColliders)
             {
-                thisIngrodient.ProcessingStart(ProcessingType.Cut, _machineTransform);
-            }            
+                // 
+                if (!hitCollider.transform.root.TryGetComponent<Ingrodients>(out var thisIngrodient))
+                {
+                    // 
+                    continue;
+                }
+
+                bool isEndCut = thisIngrodient.SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType.Cut, 1);
+
+                // 
+                if (isEndCut)
+                {
+                    thisIngrodient.ProcessingStart(ProcessingType.Cut, _machineTransform);
+                }
+            }
         }
     }
 }

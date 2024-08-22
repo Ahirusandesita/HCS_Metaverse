@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Oculus.Interaction;
+using HCSMeta.Player.VR.Interface;
 
 public class LockedCuttingBoard : MonoBehaviour, IKnifeHitEvent
 {

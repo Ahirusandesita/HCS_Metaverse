@@ -2,16 +2,16 @@ using UnityEngine;
 
 public class KnifeStopper : MonoBehaviour, IDependencyInjector<PlayerVisualHandDependencyInformation>
 {
-    [SerializeField, Tooltip("’â~‚³‚¹‚éŒ©‚½–Ú—pƒIƒuƒWƒFƒNƒg")]
+    [SerializeField, Tooltip("åœæ­¢ã•ã›ã‚‹è¦‹ãŸç›®ç”¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ")]
     private GameObject _visualObject = default;
 
-    [SerializeField, Tooltip("ÚG‚·‚é‘ÎÛ‚ÌƒRƒ‰ƒCƒ_[")]
+    [SerializeField, Tooltip("æ¥è§¦ã™ã‚‹å¯¾è±¡ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼")]
     private Collider _targetCollider = default;
 
-    [SerializeField, Tooltip("ƒiƒCƒt‚ª“–‚½‚Á‚½‚Æ‚«‚ÉÀs‚µ‚½‚¢ˆ—‚ğ‚Á‚½ƒIƒuƒWƒFƒNƒg")]
+    [SerializeField, Tooltip("ãƒŠã‚¤ãƒ•ãŒå½“ãŸã£ãŸã¨ãã«å®Ÿè¡Œã—ãŸã„å‡¦ç†ã‚’æŒã£ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ")]
     private GameObject _knifeHitEvent = default;
 
-    // ’Í‚ñ‚¾‚Ìî•ñ‚ğæ“¾‚·‚é‚½‚ß‚ÌƒNƒ‰ƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒX—p•Ï”
+    // æ´ã‚“ã æ™‚ã®æƒ…å ±ã‚’å–å¾—ã™ã‚‹ãŸã‚ã®ã‚¯ãƒ©ã‚¹ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç”¨å¤‰æ•°
     private InteractorDetailEventIssuer _detailEventer = default;
 
     // 
@@ -26,7 +26,7 @@ public class KnifeStopper : MonoBehaviour, IDependencyInjector<PlayerVisualHandD
     // 
     private HandType _grabbingHandType = default;
 
-    // ’â~‚³‚¹‚éTransformŒQ ---------------------------------
+    // åœæ­¢ã•ã›ã‚‹Transformç¾¤ ---------------------------------
     private Transform _visualObjectTransform = default;
 
     private Transform _visualHandTransform = default;
@@ -36,7 +36,7 @@ public class KnifeStopper : MonoBehaviour, IDependencyInjector<PlayerVisualHandD
     private Transform _visualControllerHandTransform = default;
     // ------------------------------------------------------
 
-    // ’â~‚·‚éÀ•WŒQ‚ÆŠp“xŒQ --------------------------------
+    // åœæ­¢ã™ã‚‹åº§æ¨™ç¾¤ã¨è§’åº¦ç¾¤ --------------------------------
     private Vector3 _visualObjectPosition = default;
     private Quaternion _visualObjectRotation = default;
 
@@ -56,8 +56,9 @@ public class KnifeStopper : MonoBehaviour, IDependencyInjector<PlayerVisualHandD
     {
         _detailEventer = GameObject.FindObjectOfType<InteractorDetailEventIssuer>();
 
-        // ’Í‚ñ‚¾‚Ìè‚Ì•ûŒü‚ğu“Ç‚µ‚Ä‚¨‚­
-        _detailEventer.OnInteractor += (handler) => { _grabbingHandType = handler.HandType; Debug.LogWarning(handler.HandType); };
+
+            // æ´ã‚“ã æ™‚ã®æ‰‹ã®æ–¹å‘ã‚’è¬›èª­ã—ã¦ãŠã
+            _detailEventer.OnInteractor += (handler) => { _grabbingHandType = handler.HandType; };
 
     }
 
@@ -190,7 +191,7 @@ public class KnifeStopper : MonoBehaviour, IDependencyInjector<PlayerVisualHandD
 
     public void Inject(PlayerVisualHandDependencyInformation information)
     {
-        // è‚ÌViewî•ñ‚ğæ“¾‚µ‚Ä‚¨‚­
+        // æ‰‹ã®Viewæƒ…å ±ã‚’å–å¾—ã—ã¦ãŠã
         _handVisualInformation = information;
     }
 }

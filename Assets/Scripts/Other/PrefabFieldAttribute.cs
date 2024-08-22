@@ -23,7 +23,7 @@ namespace UnityEditor
                 if (prefabType == PrefabAssetType.NotAPrefab)
                 {
                     property.objectReferenceValue = oldValue;
-                    Debug.LogWarning($"{nameof(PlatformChanger)}のプロパティにPrefab以外のGaneObjectはアタッチできません。");
+                    Debug.LogWarning("このプロパティにPrefab以外のGameObjectはアタッチできません。");
                 }
             }
         }
