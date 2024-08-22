@@ -1,5 +1,4 @@
 using UnityEngine;
-using HCSMeta.Player.VR.Interface;
 
 public class LockedCuttingBoard : MonoBehaviour, IKnifeHitEvent
 {
