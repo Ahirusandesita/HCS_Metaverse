@@ -1,16 +1,18 @@
 using System.Collections.Generic;
-using HCSMeta.Network;
 using Fusion;
 
-public static partial class ExtensionList
+namespace HCSMeta.Network
 {
-	public static int IndexOf(this List<RoomPlayer> list, PlayerRef playerRef)
+	public static partial class ExtensionList
 	{
-		for (int i = 0; i < list.Count; i++)
+		public static int IndexOf(this List<RoomPlayer> list, PlayerRef playerRef)
 		{
-			if (list[i].PlayerData != playerRef) { continue; }
-			return i;
+			for (int i = 0; i < list.Count; i++)
+			{
+				if (list[i].PlayerData != playerRef) { continue; }
+				return i;
+			}
+			return -1;
 		}
-		return -1;
 	}
 }
