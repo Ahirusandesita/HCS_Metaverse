@@ -5,20 +5,7 @@ using Fusion;
 
 public class RoomManager : MonoBehaviour
 {
-	public enum JoinOrCreateResult
-	{
-		Create,
-		Join,
-		Fail
-	}
-
-	public enum LeftResult
-	{
-		Closable,
-		LeaderChanged,
-		Success,
-		Fail
-	}
+	
 
 	[SerializeField]
 	private GameObject _leaderObjectPrefab;
