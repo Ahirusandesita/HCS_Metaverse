@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Oculus.Interaction;
-using System.Threading.Tasks;
 
 namespace HCSMeta.Activity.Cook
 {
