@@ -62,18 +62,18 @@ public class Room
 	/// </summary>
 	/// <param name="playerRef">退出するプレイヤー</param>
 	/// <returns>リザルト</returns>
-	public RoomManager.LeftResult Left(PlayerRef playerRef)
+	public LeftResult Left(PlayerRef playerRef)
 	{
 
 		int index = _roomPlayers.IndexOf(playerRef);
 		//参加していなかった場合
-		if (index < 0) { return RoomManager.LeftResult.Fail; }
+		if (index < 0) { return LeftResult.Fail; }
 		_roomPlayers.RemoveAt(index);
 
 		//部屋のメンバーがいない場合
-		if (_roomPlayers.Count <= 0) { return RoomManager.LeftResult.Closable; }
+		if (_roomPlayers.Count <= 0) { return LeftResult.Closable; }
 
-		RoomManager.LeftResult result = RoomManager.LeftResult.Success;
+		LeftResult result = LeftResult.Success;
 
 		//↓リーダーの場合
 		if (_leaderIndex == index)
@@ -82,7 +82,7 @@ public class Room
 			RoomManager.Instance.DestroyLeaderObject();
 			ChangeLeader(nextLeaderIndex);
 
-			result = RoomManager.LeftResult.LeaderChanged;
+			result = LeftResult.LeaderChanged;
 		}
 
 		return result;

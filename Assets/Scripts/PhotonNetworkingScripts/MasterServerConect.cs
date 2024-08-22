@@ -6,11 +6,6 @@ using Photon.Voice.Unity;
 using Photon.Voice.Fusion;
 using Cysharp.Threading.Tasks;
 
-public interface IMasterServerConectable
-{
-	UniTask Connect(string SessionName);
-}
-
 public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMasterServerConectable
 {
 	[SerializeField]
