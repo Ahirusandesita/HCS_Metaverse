@@ -116,6 +116,7 @@ public class ModelSettingChanger : EditorWindow
                         model.SaveAndReimport();
                     }
                     mode = WindowMode.Serach;
+                    XDebug.Log("Completed: Model Setting Changer!");
                 }
                 if (GUILayout.Button("No"))
                 {
