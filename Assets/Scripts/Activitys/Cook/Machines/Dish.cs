@@ -1,109 +1,100 @@
-using HCSMeta.Activity.Cook.Interface;
-using HCSMeta.Player.VR.Interface;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace HCSMeta.Activity.Cook.Interface
+public interface IPutableOnDish
 {
-    public interface IPutableOnDish
-    {
-        void PutCommodity(ISwitchableGrabbableActive switchable);
-        void CommodityReset();
-    }
-    public class NullPutableOnDish : IPutableOnDish
-    {
-        public void PutCommodity(ISwitchableGrabbableActive switchable)
-        {
-
-        }
-        public void CommodityReset() { }
-    }
+    void PutCommodity(ISwitchableGrabbableActive switchable);
+    void CommodityReset();
 }
-
-namespace HCSMeta.Activity.Cook
+public class NullPutableOnDish : IPutableOnDish
 {
-    public class Dish : MonoBehaviour, IPutableOnDish
+    public void PutCommodity(ISwitchableGrabbableActive switchable)
     {
-        [SerializeField]
-        private Transform fixedTransform;
-        private ISwitchableGrabbableActive switchable;
-        bool canPut = true;
-        public void PutCommodity(ISwitchableGrabbableActive switchable)
+
+    }
+    public void CommodityReset() { }
+}
+public class Dish : MonoBehaviour, IPutableOnDish
+{
+    [SerializeField]
+    private Transform fixedTransform;
+    private ISwitchableGrabbableActive switchable;
+    bool canPut = true;
+    public void PutCommodity(ISwitchableGrabbableActive switchable)
+    {
+        if (this.switchable != null)
         {
-            if (this.switchable != null)
-            {
-                return;
-            }
-            if (!canPut)
-            {
-                return;
-            }
-
-            this.switchable = switchable;
-            switchable.Inactive();
-            switchable.gameObject.transform.parent = this.transform;
-            switchable.gameObject.transform.rotation = this.transform.rotation;
-            switchable.gameObject.transform.position = fixedTransform.position;
-
-            switchable.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+            return;
+        }
+        if (!canPut)
+        {
+            return;
         }
 
-        private void Update()
+        this.switchable = switchable;
+        switchable.Inactive();
+        switchable.gameObject.transform.parent = this.transform;
+        switchable.gameObject.transform.rotation = this.transform.rotation;
+        switchable.gameObject.transform.position = fixedTransform.position;
+
+        switchable.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+    }
+
+    private void Update()
+    {
+
+        if (switchable == null)
         {
-
-            if (switchable == null)
-            {
-                return;
-            }
-
-            Vector3 vector3 = transform.rotation.eulerAngles;
-
-            if (vector3.x > 70f && vector3.x < 290f)
-            {
-                switchable.Active();
-                switchable.gameObject.GetComponent<Commodity>().InjectPutableOnDish(new NullPutableOnDish());
-                switchable.gameObject.GetComponent<Rigidbody>().isKinematic = false;
-                switchable.gameObject.transform.parent = null;
-                switchable = null;
-                canPut = false;
-                StartCoroutine(NotPutOn());
-            }
-            else if (vector3.z > 70f && vector3.z < 290f)
-            {
-                switchable.Active();
-                switchable.gameObject.GetComponent<Commodity>().InjectPutableOnDish(new NullPutableOnDish());
-                switchable.gameObject.GetComponent<Rigidbody>().isKinematic = false;
-                switchable.gameObject.transform.parent = null;
-                switchable = null;
-                StartCoroutine(NotPutOn());
-            }
+            return;
         }
 
-        private IEnumerator NotPutOn()
-        {
-            canPut = false;
-            yield return new WaitForSeconds(1f);
-            canPut = true;
-        }
+        Vector3 vector3 = transform.rotation.eulerAngles;
 
-        public void CommodityReset()
+        if (vector3.x > 70f && vector3.x < 290f)
         {
+            switchable.Active();
+            switchable.gameObject.GetComponent<Commodity>().InjectPutableOnDish(new NullPutableOnDish());
+            switchable.gameObject.GetComponent<Rigidbody>().isKinematic = false;
+            switchable.gameObject.transform.parent = null;
             switchable = null;
+            canPut = false;
+            StartCoroutine(NotPutOn());
         }
-
-
-        private void OnCollisionEnter(Collision collision)
+        else if (vector3.z > 70f && vector3.z < 290f)
         {
-            if (collision.gameObject.TryGetComponent<SubmisionTable>(out SubmisionTable table))
+            switchable.Active();
+            switchable.gameObject.GetComponent<Commodity>().InjectPutableOnDish(new NullPutableOnDish());
+            switchable.gameObject.GetComponent<Rigidbody>().isKinematic = false;
+            switchable.gameObject.transform.parent = null;
+            switchable = null;
+            StartCoroutine(NotPutOn());
+        }
+    }
+
+    private IEnumerator NotPutOn()
+    {
+        canPut = false;
+        yield return new WaitForSeconds(1f);
+        canPut = true;
+    }
+
+    public void CommodityReset()
+    {
+        switchable = null;
+    }
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.TryGetComponent<SubmisionTable>(out SubmisionTable table))
+        {
+            if (switchable is null)
             {
-                if (switchable is null)
-                {
-                    return;
-                }
-                table.Submit(switchable.gameObject.GetComponent<Commodity>());
-                switchable = null;
+                return;
             }
+            table.Submit(switchable.gameObject.GetComponent<Commodity>());
+            switchable = null;
         }
     }
 }

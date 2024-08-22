@@ -1,24 +1,21 @@
 using UnityEngine;
-namespace HCSMeta.Function.Touch
+public class CanvasDeploymentAndConvergence : MonoBehaviour, ICanvasDeploymentAndConvergence
 {
-    public class CanvasDeploymentAndConvergence : MonoBehaviour, ICanvasDeploymentAndConvergence
+
+    private void Start()
     {
+        this.gameObject.SetActive(false);
+    }
 
-        private void Start()
-        {
-            this.gameObject.SetActive(false);
-        }
+    bool ICanvasDeploymentAndConvergence.IsDeployment => throw new System.NotImplementedException();
 
-        bool ICanvasDeploymentAndConvergence.IsDeployment => throw new System.NotImplementedException();
+    void ICanvasDeploymentAndConvergence.Convergence()
+    {
+        this.gameObject.SetActive(false);
+    }
 
-        void ICanvasDeploymentAndConvergence.Convergence()
-        {
-            this.gameObject.SetActive(false);
-        }
-
-        void ICanvasDeploymentAndConvergence.Deployment()
-        {
-            this.gameObject.SetActive(true);
-        }
+    void ICanvasDeploymentAndConvergence.Deployment()
+    {
+        this.gameObject.SetActive(true);
     }
 }

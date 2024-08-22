@@ -1,67 +1,60 @@
 using System.Collections.Generic;
 using UnityEngine;
-using HCSMeta.Activity.Cook.Interface;
-using HCSMeta.Player.VR.Interface;
 
-namespace HCSMeta.Activity.Cook.Interface
+public interface IProcessable
 {
-    public interface IProcessable
+    void Processing(Ingrodients ingrodients);
+}
+public class NullMachine : IProcessable
+{
+    void IProcessable.Processing(Ingrodients ingrodients)
     {
-        void Processing(Ingrodients ingrodients);
-    }
-    public class NullMachine : IProcessable
-    {
-        void IProcessable.Processing(Ingrodients ingrodients)
-        {
 
-        }
     }
 }
 
-namespace HCSMeta.Activity.Cook
+
+public abstract class Machine : MonoBehaviour, IProcessable
 {
-    public abstract class Machine : MonoBehaviour, IProcessable
+    [SerializeField]
+    private ProcessingType processingType;
+    public ProcessingType ProcessingType => processingType;
+
+    [SerializeField]
+    protected Transform ingrodientTransform;
+
+    protected Ingrodients ingrodients;
+    protected float timeItTakes;
+
+    void IProcessable.Processing(Ingrodients ingrodients)
     {
-        [SerializeField]
-        private ProcessingType processingType;
-        public ProcessingType ProcessingType => processingType;
+        this.ingrodients = ingrodients;
+        ingrodients.transform.position = ingrodientTransform.position;
 
-        [SerializeField]
-        protected Transform ingrodientTransform;
-
-        protected Ingrodients ingrodients;
-        protected float timeItTakes;
-
-        void IProcessable.Processing(Ingrodients ingrodients)
+        foreach (IngrodientsDetailInformation ingrodientsDetailInformation in ingrodients.IngrodientsAsset.IngrodientsDetailInformations)
         {
-            this.ingrodients = ingrodients;
-            ingrodients.transform.position = ingrodientTransform.position;
-
-            foreach (IngrodientsDetailInformation ingrodientsDetailInformation in ingrodients.IngrodientsAsset.IngrodientsDetailInformations)
+            if (ingrodientsDetailInformation.ProcessingType == ProcessingType)
             {
-                if (ingrodientsDetailInformation.ProcessingType == ProcessingType)
-                {
-                    ISwitchableGrabbableActive switchableGrabbableActive = ingrodients;
-                    switchableGrabbableActive.Inactive();
-                    IngrodientsDetailInformation information = new IngrodientsDetailInformation(ingrodientsDetailInformation.ProcessingType, ingrodientsDetailInformation.TimeItTakes, ingrodientsDetailInformation.Commodity);
-                    StartProcessed(information);
-                }
+                ISwitchableGrabbableActive switchableGrabbableActive = ingrodients;
+                switchableGrabbableActive.Inactive();
+                IngrodientsDetailInformation information = new IngrodientsDetailInformation(ingrodientsDetailInformation.ProcessingType, ingrodientsDetailInformation.TimeItTakes, ingrodientsDetailInformation.Commodity);
+                StartProcessed(information);
             }
         }
-
-        public IProcessable ProcessedCertification(Ingrodients ingrodients)
-        {
-            foreach (IngrodientsDetailInformation item in ingrodients.IngrodientsAsset.IngrodientsDetailInformations)
-            {
-                if (item.ProcessingType == processingType)
-                {
-                    return this;
-                }
-            }
-            Debug.Log("can not processed");
-            return new NullMachine();
-        }
-
-        public abstract void StartProcessed(IngrodientsDetailInformation ingrodientsDetailInformation);
     }
+
+    public IProcessable ProcessedCertification(Ingrodients ingrodients)
+    {
+        foreach (IngrodientsDetailInformation item in ingrodients.IngrodientsAsset.IngrodientsDetailInformations)
+        {
+            if (item.ProcessingType == processingType)
+            {
+                return this;
+            }
+        }
+        Debug.Log("can not processed");
+        return new NullMachine();
+    }
+
+    public abstract void StartProcessed(IngrodientsDetailInformation ingrodientsDetailInformation);
 }

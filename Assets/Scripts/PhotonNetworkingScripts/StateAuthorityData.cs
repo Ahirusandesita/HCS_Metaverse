@@ -1,33 +1,30 @@
 using Fusion;
 
-namespace HCSMeta.Network
+public class AuthrityEventArgs : System.EventArgs
 {
-	public class AuthrityEventArgs : System.EventArgs
+	public readonly bool Authrity;
+	public AuthrityEventArgs(bool authrity)
 	{
-		public readonly bool Authrity;
-		public AuthrityEventArgs(bool authrity)
-		{
-			this.Authrity = authrity;
-		}
+		this.Authrity = authrity;
 	}
-	public delegate void AuthrityHandler(AuthrityEventArgs authrityEventArgs);
-	public class StateAuthorityData : NetworkBehaviour
+}
+public delegate void AuthrityHandler(AuthrityEventArgs authrityEventArgs);
+public class StateAuthorityData : NetworkBehaviour
+{
+	[Networked]
+	public bool IsNotReleaseStateAuthority { get; set; }
+	public event AuthrityHandler OnAuthrity;
+	private bool isGrabbable = true;
+	public bool IsGrabbable
 	{
-		[Networked]
-		public bool IsNotReleaseStateAuthority { get; set; }
-		public event AuthrityHandler OnAuthrity;
-		private bool isGrabbable = true;
-		public bool IsGrabbable
+		get
 		{
-			get
-			{
-				return isGrabbable;
-			}
-			set
-			{
-				isGrabbable = value;
-				OnAuthrity?.Invoke(new AuthrityEventArgs(value));
-			}
+			return isGrabbable;
+		}
+		set
+		{
+			isGrabbable = value;
+			OnAuthrity?.Invoke(new AuthrityEventArgs(value));
 		}
 	}
 }

@@ -1,20 +1,17 @@
 using UnityEngine;
 
-namespace HCSMeta.Activity.Cook
+public class CommodityFactory : MonoBehaviour
 {
-    public class CommodityFactory : MonoBehaviour
+    public Commodity Generate(Ingrodients ingrodients, ProcessingType processingType)
     {
-        public Commodity Generate(Ingrodients ingrodients, ProcessingType processingType)
+        foreach (IngrodientsDetailInformation item in ingrodients.IngrodientsAsset.IngrodientsDetailInformations)
         {
-            foreach (IngrodientsDetailInformation item in ingrodients.IngrodientsAsset.IngrodientsDetailInformations)
+            if (item.ProcessingType == processingType)
             {
-                if (item.ProcessingType == processingType)
-                {
-                    return item.Commodity;
-                }
+                return item.Commodity;
             }
-
-            return null;//Œã‚ÉNullObject
         }
+
+        return null;//Œã‚ÉNullObject
     }
 }
