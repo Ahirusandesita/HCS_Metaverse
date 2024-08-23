@@ -62,20 +62,20 @@ public class GateOfFusion
 
 	public async void ActivityStart(string sceneName)
 	{
-		if(_syncResult != SyncResult.Complete) { return; }
-		_syncResult = SyncResult.Connecting;
+		//if(_syncResult != SyncResult.Complete) { return; }
+		//_syncResult = SyncResult.Connecting;
 		//アクティビティスタート
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer);
 		if (currentRoom is null)
 		{
 			XDebug.LogWarning("どのルームにも入っていません", KumaDebugColor.ErrorColor);
-			_syncResult = SyncResult.Complete;
+			//_syncResult = SyncResult.Complete;
 			return;
 		}
 		if (currentRoom.LeaderPlayerRef != NetworkRunner.LocalPlayer)
 		{
 			XDebug.LogWarning("リーダーではありません", KumaDebugColor.ErrorColor);
-			_syncResult = SyncResult.Complete;
+			//_syncResult = SyncResult.Complete;
 			return;
 		}
 		string sessionName = currentRoom.NextSessionName;
@@ -95,7 +95,7 @@ public class GateOfFusion
 		{
 			NetworkRunner.SetMasterClient(currentRoom.LeaderPlayerRef);
 		}
-		_syncResult = SyncResult.Complete;
+		//_syncResult = SyncResult.Complete;
 	}
 }
 
