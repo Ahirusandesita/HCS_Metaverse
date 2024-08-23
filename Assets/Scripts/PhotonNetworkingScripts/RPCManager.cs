@@ -8,7 +8,6 @@ public class RPCManager : NetworkBehaviour
 	public override void Spawned()
 	{
 		XDebug.LogWarning($"RPCManager_Spawned", KumaDebugColor.RpcColor);
-		//RoomManager.Instance.Test();
 		_instance = this;
 
 		if (GateOfFusion.Instance.NetworkRunner.SessionInfo.PlayerCount > 1)
@@ -35,7 +34,7 @@ public class RPCManager : NetworkBehaviour
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 	public async void Rpc_JoinSession(string sessionName, [RpcTarget] PlayerRef rpcTarget = new())
 	{
-		XDebug.LogError("RpcJoin", KumaDebugColor.SuccessColor);
+		XDebug.LogWarning("RpcJoin", KumaDebugColor.SuccessColor);
 		//é¿çs
 		await FindObjectOfType<MasterServerConect>().JoinOrCreateSession(sessionName);
 	}
