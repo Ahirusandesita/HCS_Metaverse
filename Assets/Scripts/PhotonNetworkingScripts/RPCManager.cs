@@ -97,4 +97,11 @@ public class RPCManager : NetworkBehaviour
 		XDebug.LogWarning("Rpc_DestroyLeaderObject:" + rpcTarget, KumaDebugColor.RpcColor);
 		RoomManager.Instance.DestroyLeaderObject();
 	}
+
+	[Rpc(RpcSources.All,RpcTargets.All)]
+	public void Rpc_ChangeMasterClient(PlayerRef nextMaster)
+	{
+		if (!Runner.IsSharedModeMasterClient) { return; }
+		Runner.SetMasterClient(nextMaster);
+	}
 }

@@ -52,7 +52,32 @@ public class GateOfFusion
 		}
 		RPCManager.Instance.Rpc_GrabStateAuthorityChanged(networkObject);
 		networkObject.RequestStateAuthority();
+	}
 
+	public void Despawn<T>(T despawnObject) where T : Component
+	{
+		if (despawnObject.TryGetComponent(out NetworkObject networkObject))
+		{
+			NetworkRunner.Despawn(networkObject);
+			return;
+		}
+		XDebug.LogError("NetworkObjectが取得できませんでした。なのでDestroyします。", KumaDebugColor.ErrorColor);
+		Object.Destroy(despawnObject.gameObject);
+	}
+
+	public void Spawn(GameObject prefab, Vector3 position = default, Quaternion quaternion = default, Transform parent = default)
+	{
+		GameObject temp;
+		if (prefab.TryGetComponent(out NetworkObject networkObject))
+		{
+			temp = NetworkRunner.Spawn(networkObject, position, quaternion).gameObject;
+		}
+		else
+		{
+			XDebug.LogError("NetworkObjectが取得できませんでした。なのでInstantiateします。", KumaDebugColor.ErrorColor);
+			temp = Object.Instantiate(prefab,position,quaternion);
+		}
+		temp.transform.parent = parent;
 	}
 
 	public void Release(NetworkObject networkObject)
@@ -62,20 +87,24 @@ public class GateOfFusion
 
 	public async void ActivityStart(string sceneName)
 	{
-		//if(_syncResult != SyncResult.Complete) { return; }
-		//_syncResult = SyncResult.Connecting;
+		if (_syncResult != SyncResult.Complete)
+		{
+			Debug.LogError("移動中です");
+			return;
+		}
+		_syncResult = SyncResult.Connecting;
 		//アクティビティスタート
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer);
-		if (currentRoom is null)
+		if (currentRoom == null)
 		{
 			XDebug.LogWarning("どのルームにも入っていません", KumaDebugColor.ErrorColor);
-			//_syncResult = SyncResult.Complete;
+			_syncResult = SyncResult.Complete;
 			return;
 		}
 		if (currentRoom.LeaderPlayerRef != NetworkRunner.LocalPlayer)
 		{
 			XDebug.LogWarning("リーダーではありません", KumaDebugColor.ErrorColor);
-			//_syncResult = SyncResult.Complete;
+			_syncResult = SyncResult.Complete;
 			return;
 		}
 		string sessionName = currentRoom.NextSessionName;
@@ -83,19 +112,20 @@ public class GateOfFusion
 		{
 			if (roomPlayer.PlayerData == NetworkRunner.LocalPlayer) { continue; }
 			RPCManager.Instance.Rpc_JoinSession(sessionName, roomPlayer.PlayerData);
+			XDebug.LogWarning($"{roomPlayer.PlayerData}を移動させた", KumaDebugColor.MessageColor);
 		}
 		await UniTask.WaitUntil(() => currentRoom.WithLeaderSessionCount <= 0);
+		XDebug.LogWarning($"全員移動させた", KumaDebugColor.MessageColor);
 		await MasterServer.JoinOrCreateSession(sessionName);
-		if (currentRoom.LeaderPlayerRef == NetworkRunner.LocalPlayer)
+		XDebug.LogWarning($"自分がセッション移動した", KumaDebugColor.MessageColor);
+		if (!NetworkRunner.IsSharedModeMasterClient)
 		{
+			RPCManager.Instance.Rpc_ChangeMasterClient(NetworkRunner.LocalPlayer);
 			await UniTask.WaitUntil(() => NetworkRunner.IsSharedModeMasterClient);
-			await NetworkRunner.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
+			XDebug.LogWarning("自分マスターになった", KumaDebugColor.MessageColor);
 		}
-		else if (NetworkRunner.IsSharedModeMasterClient)
-		{
-			NetworkRunner.SetMasterClient(currentRoom.LeaderPlayerRef);
-		}
-		//_syncResult = SyncResult.Complete;
+		await NetworkRunner.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
+		_syncResult = SyncResult.Complete;
 	}
 }
 
