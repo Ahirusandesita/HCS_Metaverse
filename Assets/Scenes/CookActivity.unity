@@ -1388,7 +1388,7 @@ PrefabInstance:
       addedObject: {fileID: 1090330018}
     - targetCorrespondingSourceObject: {fileID: 1443104016154582, guid: da39b72aa18fa5e48b10d7ec95000d35, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1090330021}
+      addedObject: {fileID: 1090330019}
   m_SourcePrefab: {fileID: 100100000, guid: da39b72aa18fa5e48b10d7ec95000d35, type: 3}
 --- !u!1 &1090330012 stripped
 GameObject:
@@ -1436,7 +1436,7 @@ MonoBehaviour:
   _cuttingAreaCollider: {fileID: 1090330013}
   _machineTransform: {fileID: 1090330017}
   _objectLockPosition: {fileID: 1090330017}
---- !u!114 &1090330021
+--- !u!114 &1090330019
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1445,9 +1445,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1090330012}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24b53294159cbac4fb101009aa949a4d, type: 3}
+  m_Script: {fileID: 11500000, guid: 17a783bd36add0c4e8246916244f9785, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _stopperColliter: {fileID: 1090330013}
+  mode: 1
 --- !u!1 &1121295334
 GameObject:
   m_ObjectHideFlags: 0
