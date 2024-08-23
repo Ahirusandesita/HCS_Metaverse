@@ -10,7 +10,7 @@ public class GateOfFusion
 	private NetworkRunner _networkRunner = default;
 	private static GateOfFusion _instance = default;
 	private MasterServerConect _masterServer = default;
-	private SyncResult _syncResult = default;
+	private SyncResult _syncResult = SyncResult.Complete;
 	public static GateOfFusion Instance => _instance ??= new GateOfFusion();
 	private MasterServerConect MasterServer
 		=> _masterServer ??= Object.FindObjectOfType<MasterServerConect>();
@@ -30,7 +30,10 @@ public class GateOfFusion
 		}
 	}
 	public bool IsCanUsePhoton { get => _canUsePhoton; set => _canUsePhoton = value; }
-	public SyncResult SyncResult => _syncResult;
+	public SyncResult SyncResult { get => _syncResult; set => _syncResult = value; }
+
+
+
 
 	/// <summary>
 	/// 掴むときに呼ぶ
@@ -75,7 +78,7 @@ public class GateOfFusion
 		else
 		{
 			XDebug.LogError("NetworkObjectが取得できませんでした。なのでInstantiateします。", KumaDebugColor.ErrorColor);
-			temp = Object.Instantiate(prefab,position,quaternion);
+			temp = Object.Instantiate(prefab, position, quaternion);
 		}
 		temp.transform.parent = parent;
 	}
@@ -87,12 +90,12 @@ public class GateOfFusion
 
 	public async void ActivityStart(string sceneName)
 	{
-		if (_syncResult != SyncResult.Complete)
-		{
-			Debug.LogError("移動中です");
-			return;
-		}
-		_syncResult = SyncResult.Connecting;
+		//if (_syncResult != SyncResult.Complete)
+		//{
+		//	Debug.LogError("移動中です");
+		//	return;
+		//}
+		//_syncResult = SyncResult.Connecting;
 		//アクティビティスタート
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer);
 		if (currentRoom == null)
@@ -118,14 +121,24 @@ public class GateOfFusion
 		XDebug.LogWarning($"全員移動させた", KumaDebugColor.MessageColor);
 		await MasterServer.JoinOrCreateSession(sessionName);
 		XDebug.LogWarning($"自分がセッション移動した", KumaDebugColor.MessageColor);
-		if (!NetworkRunner.IsSharedModeMasterClient)
+		if (currentRoom.LeaderPlayerRef == NetworkRunner.LocalPlayer)
 		{
-			RPCManager.Instance.Rpc_ChangeMasterClient(NetworkRunner.LocalPlayer);
 			await UniTask.WaitUntil(() => NetworkRunner.IsSharedModeMasterClient);
-			XDebug.LogWarning("自分マスターになった", KumaDebugColor.MessageColor);
+			await NetworkRunner.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
 		}
-		await NetworkRunner.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
-		_syncResult = SyncResult.Complete;
+		else if (NetworkRunner.IsSharedModeMasterClient)
+		{
+			NetworkRunner.SetMasterClient(currentRoom.LeaderPlayerRef);
+		}
+
+
+		//if (!NetworkRunner.IsSharedModeMasterClient)
+		//{
+		//	//RPCManager.Instance.Rpc_ChangeMasterClient(NetworkRunner.LocalPlayer);
+		//	await UniTask.WaitUntil(() => NetworkRunner.IsSharedModeMasterClient);
+		//	XDebug.LogWarning("自分マスターになった", KumaDebugColor.MessageColor);
+		//}
+		//_syncResult = SyncResult.Complete;
 	}
 }
 

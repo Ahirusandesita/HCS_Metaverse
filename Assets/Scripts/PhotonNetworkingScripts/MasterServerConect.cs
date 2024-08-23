@@ -36,6 +36,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		DontDestroyOnLoad(this.gameObject);
 		await InstanceNetworkRunner();
 		await Connect("Room");
+
 	}
 
 	/// <summary>
