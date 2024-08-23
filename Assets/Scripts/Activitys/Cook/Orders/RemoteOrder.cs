@@ -21,4 +21,10 @@ public class RemoteOrder : NetworkBehaviour
         orderManager = GameObject.FindObjectOfType<OrderManager>();
         orderManager.RemoteSubmision(index);
     }
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void RPC_Initialize()
+    {
+        orderManager = GameObject.FindObjectOfType<OrderManager>();
+        orderManager.Inject(this);
+    }
 }

@@ -49,8 +49,15 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
         instance = networkObject.GetComponent<RemoteOrder>();
 
         customer.InjectRemoteOrder(instance);
-        Debug.LogWarning("PoPo");
+        instance.RPC_Initialize();
     }
+    public void Inject(RemoteOrder remoteOrder)
+    {
+        customer.InjectRemoteOrder(remoteOrder);
+        instance = remoteOrder;
+    }
+
+
     private void Start()
     {
         OnOrderInitialize?.Invoke(new OrderInitializeEventArgs(orderValue));
