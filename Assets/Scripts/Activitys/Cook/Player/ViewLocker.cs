@@ -58,6 +58,9 @@ public class ViewLocker : MonoBehaviour, IDependencyInjector<PlayerVisualHandDep
 
     private void Start()
     {
+        // 
+        _detailEventer = GameObject.FindObjectOfType<InteractorDetailEventIssuer>();
+
         // ’Í‚ñ‚¾Žž‚ÌŽè‚Ì•ûŒü‚ðu“Ç‚µ‚Ä‚¨‚­
         _detailEventer.OnInteractor += (handler) => { _detailHandType = handler.HandType; };
     }
