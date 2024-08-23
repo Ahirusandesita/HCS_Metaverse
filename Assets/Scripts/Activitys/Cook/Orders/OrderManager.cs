@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 
+
 public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
 {
     //Test
@@ -32,6 +33,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     private int orderCode = 0;
     [SerializeField]
     private RemoteOrder remoteOrder;
+    private RemoteOrder instance;
     private void Awake()
     {
         commodityAssets = new CommodityAsset[orderValue];
@@ -44,7 +46,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     private async void Initialize()
     {
         Fusion.NetworkObject networkObject = await GateOfFusion.Instance.NetworkRunner.SpawnAsync(remoteOrder.gameObject);
-        RemoteOrder instance = networkObject.GetComponent<RemoteOrder>();
+        instance = networkObject.GetComponent<RemoteOrder>();
 
         customer.InjectRemoteOrder(instance);
         Debug.LogWarning("PoPo");
@@ -110,11 +112,33 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
                 customers[i] = null;
                 PackOrders();
 
+                remoteOrder.RPC_Submision(i);
                 break;
             }
         }
-        Destroy(commodity.gameObject);
 
+        GateOfFusion.Instance.NetworkRunner.Despawn(commodity.GetComponent<Fusion.NetworkObject>());
+
+
+        for (int i = 0; i < commodityAssets.Length; i++)
+        {
+            if (commodityAssets[i] == null)
+            {
+                commodityInformations[i] = null;
+                continue;
+            }
+            commodityInformations[i] = new CommodityInformation(commodityAssets[i]);
+        }
+
+        OnResetOrder?.Invoke(new ResetOrderArrayEventArgs(commodityInformations));
+    }
+
+    public void RemoteSubmision(int index)
+    {
+        OrderEventArgs orderEventArgs = new OrderEventArgs(new CommodityInformation(commodityAssets[index]), OrderType.Submit, index);
+        commodityAssets[index] = null;
+        customers[index] = null;
+        PackOrders();
 
         for (int i = 0; i < commodityAssets.Length; i++)
         {

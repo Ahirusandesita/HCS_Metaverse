@@ -46,4 +46,5 @@ public class SubmisionTable : MonoBehaviour
     {
         orderManager.Submission(commodity);
     }
+
 }
