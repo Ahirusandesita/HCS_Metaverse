@@ -112,7 +112,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
                 customers[i] = null;
                 PackOrders();
 
-                remoteOrder.RPC_Submision(i);
+                instance.RPC_Submision(i);
                 break;
             }
         }
