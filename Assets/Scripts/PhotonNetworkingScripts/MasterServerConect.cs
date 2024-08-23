@@ -100,17 +100,16 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		XDebug.LogWarning($"JoinSession:{player}", KumaDebugColor.InformationColor);
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
 		RPCManager rpcManager = FindObjectOfType<RPCManager>();
-		if (Runner.LocalPlayer != player) { return; }
-		if (Runner.IsSharedModeMasterClient)
-		{
-			//ここから下はマスターのみ実行
-			XDebug.LogWarning($"MasterJoin", KumaDebugColor.SuccessColor);
-			MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
-			Transform masterTransform = masterServer.transform;
-			NetworkObject networkObject = Runner.Spawn(_rpcManagerPrefab);
-			rpcManager = networkObject.GetComponent<RPCManager>();
-			rpcManager.transform.parent = masterTransform;
-		}
+		if (Runner.LocalPlayer != player && !Runner.IsSharedModeMasterClient) { return; }
+
+		//ここから下はマスターのみ実行
+		XDebug.LogWarning($"MasterJoin", KumaDebugColor.SuccessColor);
+		MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
+		Transform masterTransform = masterServer.transform;
+		NetworkObject networkObject = Runner.Spawn(_rpcManagerPrefab);
+		rpcManager = networkObject.GetComponent<RPCManager>();
+		rpcManager.transform.parent = masterTransform;
+
 		localRemoteReparation.RemoteViewCreate(Runner, Runner.LocalPlayer);
 	}
 
