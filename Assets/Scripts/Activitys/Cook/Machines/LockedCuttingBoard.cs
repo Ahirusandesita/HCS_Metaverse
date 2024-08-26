@@ -116,13 +116,13 @@ public class LockedCuttingBoard : MonoBehaviour, IKnifeHitEvent
         // オブジェクトが固定されている　かつ　固定されているオブジェクトにIngrodientがついている場合
         if (_isLockedObject && _lockingIngrodients is not null)
         {
-            // 
+            // 切断フラグを立てる
             bool isEndCut = _lockingIngrodients.SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType.Cut, 1);
 
-            // 
+            // 切断グラグを立っていなかった
             if (isEndCut)
             {
-                // 
+                // 当たったオブジェクトのCommodityを取得しておく
                 Commodity processedCommodity = default;
 
                 // 
