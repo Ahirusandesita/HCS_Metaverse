@@ -42,7 +42,7 @@ public class ThrowData
     private const float REVOCATION_TIME = 0.2f;
 
     // 軌道ベクトルの生成に必要な情報たち　軌道座標と保存時刻を持つ
-    private OrbitData[] _orbitDatas = new OrbitData[22];
+    private OrbitData[] _orbitDatas = new OrbitData[9];
     #endregion
 
     #region メソッド・プロパティ
