@@ -14,29 +14,67 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	private Recorder _recorder;
 	[SerializeField]
 	private NetworkRunner _networkRunnerPrefab;
-
 	[SerializeField]
 	private LocalRemoteSeparation localRemoteReparation;
 
 	private NetworkRunner _networkRunner;
 
+	private RPCManager _rpcManager;
+
+
 	/// <summary>
 	/// このクラスはランナーとの紐づけはしないためラップする
 	/// </summary>
-	public new NetworkRunner Runner { get => _networkRunner; }
+	public new NetworkRunner Runner
+	{
+		get
+		{
+			return _networkRunner;
+		}
+	}
+
+	public RPCManager RPCManager => _rpcManager ??= FindObjectOfType<RPCManager>();
+
+	public async UniTask<NetworkRunner> GetRunner()
+	{
+		if (_networkRunner == null)
+		{
+			_networkRunner = await InstanceNetworkRunner();
+		}
+		return _networkRunner;
+	}
+
+	public async UniTask<RPCManager> GetRPCManager()
+	{
+		if (_rpcManager != null) { return _rpcManager; }
+
+		_rpcManager = FindObjectOfType<RPCManager>();
+		if (_rpcManager == null)
+		{
+			XDebug.LogWarning($"rpcInstance", KumaDebugColor.SuccessColor);
+			_networkRunner = await GetRunner();
+			NetworkObject networkObjectTemp = await _networkRunner.SpawnAsync(_rpcManagerPrefab);
+			_rpcManager = networkObjectTemp.GetComponent<RPCManager>();
+		}
+		return _rpcManager;
+	}
 
 	private async void Awake()
 	{
-		XDebug.LogWarning("MasterServerConnectAwake", KumaDebugColor.MessageColor);
 		if (FindObjectsOfType<MasterServerConect>().Length > 1)
 		{
 			Destroy(this.gameObject);
 			return;
 		}
 		DontDestroyOnLoad(this.gameObject);
-		await InstanceNetworkRunner();
+		_networkRunner = await InstanceNetworkRunner();
 		await Connect("Room");
+	}
 
+	[ContextMenu("dadada")]
+	private void AAA()
+	{
+		Debug.LogWarning(_networkRunner.IsSharedModeMasterClient);
 	}
 
 	/// <summary>
@@ -44,30 +82,32 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	/// </summary>
 	public async UniTask JoinOrCreateSession(string sessionName)
 	{
-		RPCManager.Instance.Rpc_ChangeRoomSessionName(Runner.LocalPlayer, sessionName);
+		(await GetRPCManager()).Rpc_ChangeRoomSessionName(Runner.LocalPlayer, sessionName);
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
 		int leaderIndex = currentRoom.LeaderIndex;
 		await UniTask.WaitUntil(() => currentRoom.JoinRoomPlayer[leaderIndex].SessionName == sessionName);
 		RoomManager.Instance.Initialize(Runner.LocalPlayer);
 		NetworkRunner oldRunner = _networkRunner;
-		await InstanceNetworkRunner();
+		_networkRunner = await InstanceNetworkRunner();
 		await Connect(sessionName);
 		await oldRunner.Shutdown(true, ShutdownReason.HostMigration);
+		await UniTask.WaitUntil(() => oldRunner == null);
 	}
 
 	/// <summary>
 	/// ネットワークランナーを生成してコールバック対象にする
 	/// </summary>
-	private async UniTask InstanceNetworkRunner()
+	private async UniTask<NetworkRunner> InstanceNetworkRunner()
 	{
 		// NetworkRunnerを生成する
 		AsyncInstantiateOperation<NetworkRunner> objectTemp = InstantiateAsync(_networkRunnerPrefab);
 		await objectTemp;
-		_networkRunner = objectTemp.Result[0];
+		NetworkRunner networkRunner = objectTemp.Result[0];
 		// NetworkRunnerのコールバック対象に、このスクリプト（GameLauncher）を登録する
-		_networkRunner.AddCallbacks(this);
-		GateOfFusion.Instance.NetworkRunner = _networkRunner;
+		networkRunner.AddCallbacks(this);
+		GateOfFusion.Instance.NetworkRunner = networkRunner;
 		XDebug.LogWarning("UpdateRunner", KumaDebugColor.SuccessColor);
+		return networkRunner;
 	}
 
 	public async UniTask Connect(string SessionName)
@@ -95,23 +135,19 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
 	{
 	}
-	public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
+	public async void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
 	{
 		XDebug.LogWarning($"JoinSession:{player}", KumaDebugColor.InformationColor);
-		Room currentRoom = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
-		RPCManager rpcManager = FindObjectOfType<RPCManager>();
-		if (Runner.LocalPlayer != player) { return; }
+
+		if (Runner.LocalPlayer == player) 
+		{
+			localRemoteReparation.RemoteViewCreate(Runner, Runner.LocalPlayer);
+		}
 		if (Runner.IsSharedModeMasterClient)
 		{
-			//ここから下はマスターのみ実行
-			XDebug.LogWarning($"MasterJoin", KumaDebugColor.SuccessColor);
-			MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
-			Transform masterTransform = masterServer.transform;
-			NetworkObject networkObject = Runner.Spawn(_rpcManagerPrefab);
-			rpcManager = networkObject.GetComponent<RPCManager>();
-			rpcManager.transform.parent = masterTransform;
+			await GetRPCManager();
 		}
-		localRemoteReparation.RemoteViewCreate(Runner, Runner.LocalPlayer);
+
 	}
 
 	public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -140,7 +176,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 
 	public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
 	{
-		XDebug.LogError("DisconnectedFromServer:", KumaDebugColor.ErrorColor);
+		XDebug.LogError($"DisconnectedFromServer:{reason}", KumaDebugColor.ErrorColor);
 	}
 
 	public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)

@@ -2,17 +2,12 @@ using Fusion;
 
 public class RPCManager : NetworkBehaviour
 {
-	private static RPCManager _instance;
-	public static RPCManager Instance { get => _instance; }
-
 	public override void Spawned()
 	{
-		XDebug.LogWarning($"RPCManager_Spawned", KumaDebugColor.RpcColor);
-		_instance = this;
-
-		if (GateOfFusion.Instance.NetworkRunner.SessionInfo.PlayerCount > 1)
+		XDebug.LogError($"RPCManager_Spawned", KumaDebugColor.SuccessColor);
+		if (!Runner.IsSharedModeMasterClient)
 		{
-			_instance.Rpc_RequestRoomData(GateOfFusion.Instance.NetworkRunner.LocalPlayer);
+			Rpc_RequestRoomData(GateOfFusion.Instance.NetworkRunner.LocalPlayer);
 		}
 	}
 
@@ -98,9 +93,10 @@ public class RPCManager : NetworkBehaviour
 		RoomManager.Instance.DestroyLeaderObject();
 	}
 
-	[Rpc(RpcSources.All,RpcTargets.All)]
+	[Rpc(RpcSources.All, RpcTargets.All)]
 	public void Rpc_ChangeMasterClient(PlayerRef nextMaster)
 	{
+		XDebug.LogWarning($"ChangeMaster:{Runner.IsSharedModeMasterClient}",KumaDebugColor.WarningColor);
 		if (!Runner.IsSharedModeMasterClient) { return; }
 		Runner.SetMasterClient(nextMaster);
 	}
