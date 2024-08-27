@@ -13,7 +13,20 @@ public class RoomManager : MonoBehaviour
 	private static RoomManager _instance = default;
 	private List<Room> _rooms = new();
 	private int[] _roomCounter = default;
+	private MasterServerConect _masterServer = default;
 	public static RoomManager Instance { get => _instance; }
+	private MasterServerConect MasterServerConect 
+	{
+		get
+		{
+			if(_masterServer == null)
+			{
+				_masterServer = GetComponent<MasterServerConect>();
+			}
+			return _masterServer;
+		}
+	}
+
 
 	private void Awake()
 	{
@@ -156,8 +169,10 @@ public class RoomManager : MonoBehaviour
 	{
 		XDebug.LogWarning($"NewLeader{leaderPlayer}", KumaDebugColor.InformationColor);
 		Room roomTemp = GetCurrentRoom(leaderPlayer);
+		XDebug.LogWarning(MasterServerConect,KumaDebugColor.SuccessColor);
+		XDebug.LogWarning(MasterServerConect.RPCManager,KumaDebugColor.SuccessColor);
 		//前のリーダーのリーダーオブジェクトを破棄する
-		RPCManager.Instance.Rpc_DestroyLeaderObject(roomTemp.LeaderPlayerRef);
+		MasterServerConect.RPCManager.Rpc_DestroyLeaderObject(roomTemp.LeaderPlayerRef);
 		if (leaderPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer)
 		{
 			InstantiateLeaderObject();

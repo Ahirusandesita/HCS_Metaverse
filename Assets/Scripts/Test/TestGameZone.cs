@@ -10,14 +10,27 @@ namespace HCSMeta.Activity
 		private GameFrame gameFrame;
 		[SerializeField, Header("アクティビティ(ワールド)")]
 		private WorldType _worldType;
+		private MasterServerConect _masterServer;
 		private NetworkRunner NetworkRunner => GateOfFusion.Instance.NetworkRunner;
+		private MasterServerConect MasterServerConect
+		{
+			get
+			{
+				if(_masterServer == null)
+				{
+					_masterServer = FindObjectOfType<MasterServerConect>();
+				}
+				return _masterServer;
+			}
+		}
+
 
 		[ContextMenu("Close")]
 		public void Close()
 		{
 			Debug.Log("Nishigaki");
 			gameFrame.Close();
-			RPCManager.Instance.Rpc_LeftOrCloseRoom(NetworkRunner.LocalPlayer);
+			MasterServerConect.RPCManager.Rpc_LeftOrCloseRoom(NetworkRunner.LocalPlayer);
 		}
 		[ContextMenu("Open")]
 		public void Open()
@@ -27,7 +40,7 @@ namespace HCSMeta.Activity
 			//ルームに参加する
 			if (NetworkRunner.SessionInfo.PlayerCount > 1)
 			{
-				RPCManager.Instance.Rpc_JoinOrCreateRoom(_worldType, NetworkRunner.LocalPlayer);
+				MasterServerConect.RPCManager.Rpc_JoinOrCreateRoom(_worldType, NetworkRunner.LocalPlayer);
 			}
 			else
 			{
