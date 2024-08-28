@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 using Fusion;
 using Cysharp.Threading.Tasks;
@@ -14,6 +15,8 @@ public class GateOfFusion
 	public static GateOfFusion Instance => _instance ??= new GateOfFusion();
 	private MasterServerConect MasterServer
 		=> _masterServer ??= Object.FindObjectOfType<MasterServerConect>();
+
+	public bool IsUsePhoton { get => MasterServer.IsUsePhoton; }
 	public NetworkRunner NetworkRunner
 	{
 		get
@@ -41,6 +44,7 @@ public class GateOfFusion
 	/// <param name="networkObject">掴んだオブジェクト</param>
 	public void Grab(NetworkObject networkObject)
 	{
+		if (!MasterServer.IsUsePhoton) { return; }
 		XDebug.LogWarning($"Grab:{networkObject.name}", KumaDebugColor.InformationColor);
 		StateAuthorityData stateAuthorityData = networkObject.GetComponent<StateAuthorityData>();
 		if (stateAuthorityData.IsNotReleaseStateAuthority)
@@ -59,6 +63,11 @@ public class GateOfFusion
 
 	public void Despawn<T>(T despawnObject) where T : Component
 	{
+		if (!MasterServer.IsUsePhoton)
+		{
+			Object.Destroy(despawnObject.gameObject);
+			return;
+		}
 		XDebug.LogWarning($"Despawn:{despawnObject.gameObject}",KumaDebugColor.ErrorColor);
 		if (despawnObject.TryGetComponent(out NetworkObject networkObject))
 		{
@@ -69,12 +78,16 @@ public class GateOfFusion
 		Object.Destroy(despawnObject.gameObject);
 	}
 
-	public void Spawn(GameObject prefab, Vector3 position = default, Quaternion quaternion = default, Transform parent = default)
+	public async UniTask<T> SpawnAsync<T>(T prefab, Vector3 position = default, Quaternion quaternion = default, Transform parent = default) where T : Component
 	{
-		GameObject temp;
-		if (prefab.TryGetComponent(out NetworkObject networkObject))
+		T temp;
+		if (!MasterServer.IsUsePhoton)
 		{
-			temp = NetworkRunner.Spawn(networkObject, position, quaternion).gameObject;
+			temp = Object.Instantiate(prefab, position, quaternion);
+		}
+		else if (prefab.TryGetComponent(out NetworkObject networkObject))
+		{
+			temp = (await NetworkRunner.SpawnAsync(networkObject, position, quaternion)).GetComponent<T>();
 		}
 		else
 		{
@@ -82,10 +95,32 @@ public class GateOfFusion
 			temp = Object.Instantiate(prefab, position, quaternion);
 		}
 		temp.transform.parent = parent;
+		return temp;
+	}
+
+	public async UniTask<GameObject> SpawnAsync(GameObject prefab, Vector3 position = default, Quaternion quaternion = default, Transform parent = default)
+	{
+		GameObject temp;
+		if (!MasterServer.IsUsePhoton)
+		{
+			temp = Object.Instantiate(prefab, position, quaternion);
+		}
+		else if (prefab.TryGetComponent(out NetworkObject networkObject))
+		{
+			temp = (await NetworkRunner.SpawnAsync(networkObject, position, quaternion)).gameObject;
+		}
+		else
+		{
+			XDebug.LogError("NetworkObjectが取得できませんでした。なのでInstantiateします。", KumaDebugColor.ErrorColor);
+			temp = Object.Instantiate(prefab, position, quaternion);
+		}
+		temp.transform.parent = parent;
+		return temp;
 	}
 
 	public void Release(NetworkObject networkObject)
 	{
+		if (!MasterServer.IsUsePhoton) { return; }
 		MasterServer.RPCManager.Rpc_ReleseStateAuthorityChanged(networkObject);
 	}
 
@@ -97,6 +132,12 @@ public class GateOfFusion
 			return;
 		}
 		_syncResult = SyncResult.Connecting;
+		if (!MasterServer.IsUsePhoton)
+		{
+			SceneManager.LoadScene(sceneName);
+			_syncResult = SyncResult.Complete;
+			return;
+		}
 		//アクティビティスタート
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer);
 		if (currentRoom == null)
