@@ -1,8 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
+/// <summary>
+/// 実行中に値が編集不可になる
+/// </summary>
 public class HideAtPlaying : MultiPropertyAttribute
 {
 #if UNITY_EDITOR
