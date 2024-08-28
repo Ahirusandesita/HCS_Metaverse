@@ -88,7 +88,7 @@ public class RoomManager : MonoBehaviour
 		}
 		JoinOrCreateResult result = default;
 
-		if (roomTemp is null)
+		if (roomTemp == null)
 		{
 			if (roomNumber < 0) { roomNumber = _rooms.Count; }
 			roomTemp = Create(worldType, roomNumber, currentSessionName);
