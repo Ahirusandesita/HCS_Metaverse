@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class TestObject : MonoBehaviour,IAction
 {
+    [Networked,UnityNonSerialized]
+    public bool A { get; set; }
+
+    void Awake()
+    {
+        A = false;
+    }
     RPCEvent RPCEvent;
     public void Inject(IPracticableRPCEvent rPCEvent)
     {
@@ -14,5 +21,16 @@ public class TestObject : MonoBehaviour,IAction
     public void Action()
     {
         Debug.Log("RPC!");
+    }
+
+    private void Update()
+    {
+
+        if (A)
+        {
+            Debug.LogError("やなーぎきーもーいぃー");
+            Debug.LogWarning("やなーぎきーもーいぃー");
+            Debug.Log("やなーぎきーもーいぃー");
+        }
     }
 }
