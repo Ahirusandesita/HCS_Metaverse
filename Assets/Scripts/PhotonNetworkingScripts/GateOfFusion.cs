@@ -49,7 +49,7 @@ public class GateOfFusion
 		StateAuthorityData stateAuthorityData = networkObject.GetComponent<StateAuthorityData>();
 		if (stateAuthorityData.IsNotReleaseStateAuthority)
 		{
-			XDebug.LogWarning($"Œ ŒÀ‚ª‚ ‚è‚Ü‚¹‚ñ‚Å‚µ‚½", KumaDebugColor.ErrorColor);
+			XDebug.LogWarning($"Œ ŒÀ‚ª‚ ‚è‚Ü‚¹‚ñ‚Å‚µ‚½", KumaDebugColor.WarningColor);
 			return;
 		}
 		if (networkObject.HasStateAuthority)
@@ -59,6 +59,15 @@ public class GateOfFusion
 		}
 		MasterServer.RPCManager.Rpc_GrabStateAuthorityChanged(networkObject);
 		networkObject.RequestStateAuthority();
+		stateAuthorityData.IsNotReleaseStateAuthority = true;
+	}
+
+	public void Release(NetworkObject networkObject)
+	{
+		if (!MasterServer.IsUsePhoton) { return; }
+		MasterServer.RPCManager.Rpc_ReleseStateAuthorityChanged(networkObject);
+		StateAuthorityData stateAuthorityData = networkObject.GetComponent<StateAuthorityData>();
+		stateAuthorityData.IsNotReleaseStateAuthority = false;
 	}
 
 	public void Despawn<T>(T despawnObject) where T : Component
@@ -118,11 +127,7 @@ public class GateOfFusion
 		return temp;
 	}
 
-	public void Release(NetworkObject networkObject)
-	{
-		if (!MasterServer.IsUsePhoton) { return; }
-		MasterServer.RPCManager.Rpc_ReleseStateAuthorityChanged(networkObject);
-	}
+	
 
 	public async void ActivityStart(string sceneName)
 	{
