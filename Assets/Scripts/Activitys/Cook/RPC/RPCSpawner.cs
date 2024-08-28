@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using Cysharp.Threading.Tasks;
 
 public class RPCSpawner : MonoBehaviour
 {
     [SerializeField]
     private RPCEvent RPCEvent;
     private IPracticableRPCEvent practicableRPCEvent;
-       
+
     private void Start()
     {
         if (GateOfFusion.Instance.IsUsePhoton)
@@ -23,7 +24,8 @@ public class RPCSpawner : MonoBehaviour
 
     private async void Spawn()
     {
-        NetworkObject instance = await GateOfFusion.Instance.NetworkRunner.SpawnAsync(RPCEvent.gameObject);
+        await UniTask.WaitUntil(() => GateOfFusion.Instance.NetworkRunner.CanSpawn);
+        GameObject instance = await GateOfFusion.Instance.SpawnAsync(RPCEvent.gameObject);
         practicableRPCEvent = instance.GetComponent<IPracticableRPCEvent>();
     }
 
@@ -40,14 +42,14 @@ public class RPCSpawner : MonoBehaviour
         if (GateOfFusion.Instance.IsUsePhoton)
         {
             NetworkObject item = await GateOfFusion.Instance.NetworkRunner.SpawnAsync(synchronizationGameObject);
-            foreach(IInjectPracticableRPCEvent injectPracticableRPCEvent in item.GetComponents<IInjectPracticableRPCEvent>())
+            foreach (IInjectPracticableRPCEvent injectPracticableRPCEvent in item.GetComponents<IInjectPracticableRPCEvent>())
             {
                 injectPracticableRPCEvent.Inject(PracticableRPCEvent);
             }
         }
         else
         {
-            foreach(IInjectPracticableRPCEvent injectPracticableRPCEvent in Instantiate(synchronizationGameObject).GetComponents<IInjectPracticableRPCEvent>())
+            foreach (IInjectPracticableRPCEvent injectPracticableRPCEvent in Instantiate(synchronizationGameObject).GetComponents<IInjectPracticableRPCEvent>())
             {
                 injectPracticableRPCEvent.Inject(practicableRPCEvent);
             }
