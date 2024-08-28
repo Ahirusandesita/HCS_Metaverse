@@ -27,7 +27,7 @@ public class TestRPC : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            networkObject.GetComponent<TestObject>().A = true;
+            networkObject.GetComponent<TestObject>().RPC_A();
         }
     }
 }

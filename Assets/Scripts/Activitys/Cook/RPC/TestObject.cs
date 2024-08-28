@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestObject : MonoBehaviour,IAction
+public class TestObject : NetworkBehaviour,IAction
 {
-    [Networked,UnityNonSerialized]
     public bool A { get; set; }
 
     void Awake()
@@ -32,5 +31,10 @@ public class TestObject : MonoBehaviour,IAction
             Debug.LogWarning("やなーぎきーもーいぃー");
             Debug.Log("やなーぎきーもーいぃー");
         }
+    }
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void RPC_A()
+    {
+        A = true;
     }
 }
