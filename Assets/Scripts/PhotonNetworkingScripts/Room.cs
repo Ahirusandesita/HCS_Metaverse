@@ -34,6 +34,20 @@ public class Room
 			return count;
 		}
 	}
+
+	public int WithNextSessionCount
+	{
+		get
+		{
+			int count = 0;
+
+			for (int i = 0; i < _roomPlayers.Count; i++)
+			{
+				if (_roomPlayers[i].SessionName == _nextSessionName) { count++; }
+			}
+			return count;
+		}
+	}
 	public int RoomNumber { get => _roomNumber; }
 	public bool IsEndJoining { get => _isEndJoining; }
 	public string NextSessionName { get => _nextSessionName; }
@@ -72,6 +86,7 @@ public class Room
 		if(_maxMemberCount < 0) { return; }
 		if(_roomPlayers.Count >= _maxMemberCount)
 		{
+			Debug.LogError($"{_roomPlayers.Count}:{_maxMemberCount}");
 			_isEndJoining = true;
 		}
 	}
