@@ -11,6 +11,7 @@ public class NullPracticableRPCEvent : IPracticableRPCEvent
     public void RPC_Event<TInterface>(NetworkObject networkObject) where TInterface : IAction
     {
         Debug.LogWarning("Not connected to Photon");
+        networkObject.GetComponent<TInterface>().Action();
     }
 
     public void RPC_Event<TInterface, TParameter>(NetworkObject targetNetworkObject, NetworkObject parameterNetworkObject)
@@ -18,11 +19,13 @@ public class NullPracticableRPCEvent : IPracticableRPCEvent
         where TParameter : MonoBehaviour
     {
         Debug.LogWarning("Not connected to Photon");
+        targetNetworkObject.GetComponent<TInterface>().Action(parameterNetworkObject.GetComponent<TParameter>());
     }
 
     public void RPC_Event<TInterface, TParameter>(NetworkObject targetNetworkObject, TParameter parameter) where TInterface : IAction<TParameter>
     {
         Debug.LogWarning("Not connected to Photon");
+        targetNetworkObject.GetComponent<TInterface>().Action(parameter);
     }
 }
 public static class RPCEventExpansion

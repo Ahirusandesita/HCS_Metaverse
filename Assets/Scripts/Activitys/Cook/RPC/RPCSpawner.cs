@@ -8,16 +8,22 @@ public class RPCSpawner : MonoBehaviour
     [SerializeField]
     private RPCEvent RPCEvent;
     private IPracticableRPCEvent practicableRPCEvent;
-    private NetworkObject instance;
-    
+       
     private void Start()
     {
-        Spawn();
+        if (GateOfFusion.Instance.IsUsePhoton)
+        {
+            Spawn();
+        }
+        else
+        {
+            practicableRPCEvent = new NullPracticableRPCEvent();
+        }
     }
 
     private async void Spawn()
     {
-        instance = await GateOfFusion.Instance.NetworkRunner.SpawnAsync(RPCEvent.gameObject);
+        NetworkObject instance = await GateOfFusion.Instance.NetworkRunner.SpawnAsync(RPCEvent.gameObject);
         practicableRPCEvent = instance.GetComponent<IPracticableRPCEvent>();
     }
 
@@ -25,16 +31,26 @@ public class RPCSpawner : MonoBehaviour
     {
         get
         {
-            return practicableRPCEvent is null ? new NullPracticableRPCEvent() : practicableRPCEvent;
+            return practicableRPCEvent;
         }
     }
 
     public async void SpawnAsync(GameObject synchronizationGameObject)
     {
-        if (instance)
+        if (GateOfFusion.Instance.IsUsePhoton)
         {
             NetworkObject item = await GateOfFusion.Instance.NetworkRunner.SpawnAsync(synchronizationGameObject);
-            item.GetComponent<IInjectPracticableRPCEvent>().Inject(PracticableRPCEvent);
+            foreach(IInjectPracticableRPCEvent injectPracticableRPCEvent in item.GetComponents<IInjectPracticableRPCEvent>())
+            {
+                injectPracticableRPCEvent.Inject(PracticableRPCEvent);
+            }
+        }
+        else
+        {
+            foreach(IInjectPracticableRPCEvent injectPracticableRPCEvent in Instantiate(synchronizationGameObject).GetComponents<IInjectPracticableRPCEvent>())
+            {
+                injectPracticableRPCEvent.Inject(practicableRPCEvent);
+            }
         }
     }
 }
