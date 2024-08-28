@@ -96,14 +96,19 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		(await GetRPCManager()).Rpc_ChangeRoomSessionName(Runner.LocalPlayer, sessionName);
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
 		int leaderIndex = currentRoom.LeaderIndex;
-		await UniTask.WaitUntil(() => currentRoom.JoinRoomPlayer[leaderIndex].SessionName == sessionName);
+		XDebug.LogWarning($"{Runner.SessionInfo.PlayerCount}:{currentRoom.JoinRoomPlayer.Count}", KumaDebugColor.MessageColor);
+		await UniTask.WaitUntil(() => currentRoom.WithNextSessionCount >= currentRoom.JoinRoomPlayer.Count - 1);
 		RoomManager.Instance.Initialize(Runner.LocalPlayer);
 		NetworkRunner oldRunner = _networkRunner;
+		_networkRunner = await InstanceNetworkRunner();
+		XDebug.LogWarning("JoinOrCreate", KumaDebugColor.MessageColor);
+		await Connect(sessionName);
+		XDebug.LogWarning("JoinOrCreate", KumaDebugColor.MessageColor);
+		XDebug.LogWarning("JoinOrCreate", KumaDebugColor.MessageColor);
 		await oldRunner.Shutdown(true, ShutdownReason.HostMigration);
 		oldRunner = null;
-		_networkRunner = await InstanceNetworkRunner();
-		await Connect(sessionName);
 		await UniTask.WaitUntil(() => oldRunner == null);
+		XDebug.LogWarning("JoinOrCreate", KumaDebugColor.MessageColor);
 	}
 
 	/// <summary>
@@ -164,6 +169,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 
 	public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
 	{
+		XDebug.LogWarning($"LeftSession:{player}", KumaDebugColor.InformationColor);
 		if (runner.TryGetPlayerObject(player, out NetworkObject avater))
 		{
 			runner.Despawn(avater);
