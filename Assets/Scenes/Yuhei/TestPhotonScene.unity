@@ -1962,6 +1962,10 @@ PrefabInstance:
       propertyPath: manager
       value: 
       objectReference: {fileID: 645288262570179666, guid: a6bc06e5aeaa4014694ecdf5472de8bb, type: 3}
+    - target: {fileID: 4177287145026017418, guid: 4fa54e5eec46828498093a64a48029bf, type: 3}
+      propertyPath: _isUsePhoton
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8157958962586161535, guid: 4fa54e5eec46828498093a64a48029bf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.1939337
@@ -3872,6 +3876,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1139536906}
   - component: {fileID: 1139536907}
+  - component: {fileID: 1139536908}
   m_Layer: 0
   m_Name: TestRPC
   m_TagString: Untagged
@@ -3901,13 +3906,26 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1139536905}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c1d944ddf421f374c9ca7bdf5dc19ef1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   RPCEvent: {fileID: 8898605927886729942, guid: ff7d11b1054ecec47a99620b8163808a, type: 3}
   testObject: {fileID: 7451124446154628790, guid: 4dcf86f38bd830c469d84a7a60a22a39, type: 3}
+--- !u!114 &1139536908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1139536905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e85074216762204b904a44a85c1c7c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RPCEvent: {fileID: 8898605927886729942, guid: ff7d11b1054ecec47a99620b8163808a, type: 3}
 --- !u!1 &1161321014
 GameObject:
   m_ObjectHideFlags: 0
