@@ -4,7 +4,7 @@ public interface IPracticableRPCEvent
 {
     void RPC_Event<TInterface>(NetworkObject networkObject) where TInterface : IAction;
     void RPC_Event<TInterface, TParameter>(NetworkObject targetNetworkObject, NetworkObject parameterNetworkObject) where TInterface : IAction<TParameter> where TParameter : MonoBehaviour;
-    void RPC_Event<TInterface, TParameter>(NetworkObject targetNetworkObject, TParameter parameter) where TInterface : IAction<TParameter>;
+    //void RPC_Event<TInterface, TParameter>(NetworkObject targetNetworkObject, TParameter parameter) where TInterface : IAction<TParameter>;
 }
 public class NullPracticableRPCEvent : IPracticableRPCEvent
 {
@@ -40,7 +40,7 @@ public static class RPCEventExpansion
     }
     public static void RPC_Event<TInterface, TParameter>(this IPracticableRPCEvent practicableRPCEvent, GameObject targetObject, TParameter parameter) where TInterface : IAction<TParameter>
     {
-        practicableRPCEvent.RPC_Event<TInterface, TParameter>(targetObject.GetComponent<NetworkObject>(), parameter);
+        //practicableRPCEvent.RPC_Event<TInterface, TParameter>(targetObject.GetComponent<NetworkObject>(), parameter);
     }
 }
 public class RPCEvent : NetworkBehaviour, IPracticableRPCEvent
@@ -50,12 +50,14 @@ public class RPCEvent : NetworkBehaviour, IPracticableRPCEvent
     {
         targetNetworkObject.GetComponent<TInterface>().Action();
     }
+    [Rpc(RpcSources.All, RpcTargets.All)]
     public void RPC_Event<TInterface, TParameter>(NetworkObject targetNetworkObject, NetworkObject parameterNetworkObject) where TInterface : IAction<TParameter> where TParameter : MonoBehaviour
     {
         targetNetworkObject.GetComponent<TInterface>().Action(parameterNetworkObject.GetComponent<TParameter>());
     }
-    public void RPC_Event<TInterface, TParameter>(NetworkObject targetNetworkObject, TParameter parameter) where TInterface : IAction<TParameter>
-    {
-        targetNetworkObject.GetComponent<TInterface>().Action(parameter);
-    }
+    //[Rpc(RpcSources.All, RpcTargets.All)]
+    //public void RPC_Event<TInterface, TParameter>(NetworkObject targetNetworkObject, TParameter parameter) where TInterface : IAction<TParameter> where TParameter : unmanaged
+    //{
+    //    //targetNetworkObject.GetComponent<TInterface>().Action(parameter);
+    //}
 }
