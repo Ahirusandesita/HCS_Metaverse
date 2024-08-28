@@ -8,6 +8,7 @@ using Cysharp.Threading.Tasks;
 
 public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMasterServerConectable
 {
+
 	[SerializeField]
 	private NetworkPrefabRef _rpcManagerPrefab;
 	[SerializeField]
@@ -16,11 +17,14 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	private NetworkRunner _networkRunnerPrefab;
 	[SerializeField]
 	private LocalRemoteSeparation localRemoteReparation;
+	[SerializeField, HideAtPlaying]
+	private bool _isUsePhoton;
 
 	private NetworkRunner _networkRunner;
 
 	private RPCManager _rpcManager;
 
+	public bool IsUsePhoton => _isUsePhoton;
 
 	/// <summary>
 	/// このクラスはランナーとの紐づけはしないためラップする
@@ -61,6 +65,12 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 
 	private async void Awake()
 	{
+		if (!_isUsePhoton)
+		{
+			Destroy(FindObjectOfType<RoomManager>().gameObject);
+			return;
+		}
+
 		if (FindObjectsOfType<MasterServerConect>().Length > 1)
 		{
 			Destroy(this.gameObject);
@@ -82,6 +92,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	/// </summary>
 	public async UniTask JoinOrCreateSession(string sessionName)
 	{
+		if (!_isUsePhoton) { return; }
 		(await GetRPCManager()).Rpc_ChangeRoomSessionName(Runner.LocalPlayer, sessionName);
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
 		int leaderIndex = currentRoom.LeaderIndex;
@@ -139,7 +150,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	{
 		XDebug.LogWarning($"JoinSession:{player}", KumaDebugColor.InformationColor);
 
-		if (Runner.LocalPlayer == player) 
+		if (Runner.LocalPlayer == player)
 		{
 			localRemoteReparation.RemoteViewCreate(Runner, Runner.LocalPlayer);
 		}
@@ -219,3 +230,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	{
 	}
 }
+
+#if UNITY_EDITOR
+
+#endif
