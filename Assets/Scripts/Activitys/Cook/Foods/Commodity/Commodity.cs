@@ -12,6 +12,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
     private IPutableOnDish putableOnDish = new NullPutableOnDish();
     private bool isOnDish;
     public bool IsOnDish => isOnDish;
+
     private ISwitchableGrabbableActive switchableGrabbableActive;
 
     private PointableUnityEventWrapper pointableUnityEventWrapper;
@@ -21,6 +22,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
     [SerializeField]
     private StateAuthorityData stateAuthority;
     private NetworkRunner networkRunner;
+
     private void Awake()
     {
         pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
@@ -106,6 +108,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
         }
         return false;
     }
+
     private async void OnCollisionEnter(Collision collision)
     {
         if (collision.transform.root.transform.GetComponentInChildren<Commodity>())
@@ -139,6 +142,8 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
             isOnDish = true;
             this.putableOnDish = putableOnDish;
             this.putableOnDish.PutCommodity(this);
+
+            //RPCEvents.RPC_Event<Commodity>(this.GetComponent<NetworkObject>(), collision.transform.root.gameObject.GetComponent<NetworkObject>());
         }
     }
 
@@ -157,7 +162,6 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
         this.putableOnDish = putableOnDish;
         this.putableOnDish.PutCommodity(this);
     }
-
     public void Inject(ISwitchableGrabbableActive t)
     {
         this.switchableGrabbableActive = t;

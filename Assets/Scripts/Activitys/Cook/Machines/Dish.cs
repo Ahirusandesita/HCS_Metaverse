@@ -26,7 +26,7 @@ public class Dish : MonoBehaviour, IPutableOnDish
         {
             return;
         }
-
+        
         this.switchable = switchable;
         switchable.Inactive();
         switchable.gameObject.transform.parent = this.transform;
@@ -91,5 +91,10 @@ public class Dish : MonoBehaviour, IPutableOnDish
             table.Submit(switchable.gameObject.GetComponent<Commodity>());
             switchable = null;
         }
+    }
+
+    public void Inject(ISwitchableGrabbableActive t)
+    {
+        
     }
 }
