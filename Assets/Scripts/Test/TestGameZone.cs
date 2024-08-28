@@ -38,7 +38,7 @@ namespace HCSMeta.Activity
 			gameFrame.GameStart();
 
 			//ƒ‹[ƒ€‚ÉŽQ‰Á‚·‚é
-			if (NetworkRunner.SessionInfo.PlayerCount > 1)
+			if (MasterServerConect.IsUsePhoton && NetworkRunner.SessionInfo.PlayerCount > 1)
 			{
 				MasterServerConect.RPCManager.Rpc_JoinOrCreateRoom(_worldType, NetworkRunner.LocalPlayer);
 			}

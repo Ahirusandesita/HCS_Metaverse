@@ -11,6 +11,7 @@ public class Room
 	private readonly string _nextSessionName = default;
 	private WorldType _worldType = default;
 	private List<RoomPlayer> _roomPlayers = new();
+	private int _maxMemberCount = default;
 
 
 	public int LeaderIndex { get => _leaderIndex; }
@@ -45,6 +46,19 @@ public class Room
 		this._roomNumber = roomNumber;
 		this._leaderIndex = 0;
 		this._nextSessionName = nextSessionName;
+		switch (activityType)
+		{
+			case WorldType.CentralCity:
+				{
+					_maxMemberCount = -1;
+					break;
+				}
+			case WorldType.UnderCook:
+				{
+					_maxMemberCount = -1;
+					break;
+				}
+		}
 	}
 
 	public int GetPlayerIndex(PlayerRef playerRef)
@@ -55,6 +69,11 @@ public class Room
 	public void Join(PlayerRef playerRef, string sessionName)
 	{
 		_roomPlayers.Add(new RoomPlayer(playerRef, sessionName));
+		if(_maxMemberCount < 0) { return; }
+		if(_roomPlayers.Count >= _maxMemberCount)
+		{
+			_isEndJoining = true;
+		}
 	}
 
 	/// <summary>
@@ -83,6 +102,11 @@ public class Room
 			ChangeLeader(nextLeaderIndex);
 
 			result = LeftResult.LeaderChanged;
+		}
+
+		if (_isEndJoining)
+		{
+			_isEndJoining = false;
 		}
 
 		return result;

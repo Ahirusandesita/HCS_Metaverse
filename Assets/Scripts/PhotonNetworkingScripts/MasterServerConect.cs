@@ -18,7 +18,7 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	[SerializeField]
 	private LocalRemoteSeparation localRemoteReparation;
 	[SerializeField, HideAtPlaying]
-	private bool _isUsePhoton;
+	private bool _isUsePhoton = true;
 
 	private NetworkRunner _networkRunner;
 
@@ -99,9 +99,10 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		await UniTask.WaitUntil(() => currentRoom.JoinRoomPlayer[leaderIndex].SessionName == sessionName);
 		RoomManager.Instance.Initialize(Runner.LocalPlayer);
 		NetworkRunner oldRunner = _networkRunner;
+		await oldRunner.Shutdown(true, ShutdownReason.HostMigration);
+		oldRunner = null;
 		_networkRunner = await InstanceNetworkRunner();
 		await Connect(sessionName);
-		await oldRunner.Shutdown(true, ShutdownReason.HostMigration);
 		await UniTask.WaitUntil(() => oldRunner == null);
 	}
 
