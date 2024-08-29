@@ -24,4 +24,9 @@ public class ProcessDegreeOfProgressPresenter : MonoBehaviour, IAction<float>
            practicableRPCEvent.RPC_Event<ProcessDegreeOfProgressPresenter>(this.gameObject, data.NowTimeItTakes / data.MaxTimeItTakes);
         }).AddTo(this);
     }
+
+    private void Start()
+    {
+        RPCSpawner.GetRPCSpawner().InjectAsync(this.gameObject);
+    }
 }
