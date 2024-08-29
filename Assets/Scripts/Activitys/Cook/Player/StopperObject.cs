@@ -5,29 +5,12 @@ using UnityEngine;
 public class StopperObject : MonoBehaviour
 {
     [SerializeField, Tooltip("ÚG”»’è‚ğs‚¤Collider")]
-    private Collider _stopperColliter = default;
-
-    // ÚG”»’è‚ğs‚¤Collider‚Ì’†SÀ•W
-    private Vector3 _hitBoxCenter = default;
-
-    // ÚG”»’è‚ğs‚¤Collider‚Ì‘å‚«‚³
-    private Vector3 _hitBoxSize = default;
-
-    // ÚG”»’è‚ğs‚¤Collider‚ÌŠp“x
-    private Quaternion _hitBoxRotation = default;
-
-    private void Start()
-    {
-        // ÚG”»’è‚ğs‚¤Collider‚ÌŠe’l‚ğæ“¾‚·‚é
-        _hitBoxCenter = _stopperColliter.bounds.center;
-        _hitBoxSize = _stopperColliter.bounds.size / 2;
-        _hitBoxRotation = this.transform.rotation;
-    }
+    private Collider _knifeCollider = default;
 
     private void Update()
     {
         // ÚG‚µ‚½Collider‚ğ”»’è‚µ‚ÄŠi”[‚·‚é
-        Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);
+        Collider[] hitColliders = Physics.OverlapBox(_knifeCollider.bounds.center, _knifeCollider.bounds.size, this.transform.rotation);
 
         // ÚG‚µ‚½Collider‚ª‚È‚©‚Á‚½ê‡
         if (hitColliders is null)
@@ -51,7 +34,7 @@ public class StopperObject : MonoBehaviour
             if (hitCollider.transform.root.TryGetComponent<StopData>(out var stopData))
             {
                 // StopData‚Ì’â~ƒtƒ‰ƒO‚ğ—§‚Ä‚é
-                stopData.SetIsHitStopper(true);
+                stopData.StopEnd(true);
             }
             // StopData‚ğ‚Á‚Ä‚¢‚È‚¢ê‡
             else

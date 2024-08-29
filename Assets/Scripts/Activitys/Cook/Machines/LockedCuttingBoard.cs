@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class LockedCuttingBoard : MonoBehaviour, IKnifeHitEvent, IAction<Ingrodients>
+public class LockedCuttingBoard : MonoBehaviour, IKnifeHitEvent, IAction
 {
     [SerializeField, Tooltip("オブジェクトの取得範囲を指定するCollider")]
     private Collider _cuttingAreaCollider = default;
@@ -142,7 +142,7 @@ public class LockedCuttingBoard : MonoBehaviour, IKnifeHitEvent, IAction<Ingrodi
                 {
                     // 
                     _lockingIngrodients = ingrodients;
-                    _practicableRPCEvent.RPC_Event<LockedCuttingBoard, Ingrodients>(this.gameObject, ingrodients.gameObject);
+                    _practicableRPCEvent.RPC_Event<LockedCuttingBoard>(this.gameObject);
                 }
                 else
                 {
@@ -160,12 +160,7 @@ public class LockedCuttingBoard : MonoBehaviour, IKnifeHitEvent, IAction<Ingrodi
         _isLockedObject = false;
     }
 
-    public void Inject(ISwitchableGrabbableActive t)
-    {
-        _grabbableActiveSwicher = t;
-    }
-
-    public void Action(Ingrodients t)
+    public void Action()
     {
         throw new System.NotImplementedException();
     }
