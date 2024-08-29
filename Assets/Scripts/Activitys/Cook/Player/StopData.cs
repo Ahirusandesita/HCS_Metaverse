@@ -7,7 +7,7 @@ using UnityEngine;
 public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDependencyInformation>
 {
     // 
-    private bool _isHitStopper = true;
+    private bool _isEndSetUp = true;
 
     // 
     private Transform _visualObjectTransform = default;
@@ -47,84 +47,10 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
         PlayerInitialize.ConsignmentInject_static(this);
     }
 
-    private void Start()
-    {
-        // 
-        if (TryGetComponent<Stoppable>(out var stoppable))
-        {
-            // 
-            _visualObjectTransform = stoppable.GetVisualObjectTransform;
-
-            // 
-            _visualObjectPosition = _visualObjectTransform.position;
-
-            // 
-            _visualObjectRotation = _visualObjectTransform.rotation;
-
-            // 
-            _detailHandType = stoppable.GetDetailHandType;
-
-            // 
-            stoppable._stopData = this;
-
-            switch (_detailHandType)
-            {
-                case HandType.Right:
-                    // 
-                    _visualHandObjectPosition = _visualInformation.VisualRightHand.position;
-
-                    // 
-                    _visualHandObjectRotation = _visualInformation.VisualRightHand.rotation;
-
-                    // 
-                    _visualControllerObjectPosition = _visualInformation.VisualRightController.position;
-
-                    // 
-                    _visualControllerObjectRotation = _visualInformation.VisualRightController.rotation;
-
-                    // 
-                    _visualControllerHandObjectPosition = _visualInformation.VisualRightControllerHand.position;
-
-                    // 
-                    _visualControllerHandObjectRotation = _visualInformation.VisualRightControllerHand.rotation;
-                    break;
-
-                case HandType.Left:
-                    // 
-                    _visualHandObjectPosition = _visualInformation.VisualLeftHand.position;
-
-                    // 
-                    _visualHandObjectRotation = _visualInformation.VisualLeftHand.rotation;
-
-                    // 
-                    _visualControllerObjectPosition = _visualInformation.VisualLeftController.position;
-
-                    // 
-                    _visualControllerObjectRotation = _visualInformation.VisualLeftController.rotation;
-
-                    // 
-                    _visualControllerHandObjectPosition = _visualInformation.VisualLeftControllerHand.position;
-
-                    // 
-                    _visualControllerHandObjectRotation = _visualInformation.VisualLeftControllerHand.rotation;
-                    break;
-
-                default:
-
-                    return;
-            }
-        }
-        else
-        {
-            // 
-            Destroy(this);
-        }
-    }
-
     private void LateUpdate()
     {
         // 
-        if (_isHitStopper)
+        if (_isEndSetUp)
         {
             // 
             _visualObjectTransform.position = _visualObjectPosition;
@@ -183,17 +109,75 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
 
                     return;
             }
-
-            _isHitStopper = false;
-        }
-        else
-        {
-            Debug.Log($"<color=red>StopDataè¡Ç¶ÇÈÇÊÇÒ</color>");
-
-            // 
-            Destroy(this);
         }
     }
+
+    public void DataSetUp(Stoppable stoppable)
+    {
+        // 
+        _visualObjectTransform = stoppable.GetVisualObjectTransform;
+
+        // 
+        _visualObjectPosition = _visualObjectTransform.position;
+
+        // 
+        _visualObjectRotation = _visualObjectTransform.rotation;
+
+        // 
+        _detailHandType = stoppable.GetDetailHandType;
+
+        // 
+        stoppable._stopData = this;
+
+        switch (_detailHandType)
+        {
+            case HandType.Right:
+                // 
+                _visualHandObjectPosition = _visualInformation.VisualRightHand.position;
+
+                // 
+                _visualHandObjectRotation = _visualInformation.VisualRightHand.rotation;
+
+                // 
+                _visualControllerObjectPosition = _visualInformation.VisualRightController.position;
+
+                // 
+                _visualControllerObjectRotation = _visualInformation.VisualRightController.rotation;
+
+                // 
+                _visualControllerHandObjectPosition = _visualInformation.VisualRightControllerHand.position;
+
+                // 
+                _visualControllerHandObjectRotation = _visualInformation.VisualRightControllerHand.rotation;
+                break;
+
+            case HandType.Left:
+                // 
+                _visualHandObjectPosition = _visualInformation.VisualLeftHand.position;
+
+                // 
+                _visualHandObjectRotation = _visualInformation.VisualLeftHand.rotation;
+
+                // 
+                _visualControllerObjectPosition = _visualInformation.VisualLeftController.position;
+
+                // 
+                _visualControllerObjectRotation = _visualInformation.VisualLeftController.rotation;
+
+                // 
+                _visualControllerHandObjectPosition = _visualInformation.VisualLeftControllerHand.position;
+
+                // 
+                _visualControllerHandObjectRotation = _visualInformation.VisualLeftControllerHand.rotation;
+                break;
+
+            default:
+
+                return;
+        }
+    }
+
+
 
     private void OnDestroy()
     {
@@ -206,10 +190,10 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
     /// ê⁄êGîªíËÇê›íËÇ∑ÇÈÇΩÇﬂÇÃSetterÉvÉçÉpÉeÉB
     /// </summary>
     /// <param name="state">ê›íËÇ∑ÇÈstate</param>
-    public void SetIsHitStopper(bool state)
+    public void StopEnd(bool state)
     {
-        // ê⁄êGîªíËÇê›íËÇ∑ÇÈ
-        _isHitStopper = state;
+        // 
+        Destroy(this);
     }
 
     public void Inject(PlayerVisualHandDependencyInformation information)
