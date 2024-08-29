@@ -60,4 +60,11 @@ public class RPCSpawner : MonoBehaviour
             }
         }
     }
+    public async void InjectAsync(GameObject obj)
+    {
+        foreach(IInjectPracticableRPCEvent item in obj.transform.root.transform.GetComponentsInChildren<IInjectPracticableRPCEvent>())
+        {
+            item.Inject(await PracticableRPCEvent());
+        }
+    }
 }
