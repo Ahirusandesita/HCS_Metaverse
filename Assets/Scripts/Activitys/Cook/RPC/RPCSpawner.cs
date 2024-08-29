@@ -11,7 +11,10 @@ public class RPCSpawner : MonoBehaviour
     private IPracticableRPCEvent practicableRPCEvent;
 
     private bool canSpawn;
-
+    public static RPCSpawner GetRPCSpawner()
+    {
+        return FindObjectOfType<RPCSpawner>();
+    }
     private void Start()
     {
         canSpawn = false;
@@ -33,12 +36,10 @@ public class RPCSpawner : MonoBehaviour
         practicableRPCEvent = instance.GetComponent<IPracticableRPCEvent>();
     }
 
-    public IPracticableRPCEvent PracticableRPCEvent
+    public async UniTask<IPracticableRPCEvent> PracticableRPCEvent()
     {
-        get
-        {
-            return practicableRPCEvent;
-        }
+        await UniTask.WaitUntil(() => practicableRPCEvent == null);
+        return practicableRPCEvent;
     }
 
     public async void SpawnAsync(GameObject synchronizationGameObject)
@@ -48,14 +49,14 @@ public class RPCSpawner : MonoBehaviour
             NetworkObject item = await GateOfFusion.Instance.NetworkRunner.SpawnAsync(synchronizationGameObject);
             foreach (IInjectPracticableRPCEvent injectPracticableRPCEvent in item.GetComponents<IInjectPracticableRPCEvent>())
             {
-                injectPracticableRPCEvent.Inject(PracticableRPCEvent);
+                injectPracticableRPCEvent.Inject(await PracticableRPCEvent());
             }
         }
         else
         {
             foreach (IInjectPracticableRPCEvent injectPracticableRPCEvent in Instantiate(synchronizationGameObject).GetComponents<IInjectPracticableRPCEvent>())
             {
-                injectPracticableRPCEvent.Inject(practicableRPCEvent);
+                injectPracticableRPCEvent.Inject(await PracticableRPCEvent());
             }
         }
     }

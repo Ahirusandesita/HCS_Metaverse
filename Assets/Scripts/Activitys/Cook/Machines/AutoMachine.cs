@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-public class AutoMachine : Machine
+public class AutoMachine : Machine,IAction<Ingrodients>,IAction
 {
     private bool canProcessing = false;
     public bool CanProcessing
@@ -29,7 +29,7 @@ public class AutoMachine : Machine
     }
 
     private Action processingAction;
-
+    private IPracticableRPCEvent practicableRPCEvent;
     private void Update()
     {
         processingAction?.Invoke();
@@ -38,6 +38,9 @@ public class AutoMachine : Machine
     {
         //timeItTakes = ingrodientsDetailInformation.TimeItTakes;
         ingrodients.transform.parent = ingrodientTransform;
+        //testRPC
+        practicableRPCEvent.RPC_Event<AutoMachine, Ingrodients>(this.gameObject, ingrodients.gameObject);
+
         processingAction += () =>
         {
             if (!canProcessing)
@@ -61,8 +64,30 @@ public class AutoMachine : Machine
             }
         };
     }
+
+    //testRPC
+    /// <summary>
+    /// â¡çHíÜíf
+    /// </summary>
     public void ProcessingInterruption()
     {
+        practicableRPCEvent.RPC_Event<AutoMachine>(this.gameObject);
+    }
+
+    public void Action(Ingrodients t)
+    {
+        ingrodients = t;
+        ingrodients.transform.parent = ingrodientTransform;
+    }
+
+    public void Inject(IPracticableRPCEvent practicableRPCEvent)
+    {
+        this.practicableRPCEvent = practicableRPCEvent;
+    }
+
+    public void Action()
+    {
         processingAction = null;
+        ingrodients.transform.parent = null;
     }
 }
