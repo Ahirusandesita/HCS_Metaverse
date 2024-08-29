@@ -6,7 +6,7 @@ using Photon.Voice.Unity;
 using Photon.Voice.Fusion;
 using Cysharp.Threading.Tasks;
 
-public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMasterServerConectable
+public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 {
 
 	[SerializeField]
@@ -78,7 +78,9 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		}
 		DontDestroyOnLoad(this.gameObject);
 		_networkRunner = await InstanceNetworkRunner();
+		
 		await Connect("Room");
+
 	}
 
 	[ContextMenu("dadada")]
@@ -94,21 +96,11 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 	{
 		if (!_isUsePhoton) { return; }
 		(await GetRPCManager()).Rpc_ChangeRoomSessionName(Runner.LocalPlayer, sessionName);
-		Room currentRoom = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
-		int leaderIndex = currentRoom.LeaderIndex;
-		XDebug.LogWarning($"{Runner.SessionInfo.PlayerCount}:{currentRoom.JoinRoomPlayer.Count}", KumaDebugColor.MessageColor);
-		await UniTask.WaitUntil(() => currentRoom.WithNextSessionCount >= currentRoom.JoinRoomPlayer.Count - 1);
 		RoomManager.Instance.Initialize(Runner.LocalPlayer);
 		NetworkRunner oldRunner = _networkRunner;
 		_networkRunner = await InstanceNetworkRunner();
-		XDebug.LogWarning("JoinOrCreate", KumaDebugColor.MessageColor);
 		await Connect(sessionName);
-		XDebug.LogWarning("JoinOrCreate", KumaDebugColor.MessageColor);
-		XDebug.LogWarning("JoinOrCreate", KumaDebugColor.MessageColor);
 		await oldRunner.Shutdown(true, ShutdownReason.HostMigration);
-		oldRunner = null;
-		await UniTask.WaitUntil(() => oldRunner == null);
-		XDebug.LogWarning("JoinOrCreate", KumaDebugColor.MessageColor);
 	}
 
 	/// <summary>
@@ -120,11 +112,18 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		AsyncInstantiateOperation<NetworkRunner> objectTemp = InstantiateAsync(_networkRunnerPrefab);
 		await objectTemp;
 		NetworkRunner networkRunner = objectTemp.Result[0];
-		// NetworkRunnerのコールバック対象に、このスクリプト（GameLauncher）を登録する
-		networkRunner.AddCallbacks(this);
 		GateOfFusion.Instance.NetworkRunner = networkRunner;
+		NetworkEvents events = networkRunner.GetComponent<NetworkEvents>();
+		events.PlayerJoined.AddListener(OnPlayerJoined);
+		events.OnConnectedToServer.AddListener(ADADAD);
+		events.PlayerLeft.AddListener(OnPlayerLeft);
 		XDebug.LogWarning("UpdateRunner", KumaDebugColor.SuccessColor);
 		return networkRunner;
+	}
+
+	private void ADADAD(NetworkRunner runner)
+	{
+		XDebug.LogError("dadada", Color.black);
 	}
 
 	public async UniTask Connect(string SessionName)
@@ -145,13 +144,6 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 		XDebug.LogWarning("Connect:" + (result.Ok ? "Success" : "Fail"), KumaDebugColor.InformationColor);
 	}
 
-	public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
-	{
-	}
-
-	public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
-	{
-	}
 	public async void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
 	{
 		XDebug.LogWarning($"JoinSession:{player}", KumaDebugColor.InformationColor);
@@ -175,69 +167,4 @@ public class MasterServerConect : NetworkBehaviour, INetworkRunnerCallbacks, IMa
 			runner.Despawn(avater);
 		}
 	}
-
-	public void OnInput(NetworkRunner runner, NetworkInput input)
-	{
-	}
-
-	public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
-	{
-	}
-
-	public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
-	{
-	}
-
-	public void OnConnectedToServer(NetworkRunner runner)
-	{
-	}
-
-	public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
-	{
-		XDebug.LogError($"DisconnectedFromServer:{reason}", KumaDebugColor.ErrorColor);
-	}
-
-	public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
-	{
-	}
-
-	public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
-	{
-	}
-
-	public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
-	{
-	}
-
-	public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
-	{
-	}
-
-	public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data)
-	{
-	}
-
-	public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
-	{
-	}
-
-	public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, System.ArraySegment<byte> data)
-	{
-	}
-
-	public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress)
-	{
-	}
-
-	public void OnSceneLoadDone(NetworkRunner runner)
-	{
-	}
-
-	public void OnSceneLoadStart(NetworkRunner runner)
-	{
-	}
 }
-
-#if UNITY_EDITOR
-
-#endif
