@@ -115,15 +115,9 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		GateOfFusion.Instance.NetworkRunner = networkRunner;
 		NetworkEvents events = networkRunner.GetComponent<NetworkEvents>();
 		events.PlayerJoined.AddListener(OnPlayerJoined);
-		events.OnConnectedToServer.AddListener(ADADAD);
 		events.PlayerLeft.AddListener(OnPlayerLeft);
 		XDebug.LogWarning("UpdateRunner", KumaDebugColor.SuccessColor);
 		return networkRunner;
-	}
-
-	private void ADADAD(NetworkRunner runner)
-	{
-		XDebug.LogError("dadada", Color.black);
 	}
 
 	public async UniTask Connect(string SessionName)
