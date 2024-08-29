@@ -19,12 +19,11 @@ public class ProcessDegreeOfProgressPresenter : MonoBehaviour, IAction<float>
     }
     private void Awake()
     {
-        ingrodients.TimeItTakesProperty.Subscribe((data) =>
+        ingrodients.TimeItTakesProperty.Skip(1).Subscribe((data) =>
         {
            practicableRPCEvent.RPC_Event<ProcessDegreeOfProgressPresenter>(this.gameObject, data.NowTimeItTakes / data.MaxTimeItTakes);
         }).AddTo(this);
     }
-
     private void Start()
     {
         RPCSpawner.GetRPCSpawner().InjectAsync(this.gameObject);
