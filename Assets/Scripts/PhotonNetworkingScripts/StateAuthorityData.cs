@@ -19,4 +19,10 @@ public class StateAuthorityData : NetworkBehaviour
 			OnAuthrity?.Invoke(new AuthrityEventArgs(value));
 		}
 	}
+
+	[UnityEngine.ContextMenu("GetStateAuthrity")]
+	public void GetStateAuthrity()
+	{
+		GetComponent<NetworkObject>().RequestStateAuthority();
+	} 
 }
