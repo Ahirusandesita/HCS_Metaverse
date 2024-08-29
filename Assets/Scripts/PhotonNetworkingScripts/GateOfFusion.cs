@@ -116,6 +116,7 @@ public class GateOfFusion
 		}
 		else if (prefab.TryGetComponent(out NetworkObject networkObject))
 		{
+			Debug.LogWarning($"{networkObject}:{quaternion}:{NetworkRunner}");
 			temp = (await NetworkRunner.SpawnAsync(networkObject, position, quaternion)).gameObject;
 		}
 		else
@@ -173,16 +174,16 @@ public class GateOfFusion
 		{
 			await MasterServer.GetRunner();
 			await UniTask.WaitUntil(() => Object.FindObjectOfType<RPCManager>() != null);
+
 			RPCManager rpcManager = Object.FindObjectOfType<RPCManager>();
 			XDebug.LogError($"{NetworkRunner.SessionInfo.PlayerCount}" +
 				$":{currentRoom.JoinRoomPlayer.Count}", KumaDebugColor.MessageColor);
-			await UniTask.WaitUntil(() => currentRoom.JoinRoomPlayer.Count <= NetworkRunner.SessionInfo.PlayerCount);
 			rpcManager.Rpc_ChangeMasterClient(NetworkRunner.LocalPlayer);
 			XDebug.LogError($"{NetworkRunner}:{NetworkRunner.IsSharedModeMasterClient}", KumaDebugColor.ErrorColor);
 			await UniTask.WaitUntil(() => NetworkRunner.IsSharedModeMasterClient);
 			XDebug.LogWarning("自分がマスターになった", KumaDebugColor.MessageColor);
 		}
-		await NetworkRunner.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
+		await NetworkRunner.LoadScene(sceneName, LoadSceneMode.Single);
 		_syncResult = SyncResult.Complete;
 		XDebug.LogWarning($"移動終了",KumaDebugColor.MessageColor);
 	}
