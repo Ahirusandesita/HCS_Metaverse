@@ -10,7 +10,6 @@ public class CommodityDetailView : MonoBehaviour
     {
         foodUIs = this.GetComponentsInChildren<FoodUI>();
     }
-
     private void Start()
     {
         foreach (FoodUI foodUI in foodUIs)
@@ -27,7 +26,6 @@ public class CommodityDetailView : MonoBehaviour
             View(foodUIs[i], commodity.CommodityAsset.Commodities[i].CommodityAsset.CommodityAppearance.CommoditySprite);
         }
     }
-
     private void View(FoodUI foodUI, Sprite sprite)
     {
         foodUI.ImageEnable(true);

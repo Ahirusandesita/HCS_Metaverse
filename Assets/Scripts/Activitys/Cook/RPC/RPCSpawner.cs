@@ -10,10 +10,14 @@ public class RPCSpawner : MonoBehaviour
     private RPCEvent RPCEvent;
     private IPracticableRPCEvent practicableRPCEvent;
 
+    private bool canSpawn;
+
     private void Start()
     {
+        canSpawn = false;
         if (GateOfFusion.Instance.IsUsePhoton)
         {
+            GateOfFusion.Instance.NetworkRunner.GetComponent<NetworkEvents>().OnConnectedToServer.AddListener((data) => canSpawn = true);
             Spawn();
         }
         else
@@ -24,8 +28,8 @@ public class RPCSpawner : MonoBehaviour
 
     private async void Spawn()
     {
-        await UniTask.WaitUntil(() => GateOfFusion.Instance.NetworkRunner.CanSpawn);
-        GameObject instance = await GateOfFusion.Instance.SpawnAsync(RPCEvent.gameObject);
+        await UniTask.WaitUntil(() => canSpawn);
+        NetworkObject instance = await GateOfFusion.Instance.NetworkRunner.SpawnAsync(RPCEvent.gameObject);
         practicableRPCEvent = instance.GetComponent<IPracticableRPCEvent>();
     }
 
