@@ -1,8 +1,5 @@
 using UnityEngine;
 using Fusion;
-
-
-
 public interface IPracticableRPCEvent
 {
     void RPC_Event<TInterface>(NetworkObject networkObject) where TInterface : IAction;
@@ -18,45 +15,40 @@ public class NullPracticableRPCEvent : IPracticableRPCEvent
     public void RPC_Event<TInterface>(NetworkObject networkObject) where TInterface : IAction
     {
         Debug.LogWarning("Not connected to Photon");
-        networkObject.GetComponent<TInterface>().Action();
+        networkObject.GetComponentInChildren<TInterface>().Action();
     }
-
     public void RPC_Event<TInterface, TParameter>(NetworkObject targetNetworkObject, NetworkObject parameterNetworkObject)
         where TInterface : IAction<TParameter>
         where TParameter : MonoBehaviour
     {
         Debug.LogWarning("Not connected to Photon");
-        targetNetworkObject.GetComponent<TInterface>().Action(parameterNetworkObject.GetComponent<TParameter>());
+        targetNetworkObject.GetComponentInChildren<TInterface>().Action(parameterNetworkObject.GetComponent<TParameter>());
     }
-
     public void RPC_Event<TInterface, TParameter>(NetworkObject targetNetworkObject, TParameter parameter) where TInterface : IAction<TParameter>
     {
         Debug.LogWarning("Not connected to Photon");
-        targetNetworkObject.GetComponent<TInterface>().Action(parameter);
+        targetNetworkObject.GetComponentInChildren<TInterface>().Action(parameter);
     }
-
     public void RPC_Event<TInterface>(NetworkObject targetNetworkObject, int parameter) where TInterface : IAction<int>
     {
         Debug.LogWarning("Not connected to Photon");
-        targetNetworkObject.GetComponent<TInterface>().Action(parameter);
+        targetNetworkObject.GetComponentInChildren<TInterface>().Action(parameter);
     }
-
     public void RPC_Event<TInterface>(NetworkObject targetNetworkObject, float parameter) where TInterface : IAction<float>
     {
         Debug.LogWarning("Not connected to Photon");
-        targetNetworkObject.GetComponent<TInterface>().Action(parameter);
+        targetNetworkObject.GetComponentInChildren<TInterface>().Action(parameter);
     }
-
     public void RPC_Event<TInterface>(NetworkObject targetNetworkObject, bool parameter) where TInterface : IAction<bool>
     {
         Debug.LogWarning("Not connected to Photon");
-        targetNetworkObject.GetComponent<TInterface>().Action(parameter);
+        targetNetworkObject.GetComponentInChildren<TInterface>().Action(parameter);
     }
 
     public void RPC_Event<TInterface>(NetworkObject targetNetworkObject, Vector3 parameter) where TInterface : IAction<Vector3>
     {
         Debug.LogWarning("Not connected to Photon");
-        targetNetworkObject.GetComponent<TInterface>().Action(parameter);
+        targetNetworkObject.GetComponentInChildren<TInterface>().Action(parameter);
     }
 }
 public static class RPCEventExpansion
@@ -91,31 +83,31 @@ public class RPCEvent : NetworkBehaviour, IPracticableRPCEvent
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RPC_Event<TInterface>(NetworkObject targetNetworkObject) where TInterface : IAction
     {
-        targetNetworkObject.GetComponent<TInterface>().Action();
+        targetNetworkObject.GetComponentInChildren<TInterface>().Action();
     }
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RPC_Event<TInterface, TParameter>(NetworkObject targetNetworkObject, NetworkObject parameterNetworkObject) where TInterface : IAction<TParameter> where TParameter : MonoBehaviour
     {
-        targetNetworkObject.GetComponent<TInterface>().Action(parameterNetworkObject.GetComponent<TParameter>());
+        targetNetworkObject.GetComponentInChildren<TInterface>().Action(parameterNetworkObject.GetComponent<TParameter>());
     }
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RPC_Event<TInterface>(NetworkObject targetNetworkObject, int parameter) where TInterface : IAction<int>
     {
-        targetNetworkObject.GetComponent<TInterface>().Action(parameter);
+        targetNetworkObject.GetComponentInChildren<TInterface>().Action(parameter);
     }
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RPC_Event<TInterface>(NetworkObject targetNetworkObject, float parameter) where TInterface : IAction<float>
     {
-        targetNetworkObject.GetComponent<TInterface>().Action(parameter);
+        targetNetworkObject.GetComponentInChildren<TInterface>().Action(parameter);
     }
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RPC_Event<TInterface>(NetworkObject targetNetworkObject, bool parameter) where TInterface : IAction<bool>
     {
-        targetNetworkObject.GetComponent<TInterface>().Action(parameter);
+        targetNetworkObject.GetComponentInChildren<TInterface>().Action(parameter);
     }
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RPC_Event<TInterface>(NetworkObject targetNetworkObject, Vector3 parameter) where TInterface : IAction<Vector3>
     {
-        targetNetworkObject.GetComponent<TInterface>().Action(parameter);
+        targetNetworkObject.GetComponentInChildren<TInterface>().Action(parameter);
     }
 }
