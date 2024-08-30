@@ -83,12 +83,6 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 
 	}
 
-	[ContextMenu("dadada")]
-	private void AAA()
-	{
-		Debug.LogWarning(_networkRunner.IsSharedModeMasterClient);
-	}
-
 	/// <summary>
 	/// ルームに入る。ない場合は作る
 	/// </summary>
@@ -122,7 +116,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 
 	public async UniTask Connect(string SessionName)
 	{
-		// "Room"という名前のルームに参加する（ルームが存在しなければ作成して参加する）
+		//ルームに参加する（ルームが存在しなければ作成して参加する）
 		StartGameResult result = await _networkRunner.StartGame(new StartGameArgs
 		{
 			//StartGameCancellationToken = destroyCancellationToken,
