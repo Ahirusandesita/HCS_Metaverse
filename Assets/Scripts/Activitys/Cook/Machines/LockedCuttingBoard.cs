@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class LockedCuttingBoard : MonoBehaviour, IKnifeHitEvent, IAction
+public class LockedCuttingBoard : StopperObject, IAction
 {
     [SerializeField, Tooltip("オブジェクトの取得範囲を指定するCollider")]
     private Collider _cuttingAreaCollider = default;
@@ -43,11 +43,11 @@ public class LockedCuttingBoard : MonoBehaviour, IKnifeHitEvent, IAction
         // 中心
         _hitBoxCenter = _cuttingAreaCollider.bounds.center;
 
-        // 角度
-        _hitBoxRotation = this.transform.rotation;
-
         // サイズ
         _hitBoxSize = _cuttingAreaCollider.bounds.size / 2;
+
+        // 角度
+        _hitBoxRotation = this.transform.rotation;
     }
 
     private void Update()
@@ -114,7 +114,7 @@ public class LockedCuttingBoard : MonoBehaviour, IKnifeHitEvent, IAction
         }
     }
 
-    public void KnifeHitEvent()
+    public override void KnifeHitEvent()
     {
         // オブジェクトが固定されている　かつ　固定されているオブジェクトにIngrodientがついている場合
         if (_isLockedObject && _lockingIngrodients is not null)

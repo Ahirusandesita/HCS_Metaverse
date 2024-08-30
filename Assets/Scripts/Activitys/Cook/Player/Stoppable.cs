@@ -2,7 +2,7 @@ using Photon;
 using UnityEngine;
 using Oculus.Interaction;
 
-public class Stoppable : MonoBehaviour, IAction, IAction<GameObject>
+public class Stoppable : MonoBehaviour, IAction, IAction<StopperObject>, IStopViewData
 {
     [SerializeField, Tooltip("見た目用オブジェクトのTransform")]
     private Transform _visualObjectTransform = default;
@@ -20,17 +20,13 @@ public class Stoppable : MonoBehaviour, IAction, IAction<GameObject>
 
     private HandType _detailEventsHandType = default;
 
-    [HideInInspector]
     public Transform GetVisualObjectTransform => _visualObjectTransform;
 
-    [HideInInspector]
     public HandType GetDetailHandType => _detailEventsHandType;
 
     private IKnifeHitEvent _iStoppingEvent = default;
 
-    [HideInInspector]
-    // 
-    public StopData _stopData = default;
+    private StopData _stopData = default;
 
     // 掴んだ時や離した時にイベントを実行するクラス
     private PointableUnityEventWrapper pointableUnityEventWrapper = default;
@@ -41,34 +37,8 @@ public class Stoppable : MonoBehaviour, IAction, IAction<GameObject>
     // 
     private IPracticableRPCEvent _practicableRPCEvent = default;
 
-    // 
+    // 停止するオブジェクトに重なっているかどうかを判定するbool
     private bool _onStopperObject = false;
-
-    public void StoppingEvent()
-    {
-        if (_iStoppingEvent != default)
-        {
-            // 
-            _iStoppingEvent.KnifeHitEvent();
-        }
-    }
-
-    public void UnSelect()
-    {
-        if (_stopData is not null)
-        {
-            // 
-            Destroy(_stopData);
-        }
-
-        // 
-        this.transform.position = _originTransform.position;
-        this.transform.rotation = _originTransform.rotation;
-
-        // 
-        _visualObjectTransform.localPosition = default;
-        _visualObjectTransform.localRotation = Quaternion.Euler(0f, 90f, 0f);
-    }
 
     private void Start()
     {
@@ -111,6 +81,21 @@ public class Stoppable : MonoBehaviour, IAction, IAction<GameObject>
             // 
             if (_onStopperObject)
             {
+                // 
+                if (hitColliders is null)
+                {
+                    // フラグを消す
+                    _onStopperObject = false;
+
+                    // 固定を解除
+                    DestroyStopData();
+
+                    return;
+                }
+            }
+            // 
+            else
+            {
                 // 接触したColliderがなかった場合
                 if (hitColliders is null)
                 {
@@ -123,34 +108,78 @@ public class Stoppable : MonoBehaviour, IAction, IAction<GameObject>
                 foreach (Collider hitCollider in hitColliders)
                 {
                     // Stoppableを持っていない場合
-                    if (!hitCollider.transform.root.TryGetComponent<Stoppable>(out var stoppable))
+                    if (!hitCollider.transform.root.TryGetComponent<StopperObject>(out var stopperObject))
                     {
                         // 次のColliderへ
                         continue;
                     }
 
-                    HitStopCollier();
-                    return;
-                }
-            }
-            else
-            {
-                if (hitColliders is null)
-                {
                     // 
-                    _onStopperObject = false;
-
-                    // 解除
-
+                    Action(stopperObject);
                     return;
                 }
             }
         }
     }
 
-    private void HitStopCollier()
+    public void UnSelect()
     {
+        // 
+        if (_stateAuthorityData.IsGrabbable)
+        {
+            // 
+            Action();
+        }
+    }
 
+    /// <summary>
+    /// 停止するオブジェクトに接触したときの処理を行うメソッド
+    /// </summary>
+    /// <param name="hitEvent">接触したオブジェクトのIKnifeHitEvent</param>
+    private void HitStopCollier(IKnifeHitEvent hitEvent)
+    {
+        // 
+        _stopData = gameObject.AddComponent<StopData>();
+
+        // 
+        _stopData.DataSetUp(this);
+
+        // 
+        hitEvent.KnifeHitEvent();
+
+        // フラグを立てる
+        _onStopperObject = true;
+    }
+
+    /// <summary>
+    /// Viewオブジェクトの固定を解除するメソッド
+    /// </summary>
+    private void DestroyStopData()
+    {
+        // StopDataがある場合
+        if (_stopData is not null)
+        {
+            // StopDataを削除する
+            Destroy(_stopData);
+        }
+    }
+
+    /// <summary>
+    /// オブジェクトから手を離した時の処理
+    /// </summary>
+    private void ReleaseObject()
+    {
+        // 座標を初期状態に戻す
+        this.transform.position = _originTransform.position;
+
+        // 角度を初期状態に戻す
+        this.transform.rotation = _originTransform.rotation;
+
+        // Viewオブジェクトの固定を解除する
+        DestroyStopData();
+
+        // フラグを消す
+        _onStopperObject = false;
     }
 
     /// <summary>
@@ -158,16 +187,18 @@ public class Stoppable : MonoBehaviour, IAction, IAction<GameObject>
     /// </summary>
     public void Action()
     {
-        throw new System.NotImplementedException();
+        // 手を離した時の処理を行う
+        ReleaseObject();
     }
 
     /// <summary>
     /// CollisionEvent
     /// </summary>
-    /// <param name="collisionObject">接触したオブジェクト</param>
-    public void Action(GameObject collisionObject)
+    /// <param name="collisionTransform">接触したオブジェクト</param>
+    public void Action(StopperObject stopperObject)
     {
-        ;
+        // 停止するオブジェクトに接触したときの処理を行う
+        HitStopCollier(stopperObject);
     }
 
     public void Inject(IPracticableRPCEvent practicableRPCEvent)
