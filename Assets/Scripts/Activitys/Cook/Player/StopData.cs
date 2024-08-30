@@ -7,10 +7,16 @@ using UnityEngine;
 public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDependencyInformation>
 {
     // 
-    private bool _isEndSetUp = true;
+    private bool _isEndSetUp = false;
 
     // 
     private Transform _visualObjectTransform = default;
+
+    // 
+    private Vector3 _visualLocalOriginPosition = default;
+
+    // 
+    private Quaternion _visualLocalOriginRotation = default;
 
     // 
     private Vector3 _visualObjectPosition = default;
@@ -112,10 +118,16 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
         }
     }
 
-    public void DataSetUp(Stoppable stoppable)
+    public void DataSetUp(IStopViewData stoppable)
     {
         // 
         _visualObjectTransform = stoppable.GetVisualObjectTransform;
+
+        // 
+        _visualLocalOriginPosition = _visualObjectTransform.localPosition;
+
+        // 
+        _visualLocalOriginRotation = _visualObjectTransform.localRotation;
 
         // 
         _visualObjectPosition = _visualObjectTransform.position;
@@ -125,9 +137,6 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
 
         // 
         _detailHandType = stoppable.GetDetailHandType;
-
-        // 
-        stoppable._stopData = this;
 
         switch (_detailHandType)
         {
@@ -175,6 +184,8 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
 
                 return;
         }
+
+        _isEndSetUp = true;
     }
 
 
@@ -182,18 +193,8 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
     private void OnDestroy()
     {
         // 
-        _visualObjectTransform.localPosition = default;
-        _visualObjectTransform.localRotation = Quaternion.Euler(0f, 90f, 0f);
-    }
-
-    /// <summary>
-    /// 接触判定を設定するためのSetterプロパティ
-    /// </summary>
-    /// <param name="state">設定するstate</param>
-    public void StopEnd(bool state)
-    {
-        // 
-        Destroy(this);
+        _visualObjectTransform.localPosition = _visualLocalOriginPosition;
+        _visualObjectTransform.localRotation = _visualLocalOriginRotation;
     }
 
     public void Inject(PlayerVisualHandDependencyInformation information)
