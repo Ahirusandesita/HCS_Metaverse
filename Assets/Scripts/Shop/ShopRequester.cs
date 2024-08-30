@@ -1,10 +1,12 @@
-using System.Collections;
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
-using Cysharp.Threading.Tasks;
 using UnityEngine.Networking;
 using Result = UnityEngine.Networking.UnityWebRequest.Result;
 
+/// <summary>
+/// Shopとデータベースの送受信を行う。現時点では各Shopごとにインスタンスを所持する設計。
+/// </summary>
 public class ShopRequester : MonoBehaviour
 {
     [System.Serializable]
@@ -35,7 +37,8 @@ public class ShopRequester : MonoBehaviour
         }
     }
 
-    private const string DEFAULT_PATH = "http://10.11.39.210:8080/shop/getitemlist";
+    // this path is for debug.
+    private const string DETABASE_PATH = "http://10.11.39.210:8080/shop/getitemlist";
 
 
     private async void Start()
@@ -49,7 +52,7 @@ public class ShopRequester : MonoBehaviour
         form.AddField("genre", genre);
         form.AddField("large", large);
         form.AddField("small", small);
-        using var request = UnityWebRequest.Post(DEFAULT_PATH, form);
+        using var request = UnityWebRequest.Post(DETABASE_PATH, form);
         await request.SendWebRequest();
 
         switch (request.result)
@@ -64,6 +67,7 @@ public class ShopRequester : MonoBehaviour
         var lineupData = JsonUtility.FromJson<LineupData>($"{request.downloadHandler.text}");
         foreach (var item in lineupData.Lineup)
         {
+            //XDebug.Log(item.ID, "green");
         }
     }
 }
