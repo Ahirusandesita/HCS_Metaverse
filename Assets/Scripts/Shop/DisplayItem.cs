@@ -1,6 +1,9 @@
 using Oculus.Interaction;
 using UnityEngine;
 
+/// <summary>
+/// GrabbableかつCloneなオブジェクト。生成元にVR特有の通知（Hover, Select）を送信する役割。
+/// </summary>
 [RequireComponent(typeof(OutlineManager))]
 public class DisplayItem : MonoBehaviour, IDisplayItem
 {
@@ -15,13 +18,9 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
         onGrabbed ??= GetComponent<PointableUnityEventWrapper>();
     }
 
-    void IDisplayItem.InjectItemSelectArgs(ItemSelectArgs itemSelectArgs)
+    void IDisplayItem.Inject_ItemSelectArgsAndSelectedNotification(ItemSelectArgs itemSelectArgs, ISelectedNotification sn)
     {
         this.itemSelectArgs = itemSelectArgs;
-    }
-
-    void IDisplayItem.InjectSelectedNotification(ISelectedNotification sn)
-    {
         this.sn = sn;
 
         onGrabbed.WhenSelect.AddListener(WhenSelect);
