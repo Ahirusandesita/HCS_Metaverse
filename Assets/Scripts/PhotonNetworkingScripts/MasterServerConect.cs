@@ -5,9 +5,8 @@ using Cysharp.Threading.Tasks;
 
 public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 {
-
 	[SerializeField]
-	private NetworkPrefabRef _rpcManagerPrefab;
+	private NetworkPrefabRef _sessionRPCManagerPrefab;
 	[SerializeField]
 	private Recorder _recorder;
 	[SerializeField]
@@ -16,11 +15,8 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	private LocalRemoteSeparation localRemoteReparation;
 	[SerializeField, HideAtPlaying]
 	private bool _isUsePhoton = true;
-
 	private NetworkRunner _networkRunner;
-
-	private SessionRPCManager _sessionRpcManager;
-
+	private SessionRPCManager _sessionRPCManager;
 	public bool IsUsePhoton => _isUsePhoton;
 
 	/// <summary>
@@ -34,7 +30,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		}
 	}
 
-	public SessionRPCManager SessionRPCManager => _sessionRpcManager ??= FindObjectOfType<SessionRPCManager>();
+	public SessionRPCManager SessionRPCManager => _sessionRPCManager ??= FindObjectOfType<SessionRPCManager>();
 
 	public async UniTask<NetworkRunner> GetRunnerAsync()
 	{
@@ -45,25 +41,25 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		return _networkRunner;
 	}
 
-	public async UniTask<SessionRPCManager> GetRPCManagerAsync()
+	public async UniTask<SessionRPCManager> GetSessionRPCManagerAsync()
 	{
-		if (_sessionRpcManager != null) { return _sessionRpcManager; }
+		if (_sessionRPCManager != null) { return _sessionRPCManager; }
 
-		_sessionRpcManager = FindObjectOfType<SessionRPCManager>();
-		if (_sessionRpcManager == null)
+		_sessionRPCManager = FindObjectOfType<SessionRPCManager>();
+		if (_sessionRPCManager == null)
 		{
 			_networkRunner = await GetRunnerAsync();
-			_sessionRpcManager = await InstanceRpcManagerAsync();
+			_sessionRPCManager = await InstanceSessionRPCManagerAsync();
 		}
-		return _sessionRpcManager;
+		return _sessionRPCManager;
 	}
 
-	public async UniTask<SessionRPCManager> InstanceRpcManagerAsync()
+	public async UniTask<SessionRPCManager> InstanceSessionRPCManagerAsync()
 	{
-		SessionRPCManager rpcManagerTemp;
-		NetworkObject networkObjectTemp = await _networkRunner.SpawnAsync(_rpcManagerPrefab);
-		rpcManagerTemp = networkObjectTemp.GetComponent<SessionRPCManager>();
-		return rpcManagerTemp;
+		SessionRPCManager SessionRPCManagerTemp;
+		NetworkObject networkObjectTemp = await _networkRunner.SpawnAsync(_sessionRPCManagerPrefab);
+		SessionRPCManagerTemp = networkObjectTemp.GetComponent<SessionRPCManager>();
+		return SessionRPCManagerTemp;
 	}
 
 	private async void Awake()
@@ -92,7 +88,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	public async UniTask JoinOrCreateSession(string sessionName)
 	{
 		if (!_isUsePhoton) { return; }
-		(await GetRPCManagerAsync()).Rpc_ChangeRoomSessionName(Runner.LocalPlayer, sessionName);
+		(await GetSessionRPCManagerAsync()).Rpc_ChangeRoomSessionName(Runner.LocalPlayer, sessionName);
 		RoomManager.Instance.Initialize(Runner.LocalPlayer);
 		NetworkRunner oldRunner = _networkRunner;
 		_networkRunner = await InstanceNetworkRunnerAsync();
@@ -141,9 +137,8 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		}
 		if (Runner.IsSharedModeMasterClient)
 		{
-			await GetRPCManagerAsync();
+			await GetSessionRPCManagerAsync();
 		}
-
 	}
 
 	public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
