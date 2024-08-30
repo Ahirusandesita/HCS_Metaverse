@@ -170,9 +170,9 @@ public class RoomManager : MonoBehaviour
 		XDebug.LogWarning($"NewLeader{leaderPlayer}", KumaDebugColor.InformationColor);
 		Room roomTemp = GetCurrentRoom(leaderPlayer);
 		XDebug.LogWarning(MasterServerConect,KumaDebugColor.SuccessColor);
-		XDebug.LogWarning(MasterServerConect.RPCManager,KumaDebugColor.SuccessColor);
+		XDebug.LogWarning(MasterServerConect.SessionRPCManager,KumaDebugColor.SuccessColor);
 		//前のリーダーのリーダーオブジェクトを破棄する
-		MasterServerConect.RPCManager.Rpc_DestroyLeaderObject(roomTemp.LeaderPlayerRef);
+		MasterServerConect.SessionRPCManager.Rpc_DestroyLeaderObject(roomTemp.LeaderPlayerRef);
 		if (leaderPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer)
 		{
 			InstantiateLeaderObject();
@@ -211,7 +211,6 @@ public class RoomManager : MonoBehaviour
 		{
 			XDebug.LogWarning(
 				$"RoomData::,NextSessionName:{room.NextSessionName}" +
-				$",LeaderWithCount:{room.WithLeaderSessionCount}\n" +
 				$"Leader:{room.LeaderPlayerRef}," +
 				$"PlayerCount{room.JoinRoomPlayer.Count}", KumaDebugColor.InformationColor);
 			foreach (RoomPlayer roomPlayer in room.JoinRoomPlayer)

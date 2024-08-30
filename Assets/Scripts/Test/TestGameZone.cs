@@ -30,7 +30,7 @@ namespace HCSMeta.Activity
 		{
 			Debug.Log("Nishigaki");
 			gameFrame.Close();
-			MasterServerConect.RPCManager.Rpc_LeftOrCloseRoom(NetworkRunner.LocalPlayer);
+			MasterServerConect.SessionRPCManager.Rpc_LeftOrCloseRoom(NetworkRunner.LocalPlayer);
 		}
 		[ContextMenu("Open")]
 		public void Open()
@@ -40,7 +40,7 @@ namespace HCSMeta.Activity
 			//ƒ‹[ƒ€‚ÉŽQ‰Á‚·‚é
 			if (MasterServerConect.IsUsePhoton && NetworkRunner.SessionInfo.PlayerCount > 1)
 			{
-				MasterServerConect.RPCManager.Rpc_JoinOrCreateRoom(_worldType, NetworkRunner.LocalPlayer);
+				MasterServerConect.SessionRPCManager.Rpc_JoinOrCreateRoom(_worldType, NetworkRunner.LocalPlayer);
 			}
 			else
 			{

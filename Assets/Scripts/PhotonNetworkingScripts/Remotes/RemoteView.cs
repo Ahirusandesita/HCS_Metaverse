@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 using Fusion;
 
 public class RemoteView : NetworkBehaviour
@@ -16,7 +15,6 @@ public class RemoteView : NetworkBehaviour
 
 	public void SetVector3(Vector3 vector)
 	{
-		//Debug.LogWarning(vector);
 	}
 
 	public override void FixedUpdateNetwork()

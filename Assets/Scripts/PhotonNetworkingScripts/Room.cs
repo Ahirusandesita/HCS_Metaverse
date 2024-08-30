@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
@@ -12,42 +11,8 @@ public class Room
 	private WorldType _worldType = default;
 	private List<RoomPlayer> _roomPlayers = new();
 	private int _maxMemberCount = default;
-
-
 	public int LeaderIndex { get => _leaderIndex; }
 	public PlayerRef LeaderPlayerRef { get => _roomPlayers[_leaderIndex].PlayerData; }
-	/// <summary>
-	/// ÉäÅ[É_Å[ÇÕä‹Ç‹ÇÍÇ»Ç¢
-	/// </summary>
-	public int WithLeaderSessionCount
-	{
-		get
-		{
-			int count = 0;
-			string leaderSessionName = _roomPlayers[_leaderIndex].SessionName;
-
-			for (int i = 0; i < _roomPlayers.Count; i++)
-			{
-				if (i == _leaderIndex) { continue; }
-				if (_roomPlayers[i].SessionName == leaderSessionName) { count++; }
-			}
-			return count;
-		}
-	}
-
-	public int WithNextSessionCount
-	{
-		get
-		{
-			int count = 0;
-
-			for (int i = 0; i < _roomPlayers.Count; i++)
-			{
-				if (_roomPlayers[i].SessionName == _nextSessionName) { count++; }
-			}
-			return count;
-		}
-	}
 	public int RoomNumber { get => _roomNumber; }
 	public bool IsEndJoining { get => _isEndJoining; }
 	public string NextSessionName { get => _nextSessionName; }
