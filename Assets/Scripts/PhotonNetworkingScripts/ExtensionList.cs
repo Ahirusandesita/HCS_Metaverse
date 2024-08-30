@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Fusion;
 
-
 public static partial class ExtensionList
 {
 	public static int IndexOf(this List<RoomPlayer> list, PlayerRef playerRef)

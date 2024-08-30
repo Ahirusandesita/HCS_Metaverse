@@ -1,9 +1,6 @@
 using UnityEngine;
 using Fusion;
-using Fusion.Sockets;
-using System.Collections.Generic;
 using Photon.Voice.Unity;
-using Photon.Voice.Fusion;
 using Cysharp.Threading.Tasks;
 
 public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
@@ -22,7 +19,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 
 	private NetworkRunner _networkRunner;
 
-	private RPCManager _rpcManager;
+	private SessionRPCManager _sessionRpcManager;
 
 	public bool IsUsePhoton => _isUsePhoton;
 
@@ -37,30 +34,36 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		}
 	}
 
-	public RPCManager RPCManager => _rpcManager ??= FindObjectOfType<RPCManager>();
+	public SessionRPCManager SessionRPCManager => _sessionRpcManager ??= FindObjectOfType<SessionRPCManager>();
 
-	public async UniTask<NetworkRunner> GetRunner()
+	public async UniTask<NetworkRunner> GetRunnerAsync()
 	{
 		if (_networkRunner == null)
 		{
-			_networkRunner = await InstanceNetworkRunner();
+			_networkRunner = await InstanceNetworkRunnerAsync();
 		}
 		return _networkRunner;
 	}
 
-	public async UniTask<RPCManager> GetRPCManager()
+	public async UniTask<SessionRPCManager> GetRPCManagerAsync()
 	{
-		if (_rpcManager != null) { return _rpcManager; }
+		if (_sessionRpcManager != null) { return _sessionRpcManager; }
 
-		_rpcManager = FindObjectOfType<RPCManager>();
-		if (_rpcManager == null)
+		_sessionRpcManager = FindObjectOfType<SessionRPCManager>();
+		if (_sessionRpcManager == null)
 		{
-			XDebug.LogWarning($"rpcInstance", KumaDebugColor.SuccessColor);
-			_networkRunner = await GetRunner();
-			NetworkObject networkObjectTemp = await _networkRunner.SpawnAsync(_rpcManagerPrefab);
-			_rpcManager = networkObjectTemp.GetComponent<RPCManager>();
+			_networkRunner = await GetRunnerAsync();
+			_sessionRpcManager = await InstanceRpcManagerAsync();
 		}
-		return _rpcManager;
+		return _sessionRpcManager;
+	}
+
+	public async UniTask<SessionRPCManager> InstanceRpcManagerAsync()
+	{
+		SessionRPCManager rpcManagerTemp;
+		NetworkObject networkObjectTemp = await _networkRunner.SpawnAsync(_rpcManagerPrefab);
+		rpcManagerTemp = networkObjectTemp.GetComponent<SessionRPCManager>();
+		return rpcManagerTemp;
 	}
 
 	private async void Awake()
@@ -77,22 +80,22 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 			return;
 		}
 		DontDestroyOnLoad(this.gameObject);
-		_networkRunner = await InstanceNetworkRunner();
+		_networkRunner = await InstanceNetworkRunnerAsync();
 		
 		await Connect("Room");
 
 	}
 
 	/// <summary>
-	/// ルームに入る。ない場合は作る
+	/// セッションに入る。ない場合は作る
 	/// </summary>
 	public async UniTask JoinOrCreateSession(string sessionName)
 	{
 		if (!_isUsePhoton) { return; }
-		(await GetRPCManager()).Rpc_ChangeRoomSessionName(Runner.LocalPlayer, sessionName);
+		(await GetRPCManagerAsync()).Rpc_ChangeRoomSessionName(Runner.LocalPlayer, sessionName);
 		RoomManager.Instance.Initialize(Runner.LocalPlayer);
 		NetworkRunner oldRunner = _networkRunner;
-		_networkRunner = await InstanceNetworkRunner();
+		_networkRunner = await InstanceNetworkRunnerAsync();
 		await Connect(sessionName);
 		await oldRunner.Shutdown(true, ShutdownReason.HostMigration);
 	}
@@ -100,7 +103,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	/// <summary>
 	/// ネットワークランナーを生成してコールバック対象にする
 	/// </summary>
-	private async UniTask<NetworkRunner> InstanceNetworkRunner()
+	private async UniTask<NetworkRunner> InstanceNetworkRunnerAsync()
 	{
 		// NetworkRunnerを生成する
 		AsyncInstantiateOperation<NetworkRunner> objectTemp = InstantiateAsync(_networkRunnerPrefab);
@@ -119,15 +122,11 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		//ルームに参加する（ルームが存在しなければ作成して参加する）
 		StartGameResult result = await _networkRunner.StartGame(new StartGameArgs
 		{
-			//StartGameCancellationToken = destroyCancellationToken,
 			GameMode = GameMode.Shared,
 			SessionName = SessionName,
 			SceneManager = _networkRunner.GetComponent<NetworkSceneManagerDefault>()
 		}
 		);
-		_networkRunner.GetComponent<FusionVoiceClient>().PrimaryRecorder = _recorder;
-
-		GateOfFusion.Instance.IsCanUsePhoton = result.Ok;
 
 		XDebug.LogWarning("Connect:" + (result.Ok ? "Success" : "Fail"), KumaDebugColor.InformationColor);
 	}
@@ -142,7 +141,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		}
 		if (Runner.IsSharedModeMasterClient)
 		{
-			await GetRPCManager();
+			await GetRPCManagerAsync();
 		}
 
 	}

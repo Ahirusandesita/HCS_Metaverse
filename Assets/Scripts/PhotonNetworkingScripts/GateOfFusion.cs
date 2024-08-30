@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using Fusion;
@@ -7,10 +5,9 @@ using Cysharp.Threading.Tasks;
 
 public class GateOfFusion
 {
-	private bool _canUsePhoton = default;
 	private NetworkRunner _networkRunner = default;
-	private static GateOfFusion _instance = default;
 	private MasterServerConect _masterServer = default;
+	private static GateOfFusion _instance = default;
 	private SyncResult _syncResult = SyncResult.Complete;
 	public static GateOfFusion Instance => _instance ??= new GateOfFusion();
 	private MasterServerConect MasterServer
@@ -32,8 +29,7 @@ public class GateOfFusion
 			_networkRunner = value;
 		}
 	}
-	public bool IsCanUsePhoton { get => _canUsePhoton; set => _canUsePhoton = value; }
-	public SyncResult SyncResult { get => _syncResult; set => _syncResult = value; }
+	public SyncResult SyncResult { get => _syncResult; }
 
 
 
@@ -57,7 +53,7 @@ public class GateOfFusion
 			XDebug.LogWarning($"自分が権限を持っています", KumaDebugColor.WarningColor);
 			return;
 		}
-		MasterServer.RPCManager.Rpc_GrabStateAuthorityChanged(networkObject);
+		MasterServer.SessionRPCManager.Rpc_GrabStateAuthorityChanged(networkObject);
 		networkObject.RequestStateAuthority();
 		stateAuthorityData.IsNotReleaseStateAuthority = true;
 	}
@@ -65,7 +61,7 @@ public class GateOfFusion
 	public void Release(NetworkObject networkObject)
 	{
 		if (!MasterServer.IsUsePhoton) { return; }
-		MasterServer.RPCManager.Rpc_ReleseStateAuthorityChanged(networkObject);
+		MasterServer.SessionRPCManager.Rpc_ReleseStateAuthorityChanged(networkObject);
 		StateAuthorityData stateAuthorityData = networkObject.GetComponent<StateAuthorityData>();
 		stateAuthorityData.IsNotReleaseStateAuthority = false;
 	}
@@ -77,7 +73,7 @@ public class GateOfFusion
 			Object.Destroy(despawnObject.gameObject);
 			return;
 		}
-		XDebug.LogWarning($"Despawn:{despawnObject.gameObject}",KumaDebugColor.ErrorColor);
+		XDebug.LogWarning($"Despawn:{despawnObject.gameObject}", KumaDebugColor.ErrorColor);
 		if (despawnObject.TryGetComponent(out NetworkObject networkObject))
 		{
 			NetworkRunner.Despawn(networkObject);
@@ -103,7 +99,7 @@ public class GateOfFusion
 			XDebug.LogError("NetworkObjectが取得できませんでした。なのでInstantiateします。", KumaDebugColor.ErrorColor);
 			temp = Object.Instantiate(prefab, position, quaternion);
 		}
-		temp.transform.parent = parent;
+		temp.transform.SetParent(parent);
 		return temp;
 	}
 
@@ -123,11 +119,11 @@ public class GateOfFusion
 			XDebug.LogError("NetworkObjectが取得できませんでした。なのでInstantiateします。", KumaDebugColor.ErrorColor);
 			temp = Object.Instantiate(prefab, position, quaternion);
 		}
-		temp.transform.parent = parent;
+		temp.transform.SetParent(parent);
 		return temp;
 	}
 
-	
+
 
 	public async void ActivityStart(string sceneName)
 	{
@@ -161,23 +157,21 @@ public class GateOfFusion
 		foreach (RoomPlayer roomPlayer in currentRoom.JoinRoomPlayer)
 		{
 			if (roomPlayer.PlayerData == NetworkRunner.LocalPlayer) { continue; }
-			MasterServer.RPCManager.Rpc_JoinSession(sessionName, roomPlayer.PlayerData);
+			MasterServer.SessionRPCManager.Rpc_JoinSession(sessionName, roomPlayer.PlayerData);
 			XDebug.LogWarning($"{roomPlayer.PlayerData}を移動させた", KumaDebugColor.MessageColor);
 		}
 		XDebug.LogWarning($"全員移動させた", KumaDebugColor.MessageColor);
 		await MasterServer.JoinOrCreateSession(sessionName);
 		XDebug.LogWarning($"自分がセッション移動した", KumaDebugColor.MessageColor);
-		await UniTask.WaitUntil(() => MasterServer.RPCManager == null);
+		await UniTask.WaitUntil(() => MasterServer.SessionRPCManager == null);
 		XDebug.LogWarning($"RpcDelete", KumaDebugColor.MessageColor);
-		await MasterServer.GetRPCManager();
+		await MasterServer.GetRPCManagerAsync();
 		XDebug.LogWarning($"Rpc取得", KumaDebugColor.MessageColor);
-		await UniTask.WaitUntil(() => Object.FindObjectOfType<RPCManager>() != null);
+		await UniTask.WaitUntil(() => Object.FindObjectOfType<SessionRPCManager>() != null);
 
-		RPCManager rpcManager = Object.FindObjectOfType<RPCManager>();
-		XDebug.LogWarning($"自分がセッション移動した", KumaDebugColor.MessageColor);
-
+		SessionRPCManager rpcManager = Object.FindObjectOfType<SessionRPCManager>();
 		if (!NetworkRunner.IsSharedModeMasterClient)
-		{	
+		{
 			XDebug.LogError($"{NetworkRunner.SessionInfo.PlayerCount}" +
 				$":{currentRoom.JoinRoomPlayer.Count}", KumaDebugColor.MessageColor);
 			rpcManager.Rpc_ChangeMasterClient(NetworkRunner.LocalPlayer);
@@ -187,7 +181,7 @@ public class GateOfFusion
 		}
 		await NetworkRunner.LoadScene(sceneName, LoadSceneMode.Single);
 		_syncResult = SyncResult.Complete;
-		XDebug.LogWarning($"移動終了",KumaDebugColor.MessageColor);
+		XDebug.LogWarning($"移動終了", KumaDebugColor.MessageColor);
 	}
 }
 
