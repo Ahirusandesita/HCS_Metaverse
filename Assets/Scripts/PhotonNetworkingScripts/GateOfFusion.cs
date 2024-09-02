@@ -29,10 +29,6 @@ public class GateOfFusion
 			_networkRunner = value;
 		}
 	}
-	public SyncResult SyncResult { get => _syncResult; }
-
-
-
 
 	/// <summary>
 	/// ’Í‚Þ‚Æ‚«‚ÉŒÄ‚Ô

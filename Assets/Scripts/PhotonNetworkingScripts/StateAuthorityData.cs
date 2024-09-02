@@ -1,10 +1,11 @@
 using Fusion;
+using UnityEngine;
 
 public delegate void AuthrityHandler(AuthrityEventArgs authrityEventArgs);
 public class StateAuthorityData : NetworkBehaviour
 {
 	[Networked]
-	public bool IsNotReleaseStateAuthority { get; set; }
+	public bool IsNotReleaseStateAuthority { get; set ; }
 	public event AuthrityHandler OnAuthrity;
 	private bool isGrabbable = true;
 	public bool IsGrabbable
