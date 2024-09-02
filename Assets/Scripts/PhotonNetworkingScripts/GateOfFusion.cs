@@ -162,12 +162,12 @@ public class GateOfFusion
 		await UniTask.WaitUntil(() => MasterServer.SessionRPCManager == null);
 		XDebug.LogWarning($"RpcDelete", KumaDebugColor.MessageColor);
 		await MasterServer.GetSessionRPCManagerAsync();
-		XDebug.LogWarning($"Rpc取得", KumaDebugColor.MessageColor);
-		await UniTask.WaitUntil(() => Object.FindObjectOfType<SessionRPCManager>() != null);
 
-		SessionRPCManager sessionRPCManager = Object.FindObjectOfType<SessionRPCManager>();
 		if (!NetworkRunner.IsSharedModeMasterClient)
 		{
+			XDebug.LogWarning($"Rpc取得", KumaDebugColor.MessageColor);
+			await UniTask.WaitUntil(() => Object.FindObjectOfType<SessionRPCManager>() != null);
+			SessionRPCManager sessionRPCManager = Object.FindObjectOfType<SessionRPCManager>();
 			XDebug.LogError($"{NetworkRunner.SessionInfo.PlayerCount}" +
 				$":{currentRoom.JoinRoomPlayer.Count}", KumaDebugColor.MessageColor);
 			sessionRPCManager.Rpc_ChangeMasterClient(NetworkRunner.LocalPlayer);
@@ -176,6 +176,7 @@ public class GateOfFusion
 			XDebug.LogWarning("自分がマスターになった", KumaDebugColor.MessageColor);
 		}
 		await NetworkRunner.LoadScene(sceneName, LoadSceneMode.Single);
+		await MasterServer.GetSessionRPCManagerAsync();
 		_syncResult = SyncResult.Complete;
 		XDebug.LogWarning($"移動終了", KumaDebugColor.MessageColor);
 	}

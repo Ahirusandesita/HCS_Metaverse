@@ -21,7 +21,7 @@ public class StateAuthorityData : NetworkBehaviour
 		}
 	}
 
-	[UnityEngine.ContextMenu("GetStateAuthrity")]
+	[ContextMenu("GetStateAuthrity")]
 	public void GetStateAuthrity()
 	{
 		GetComponent<NetworkObject>().RequestStateAuthority();

@@ -51,6 +51,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	}
 	public async UniTask<SessionRPCManager> InstanceSessionRPCManagerAsync()
 	{
+		XDebug.LogWarning($"InstanceRpcManager",KumaDebugColor.ErrorColor);
 		SessionRPCManager SessionRPCManagerTemp;
 		NetworkObject networkObjectTemp = await _networkRunner.SpawnAsync(_sessionRPCManagerPrefab);
 		SessionRPCManagerTemp = networkObjectTemp.GetComponent<SessionRPCManager>();

@@ -70,7 +70,16 @@ public class RoomManager : MonoBehaviour
 	/// <returns>Join‚Ü‚½‚ÍCreate‚Ü‚½‚ÍFail</returns>
 	public JoinOrCreateResult JoinOrCreate(WorldType worldType, PlayerRef playerRef, string currentSessionName, int roomNumber = -1)
 	{
+		Room myRoom = GetCurrentRoom(playerRef);
+		if(myRoom != null)
+		{
+			XDebug.LogWarning($"‚·‚Å‚Éƒ‹[ƒ€‚ÉŽQ‰Á‚µ‚Ä‚¢‚Ü‚·", KumaDebugColor.WarningColor);
+			myRoom.Left(playerRef);
+		}
+
 		Room roomTemp = default;
+
+		
 
 		if (_rooms.Count > 0)
 		{

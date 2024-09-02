@@ -11,6 +11,11 @@ public class SessionRPCManager : NetworkBehaviour
 		}
 	}
 
+	private void OnDisable()
+	{
+		XDebug.LogWarning($"RpcManager_Destory", KumaDebugColor.ErrorColor);
+	}
+
 	[Rpc(RpcSources.All, RpcTargets.All)]
 	public void Rpc_ChangeRoomSessionName(PlayerRef chengeTarget, string nextSessionName)
 	{
@@ -96,7 +101,7 @@ public class SessionRPCManager : NetworkBehaviour
 	[Rpc(RpcSources.All, RpcTargets.All)]
 	public void Rpc_ChangeMasterClient(PlayerRef nextMaster)
 	{
-		XDebug.LogWarning($"ChangeMaster:{Runner.IsSharedModeMasterClient}",KumaDebugColor.WarningColor);
+		XDebug.LogWarning($"ChangeMaster:{Runner.IsSharedModeMasterClient}", KumaDebugColor.WarningColor);
 		if (!Runner.IsSharedModeMasterClient) { return; }
 		Runner.SetMasterClient(nextMaster);
 	}
