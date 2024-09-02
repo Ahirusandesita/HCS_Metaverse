@@ -32,6 +32,15 @@ namespace HCSMeta.Activity
 			gameFrame.Close();
 			MasterServerConect.SessionRPCManager.Rpc_LeftOrCloseRoom(NetworkRunner.LocalPlayer);
 		}
+
+		private void Update()
+		{
+			if (Input.GetKeyDown(KeyCode.P))
+			{
+				Open();
+			}
+		}
+
 		[ContextMenu("Open")]
 		public void Open()
 		{
