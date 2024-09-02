@@ -1,7 +1,3 @@
-using HCSMeta.Activity;
-using HCSMeta.Function.Initialize;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDependencyInformation>
@@ -85,8 +81,6 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
 
                     // 
                     _visualInformation.VisualRightControllerHand.rotation = _visualControllerHandObjectRotation;
-
-                    Debug.Log($"‰EŽèŽ~‚ß‚Ä‚é‚æ‚ñ");
                     break;
 
                 case HandType.Left:
@@ -107,8 +101,6 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
 
                     // 
                     _visualInformation.VisualLeftControllerHand.rotation = _visualControllerHandObjectRotation;
-
-                    Debug.Log($"¶ŽèŽ~‚ß‚Ä‚é‚æ‚ñ");
                     break;
 
                 default:

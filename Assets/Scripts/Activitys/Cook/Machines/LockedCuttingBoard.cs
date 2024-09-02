@@ -87,8 +87,15 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
         // 範囲内のオブジェクトをすべて探索する
         foreach (Collider hitCollider in hitColliders)
         {
-            // 自身が移動権限を持っている かつ Ingrodientsがついていた場合
-            if (hitCollider.GetComponent<NetworkObject>().HasStateAuthority && hitCollider.transform.root.TryGetComponent<Ingrodients>(out var tmp))
+            // NetworkObjectを持たない場合 または 移動権限を持たない場合
+            if (!hitCollider.TryGetComponent<NetworkObject>(out var network) || !network.HasStateAuthority)
+            {
+                // 次のオブジェクトに移る
+                continue;
+            }
+
+            // Ingrodientsがついていた場合
+            if (hitCollider.transform.root.TryGetComponent<Ingrodients>(out var tmp))
             {
                 // RigidbodyのKinematicがついている場合
                 if (hitCollider.GetComponent<Rigidbody>().isKinematic)
@@ -97,11 +104,10 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
                     continue;
                 }
 
-                // --------------------------------------------------------------------------------------------------------
                 // 固定するオブジェクトを取得する
                 NetworkObject lockObject = hitCollider.GetComponent<NetworkObject>();
 
-                // 
+                // 食材に当たったときの処理を行う
                 RPC_HitIngrodients(lockObject);
             }
         }
@@ -145,6 +151,10 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
         }
     }
 
+    /// <summary>
+    /// 食材に当たったときの処理
+    /// </summary>
+    /// <param name="lockObject">当たった食材のNetworkObject</param>
     [Rpc]
     private void RPC_HitIngrodients(NetworkObject lockObject) // RPC
     {
