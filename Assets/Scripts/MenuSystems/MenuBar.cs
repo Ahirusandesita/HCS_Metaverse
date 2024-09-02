@@ -27,11 +27,9 @@ public class MenuBar : MonoBehaviour, IMenuManager
 
             menuButton.GetComponent<RectTransform>().localScale = size;
             menuButton.GetComponent<RectTransform>().localPosition = position;
-
+            menuButton.GetComponent<XScrollObject>().InjectLeftLimit(position.x);
             //test
             position.x += (size.x + 0.05f) * 100f;
-
-            menuButton.GetComponent<XScrollObject>().InjectLeftLimit(position.x);
         }
 
 

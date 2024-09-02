@@ -21,28 +21,33 @@ public class XScrollObject : MonoBehaviour, IHorizontalOnlyScrollable, ITransfor
     private void Awake()
     {
         rectTransform = this.GetComponent<RectTransform>();
+
+        
     }
     public void Scroll(Vector2 moveValue, float sensitivity)
     {
         Vector3 nextPos = rectTransform.localPosition;
-        nextPos = canvasTransform.right * moveValue / sensitivity;
+        nextPos.x -= (canvasTransform.right * moveValue / sensitivity).x;
+        nextPos.y -= (canvasTransform.right * moveValue / sensitivity).y;
 
-        //if (leftLimit.isUseLimit && leftLimit.limit > nextPos.x)
-        //{
-        //    Vector3 correctionPos = rectTransform.localPosition;
-        //    correctionPos.x = leftLimit.limit;
+        Debug.Log($"Limit{leftLimit.limit}positon{rectTransform.localPosition}");
+        if (leftLimit.isUseLimit && leftLimit.limit > nextPos.x)
+        {
+            Debug.Log("Limit!");
+            Vector3 correctionPos = rectTransform.localPosition;
+            correctionPos.x = leftLimit.limit;
 
-        //    rectTransform.localPosition = correctionPos;
-        //    return;
-        //}
-        //if (rightLimit.isUseLimit && rightLimit.limit < nextPos.x)
-        //{
-        //    Vector3 correctionPos = rectTransform.localPosition;
-        //    correctionPos.x = rightLimit.limit;
+            rectTransform.localPosition = correctionPos;
+            return;
+        }
+        if (rightLimit.isUseLimit && rightLimit.limit < nextPos.x)
+        {
+            Vector3 correctionPos = rectTransform.localPosition;
+            correctionPos.x = rightLimit.limit;
 
-        //    rectTransform.localPosition = correctionPos;
-        //    return;
-        //}
+            rectTransform.localPosition = correctionPos;
+            return;
+        }
 
         rectTransform.localPosition -= canvasTransform.right * moveValue.x / sensitivity;
     }
