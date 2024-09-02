@@ -56,10 +56,6 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
 
         // 角度
         _hitBoxRotation = this.transform.rotation;
-
-        // 
-        _pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
-        _pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
     }
 
     private void Update()
@@ -157,6 +153,10 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
 
         // Puttableに自身を渡す
         _lockedPuttable.SetLockedCuttingObject(this);
+
+        // 
+        _pointableUnityEventWrapper = lockObject.GetComponentInChildren<PointableUnityEventWrapper>();
+        _pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
     }
 
     [Rpc]
@@ -179,6 +179,7 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
     {
         // 
         _isLockedObject = false;
+        _pointableUnityEventWrapper.WhenSelect.RemoveListener((action) => { Select(); });
     }
 
     public void Inject(IPracticableRPCEvent practicableRPCEvent)

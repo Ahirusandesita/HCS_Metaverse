@@ -32,7 +32,7 @@ public class Stoppable : NetworkBehaviour, IStopViewData
     private PointableUnityEventWrapper pointableUnityEventWrapper = default;
 
     // 
-    private StateAuthorityData _stateAuthorityData = default;
+    private NetworkObject _myNetwork = default;
 
     // 
     private IPracticableRPCEvent _practicableRPCEvent = default;
@@ -68,12 +68,12 @@ public class Stoppable : NetworkBehaviour, IStopViewData
         };
 
         // 
-        _stateAuthorityData = transform.root.GetComponent<StateAuthorityData>();
+        _myNetwork = transform.root.GetComponent<NetworkObject>();
     }
 
     private void Update()
     {
-        if (_stateAuthorityData.IsGrabbable)
+        if (_myNetwork.HasStateAuthority)
         {
             // ê⁄êGÇµÇΩColliderÇîªíËÇµÇƒäiî[Ç∑ÇÈ
             Collider[] hitColliders = Physics.OverlapBox(_knifeCollider.bounds.center, _knifeCollider.bounds.size, this.transform.rotation);
@@ -128,7 +128,7 @@ public class Stoppable : NetworkBehaviour, IStopViewData
     public void UnSelect()
     {
         // 
-        if (_stateAuthorityData.IsGrabbable)
+        if (_myNetwork.HasStateAuthority)
         {
             // 
             RPC_ReleaseObject();
