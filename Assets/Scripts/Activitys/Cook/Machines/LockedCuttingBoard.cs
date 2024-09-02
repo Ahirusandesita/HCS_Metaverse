@@ -1,15 +1,14 @@
 using UnityEngine;
+using Oculus.Interaction;
+using Fusion;
 
-public class LockedCuttingBoard : StopperObject, IAction
+public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
 {
     [SerializeField, Tooltip("オブジェクトの取得範囲を指定するCollider")]
     private Collider _cuttingAreaCollider = default;
 
     [SerializeField, Tooltip("固定位置")]
     private Transform _machineTransform = default;
-
-    [SerializeField, Tooltip("オブジェクトを固定する場所のTransform")]
-    private Transform _objectLockPosition = default;
 
     // オブジェクトの取得範囲を表す値 -----------------------
     // 中心
@@ -37,6 +36,15 @@ public class LockedCuttingBoard : StopperObject, IAction
     // 
     private IPracticableRPCEvent _practicableRPCEvent = default;
 
+    // 
+    private LockedCuttingBoard _parentLockedCuttingObject = default;
+
+    // 掴んだ時や離した時にイベントを実行するクラス
+    private PointableUnityEventWrapper _pointableUnityEventWrapper;
+
+    // 
+    public Transform GetObjectLockTransform => _machineTransform;
+
     private void Start()
     {
         // オブジェクトの取得範囲の各値を設定する
@@ -48,6 +56,10 @@ public class LockedCuttingBoard : StopperObject, IAction
 
         // 角度
         _hitBoxRotation = this.transform.rotation;
+
+        // 
+        _pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
+        _pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
     }
 
     private void Update()
@@ -74,42 +86,21 @@ public class LockedCuttingBoard : StopperObject, IAction
         foreach (Collider hitCollider in hitColliders)
         {
             // Ingrodientsがついていた場合
-            if (hitCollider.transform.root.TryGetComponent<Ingrodients>(out var ingrodient))
+            if (hitCollider.transform.root.TryGetComponent<Ingrodients>(out var tmp))
             {
                 // RigidbodyのKinematicがついている場合
-                if (ingrodient.GetComponent<Rigidbody>().isKinematic)
+                if (hitCollider.GetComponent<Rigidbody>().isKinematic)
                 {
                     // 次のオブジェクトに移る
                     continue;
                 }
 
+                // --------------------------------------------------------------------------------------------------------
                 // 固定するオブジェクトを取得する
-                GameObject lockObject = ingrodient.gameObject;
+                NetworkObject lockObject = hitCollider.GetComponent<NetworkObject>();
 
-                // 固定するオブジェクトのIngrodientを取得する
-                _lockingIngrodients = ingrodient;
-
-                // 固定するオブジェクトのGrabbableを変更するためのインターフェースを取得する
-                _grabbableActiveSwicher = lockObject.GetComponent<ISwitchableGrabbableActive>();
-
-                // 固定するオブジェクトのGrabbableをfalseにする
-                _grabbableActiveSwicher.Inactive();
-
-                // 固定するオブジェクトの座標をマシンの座標に移動させる
-                lockObject.transform.position = _machineTransform.position;
-                lockObject.transform.rotation = _machineTransform.rotation;
-
-                // 固定するオブジェクトのGrabbableをtrueにする
-                _grabbableActiveSwicher.Active();
-
-                // オブジェクトを固定している状態にする
-                _isLockedObject = true;
-
-                // 固定しているオブジェクトにPuttableを追加して取得する
-                _lockedPuttable = lockObject.AddComponent<Puttable>();
-
-                // Puttableに自身を渡す
-                _lockedPuttable.SetLockedCuttingObject(this);
+                // 
+                RPC_HitIngrodients(lockObject);
             }
         }
     }
@@ -142,7 +133,6 @@ public class LockedCuttingBoard : StopperObject, IAction
                 {
                     // 
                     _lockingIngrodients = ingrodients;
-                    _practicableRPCEvent.RPC_Event<LockedCuttingBoard>(this.gameObject);
                 }
                 else
                 {
@@ -151,18 +141,44 @@ public class LockedCuttingBoard : StopperObject, IAction
                 }
             }
         }
+    }
 
+    [Rpc]
+    private void RPC_HitIngrodients(NetworkObject lockObject) // RPC
+    {
+        // 固定するオブジェクトのIngrodientを取得する
+        _lockingIngrodients = lockObject.GetComponent<Ingrodients>();
+
+        // オブジェクトを固定している状態にする
+        _isLockedObject = true;
+
+        // 固定しているオブジェクトにPuttableを追加して取得する
+        _lockedPuttable = lockObject.gameObject.AddComponent<Puttable>();
+
+        // Puttableに自身を渡す
+        _lockedPuttable.SetLockedCuttingObject(this);
+    }
+
+    [Rpc]
+    private void RPC_Select() //RPC
+    {
+        // 
+        if (_lockedPuttable is not null)
+        {
+            // 
+            _lockedPuttable.DestroyThis();
+        }
+    }
+
+    public void Select()
+    {
+        RPC_Select();
     }
 
     public void CanselCutting()
     {
         // 
         _isLockedObject = false;
-    }
-
-    public void Action()
-    {
-        throw new System.NotImplementedException();
     }
 
     public void Inject(IPracticableRPCEvent practicableRPCEvent)

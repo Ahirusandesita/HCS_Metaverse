@@ -1,8 +1,8 @@
-using Photon;
+using Fusion;
 using UnityEngine;
 using Oculus.Interaction;
 
-public class Stoppable : MonoBehaviour, IAction, IAction<StopperObject>, IStopViewData
+public class Stoppable : NetworkBehaviour, IStopViewData
 {
     [SerializeField, Tooltip("見た目用オブジェクトのTransform")]
     private Transform _visualObjectTransform = default;
@@ -115,7 +115,10 @@ public class Stoppable : MonoBehaviour, IAction, IAction<StopperObject>, IStopVi
                     }
 
                     // 
-                    Action(stopperObject);
+                    NetworkObject networkObject = stopperObject.GetComponent<NetworkObject>();
+
+                    // 
+                    RPC_HitStopCollider(networkObject);
                     return;
                 }
             }
@@ -128,7 +131,7 @@ public class Stoppable : MonoBehaviour, IAction, IAction<StopperObject>, IStopVi
         if (_stateAuthorityData.IsGrabbable)
         {
             // 
-            Action();
+            RPC_ReleaseObject();
         }
     }
 
@@ -136,8 +139,12 @@ public class Stoppable : MonoBehaviour, IAction, IAction<StopperObject>, IStopVi
     /// 停止するオブジェクトに接触したときの処理を行うメソッド
     /// </summary>
     /// <param name="hitEvent">接触したオブジェクトのIKnifeHitEvent</param>
-    private void HitStopCollier(IKnifeHitEvent hitEvent)
+    [Rpc]
+    private void RPC_HitStopCollider(NetworkObject hitObject)
     {
+        // 
+        IKnifeHitEvent hitEvent = hitObject.GetComponent<IKnifeHitEvent>();
+
         // 
         _stopData = gameObject.AddComponent<StopData>();
 
@@ -167,7 +174,8 @@ public class Stoppable : MonoBehaviour, IAction, IAction<StopperObject>, IStopVi
     /// <summary>
     /// オブジェクトから手を離した時の処理
     /// </summary>
-    private void ReleaseObject()
+    [Rpc]
+    private void RPC_ReleaseObject()
     {
         // 座標を初期状態に戻す
         this.transform.position = _originTransform.position;
@@ -182,24 +190,6 @@ public class Stoppable : MonoBehaviour, IAction, IAction<StopperObject>, IStopVi
         _onStopperObject = false;
     }
 
-    /// <summary>
-    /// UnSelectEvent
-    /// </summary>
-    public void Action()
-    {
-        // 手を離した時の処理を行う
-        ReleaseObject();
-    }
-
-    /// <summary>
-    /// CollisionEvent
-    /// </summary>
-    /// <param name="collisionTransform">接触したオブジェクト</param>
-    public void Action(StopperObject stopperObject)
-    {
-        // 停止するオブジェクトに接触したときの処理を行う
-        HitStopCollier(stopperObject);
-    }
 
     public void Inject(IPracticableRPCEvent practicableRPCEvent)
     {
