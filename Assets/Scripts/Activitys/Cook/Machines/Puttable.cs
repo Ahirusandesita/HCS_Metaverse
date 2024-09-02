@@ -3,27 +3,29 @@ using Oculus.Interaction;
 
 public class Puttable : MonoBehaviour
 {
-    private LockedCuttingBoard _parentLockedCuttingObject = default;
+    // 
+    private ILockedObjectBoard _parentLockedCuttingObject = default;
 
     // 掴んだ時や離した時にイベントを実行するクラス
     private PointableUnityEventWrapper _pointableUnityEventWrapper;
 
-    private void Awake()
-    {
-        _pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
-        _pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
-
-    }
-
-    public void SetLockedCuttingObject(LockedCuttingBoard lockedCuttingObject)
+    public void SetLockedCuttingObject(ILockedObjectBoard lockedCuttingObject)
     {
         // 
         _parentLockedCuttingObject = lockedCuttingObject;
-    }
 
-    public void Select()
-    {
-        DestroyThis();
+        // 
+        ISwitchableGrabbableActive grabbableActiveSwicher = GetComponent<ISwitchableGrabbableActive>();
+
+        // 固定するオブジェクトのGrabbableをfalseにする
+        grabbableActiveSwicher.Inactive();
+
+        // 固定するオブジェクトの座標をマシンの座標に移動させる
+        transform.position = lockedCuttingObject.GetObjectLockTransform.position;
+        transform.rotation = lockedCuttingObject.GetObjectLockTransform.rotation;
+
+        // 固定するオブジェクトのGrabbableをtrueにする
+        grabbableActiveSwicher.Active();
     }
 
     public void DestroyThis()
@@ -33,7 +35,6 @@ public class Puttable : MonoBehaviour
 
     private void OnDestroy()
     {
-        _pointableUnityEventWrapper.WhenSelect.RemoveListener((action) => { Select(); });
         _parentLockedCuttingObject.CanselCutting();
     }
 }
