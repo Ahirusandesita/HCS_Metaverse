@@ -18,7 +18,6 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	private NetworkRunner _networkRunner;
 	private SessionRPCManager _sessionRPCManager;
 	public bool IsUsePhoton => _isUsePhoton;
-
 	/// <summary>
 	/// このクラスはランナーとの紐づけはしないためラップする
 	/// </summary>
@@ -29,9 +28,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 			return _networkRunner;
 		}
 	}
-
 	public SessionRPCManager SessionRPCManager => _sessionRPCManager ??= FindObjectOfType<SessionRPCManager>();
-
 	public async UniTask<NetworkRunner> GetRunnerAsync()
 	{
 		if (_networkRunner == null)
@@ -40,7 +37,6 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		}
 		return _networkRunner;
 	}
-
 	public async UniTask<SessionRPCManager> GetSessionRPCManagerAsync()
 	{
 		if (_sessionRPCManager != null) { return _sessionRPCManager; }
@@ -53,7 +49,6 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		}
 		return _sessionRPCManager;
 	}
-
 	public async UniTask<SessionRPCManager> InstanceSessionRPCManagerAsync()
 	{
 		SessionRPCManager SessionRPCManagerTemp;
@@ -79,7 +74,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		_networkRunner = await InstanceNetworkRunnerAsync();
 		
 		await Connect("Room");
-
+		RoomManager.Instance.JoinOrCreate(WorldType.CentralCity, Runner.LocalPlayer, Runner.SessionInfo.Name);
 	}
 
 	/// <summary>

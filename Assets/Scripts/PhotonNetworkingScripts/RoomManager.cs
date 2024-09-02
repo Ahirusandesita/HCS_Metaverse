@@ -21,7 +21,7 @@ public class RoomManager : MonoBehaviour
 		{
 			if(_masterServer == null)
 			{
-				_masterServer = GetComponent<MasterServerConect>();
+				_masterServer = FindObjectOfType<MasterServerConect>();
 			}
 			return _masterServer;
 		}
