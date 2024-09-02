@@ -81,17 +81,28 @@ public class Stoppable : NetworkBehaviour, IStopViewData
             // 
             if (_onStopperObject)
             {
-                // 
-                if (hitColliders is null)
+                // 接触しているオブジェクトがあった場合
+                if (hitColliders is not null)
                 {
-                    // フラグを消す
-                    _onStopperObject = false;
-
-                    // 固定を解除
-                    DestroyStopData();
-
-                    return;
+                    // 接触したColliderすべてに判定を行う
+                    foreach (Collider hitCollider in hitColliders)
+                    {
+                        // Stoppableを持っているオブジェクトがあった場合
+                        if (hitCollider.TryGetComponent<StopperObject>(out var _))
+                        {
+                            // 処理を終了
+                            return;
+                        }
+                    }
                 }
+
+                // フラグを消す
+                _onStopperObject = false;
+
+                // 固定を解除
+                DestroyStopData();
+
+                return;
             }
             // 
             else
@@ -108,14 +119,17 @@ public class Stoppable : NetworkBehaviour, IStopViewData
                 foreach (Collider hitCollider in hitColliders)
                 {
                     // Stoppableを持っていない場合
-                    if (!hitCollider.transform.root.TryGetComponent<StopperObject>(out var stopperObject))
+                    if (!hitCollider.TryGetComponent<StopperObject>(out var stopperObject))
                     {
+                        Debug.LogError("Stoppable:Collider→" + hitCollider.name);
                         // 次のColliderへ
                         continue;
                     }
 
                     // 
                     NetworkObject networkObject = stopperObject.GetComponent<NetworkObject>();
+
+                    Debug.LogWarning("Stoppable:hit→" + networkObject);
 
                     // 
                     RPC_HitStopCollider(networkObject);
