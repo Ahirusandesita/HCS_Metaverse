@@ -45,6 +45,9 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
     // 
     public Transform GetObjectLockTransform => _machineTransform;
 
+    // 
+    private NetworkObject myNetwork = default;
+
     private void Start()
     {
         // オブジェクトの取得範囲の各値を設定する
@@ -56,6 +59,9 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
 
         // 角度
         _hitBoxRotation = this.transform.rotation;
+
+        // 
+        myNetwork = GetComponent<NetworkObject>();
     }
 
     private void Update()
@@ -81,8 +87,8 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
         // 範囲内のオブジェクトをすべて探索する
         foreach (Collider hitCollider in hitColliders)
         {
-            // Ingrodientsがついていた場合
-            if (hitCollider.transform.root.TryGetComponent<Ingrodients>(out var tmp))
+            // 自身が移動権限を持っている かつ Ingrodientsがついていた場合
+            if (hitCollider.GetComponent<NetworkObject>().HasStateAuthority && hitCollider.transform.root.TryGetComponent<Ingrodients>(out var tmp))
             {
                 // RigidbodyのKinematicがついている場合
                 if (hitCollider.GetComponent<Rigidbody>().isKinematic)
