@@ -20,9 +20,7 @@ public class XScrollObject : MonoBehaviour, IHorizontalOnlyScrollable, ITransfor
 
     private void Awake()
     {
-        rectTransform = this.GetComponent<RectTransform>();
-
-        
+        rectTransform = this.GetComponent<RectTransform>();  
     }
     public void Scroll(Vector2 moveValue, float sensitivity)
     {
@@ -30,10 +28,8 @@ public class XScrollObject : MonoBehaviour, IHorizontalOnlyScrollable, ITransfor
         nextPos.x -= (canvasTransform.right * moveValue / sensitivity).x;
         nextPos.y -= (canvasTransform.right * moveValue / sensitivity).y;
 
-        Debug.Log($"Limit{leftLimit.limit}positon{rectTransform.localPosition}");
         if (leftLimit.isUseLimit && leftLimit.limit > nextPos.x)
         {
-            Debug.Log("Limit!");
             Vector3 correctionPos = rectTransform.localPosition;
             correctionPos.x = leftLimit.limit;
 

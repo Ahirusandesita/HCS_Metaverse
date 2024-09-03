@@ -1,3 +1,5 @@
+using Cysharp.Threading.Tasks;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +17,7 @@ public class MenuBar : MonoBehaviour, IMenuManager
     [SerializeField]
     private List<MenuButton> menuButtons;
     private MenuButton activeMenu;
+
     private void Awake()
     {
         Vector3 size = standardTransform.localScale;
@@ -29,7 +32,7 @@ public class MenuBar : MonoBehaviour, IMenuManager
             menuButton.GetComponent<RectTransform>().localPosition = position;
             menuButton.GetComponent<XScrollObject>().InjectLeftLimit(position.x);
             //test
-            position.x += (size.x + 0.05f) * 100f;
+            position.x += (size.x + 0.25f) * 100f;
         }
 
 
@@ -37,12 +40,11 @@ public class MenuBar : MonoBehaviour, IMenuManager
 
     public void ActiveMenu(MenuButton menuButton)
     {
-        if (activeMenu == null)
+        if (activeMenu != null)
         {
-            return;
+            activeMenu.EndMenu();
         }
-        activeMenu.EndMenu();
-
         activeMenu = menuButton;
+
     }
 }

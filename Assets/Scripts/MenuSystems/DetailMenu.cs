@@ -1,18 +1,24 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class DetailMenu : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public void Deployment()
     {
-        
+        this.gameObject.SetActive(true);
+        if (this.GetComponent<MenuDeploymentAnimation>())
+        {
+            this.GetComponent<MenuDeploymentAnimation>().AnimationStart();
+        }
     }
-
-    // Update is called once per frame
-    void Update()
+    public void UnDeployment()
     {
-        
+        if (this.GetComponent<MenuDeploymentAnimation>())
+        {
+            this.GetComponent<MenuDeploymentAnimation>().UnDeployMentStart(() => { this.gameObject.SetActive(false); });
+        }
+
     }
 }

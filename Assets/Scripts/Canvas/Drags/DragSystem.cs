@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DragSystem : MonoBehaviour
+public class DragSystem : MonoBehaviour,IPointerDownHandler,IPointerUpHandler,IDragHandler
 {
     [SerializeField]
     private float sensitivity = 1f;
@@ -20,25 +20,35 @@ public class DragSystem : MonoBehaviour
     /// </summary>
     private bool canScroll = false;
 
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        OnPinterDown((PointerEventData)eventData);
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        OnPointerUp();
+    }
+
     private void Awake()
     {
         //EventTrigger‚É‘Î‰‚·‚éŠÖ”‚ğ“o˜^‚·‚é///////////////////////////////////////////////////////
-        EventTrigger trigger = GetComponent<EventTrigger>();
-        EventTrigger.Entry entryDrag = new EventTrigger.Entry();
-        entryDrag.eventID = EventTriggerType.Drag;
-        entryDrag.callback.AddListener((data) => { OnDrag((PointerEventData)data); });
+        //EventTrigger trigger = GetComponent<EventTrigger>();
+        //EventTrigger.Entry entryDrag = new EventTrigger.Entry();
+        //entryDrag.eventID = EventTriggerType.Drag;
+        //entryDrag.callback.AddListener((data) => { OnDrag((PointerEventData)data); });
 
-        EventTrigger.Entry entryPointerDown = new EventTrigger.Entry();
-        entryPointerDown.eventID = EventTriggerType.PointerDown;
-        entryPointerDown.callback.AddListener((data) => OnPinterDown((PointerEventData)data));
+        //EventTrigger.Entry entryPointerDown = new EventTrigger.Entry();
+        //entryPointerDown.eventID = EventTriggerType.PointerDown;
+        //entryPointerDown.callback.AddListener((data) => OnPinterDown((PointerEventData)data));
 
-        EventTrigger.Entry entryPointerUp = new EventTrigger.Entry();
-        entryPointerUp.eventID = EventTriggerType.PointerUp;
-        entryPointerUp.callback.AddListener((x) => OnPointerUp());
+        //EventTrigger.Entry entryPointerUp = new EventTrigger.Entry();
+        //entryPointerUp.eventID = EventTriggerType.PointerUp;
+        //entryPointerUp.callback.AddListener((x) => OnPointerUp());
 
-        trigger.triggers.Add(entryDrag);
-        trigger.triggers.Add(entryPointerDown);
-        trigger.triggers.Add(entryPointerUp);
+        //trigger.triggers.Add(entryDrag);
+        //trigger.triggers.Add(entryPointerDown);
+        //trigger.triggers.Add(entryPointerUp);
         /////////////////////////////////////////////////////////////////////////////////////////////
 
         scrollables = this.transform.GetComponentsInChildren<IScrollable>(true);
@@ -66,6 +76,11 @@ public class DragSystem : MonoBehaviour
 
         //‘O‰ñ‚ÌÚG“_‚ğXV‚·‚é
         LastPointerPosition = data.position;
+    }
+
+    void IDragHandler.OnDrag(PointerEventData eventData)
+    {
+        OnDrag((PointerEventData)eventData);
     }
 
     /// <summary>

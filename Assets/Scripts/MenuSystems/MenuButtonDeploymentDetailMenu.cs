@@ -1,23 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MenuButtonDeploymentDetailMenu : MenuButton
 {
     [SerializeField]
-    private DetailMenu detailMenu;
+    private List<DetailMenu> detailMenus = new List<DetailMenu>();
 
-    private void Awake()
+    private void Start()
     {
-        detailMenu.gameObject.SetActive(false);
+        foreach (DetailMenu detailMenu in detailMenus)
+        {
+            detailMenu.UnDeployment();
+        }
     }
 
     public override void StartMenu()
     {
-        detailMenu.gameObject.SetActive(true);
+        foreach (DetailMenu detailMenu in detailMenus)
+        {
+            detailMenu.Deployment();
+        }
     }
     public override void EndMenu()
     {
-        detailMenu.gameObject.SetActive(false);
+        foreach (DetailMenu detailMenu in detailMenus)
+        {
+            detailMenu.UnDeployment();
+        }
     }
 }
