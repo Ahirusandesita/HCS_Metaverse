@@ -27,7 +27,7 @@ public static class XDebug
     }
 
     /// <param name="color">「#」から始まるカラーコード、または「red」等HTMLのカラーネーム</param>
-    public static void LogWarning(object message, string color)
+    public static void LogWarning(object message, string color = "white")
     {
 #if UNITY_EDITOR
         Debug.LogWarning($"<color={color}>{message}</color>");
@@ -43,7 +43,7 @@ public static class XDebug
     }
 
     /// <param name="color">「#」から始まるカラーコード、または「red」等HTMLのカラーネーム</param>
-    public static void LogError(object message, string color)
+    public static void LogError(object message, string color = "white")
     {
 #if UNITY_EDITOR
         Debug.LogError($"<color={color}>{message}</color>");
