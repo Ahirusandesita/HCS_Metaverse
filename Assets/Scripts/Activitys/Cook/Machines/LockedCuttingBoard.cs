@@ -95,7 +95,7 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
             }
 
             // Ingrodientsがついていた場合
-            if (hitCollider.transform.root.TryGetComponent<Ingrodients>(out var tmp))
+            if (hitCollider.transform.root.TryGetComponent<Ingrodients>(out var _))
             {
                 // RigidbodyのKinematicがついている場合
                 if (hitCollider.GetComponent<Rigidbody>().isKinematic)

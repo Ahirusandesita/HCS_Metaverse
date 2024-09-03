@@ -88,7 +88,7 @@ public class Stoppable : NetworkBehaviour, IStopViewData
                     foreach (Collider hitCollider in hitColliders)
                     {
                         // Stoppableを持っているオブジェクトがあった場合
-                        if (hitCollider.TryGetComponent<StopperObject>(out var _))
+                        if (hitCollider.gameObject.TryGetComponent<StopperObject>(out var _))
                         {
                             // 処理を終了
                             return;
@@ -128,8 +128,6 @@ public class Stoppable : NetworkBehaviour, IStopViewData
 
                     // 
                     NetworkObject networkObject = stopperObject.GetComponent<NetworkObject>();
-
-                    Debug.LogWarning("Stoppable:hit→" + networkObject);
 
                     // 
                     RPC_HitStopCollider(networkObject);
