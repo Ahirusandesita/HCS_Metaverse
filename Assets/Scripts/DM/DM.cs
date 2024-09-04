@@ -14,7 +14,7 @@ public class DM : MonoBehaviour, IPointerClickHandler, ISendableMessage
     private OwnInformation ownInformation;
     public void OnPointerClick(PointerEventData eventData)
     {
-        ownInformation.RPC_Message(ownInformation.MyPlayerRef, "Hello");
+        ownInformation.RPC_Message(ownInformation.MyPlayerRef, "Hello",GateOfFusion.Instance.NetworkRunner.LocalPlayer);
     }
 
     public void Player(OwnInformation ownInformation)
