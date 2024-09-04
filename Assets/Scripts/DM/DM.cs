@@ -25,4 +25,9 @@ public class DM : MonoBehaviour, ISendableMessage
     {
         this.message.text = message;
     }
+    void ISendableMessage.SendMessage(string message)
+    {
+        ownInformation.RPC_Message(ownInformation.MyPlayerRef, message, GateOfFusion.Instance.NetworkRunner.LocalPlayer);
+        Message(message);
+    }
 }
