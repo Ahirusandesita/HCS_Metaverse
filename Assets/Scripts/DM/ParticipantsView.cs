@@ -15,7 +15,7 @@ public class ParticipantsView : MonoBehaviour,IDetailMenuInitialize
 
     [SerializeField]
     Participants participants;
-
+    
     private List<DM> dms = new List<DM>();
 
     public void Initialize()
