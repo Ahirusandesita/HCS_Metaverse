@@ -9,37 +9,41 @@ public interface IDetailMenuInitialize
 public class ParticipantsView : MonoBehaviour,IDetailMenuInitialize
 {
     [SerializeField]
-    private DM dm;
+    private ContactAddress contactAddress;
     [SerializeField]
     private RectTransform startTransform;
 
     [SerializeField]
     Participants participants;
+    [SerializeField]
+    private DM testDM;
     
-    private List<DM> dms = new List<DM>();
+    private List<ContactAddress> contactAddressList = new List<ContactAddress>();
 
     public void Initialize()
     {
         for(int i=0;i< participants.DeploymentParticipants().Participants.Count; i++)
         {
-            dms.Add(Instantiate(dm, this.transform));
+            contactAddressList.Add(Instantiate(contactAddress, this.transform));
         }
 
         Vector3 position = startTransform.GetComponent<RectTransform>().localPosition;
-        foreach(DM dm in dms)
+        for (int i = 0; i < contactAddressList.Count; i++)
         {
-            dm.GetComponent<RectTransform>().localPosition = position;
+            contactAddressList[i].GetComponent<RectTransform>().localPosition = position;
 
-            position.y -= 10f;
+            position.y -= 100f;
 
-            dm.Player(participants.DeploymentParticipants().Participants[0]);
+            contactAddressList[i].InjectOwinInformation(participants.DeploymentParticipants().Participants[i]);
+            contactAddressList[i].InjectDM(testDM);
         }
     }
     public void Dispose()
     {
-        foreach(DM dm in dms)
+        foreach(ContactAddress contactAddress in contactAddressList)
         {
-            Destroy(dm);
+            Destroy(contactAddress);
         }
+        contactAddressList.Clear();
     }
 }
