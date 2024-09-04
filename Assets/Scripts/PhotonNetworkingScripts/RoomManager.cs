@@ -5,7 +5,7 @@ using Fusion;
 
 public class RoomManager : MonoBehaviour
 {
-	
+
 
 	[SerializeField]
 	private GameObject _leaderObjectPrefab;
@@ -15,11 +15,11 @@ public class RoomManager : MonoBehaviour
 	private int[] _roomCounter = default;
 	private MasterServerConect _masterServer = default;
 	public static RoomManager Instance { get => _instance; }
-	private MasterServerConect MasterServerConect 
+	private MasterServerConect MasterServerConect
 	{
 		get
 		{
-			if(_masterServer == null)
+			if (_masterServer == null)
 			{
 				_masterServer = FindObjectOfType<MasterServerConect>();
 			}
@@ -42,7 +42,7 @@ public class RoomManager : MonoBehaviour
 			return;
 		}
 		_instance = this;
-		_roomCounter = new int[System.Enum.GetValues(typeof(WorldType)).Length];
+		_roomCounter = new int[System.Enum.GetValues(typeof(SceneNameType)).Length];
 	}
 
 	public Room GetCurrentRoom(PlayerRef playerRef)
@@ -68,39 +68,37 @@ public class RoomManager : MonoBehaviour
 	/// <param name="playerRef">入る人の情報</param>
 	/// <param name="roomNumber">入りたい部屋の番号　マイナスの場合は入れる部屋に入る</param>
 	/// <returns>JoinまたはCreateまたはFail</returns>
-	public JoinOrCreateResult JoinOrCreate(WorldType worldType, PlayerRef playerRef, string currentSessionName, int roomNumber = -1)
+	public JoinOrCreateResult JoinOrCreate(SceneNameType worldType, PlayerRef playerRef, string currentSessionName, int roomNumber = -1)
 	{
 		Room myRoom = GetCurrentRoom(playerRef);
-		if(myRoom != null)
+		if (myRoom != null)
 		{
 			XDebug.LogWarning($"すでにルームに参加しています", KumaDebugColor.WarningColor);
-			myRoom.Left(playerRef);
+			LeftOrClose(playerRef);
 		}
 
-		Room roomTemp = default;
-
-		
-
-		if (_rooms.Count > 0)
-		{
-			//部屋番号指定なしの場合
-			if (roomNumber < 0)
-			{
-				roomTemp = _rooms.Where(room => !room.IsEndJoining).First();
-			}
-			else
-			{
-				roomTemp = _rooms.Where(room => room.RoomNumber == roomNumber).First();
-				//指定した部屋番号に入れないため失敗
-				if (roomTemp.IsEndJoining) { return JoinOrCreateResult.Fail; }
-			}
-		}
 		JoinOrCreateResult result = default;
+		Room roomTemp = null;
+		IEnumerable<Room> rooms = default;
+		//部屋番号指定なしの場合
+		if (roomNumber < 0)
+		{
+			rooms = _rooms.Where(room => !room.IsEndJoining && room.SceneNameType == worldType);
+		}
+		else
+		{
+			rooms = _rooms.Where(room => room.RoomNumber == roomNumber);
+		}
+
+		if (rooms.Count() > 0)
+		{
+			roomTemp = rooms.First();
+		}
 
 		if (roomTemp == null)
 		{
 			if (roomNumber < 0) { roomNumber = _rooms.Count; }
-			roomTemp = Create(worldType, roomNumber, currentSessionName);
+			roomTemp = Create(worldType, roomNumber);
 			InstantiateLeaderObject();
 			result = JoinOrCreateResult.Create;
 		}
@@ -140,13 +138,13 @@ public class RoomManager : MonoBehaviour
 		Room joinedRoom = GetCurrentRoom(playerRef);
 		if (joinedRoom is null) { return; }
 		XDebug.LogWarning(
-			$"Left:{joinedRoom.WorldType}" +
+			$"Left:{joinedRoom.SceneNameType}" +
 			$"\nRoomNum:{joinedRoom.RoomNumber}" +
 			$"Player:{playerRef}", KumaDebugColor.InformationColor);
 		LeftResult result = joinedRoom.Left(playerRef);
 		if (result == LeftResult.Closable)
 		{
-			_roomCounter[(int)joinedRoom.WorldType]--;
+			_roomCounter[(int)joinedRoom.SceneNameType]--;
 			_rooms.Remove(joinedRoom);
 		}
 		else if (result == LeftResult.Fail)
@@ -155,7 +153,7 @@ public class RoomManager : MonoBehaviour
 		}
 	}
 
-	private Room Create(WorldType activityType, int roomNumber, string leaderSessionName)
+	private Room Create(SceneNameType activityType, int roomNumber)
 	{
 		string nextSessionName = activityType + ":" + _roomCounter[(int)activityType];
 		_rooms.Add(new Room(activityType, roomNumber, nextSessionName));
@@ -163,7 +161,7 @@ public class RoomManager : MonoBehaviour
 		return _rooms.LastOrDefault();
 	}
 
-	public void ChengeSessionName(PlayerRef playerRef, string currentSessionName)
+	public void ChangeSessionName(PlayerRef playerRef, string currentSessionName)
 	{
 		Room room = GetCurrentRoom(playerRef);
 		if (room == null)
@@ -178,8 +176,8 @@ public class RoomManager : MonoBehaviour
 	{
 		XDebug.LogWarning($"NewLeader{leaderPlayer}", KumaDebugColor.InformationColor);
 		Room roomTemp = GetCurrentRoom(leaderPlayer);
-		XDebug.LogWarning(MasterServerConect,KumaDebugColor.SuccessColor);
-		XDebug.LogWarning(MasterServerConect.SessionRPCManager,KumaDebugColor.SuccessColor);
+		XDebug.LogWarning(MasterServerConect, KumaDebugColor.SuccessColor);
+		XDebug.LogWarning(MasterServerConect.SessionRPCManager, KumaDebugColor.SuccessColor);
 		//前のリーダーのリーダーオブジェクトを破棄する
 		MasterServerConect.SessionRPCManager.Rpc_DestroyLeaderObject(roomTemp.LeaderPlayerRef);
 		if (leaderPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer)
@@ -194,7 +192,7 @@ public class RoomManager : MonoBehaviour
 	/// </summary>
 	public void Initialize(PlayerRef myPlayerRef)
 	{
-		_roomCounter = new int[System.Enum.GetValues(typeof(WorldType)).Length];
+		_roomCounter = new int[System.Enum.GetValues(typeof(SceneNameType)).Length];
 
 		Room myRoom = GetCurrentRoom(myPlayerRef);
 		if (myRoom == null)
@@ -203,7 +201,7 @@ public class RoomManager : MonoBehaviour
 			return;
 		}
 
-		_roomCounter[(int)myRoom.WorldType]++;
+		_roomCounter[(int)myRoom.SceneNameType]++;
 
 		IEnumerable<Room> deleteRooms = _rooms.Where(room => room != myRoom);
 		foreach (Room room in deleteRooms)

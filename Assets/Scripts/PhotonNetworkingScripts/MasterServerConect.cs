@@ -1,7 +1,9 @@
 using UnityEngine;
 using Fusion;
 using Photon.Voice.Unity;
+using UnityEngine.SceneManagement;
 using Cysharp.Threading.Tasks;
+using System;
 
 public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 {
@@ -14,9 +16,10 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	[SerializeField]
 	private LocalRemoteSeparation localRemoteReparation;
 	[SerializeField, HideAtPlaying]
-	private bool _isUsePhoton = true;
+	private bool _isUsePhoton = false;
 	private NetworkRunner _networkRunner;
 	private SessionRPCManager _sessionRPCManager;
+	public event Action OnConnect;
 	public bool IsUsePhoton => _isUsePhoton;
 	/// <summary>
 	/// このクラスはランナーとの紐づけはしないためラップする
@@ -51,7 +54,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	}
 	public async UniTask<SessionRPCManager> InstanceSessionRPCManagerAsync()
 	{
-		XDebug.LogWarning($"InstanceRpcManager",KumaDebugColor.ErrorColor);
+		XDebug.LogWarning($"InstanceRpcManager{_networkRunner.IsShutdown}", KumaDebugColor.ErrorColor);
 		SessionRPCManager SessionRPCManagerTemp;
 		NetworkObject networkObjectTemp = await _networkRunner.SpawnAsync(_sessionRPCManagerPrefab);
 		SessionRPCManagerTemp = networkObjectTemp.GetComponent<SessionRPCManager>();
@@ -62,7 +65,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	{
 		if (!_isUsePhoton)
 		{
-			Destroy(FindObjectOfType<RoomManager>().gameObject);
+			DontDestroyOnLoad(this.gameObject);
 			return;
 		}
 
@@ -71,11 +74,23 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 			Destroy(this.gameObject);
 			return;
 		}
-		DontDestroyOnLoad(this.gameObject);
+		SceneNameType firstWorldType = SceneNameType.TestPhotonScene;
 		_networkRunner = await InstanceNetworkRunnerAsync();
-		
-		await Connect("Room");
-		RoomManager.Instance.JoinOrCreate(WorldType.CentralCity, Runner.LocalPlayer, Runner.SessionInfo.Name);
+		await Connect(firstWorldType.ToString());
+		RoomManager.Instance.JoinOrCreate(firstWorldType, Runner.LocalPlayer, Runner.SessionInfo.Name);
+	}
+
+	public async UniTask Disconnect()
+	{
+		XDebug.LogWarning($"Disconnect", KumaDebugColor.SuccessColor);
+		if (!_isUsePhoton) { return; }
+		if (_networkRunner == null)
+		{
+			XDebug.LogWarning($"Runnerがnullです", KumaDebugColor.ErrorColor);
+			return;
+		}
+		await _networkRunner.Shutdown(true, ShutdownReason.Ok);
+		await UniTask.WaitUntil(() => _networkRunner == null);
 	}
 
 	/// <summary>
@@ -84,16 +99,27 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	public async UniTask JoinOrCreateSession(string sessionName)
 	{
 		if (!_isUsePhoton) { return; }
-		(await GetSessionRPCManagerAsync()).Rpc_ChangeRoomSessionName(Runner.LocalPlayer, sessionName);
+		if (_networkRunner != null)
+		{
+			XDebug.LogWarning($"Runnerが破棄されていません", KumaDebugColor.ErrorColor);
+			return;
+		}
 		RoomManager.Instance.Initialize(Runner.LocalPlayer);
-		NetworkRunner oldRunner = _networkRunner;
 		_networkRunner = await InstanceNetworkRunnerAsync();
 		await Connect(sessionName);
-		await oldRunner.Shutdown(true, ShutdownReason.HostMigration);
+
+		if (_networkRunner.SessionInfo.PlayerCount > 1)
+		{
+			(await GetSessionRPCManagerAsync()).Rpc_ChangeRoomSessionName(Runner.LocalPlayer, sessionName);
+		}
+		else
+		{
+			RoomManager.Instance.ChangeSessionName(Runner.LocalPlayer, sessionName);
+		}
 	}
 
 	/// <summary>
-	/// ネットワークランナーを生成してコールバック対象にする
+	/// ネットワークランナーを生成する
 	/// </summary>
 	private async UniTask<NetworkRunner> InstanceNetworkRunnerAsync()
 	{
@@ -109,16 +135,21 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		return networkRunner;
 	}
 
-	public async UniTask Connect(string SessionName)
+	public async UniTask Connect(string sessionName)
 	{
-		//ルームに参加する（ルームが存在しなければ作成して参加する）
-		StartGameResult result = await _networkRunner.StartGame(new StartGameArgs
+		NetworkSceneInfo networkSceneInfo = default;
+
+		networkSceneInfo.AddSceneRef(SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex));
+
+		StartGameArgs startGameArgs = new StartGameArgs
 		{
 			GameMode = GameMode.Shared,
-			SessionName = SessionName,
-			SceneManager = _networkRunner.GetComponent<NetworkSceneManagerDefault>()
-		}
-		);
+			SessionName = sessionName,
+			SceneManager = _networkRunner.GetComponent<NetworkSceneManagerDefault>(),
+			Scene = networkSceneInfo,
+		};
+		//ルームに参加する（ルームが存在しなければ作成して参加する）
+		StartGameResult result = await _networkRunner.StartGame(startGameArgs);
 
 		XDebug.LogWarning("Connect:" + (result.Ok ? "Success" : "Fail"), KumaDebugColor.InformationColor);
 	}
@@ -135,6 +166,8 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		{
 			await GetSessionRPCManagerAsync();
 		}
+
+		OnConnect?.Invoke();
 	}
 
 	public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)

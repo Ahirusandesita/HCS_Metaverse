@@ -9,7 +9,7 @@ namespace HCSMeta.Activity
 		[SerializeField]
 		private GameFrame gameFrame;
 		[SerializeField, Header("アクティビティ(ワールド)")]
-		private WorldType _worldType;
+		private SceneNameType _sceneNameType;
 		private MasterServerConect _masterServer;
 		private NetworkRunner NetworkRunner => GateOfFusion.Instance.NetworkRunner;
 		private MasterServerConect MasterServerConect
@@ -49,12 +49,12 @@ namespace HCSMeta.Activity
 			//ルームに参加する
 			if (MasterServerConect.IsUsePhoton && NetworkRunner.SessionInfo.PlayerCount > 1)
 			{
-				MasterServerConect.SessionRPCManager.Rpc_JoinOrCreateRoom(_worldType, NetworkRunner.LocalPlayer);
+				MasterServerConect.SessionRPCManager.Rpc_JoinOrCreateRoom(_sceneNameType, NetworkRunner.LocalPlayer);
 			}
 			else
 			{
 				RoomManager.Instance.JoinOrCreate(
-					_worldType, NetworkRunner.LocalPlayer,
+					_sceneNameType, NetworkRunner.LocalPlayer,
 					NetworkRunner.SessionInfo.Name);
 			}
 		}

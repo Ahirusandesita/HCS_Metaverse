@@ -8,7 +8,7 @@ public class Room
 	private int _leaderIndex = default;
 	private int _roomNumber = default;
 	private readonly string _nextSessionName = default;
-	private WorldType _worldType = default;
+	private SceneNameType _worldType = default;
 	private List<RoomPlayer> _roomPlayers = new();
 	private int _maxMemberCount = default;
 	public int LeaderIndex { get => _leaderIndex; }
@@ -16,10 +16,10 @@ public class Room
 	public int RoomNumber { get => _roomNumber; }
 	public bool IsEndJoining { get => _isEndJoining; }
 	public string NextSessionName { get => _nextSessionName; }
-	public WorldType WorldType { get => _worldType; }
+	public SceneNameType SceneNameType { get => _worldType; }
 	public List<RoomPlayer> JoinRoomPlayer { get => _roomPlayers; }
 
-	public Room(WorldType activityType, int roomNumber, string nextSessionName)
+	public Room(SceneNameType activityType, int roomNumber, string nextSessionName)
 	{
 		this._worldType = activityType;
 		this._roomNumber = roomNumber;
@@ -27,12 +27,12 @@ public class Room
 		this._nextSessionName = nextSessionName;
 		switch (activityType)
 		{
-			case WorldType.CentralCity:
+			case SceneNameType.TestPhotonScene:
 				{
 					_maxMemberCount = -1;
 					break;
 				}
-			case WorldType.UnderCook:
+			case SceneNameType.CookActivity:
 				{
 					_maxMemberCount = -1;
 					break;
@@ -48,8 +48,8 @@ public class Room
 	public void Join(PlayerRef playerRef, string sessionName)
 	{
 		_roomPlayers.Add(new RoomPlayer(playerRef, sessionName));
-		if(_maxMemberCount < 0) { return; }
-		if(_roomPlayers.Count >= _maxMemberCount)
+		if (_maxMemberCount < 0) { return; }
+		if (_roomPlayers.Count >= _maxMemberCount)
 		{
 			Debug.LogError($"{_roomPlayers.Count}:{_maxMemberCount}");
 			_isEndJoining = true;
