@@ -45,7 +45,6 @@ public class Participants : MonoBehaviour
 
     async void PlayerInformaitonRegiser()
     {
-        Debug.LogError("BBBBB");
         OwnInformation ownInformation = await GateOfFusion.Instance.SpawnAsync(own);
         participantsInformation = new ParticipantsInformation(ownInformation);
     }
