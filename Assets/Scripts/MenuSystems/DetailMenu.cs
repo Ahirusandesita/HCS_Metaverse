@@ -12,13 +12,22 @@ public class DetailMenu : MonoBehaviour
         {
             this.GetComponent<MenuDeploymentAnimation>().AnimationStart();
         }
+
+        foreach(IDetailMenuInitialize item in this.GetComponentsInChildren<IDetailMenuInitialize>())
+        {
+            item.Initialize();
+        }
     }
     public void UnDeployment()
     {
+        foreach (IDetailMenuInitialize item in this.GetComponentsInChildren<IDetailMenuInitialize>())
+        {
+            item.Dispose();
+        }
+
         if (this.GetComponent<MenuDeploymentAnimation>())
         {
             this.GetComponent<MenuDeploymentAnimation>().UnDeployMentStart(() => { this.gameObject.SetActive(false); });
         }
-
     }
 }

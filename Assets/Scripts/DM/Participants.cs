@@ -4,25 +4,35 @@ using UnityEngine;
 using Fusion;
 public interface IParticipantsInformation
 {
-    public PlayerRef Me { get; }
-    public IReadOnlyList<PlayerRef> Participants { get; }
+    public OwnInformation Me { get; }
+    public IReadOnlyList<OwnInformation> Participants { get; }
 }
-public class ParticipantsInformation:IParticipantsInformation
+public class ParticipantsInformation : IParticipantsInformation
 {
-    private PlayerRef me;
-    private List<PlayerRef> participants = new List<PlayerRef>();
-    public PlayerRef Me => me;
-    public IReadOnlyList<PlayerRef> Participants => participants;
-    public ParticipantsInformation(PlayerRef me)
+    private OwnInformation me;
+    private List<OwnInformation> participants = new List<OwnInformation>();
+    public OwnInformation Me => me;
+    public IReadOnlyList<OwnInformation> Participants => participants;
+    public ParticipantsInformation(OwnInformation me)
     {
         this.me = me;
     }
-
-    public void AddPlayer(PlayerRef newPlayer)
+    public void AddPlayer(OwnInformation ownInformation)
     {
-        participants.Add(newPlayer);
+        foreach (OwnInformation item in participants)
+        {
+            if (item == ownInformation)
+            {
+                return;
+            }
+        }
+        participants.Add(ownInformation);
     }
 }
+
+
+
+
 public class Participants : MonoBehaviour
 {
     private ParticipantsInformation participantsInformation;
@@ -30,47 +40,25 @@ public class Participants : MonoBehaviour
     private OwnInformation own;
     private void Awake()
     {
-        StartCoroutine(AA());
+        GateOfFusion.Instance.OnConnect += () => PlayerInformaitonRegiser();
     }
 
-    IEnumerator AA()
+    async void PlayerInformaitonRegiser()
     {
-        yield return new WaitForSeconds(5f);
-        BB();
+        Debug.LogError("BBBBB");
+        OwnInformation ownInformation = await GateOfFusion.Instance.SpawnAsync(own);
+        participantsInformation = new ParticipantsInformation(ownInformation);
     }
-
-    async void BB()
-    {
-        await GateOfFusion.Instance.SpawnAsync(own);
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            IParticipantsInformation i = DeploymentParticipants();
-
-            Debug.LogError(i.Me);
-            foreach(PlayerRef playerRef in i.Participants)
-            {
-                Debug.LogError(playerRef);
-            }
-        }
-    }
-
-
     public IParticipantsInformation DeploymentParticipants()
     {
-        if(participantsInformation == null)
+        foreach (OwnInformation ownInformation in FindObjectsOfType<OwnInformation>())
         {
-            participantsInformation = new ParticipantsInformation(GateOfFusion.Instance.NetworkRunner.LocalPlayer);
+            if (GateOfFusion.Instance.NetworkRunner.LocalPlayer == ownInformation.MyPlayerRef)
+            {
+                continue;
+            }
+            participantsInformation.AddPlayer(ownInformation);
         }
-
-        foreach(OwnInformation ownInformation in FindObjectsOfType<OwnInformation>())
-        {
-            participantsInformation.AddPlayer(ownInformation.MyPlayerRef);
-        }
-
         return participantsInformation;
     }
 }
