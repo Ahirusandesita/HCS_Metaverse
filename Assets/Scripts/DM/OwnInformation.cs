@@ -16,11 +16,11 @@ public class OwnInformation : NetworkBehaviour
 
     //test
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
-    public void RPC_Message([RpcTarget]PlayerRef target,string message)
+    public void RPC_Message([RpcTarget]PlayerRef target,string message,PlayerRef sender)
     {
         foreach(DM dm in FindObjectsOfType<DM>())
         {
-            if (dm.IsTarget(target))
+            if (dm.IsTarget(sender))
             {
                 dm.Message(message);
             }
