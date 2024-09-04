@@ -8,21 +8,18 @@ public class ProcessDegreeOfProgressPresenter : MonoBehaviour
     private Ingrodients ingrodients;
     [SerializeField]
     ProcessDegreeOfProgressView processDegreeOfProgressView;
-    private IPracticableRPCEvent practicableRPCEvent;
-    public void Action(float t)
+
+    public void ChengeProgressPresenter(float t)
     {
-        //processDegreeOfProgressView.View(1f - (t));
+        processDegreeOfProgressView.View(1f - t);
     }
-    public void Inject(IPracticableRPCEvent practicableRPCEvent)
-    {
-        this.practicableRPCEvent = practicableRPCEvent;
-    }
+
     private void Awake()
     {
-        //ingrodients.TimeItTakesProperty.Skip(1).Subscribe((data) =>
-        //{
-        //   practicableRPCEvent.RPC_Event<ProcessDegreeOfProgressPresenter>(this.gameObject, data.NowTimeItTakes / data.MaxTimeItTakes);
-        //}).AddTo(this);
+        ingrodients.TimeItTakesProperty.Skip(1).Subscribe((data) =>
+        {
+            ChengeProgressPresenter(data.NowTimeItTakes / data.MaxTimeItTakes);
+        }).AddTo(this);
     }
     private void Start()
     {

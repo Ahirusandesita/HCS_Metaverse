@@ -88,7 +88,7 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
         foreach (Collider hitCollider in hitColliders)
         {
             // NetworkObjectを持たない場合 または 移動権限を持たない場合
-            if (!hitCollider.TryGetComponent<NetworkObject>(out var network) || !network.HasStateAuthority)
+            if (!hitCollider.transform.root.TryGetComponent<NetworkObject>(out var network) || !network.HasStateAuthority)
             {
                 // 次のオブジェクトに移る
                 continue;
@@ -105,7 +105,7 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
                 }
 
                 // 固定するオブジェクトを取得する
-                NetworkObject lockObject = hitCollider.GetComponent<NetworkObject>();
+                NetworkObject lockObject = hitCollider.transform.root.GetComponent<NetworkObject>();
 
                 // 食材に当たったときの処理を行う
                 RPC_HitIngrodients(lockObject);
@@ -173,6 +173,8 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
         // 
         _pointableUnityEventWrapper = lockObject.GetComponentInChildren<PointableUnityEventWrapper>();
         _pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
+
+        Debug.LogWarning("まな板が" + lockObject.name + "を固定したよ");
     }
 
     [Rpc]
