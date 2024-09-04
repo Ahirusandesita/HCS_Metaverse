@@ -153,6 +153,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		StartGameResult result = await _networkRunner.StartGame(startGameArgs);
 
 		XDebug.LogWarning("Connect:" + (result.Ok ? "Success" : "Fail"), KumaDebugColor.InformationColor);
+
 	}
 
 	private async void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
