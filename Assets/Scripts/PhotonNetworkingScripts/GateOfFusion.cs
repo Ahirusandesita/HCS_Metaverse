@@ -134,12 +134,6 @@ public class GateOfFusion
 		return temp;
 	}
 
-	/*
-	 * ネットワークを切る
-	 * シーンを変える
-	 * 接続する
-	 */
-
 	public async void ActivityStart()
 	{
 		XDebug.LogWarning("アクティビティスタート", KumaDebugColor.MessageColor);
@@ -187,7 +181,7 @@ public class GateOfFusion
 		XDebug.LogWarning($"全員移動させた", KumaDebugColor.MessageColor);
 		await MasterServer.Disconnect();
 		XDebug.LogWarning($"切断した", KumaDebugColor.MessageColor);
-
+		await SceneManager.LoadSceneAsync(sceneName);
 		await MasterServer.JoinOrCreateSession(sessionName);
 		XDebug.LogWarning($"自分がセッション移動した", KumaDebugColor.MessageColor);
 		//await UniTask.WaitUntil(() => MasterServer.SessionRPCManager == null);
@@ -211,7 +205,6 @@ public class GateOfFusion
 			await UniTask.WaitUntil(() => NetworkRunner.IsSharedModeMasterClient);
 			XDebug.LogWarning("自分がマスターになった", KumaDebugColor.MessageColor);
 		}
-		await NetworkRunner.LoadScene(sceneName, LoadSceneMode.Single);
 		_syncResult = SyncResult.Complete;
 		XDebug.LogWarning($"移動終了", KumaDebugColor.MessageColor);
 	}

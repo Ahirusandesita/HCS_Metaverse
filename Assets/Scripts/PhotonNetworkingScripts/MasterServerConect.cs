@@ -131,6 +131,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		NetworkEvents events = networkRunner.GetComponent<NetworkEvents>();
 		events.PlayerJoined.AddListener(OnPlayerJoined);
 		events.PlayerLeft.AddListener(OnPlayerLeft);
+		events.OnConnectedToServer.AddListener(OnConnectedToServer);
 		XDebug.LogWarning("UpdateRunner", KumaDebugColor.SuccessColor);
 		return networkRunner;
 	}
@@ -154,7 +155,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		XDebug.LogWarning("Connect:" + (result.Ok ? "Success" : "Fail"), KumaDebugColor.InformationColor);
 	}
 
-	public async void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
+	private async void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
 	{
 		XDebug.LogWarning($"JoinSession:{player}", KumaDebugColor.InformationColor);
 
@@ -167,10 +168,12 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 			await GetSessionRPCManagerAsync();
 		}
 
+	}
+	private void OnConnectedToServer(NetworkRunner runner)
+	{
 		OnConnect?.Invoke();
 	}
-
-	public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+	private void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
 	{
 		XDebug.LogWarning($"LeftSession:{player}", KumaDebugColor.InformationColor);
 		if (runner.TryGetPlayerObject(player, out NetworkObject avater))
