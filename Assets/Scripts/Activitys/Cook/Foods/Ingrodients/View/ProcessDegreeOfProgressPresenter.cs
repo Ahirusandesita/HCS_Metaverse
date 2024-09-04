@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
-public class ProcessDegreeOfProgressPresenter : MonoBehaviour, IAction<float>
+public class ProcessDegreeOfProgressPresenter : MonoBehaviour
 {
     [SerializeField]
     private Ingrodients ingrodients;
@@ -11,7 +11,7 @@ public class ProcessDegreeOfProgressPresenter : MonoBehaviour, IAction<float>
     private IPracticableRPCEvent practicableRPCEvent;
     public void Action(float t)
     {
-        processDegreeOfProgressView.View(1f - (t));
+        //processDegreeOfProgressView.View(1f - (t));
     }
     public void Inject(IPracticableRPCEvent practicableRPCEvent)
     {
@@ -19,10 +19,10 @@ public class ProcessDegreeOfProgressPresenter : MonoBehaviour, IAction<float>
     }
     private void Awake()
     {
-        ingrodients.TimeItTakesProperty.Skip(1).Subscribe((data) =>
-        {
-           practicableRPCEvent.RPC_Event<ProcessDegreeOfProgressPresenter>(this.gameObject, data.NowTimeItTakes / data.MaxTimeItTakes);
-        }).AddTo(this);
+        //ingrodients.TimeItTakesProperty.Skip(1).Subscribe((data) =>
+        //{
+        //   practicableRPCEvent.RPC_Event<ProcessDegreeOfProgressPresenter>(this.gameObject, data.NowTimeItTakes / data.MaxTimeItTakes);
+        //}).AddTo(this);
     }
     private void Start()
     {
