@@ -1,6 +1,7 @@
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using Fusion;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 
 public class GateOfFusion
@@ -10,8 +11,21 @@ public class GateOfFusion
 	private static GateOfFusion _instance = default;
 	private SyncResult _syncResult = SyncResult.Complete;
 	public static GateOfFusion Instance => _instance ??= new GateOfFusion();
+	public event System.Action OnConnect;
+
+	public GateOfFusion()
+	{
+		MasterServer.OnConnect += OnConnect;
+	}
 	private MasterServerConect MasterServer
-		=> _masterServer ??= Object.FindObjectOfType<MasterServerConect>();
+	{
+		get
+		{
+			_masterServer ??= Object.FindObjectOfType<MasterServerConect>();
+			_masterServer ??= new GameObject("Master").AddComponent<MasterServerConect>();
+			return _masterServer;
+		}
+	}
 
 	public bool IsUsePhoton { get => MasterServer.IsUsePhoton; }
 	public NetworkRunner NetworkRunner
@@ -88,6 +102,7 @@ public class GateOfFusion
 		}
 		else if (prefab.TryGetComponent(out NetworkObject networkObject))
 		{
+
 			temp = (await NetworkRunner.SpawnAsync(networkObject, position, quaternion)).GetComponent<T>();
 		}
 		else
@@ -119,13 +134,25 @@ public class GateOfFusion
 		return temp;
 	}
 
+	/*
+	 * ネットワークを切る
+	 * シーンを変える
+	 * 接続する
+	 */
 
-
-	public async void ActivityStart(string sceneName)
+	public async void ActivityStart()
 	{
+		XDebug.LogWarning("アクティビティスタート", KumaDebugColor.MessageColor);
 		if (_syncResult != SyncResult.Complete)
 		{
 			Debug.LogError("移動中です");
+			return;
+		}
+		Room currentRoom = RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer);
+		string sceneName = currentRoom.SceneNameType.ToString();
+		if(SceneManager.GetActiveScene().name == sceneName)
+		{
+			XDebug.LogWarning("現在いるシーンです", KumaDebugColor.WarningColor);
 			return;
 		}
 		_syncResult = SyncResult.Connecting;
@@ -135,8 +162,6 @@ public class GateOfFusion
 			_syncResult = SyncResult.Complete;
 			return;
 		}
-		//アクティビティスタート
-		Room currentRoom = RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer);
 		if (currentRoom == null)
 		{
 			XDebug.LogWarning("どのルームにも入っていません", KumaDebugColor.ErrorColor);
@@ -150,33 +175,43 @@ public class GateOfFusion
 			return;
 		}
 		string sessionName = currentRoom.NextSessionName;
+
 		foreach (RoomPlayer roomPlayer in currentRoom.JoinRoomPlayer)
 		{
 			if (roomPlayer.PlayerData == NetworkRunner.LocalPlayer) { continue; }
-			MasterServer.SessionRPCManager.Rpc_JoinSession(sessionName, roomPlayer.PlayerData);
+			MasterServer.SessionRPCManager.Rpc_JoinSession(sessionName, sceneName, roomPlayer.PlayerData);
 			XDebug.LogWarning($"{roomPlayer.PlayerData}を移動させた", KumaDebugColor.MessageColor);
+			await UniTask.WaitUntil(() => !NetworkRunner.ActivePlayers.Contains(roomPlayer.PlayerData));
 		}
+
 		XDebug.LogWarning($"全員移動させた", KumaDebugColor.MessageColor);
+		await MasterServer.Disconnect();
+		XDebug.LogWarning($"切断した", KumaDebugColor.MessageColor);
+
 		await MasterServer.JoinOrCreateSession(sessionName);
 		XDebug.LogWarning($"自分がセッション移動した", KumaDebugColor.MessageColor);
-		await UniTask.WaitUntil(() => MasterServer.SessionRPCManager == null);
-		XDebug.LogWarning($"RpcDelete", KumaDebugColor.MessageColor);
-		await MasterServer.GetSessionRPCManagerAsync();
+		//await UniTask.WaitUntil(() => MasterServer.SessionRPCManager == null);
+		//XDebug.LogWarning($"RpcDelete", KumaDebugColor.MessageColor);
+
+		foreach (RoomPlayer roomPlayer in currentRoom.JoinRoomPlayer)
+		{
+			await UniTask.WaitUntil(() => NetworkRunner.ActivePlayers.Contains(roomPlayer.PlayerData));
+		}
+
+		SessionRPCManager sessionRPCManager = await MasterServer.GetSessionRPCManagerAsync();
 
 		if (!NetworkRunner.IsSharedModeMasterClient)
 		{
-			XDebug.LogWarning($"Rpc取得", KumaDebugColor.MessageColor);
-			await UniTask.WaitUntil(() => Object.FindObjectOfType<SessionRPCManager>() != null);
-			SessionRPCManager sessionRPCManager = Object.FindObjectOfType<SessionRPCManager>();
-			XDebug.LogError($"{NetworkRunner.SessionInfo.PlayerCount}" +
+			//XDebug.LogWarning($"Rpc取得", KumaDebugColor.MessageColor);
+			//await UniTask.WaitUntil(() => Object.FindObjectOfType<SessionRPCManager>() != null);
+			//SessionRPCManager sessionRPCManager = Object.FindObjectOfType<SessionRPCManager>();
+			XDebug.LogWarning($"{NetworkRunner.SessionInfo.PlayerCount}" +
 				$":{currentRoom.JoinRoomPlayer.Count}", KumaDebugColor.MessageColor);
 			sessionRPCManager.Rpc_ChangeMasterClient(NetworkRunner.LocalPlayer);
-			XDebug.LogError($"{NetworkRunner}:{NetworkRunner.IsSharedModeMasterClient}", KumaDebugColor.ErrorColor);
 			await UniTask.WaitUntil(() => NetworkRunner.IsSharedModeMasterClient);
 			XDebug.LogWarning("自分がマスターになった", KumaDebugColor.MessageColor);
 		}
 		await NetworkRunner.LoadScene(sceneName, LoadSceneMode.Single);
-		await MasterServer.GetSessionRPCManagerAsync();
 		_syncResult = SyncResult.Complete;
 		XDebug.LogWarning($"移動終了", KumaDebugColor.MessageColor);
 	}
