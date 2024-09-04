@@ -15,7 +15,7 @@ public class GateOfFusion
 
 	public GateOfFusion()
 	{
-		MasterServer.OnConnect += OnConnect;
+		MasterServer.OnConnect += () => OnConnect?.Invoke();
 	}
 	private MasterServerConect MasterServer
 	{
