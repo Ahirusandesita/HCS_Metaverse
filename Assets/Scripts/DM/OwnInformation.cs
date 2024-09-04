@@ -7,7 +7,7 @@ public class OwnInformation : NetworkBehaviour
     private NetworkObject networkObject;
 
     public PlayerRef MyPlayerRef => networkObject.StateAuthority;
-
+    public string Name => "Test";
     private void Awake()
     {
         networkObject = this.GetComponent<NetworkObject>();
@@ -18,6 +18,12 @@ public class OwnInformation : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     public void RPC_Message([RpcTarget]PlayerRef target,string message)
     {
-        Debug.LogError("message");
+        foreach(DM dm in FindObjectsOfType<DM>())
+        {
+            if (dm.IsTarget(target))
+            {
+                dm.Message(message);
+            }
+        }
     }
 }

@@ -1,6 +1,9 @@
 using UnityEngine;
 using TMPro;
-
+public interface ISendableMessage
+{
+    void SendMessage(string message);
+}
 /// <summary>
 /// １つのフリックキーボードを管理する
 /// </summary>
@@ -15,6 +18,7 @@ public class FlickKeyboardManager : MonoBehaviour
     private IFlickKeyCaseConvertible[] flickButtonCaseConvertibles;
 
     private SendChat sendChat;
+    private ISendableMessage sendableMessage;
     private void Awake()
     {
         flickButtonOpeningAndClosings = this.GetComponentsInChildren<IFlickKeyEnabledAndDisabled>(true);
@@ -26,6 +30,11 @@ public class FlickKeyboardManager : MonoBehaviour
         {
             flickKeyParent.FlickManagerInject(this);
         }
+    }
+
+    public void InjectSendableMessage(ISendableMessage sendableMessage)
+    {
+        this.sendableMessage = sendableMessage;
     }
     /// <summary>
     /// 引数以外のIFlickKeyEnabledAndDisabled型のキーを無効化する
@@ -90,6 +99,7 @@ public class FlickKeyboardManager : MonoBehaviour
     public void Return()
     {
         //sendChat.Send_ToOthers(text);
+        sendableMessage?.SendMessage(text);
         textMeshProUGUI.text = "";
         text = "";
     }
