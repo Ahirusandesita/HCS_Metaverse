@@ -11,7 +11,7 @@ public class DM : MonoBehaviour,IPointerClickHandler
     private OwnInformation ownInformation;
     public void OnPointerClick(PointerEventData eventData)
     {
-        ownInformation.RPC_Message(ownInformation.MyPlayerRef, "Hello");
+        ownInformation.RPC_Message(ownInformation.MyPlayerRef,"Hello");
     }
 
     public void Player(OwnInformation ownInformation)

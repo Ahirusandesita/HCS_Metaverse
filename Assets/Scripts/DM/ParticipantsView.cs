@@ -31,6 +31,8 @@ public class ParticipantsView : MonoBehaviour,IDetailMenuInitialize
             dm.GetComponent<RectTransform>().localPosition = position;
 
             position.y -= 10f;
+
+            dm.Player(participants.DeploymentParticipants().Participants[0]);
         }
     }
     public void Dispose()
