@@ -18,15 +18,8 @@ public class RPCSpawner : MonoBehaviour
     private void Start()
     {
         canSpawn = false;
-        if (GateOfFusion.Instance.IsUsePhoton)
-        {
-            GateOfFusion.Instance.NetworkRunner.GetComponent<NetworkEvents>().OnConnectedToServer.AddListener((data) => canSpawn = true);
-            Spawn();
-        }
-        else
-        {
-            practicableRPCEvent = new NullPracticableRPCEvent();
-        }
+      
+
     }
 
     private async void Spawn()

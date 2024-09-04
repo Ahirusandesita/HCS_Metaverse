@@ -45,8 +45,8 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     }
     private async void Initialize()
     {
-        Fusion.NetworkObject networkObject = await GateOfFusion.Instance.NetworkRunner.SpawnAsync(remoteOrder.gameObject);
-        instance = networkObject.GetComponent<RemoteOrder>();
+        GameObject remoteOrderObject = await GateOfFusion.Instance.SpawnAsync(remoteOrder.gameObject);
+        instance = remoteOrderObject.GetComponent<RemoteOrder>();
 
         customer.InjectRemoteOrder(instance);
         instance.RPC_Initialize();
