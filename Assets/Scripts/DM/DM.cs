@@ -1,18 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.EventSystems;
 
-public class DM : MonoBehaviour
+public class DM : MonoBehaviour,IPointerClickHandler
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    private TextMeshProUGUI textMesh;
+    private OwnInformation ownInformation;
+    public void OnPointerClick(PointerEventData eventData)
     {
-        
+        ownInformation.RPC_Message(ownInformation.MyPlayerRef, "Hello");
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Player(OwnInformation ownInformation)
     {
-        
+        this.ownInformation = ownInformation;
+        textMesh.text = ownInformation.MyPlayerRef.ToString();
     }
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
-public class OwnInformation : MonoBehaviour
+public class OwnInformation : NetworkBehaviour
 {
     private NetworkObject networkObject;
 
@@ -11,5 +11,13 @@ public class OwnInformation : MonoBehaviour
     private void Awake()
     {
         networkObject = this.GetComponent<NetworkObject>();
+    }
+
+
+    //test
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
+    public void RPC_Message([RpcTarget]PlayerRef target,string message)
+    {
+        Debug.LogError("message");
     }
 }
