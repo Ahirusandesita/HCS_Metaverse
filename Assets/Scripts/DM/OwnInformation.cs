@@ -18,11 +18,11 @@ public class OwnInformation : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     public void RPC_Message([RpcTarget]PlayerRef target,string message,PlayerRef sender)
     {
-        foreach(DM dm in FindObjectsOfType<DM>())
+        foreach(ContactAddress contactAddress in FindObjectsOfType<ContactAddress>())
         {
-            if (dm.IsTarget(sender))
+            if (contactAddress.IsTarget(sender))
             {
-                dm.Message(message);
+                contactAddress.Message(message);
             }
         }
     }
