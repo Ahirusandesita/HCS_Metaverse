@@ -102,7 +102,7 @@ public class GateOfFusion
 		}
 		else if (prefab.TryGetComponent(out NetworkObject networkObject))
 		{
-			await UniTask.WaitUntil(() => NetworkRunner != null);
+			await UniTask.WaitUntil(() => MasterServer.IsConnected);
 			temp = (await NetworkRunner.SpawnAsync(networkObject, position, quaternion)).GetComponent<T>();
 		}
 		else
@@ -124,7 +124,7 @@ public class GateOfFusion
 		}
 		else if (prefab.TryGetComponent(out NetworkObject networkObject))
 		{
-			await UniTask.WaitForSeconds(3f);
+			await UniTask.WaitUntil(() => MasterServer.IsConnected);
 			temp = (await NetworkRunner.SpawnAsync(networkObject, position, quaternion)).gameObject;
 		}
 		else
@@ -141,12 +141,12 @@ public class GateOfFusion
 		XDebug.LogWarning("アクティビティスタート", KumaDebugColor.MessageColor);
 		if (_syncResult != SyncResult.Complete)
 		{
-			Debug.LogError("移動中です");
+			Debug.LogWarning("移動中です");
 			return;
 		}
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer);
 		string sceneName = currentRoom.SceneNameType.ToString();
-		if(SceneManager.GetActiveScene().name == sceneName)
+		if (SceneManager.GetActiveScene().name == sceneName)
 		{
 			XDebug.LogWarning("現在いるシーンです", KumaDebugColor.WarningColor);
 			return;
@@ -177,6 +177,7 @@ public class GateOfFusion
 			if (roomPlayer.PlayerData == NetworkRunner.LocalPlayer) { continue; }
 			MasterServer.SessionRPCManager.Rpc_JoinSession(sessionName, sceneName, roomPlayer.PlayerData);
 			XDebug.LogWarning($"{roomPlayer.PlayerData}を移動させた", KumaDebugColor.MessageColor);
+			await UniTask.WaitUntil(() => !NetworkRunner.ActivePlayers.Contains(roomPlayer.PlayerData));
 		}
 		XDebug.LogWarning($"全員移動させた", KumaDebugColor.MessageColor);
 		await MasterServer.Disconnect();
