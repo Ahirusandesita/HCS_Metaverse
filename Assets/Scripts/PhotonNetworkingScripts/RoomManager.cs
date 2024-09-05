@@ -64,11 +64,11 @@ public class RoomManager : MonoBehaviour
 	/// <summary>
 	/// アクティビティのルームに参加するまたはルームを作成する
 	/// </summary>
-	/// <param name="worldType">入りたいActivity</param>
+	/// <param name="sceneNameType">入りたいActivity</param>
 	/// <param name="playerRef">入る人の情報</param>
 	/// <param name="roomNumber">入りたい部屋の番号　マイナスの場合は入れる部屋に入る</param>
 	/// <returns>JoinまたはCreateまたはFail</returns>
-	public JoinOrCreateResult JoinOrCreate(SceneNameType worldType, PlayerRef playerRef, string currentSessionName, int roomNumber = -1)
+	public JoinOrCreateResult JoinOrCreate(SceneNameType sceneNameType, PlayerRef playerRef, string currentSessionName, int roomNumber = -1)
 	{
 		Room myRoom = GetCurrentRoom(playerRef);
 		if (myRoom != null)
@@ -83,7 +83,7 @@ public class RoomManager : MonoBehaviour
 		//部屋番号指定なしの場合
 		if (roomNumber < 0)
 		{
-			rooms = _rooms.Where(room => !room.IsEndJoining && room.SceneNameType == worldType);
+			rooms = _rooms.Where(room => !room.IsEndJoining && room.SceneNameType == sceneNameType);
 		}
 		else
 		{
@@ -98,8 +98,11 @@ public class RoomManager : MonoBehaviour
 		if (roomTemp == null)
 		{
 			if (roomNumber < 0) { roomNumber = _rooms.Count; }
-			roomTemp = Create(worldType, roomNumber);
-			InstantiateLeaderObject();
+			roomTemp = Create(sceneNameType, roomNumber);
+			if (sceneNameType != SceneNameType.TestPhotonScene)
+			{
+				InstantiateLeaderObject();
+			}
 			result = JoinOrCreateResult.Create;
 		}
 		else
@@ -109,7 +112,7 @@ public class RoomManager : MonoBehaviour
 
 		roomTemp.Join(playerRef, currentSessionName);
 
-		XDebug.LogWarning($"Join:{worldType}," +
+		XDebug.LogWarning($"Join:{sceneNameType}," +
 			$"Result:{result}\nRoomNum:{roomTemp.RoomNumber}," +
 			$"Player:{playerRef}",
 			KumaDebugColor.InformationColor);
@@ -120,12 +123,14 @@ public class RoomManager : MonoBehaviour
 	public void InstantiateLeaderObject()
 	{
 		if (_leaderObject) { return; }
+		XDebug.LogWarning($"InstanceLeaderObject:{MasterServerConect.Runner.LocalPlayer}", KumaDebugColor.SuccessColor);
 		_leaderObject = Instantiate(_leaderObjectPrefab);
 	}
 
 	public void DestroyLeaderObject()
 	{
 		if (!_leaderObject) { return; }
+		XDebug.LogWarning($"DestoryLeaderObject:{MasterServerConect.Runner.LocalPlayer}", KumaDebugColor.SuccessColor);
 		Destroy(_leaderObject);
 	}
 
@@ -166,7 +171,7 @@ public class RoomManager : MonoBehaviour
 		Room room = GetCurrentRoom(playerRef);
 		if (room == null)
 		{
-			XDebug.LogError("ルームが見つかりませんでした", KumaDebugColor.ErrorColor);
+			XDebug.LogWarning("ルームが見つかりませんでした", KumaDebugColor.ErrorColor);
 			return;
 		}
 		room.ChangeSessionName(playerRef, currentSessionName);
@@ -176,11 +181,10 @@ public class RoomManager : MonoBehaviour
 	{
 		XDebug.LogWarning($"NewLeader{leaderPlayer}", KumaDebugColor.InformationColor);
 		Room roomTemp = GetCurrentRoom(leaderPlayer);
-		XDebug.LogWarning(MasterServerConect, KumaDebugColor.SuccessColor);
-		XDebug.LogWarning(MasterServerConect.SessionRPCManager, KumaDebugColor.SuccessColor);
 		//前のリーダーのリーダーオブジェクトを破棄する
 		MasterServerConect.SessionRPCManager.Rpc_DestroyLeaderObject(roomTemp.LeaderPlayerRef);
-		if (leaderPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer)
+		if (leaderPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer
+			&& roomTemp.SceneNameType != SceneNameType.TestPhotonScene)
 		{
 			InstantiateLeaderObject();
 		}

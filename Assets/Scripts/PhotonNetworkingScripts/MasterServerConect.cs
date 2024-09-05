@@ -1,5 +1,6 @@
 using UnityEngine;
 using Fusion;
+using Fusion.Sockets;
 using Photon.Voice.Unity;
 using UnityEngine.SceneManagement;
 using Cysharp.Threading.Tasks;
@@ -19,8 +20,10 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	private bool _isUsePhoton = false;
 	private NetworkRunner _networkRunner;
 	private SessionRPCManager _sessionRPCManager;
+	private bool _isConnected = default;
 	public event Action OnConnect;
 	public bool IsUsePhoton => _isUsePhoton;
+	public bool IsConnected => _isConnected;
 	/// <summary>
 	/// このクラスはランナーとの紐づけはしないためラップする
 	/// </summary>
@@ -40,40 +43,36 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		}
 		return _networkRunner;
 	}
+
 	public async UniTask<SessionRPCManager> GetSessionRPCManagerAsync()
 	{
 		if (_sessionRPCManager != null) { return _sessionRPCManager; }
-
 		_sessionRPCManager = FindObjectOfType<SessionRPCManager>();
-		if (_sessionRPCManager == null)
-		{
-			_networkRunner = await GetRunnerAsync();
-			_sessionRPCManager = await InstanceSessionRPCManagerAsync();
-		}
+		await UniTask.WaitUntil(() => _sessionRPCManager != null);
 		return _sessionRPCManager;
 	}
+
 	public async UniTask<SessionRPCManager> InstanceSessionRPCManagerAsync()
 	{
 		XDebug.LogWarning($"InstanceRpcManager{_networkRunner.IsShutdown}", KumaDebugColor.ErrorColor);
-		SessionRPCManager SessionRPCManagerTemp;
 		NetworkObject networkObjectTemp = await _networkRunner.SpawnAsync(_sessionRPCManagerPrefab);
-		SessionRPCManagerTemp = networkObjectTemp.GetComponent<SessionRPCManager>();
-		return SessionRPCManagerTemp;
+		_sessionRPCManager = networkObjectTemp.GetComponent<SessionRPCManager>();
+		return _sessionRPCManager;
 	}
 
 	private async void Awake()
 	{
-		if (!_isUsePhoton)
-		{
-			DontDestroyOnLoad(this.gameObject);
-			return;
-		}
-
 		if (FindObjectsOfType<MasterServerConect>().Length > 1)
 		{
 			Destroy(this.gameObject);
 			return;
 		}
+		DontDestroyOnLoad(this.gameObject);
+		if (!_isUsePhoton)
+		{
+			return;
+		}
+		
 		SceneNameType firstWorldType = SceneNameType.TestPhotonScene;
 		_networkRunner = await InstanceNetworkRunnerAsync();
 		await Connect(firstWorldType.ToString());
@@ -102,7 +101,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		if (_networkRunner != null)
 		{
 			XDebug.LogWarning($"Runnerが破棄されていません", KumaDebugColor.ErrorColor);
-			return;
+			await Disconnect();
 		}
 		RoomManager.Instance.Initialize(Runner.LocalPlayer);
 		_networkRunner = await InstanceNetworkRunnerAsync();
@@ -131,6 +130,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		NetworkEvents events = networkRunner.GetComponent<NetworkEvents>();
 		events.PlayerJoined.AddListener(OnPlayerJoined);
 		events.PlayerLeft.AddListener(OnPlayerLeft);
+		events.OnShutdown.AddListener(OnShutdown);
 		events.OnConnectedToServer.AddListener(OnConnectedToServer);
 		XDebug.LogWarning("UpdateRunner", KumaDebugColor.SuccessColor);
 		return networkRunner;
@@ -163,16 +163,11 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		if (Runner.LocalPlayer == player)
 		{
 			localRemoteReparation.RemoteViewCreate(Runner, Runner.LocalPlayer);
+			if (Runner.IsSharedModeMasterClient)
+			{
+				await InstanceSessionRPCManagerAsync();
+			}
 		}
-		if (Runner.IsSharedModeMasterClient)
-		{
-			await GetSessionRPCManagerAsync();
-		}
-
-	}
-	private void OnConnectedToServer(NetworkRunner runner)
-	{
-		OnConnect?.Invoke();
 	}
 	private void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
 	{
@@ -181,5 +176,19 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		{
 			runner.Despawn(avater);
 		}
+	}
+
+
+	private void OnConnectedToServer(NetworkRunner runner)
+	{
+		XDebug.LogWarning("OnConnectedToServer",KumaDebugColor.MessageColor);
+		OnConnect?.Invoke();
+		_isConnected = true;
+	}
+
+	private void OnShutdown(NetworkRunner runner, ShutdownReason reason)
+	{
+		XDebug.LogWarning("OnDisconnectedFromServer", KumaDebugColor.MessageColor);
+		_isConnected = false;
 	}
 }
