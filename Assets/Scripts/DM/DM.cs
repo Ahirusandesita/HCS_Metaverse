@@ -43,13 +43,17 @@ public class DM : MonoBehaviour
                 messages[i].Message(messageInformations[messageInformations.Count - 1].Message);
                 Vector3 position = messages[i].GetComponent<RectTransform>().localPosition;
                 position.x = SenderXPosition(messageInformation.MessageSender);
+                messages[i].GetComponent<RectTransform>().localPosition = position;
             }
         }
          
     }
     public void InjectMessage(List<MessageInformation> messageInformations)
     {
-        this.messageInformations = messageInformations;
+        for(int i = 0; i < messageInformations.Count; i++)
+        {
+            this.messageInformations.Add(messageInformations[i]);
+        }
     }
 
     private void Start()
@@ -59,6 +63,7 @@ public class DM : MonoBehaviour
             messages[i].transform.position = messages[0].transform.position;
 
             messages[i].MessageIndex = i;
+            messages[i].Message("");
         }
         float yMove = 0f;
         for(int i = 0; i < messages.Count; i++)
@@ -89,7 +94,11 @@ public class DM : MonoBehaviour
         switch (messageEnd)
         {
             case MessageEnd.Up:
-                message.GetComponent<RectTransform>().localPosition = downPosition;
+                float upAdjustment = message.GetComponent<RectTransform>().localPosition.y - upPosition.y;
+
+                Vector3 test = downPosition;
+                test.y += 50f + upAdjustment;
+                message.GetComponent<RectTransform>().localPosition = test;
 
                 int maxIndex = 0;
                 for(int i = 0; i < messages.Count; i++)
@@ -99,19 +108,26 @@ public class DM : MonoBehaviour
                         maxIndex = messages[i].MessageIndex;
                     }
                 }
-                message.MessageIndex = maxIndex + 1;
+                    
 
-
-                if (messageInformations.Count > maxIndex)
+                if (messageInformations.Count > maxIndex + 1)
                 {
+                    message.MessageIndex = maxIndex + 1;
                     message.Message(messageInformations[maxIndex + 1].Message);
                     Vector3 position = message.GetComponent<RectTransform>().localPosition;
                     position.x = SenderXPosition(messageInformations[maxIndex + 1].MessageSender);
                     message.GetComponent<RectTransform>().localPosition = position;
                 }
+                else
+                {
+                    message.Message("");
+                }
                 break;
             case MessageEnd.Down:
-                message.GetComponent<RectTransform>().localPosition = upPosition;
+                float downAdjustment = message.GetComponent<RectTransform>().localPosition.y - downPosition.y;
+                Vector3 testDown = upPosition;
+                testDown.y -= 50f - downAdjustment;
+                message.GetComponent<RectTransform>().localPosition = testDown;
 
                 int minIndex = 10000000;
                 for(int i = 0; i < messages.Count;i++)
@@ -122,15 +138,18 @@ public class DM : MonoBehaviour
                     }
                 }
 
-                message.MessageIndex = minIndex - 1;
-
-                if (0 <= minIndex)
+                if (0 <= minIndex - 1)
                 {
-                    message.Message(messageInformations[minIndex - 1].Message);
+                    message.MessageIndex = minIndex - 1;
 
+                    message.Message(messageInformations[minIndex - 1].Message);
                     Vector3 positionX = message.GetComponent<RectTransform>().localPosition;
                     positionX.x = SenderXPosition(messageInformations[minIndex - 1].MessageSender);
                     message.GetComponent<RectTransform>().localPosition = positionX;
+                }
+                else
+                {
+                    message.Message("");
                 }
                 break;
         }
@@ -140,11 +159,11 @@ public class DM : MonoBehaviour
     {
         if(messageSender == MessageSender.Me)
         {
-            return senderMe.position.x;
+            return senderMe.GetComponent<RectTransform>().localPosition.x;
         }
         else
         {
-            return senderOther.position.x;
+            return senderOther.GetComponent<RectTransform>().localPosition.x;
         }
     }
 }
