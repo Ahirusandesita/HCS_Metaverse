@@ -3,23 +3,24 @@ using UnityEngine;
 /// <summary>
 /// Ghost Shaderを適用したモデルを生成する。主にハウジングで使用する
 /// </summary>
-public class GhostModelManager
+public class GhostModel
 {
     private const string MATERIAL_NAME = "Ghost";
     private const string TEXTURE_NAME = "_Texture";
     private const string COLOR_NAME = "_Ghost_Color";
 
-    private readonly Color32 trueColor = new Color32(15, 255, 31, 255);
-    private readonly Color32 falseColor = new Color32(255, 31, 15, 255);
+    // 主にハウジングで使用するため、「置ける/置けない」のような対となる2色を用意
+    private readonly Color32 correctColor = new Color32(15, 255, 31, 255);
+    private readonly Color32 incorrectColor = new Color32(255, 31, 15, 255);
 
     private GameObject instance = default;
     private BoxCollider boxCollider = default;
     private Material material = default;
 
 
-    public GhostModelManager()
+    public GhostModel()
     {
-        instance = new GameObject(nameof(GhostModelManager));
+        instance = new GameObject(nameof(GhostModel));
         boxCollider = instance.AddComponent<BoxCollider>();
         // 「Ghost」Materialをロード
         material = Resources.Load<Material>(MATERIAL_NAME);
@@ -33,7 +34,7 @@ public class GhostModelManager
     /// </summary>
     /// <param name="ghostOrigin"></param>
     /// <param name="defaultColor"></param>
-    public GhostModelManager CreateModel(GameObject ghostOrigin, Color? defaultColor = null)
+    public GhostModel CreateModel(GameObject ghostOrigin, Color? defaultColor = null)
     {
         var filters = ghostOrigin.GetComponentsInChildren<MeshFilter>();
         var renderers = ghostOrigin.GetComponentsInChildren<MeshRenderer>();
@@ -41,7 +42,7 @@ public class GhostModelManager
         // MeshFilterが付いていないオブジェクトは例外を投げる
         if (filters.Length == 0)
         {
-            throw new System.ArgumentException($"Meshが存在しないオブジェクトから {nameof(GhostModelManager)} にアクセスしようとしています。", nameof(ghostOrigin));
+            throw new System.ArgumentException($"Meshが存在しないオブジェクトから {nameof(GhostModel)} にアクセスしようとしています。", nameof(ghostOrigin));
         }
 
         // Mesh結合のための構造体
@@ -56,7 +57,7 @@ public class GhostModelManager
             combineInstances[i].transform = Matrix4x4.TRS(transform.position, transform.rotation, transform.lossyScale);
             // ----------------------------------------------------------------------------
 
-            // 見た目を表示するオブジェクトを生成 ----------------------------------------------
+            // Meshを表示するオブジェクトを生成 ----------------------------------------------
             var child = new GameObject($"GhostModel ({i})");
             child.transform.SetParent(instance.transform);
             var filter = child.AddComponent<MeshFilter>();
@@ -66,12 +67,12 @@ public class GhostModelManager
             // 見た目を設定 -----------------------------------------------------------------
             filter.sharedMesh = filters[i].sharedMesh;
             renderer.material = material;
-            var texture = renderers[i].material.mainTexture;
+            var texture = renderers[i].sharedMaterial.mainTexture;
             renderer.material.SetTexture(TEXTURE_NAME, texture);
             // 初期カラー
             if (defaultColor is null)
             {
-                renderer.material.SetColor(COLOR_NAME, trueColor);
+                renderer.material.SetColor(COLOR_NAME, correctColor);
             }
             else
             {
@@ -86,6 +87,8 @@ public class GhostModelManager
 
         // Mesh結合
         // BoxColliderのためのBoundsでのみ使用するので、新しく作られたMesh自体は破棄
+        // 結合したMeshを使ってもよいが、MeshRendererは元のモデルと同じ数用意したい（Textureが違う可能性を考慮）ので、
+        // MeshFilterも同じく元モデルと同じように使用している
         var mesh = new Mesh();
         mesh.CombineMeshes(combineInstances, true);
         var bounds = mesh.bounds;
@@ -95,6 +98,25 @@ public class GhostModelManager
         return this;
     }
 
+    public GhostModel SetParent(Transform parent)
+    {
+        instance.transform.SetParent(parent);
+        return this;
+    }
+
+    public Vector3 GetGhostPosition()
+    {
+        return instance.transform.position;
+    }
+
+    public Quaternion GetGhostRotation()
+    {
+        return instance.transform.rotation;
+    }
+
+    /// <summary>
+    /// モデルが存在する場合に表示する
+    /// </summary>
     public void Spawn()
     {
         if (instance is null)
@@ -105,7 +127,7 @@ public class GhostModelManager
     }
 
     /// <summary>
-    /// 
+    /// モデルが存在する場合に非表示にする
     /// </summary>
     public void Despawn()
     {
@@ -116,6 +138,9 @@ public class GhostModelManager
         instance.SetActive(false);
     }
 
+    /// <summary>
+    /// オブジェクトを破棄する。呼び出し後、このインスタンスは使用不可となる
+    /// </summary>
     public void DisposeModel()
     {
         Object.Destroy(instance);
@@ -126,7 +151,7 @@ public class GhostModelManager
 
     public void ChangeColor(bool condition)
     {
-        var color = condition ? trueColor : falseColor;
+        var color = condition ? correctColor : incorrectColor;
         var renderers = instance.GetComponentsInChildren<MeshRenderer>();
         foreach (var renderer in renderers)
         {

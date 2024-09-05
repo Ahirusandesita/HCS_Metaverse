@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class TestGhostUser : MonoBehaviour
 {
-    GhostModelManager a;
+    GhostModel a;
+    public GameObject aaa;
 
     private void Start()
     {
-        a = new GhostModelManager().CreateModel(gameObject);
+        a = new GhostModel().CreateModel(aaa);
         foreach (var item in GetComponentsInChildren<MeshRenderer>())
         {
             item.enabled = false;
