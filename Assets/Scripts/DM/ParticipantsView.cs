@@ -28,7 +28,7 @@ public class ParticipantsView : MonoBehaviour,IDetailMenuInitialize
         for(int i=0;i< participants.DeploymentParticipants().Participants.Count; i++)
         {
             contactAddressList.Add(Instantiate(contactAddress, this.transform));
-            testInjector.InjectTest(contactAddressList[contactAddressList.Count - 1]);
+            contactAddressList[contactAddressList.Count - 1].OnConected += (sendable) => testInjector.InjectTest(sendable);
         }
 
         Vector3 position = startTransform.GetComponent<RectTransform>().localPosition;
