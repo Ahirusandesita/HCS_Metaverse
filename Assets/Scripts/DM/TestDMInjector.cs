@@ -15,8 +15,8 @@ public class TestDMInjector : MonoBehaviour
         keyboardManager.InjectSendableMessage(sendableMessage);
     }
 
-    public void InjectTest(UnityEngine.Object o)
+    public void InjectTest(ISendableMessage sendableMessage)
     {
-        ISendableMessage = o;
+        keyboardManager.InjectSendableMessage(sendableMessage);
     }
 }

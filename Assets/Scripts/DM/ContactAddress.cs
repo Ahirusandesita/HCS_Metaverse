@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Fusion;
 using TMPro;
+using System;
+
 public class ContactAddress : MonoBehaviour, IPointerClickHandler,ISendableMessage
 {
     [SerializeField]
@@ -14,9 +16,11 @@ public class ContactAddress : MonoBehaviour, IPointerClickHandler,ISendableMessa
 
     private List<MessageInformation> messageHistories = new List<MessageInformation>();
 
+    public event Action<ISendableMessage> OnConected;
     public void OnPointerClick(PointerEventData eventData)
     {
         dm.InjectMessage(messageHistories);
+        OnConected?.Invoke(this);
     }
 
     public void InjectOwinInformation(OwnInformation ownInformation)
@@ -35,14 +39,12 @@ public class ContactAddress : MonoBehaviour, IPointerClickHandler,ISendableMessa
 
     public void Message(string message)
     {
-        //dm.Message(message);
         dm.Message(new MessageInformation(message, MessageSender.Other));
         messageHistories.Add(new MessageInformation(message, MessageSender.Other));
     }
     void ISendableMessage.SendMessage(string message)
     {
         ownInformation.RPC_Message(ownInformation.MyPlayerRef, message, GateOfFusion.Instance.NetworkRunner.LocalPlayer);
-
         dm.Message(new MessageInformation(message, MessageSender.Me));
         messageHistories.Add(new MessageInformation(message, MessageSender.Me));
     }
