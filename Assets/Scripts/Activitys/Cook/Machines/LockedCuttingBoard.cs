@@ -21,9 +21,6 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
     private Quaternion _hitBoxRotation = default;
     // -------------------------------------------------
 
-    // GrabbableのActiveを切り替えるための変数
-    private ISwitchableGrabbableActive _grabbableActiveSwicher = default;
-
     // オブジェクトを固定しているかどうか
     private bool _isLockedObject = default;
 
@@ -33,20 +30,11 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
     // 固定しているオブジェクトのPuttable
     private Puttable _lockedPuttable = default;
 
-    // 
-    private IPracticableRPCEvent _practicableRPCEvent = default;
-
-    // 
-    private LockedCuttingBoard _parentLockedCuttingObject = default;
-
     // 掴んだ時や離した時にイベントを実行するクラス
     private PointableUnityEventWrapper _pointableUnityEventWrapper;
 
     // 
     public Transform GetObjectLockTransform => _machineTransform;
-
-    // 
-    private NetworkObject myNetwork = default;
 
     private void Start()
     {
@@ -59,9 +47,6 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
 
         // 角度
         _hitBoxRotation = this.transform.rotation;
-
-        // 
-        myNetwork = GetComponent<NetworkObject>();
     }
 
     private void Update()
@@ -198,10 +183,5 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
         // 
         _isLockedObject = false;
         _pointableUnityEventWrapper.WhenSelect.RemoveListener((action) => { Select(); });
-    }
-
-    public void Inject(IPracticableRPCEvent practicableRPCEvent)
-    {
-        _practicableRPCEvent = practicableRPCEvent;
     }
 }
