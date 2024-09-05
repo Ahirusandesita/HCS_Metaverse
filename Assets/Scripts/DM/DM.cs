@@ -36,6 +36,15 @@ public class DM : MonoBehaviour
     public void Message(MessageInformation messageInformation)
     {
         messageInformations.Add(messageInformation);
+
+        for(int i = 0; i < messages.Count; i++)
+        {
+            if(messages[i].MessageIndex == messageInformations.Count - 1)
+            {
+                messages[i].Message(messageInformations[messageInformations.Count - 1].Message);
+            }
+        }
+         
     }
     public void InjectMessage(List<MessageInformation> messageInformations)
     {
