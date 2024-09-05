@@ -17,6 +17,9 @@ public class ParticipantsView : MonoBehaviour,IDetailMenuInitialize
     Participants participants;
     [SerializeField]
     private DM testDM;
+
+    [SerializeField]
+    private TestDMInjector testInjector;
     
     private List<ContactAddress> contactAddressList = new List<ContactAddress>();
 
@@ -25,6 +28,7 @@ public class ParticipantsView : MonoBehaviour,IDetailMenuInitialize
         for(int i=0;i< participants.DeploymentParticipants().Participants.Count; i++)
         {
             contactAddressList.Add(Instantiate(contactAddress, this.transform));
+            testInjector.InjectTest(contactAddressList[contactAddressList.Count - 1]);
         }
 
         Vector3 position = startTransform.GetComponent<RectTransform>().localPosition;
