@@ -140,7 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ce710558b5e744489abb9c5fe59e876, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aaa: {fileID: 2352609892414391479, guid: 5c1f539ce6fc7e247ba7250d9c5f1f91, type: 3}
+  aaa: {fileID: 8820349977917249677, guid: 4b2d61582302a1e48a13fad15c0a40ec, type: 3}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -557,6 +557,10 @@ PrefabInstance:
     - target: {fileID: 3823306207805264688, guid: d8c74bc92bac2214881ace62aa9bb9cd, type: 3}
       propertyPath: m_Name
       value: SprayBottle
+      objectReference: {fileID: 0}
+    - target: {fileID: 3823306207805264688, guid: d8c74bc92bac2214881ace62aa9bb9cd, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
