@@ -40,7 +40,7 @@ public class SessionRPCManager : NetworkBehaviour
 		await masterServer.Disconnect();
 		UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
 		//é¿çs
-		await masterServer.JoinOrCreateSession(sessionName);
+		await masterServer.JoinOrCreateSession(sessionName,rpcTarget);
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]

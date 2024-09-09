@@ -171,7 +171,7 @@ public class GateOfFusion
 			return;
 		}
 		string sessionName = currentRoom.NextSessionName;
-
+		PlayerRef localPlayerRef = NetworkRunner.LocalPlayer; 
 		foreach (RoomPlayer roomPlayer in currentRoom.JoinRoomPlayer)
 		{
 			if (roomPlayer.PlayerData == NetworkRunner.LocalPlayer) { continue; }
@@ -184,7 +184,7 @@ public class GateOfFusion
 		XDebug.LogWarning($"切断した", KumaDebugColor.MessageColor);
 		await SceneManager.LoadSceneAsync(sceneName);
 		XDebug.LogWarning($"シーンを読み込んだ");
-		await MasterServer.JoinOrCreateSession(sessionName);
+		await MasterServer.JoinOrCreateSession(sessionName,localPlayerRef);
 		XDebug.LogWarning($"自分がセッション移動した", KumaDebugColor.MessageColor);
 		_syncResult = SyncResult.Complete;
 		XDebug.LogWarning($"移動終了", KumaDebugColor.MessageColor);
