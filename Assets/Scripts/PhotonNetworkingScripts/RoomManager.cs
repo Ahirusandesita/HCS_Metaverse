@@ -5,14 +5,11 @@ using Fusion;
 
 public class RoomManager : MonoBehaviour
 {
-
-
 	[SerializeField]
 	private GameObject _leaderObjectPrefab;
+	private Dictionary<int, Room> _rooms = new();
 	private GameObject _leaderObject;
 	private static RoomManager _instance = default;
-	private List<Room> _rooms = new();
-	private int[] _roomCounter = default;
 	private MasterServerConect _masterServer = default;
 	public static RoomManager Instance { get => _instance; }
 	private MasterServerConect MasterServerConect
@@ -27,7 +24,10 @@ public class RoomManager : MonoBehaviour
 		}
 	}
 
-
+	private void OnDisable()
+	{
+		XDebug.LogWarning($"DisableRoomManager", KumaDebugColor.ErrorColor);
+	}
 	private void Awake()
 	{
 		if (_instance == null)
@@ -42,7 +42,6 @@ public class RoomManager : MonoBehaviour
 			return;
 		}
 		_instance = this;
-		_roomCounter = new int[System.Enum.GetValues(typeof(SceneNameType)).Length];
 	}
 
 	public Room GetCurrentRoom(PlayerRef playerRef)
@@ -52,13 +51,26 @@ public class RoomManager : MonoBehaviour
 			return null;
 		}
 
-		IEnumerable<Room> temp =
-			_rooms.Where(room => room.JoinRoomPlayer.Contains(new RoomPlayer(playerRef)));
+		var temp =
+			_rooms.Where(room => room.Value.JoinRoomPlayer.Contains(new RoomPlayer(playerRef)));
 		if (temp.Count() <= 0)
 		{
 			return null;
 		}
-		return temp.First();
+		return temp.First().Value;
+	}
+
+	public int GetCurrentRoomKey(Room room)
+	{
+		return _rooms.FirstOrDefault(roomData => roomData.Value == room).Key;
+	}
+
+	public int GetCuurentRoomKey(PlayerRef playerRef)
+	{
+		return _rooms
+			.FirstOrDefault(roomData => roomData.Value.JoinRoomPlayer
+				.Where(playerData => playerData.PlayerData == playerRef)
+			.FirstOrDefault() != null).Key;
 	}
 
 	/// <summary>
@@ -78,26 +90,22 @@ public class RoomManager : MonoBehaviour
 		}
 
 		JoinOrCreateResult result = default;
-		Room roomTemp = null;
-		IEnumerable<Room> rooms = default;
+		Room roomTemp = default;
 		//部屋番号指定なしの場合
 		if (roomNumber < 0)
 		{
-			rooms = _rooms.Where(room => !room.IsEndJoining && room.SceneNameType == sceneNameType);
+			roomTemp = _rooms.Values.FirstOrDefault(room => !room.IsEndJoining && room.SceneNameType == sceneNameType);
 		}
 		else
 		{
-			rooms = _rooms.Where(room => room.RoomNumber == roomNumber);
-		}
-
-		if (rooms.Count() > 0)
-		{
-			roomTemp = rooms.First();
+			roomTemp = _rooms[_rooms.Keys.FirstOrDefault(room => room == roomNumber)];
 		}
 
 		if (roomTemp == null)
 		{
-			if (roomNumber < 0) { roomNumber = _rooms.Count; }
+			if (roomNumber < 0) { roomNumber = 0; }
+			for (; _rooms.ContainsKey(roomNumber); roomNumber++) ;
+
 			roomTemp = Create(sceneNameType, roomNumber);
 			if (sceneNameType != SceneNameType.TestPhotonScene)
 			{
@@ -113,7 +121,7 @@ public class RoomManager : MonoBehaviour
 		roomTemp.Join(playerRef, currentSessionName);
 
 		XDebug.LogWarning($"Join:{sceneNameType}," +
-			$"Result:{result}\nRoomNum:{roomTemp.RoomNumber}," +
+			$"Result:{result}\n," +
 			$"Player:{playerRef}",
 			KumaDebugColor.InformationColor);
 
@@ -144,13 +152,12 @@ public class RoomManager : MonoBehaviour
 		if (joinedRoom is null) { return; }
 		XDebug.LogWarning(
 			$"Left:{joinedRoom.SceneNameType}" +
-			$"\nRoomNum:{joinedRoom.RoomNumber}" +
+			$"\nRoomNum:{joinedRoom}" +
 			$"Player:{playerRef}", KumaDebugColor.InformationColor);
 		LeftResult result = joinedRoom.Left(playerRef);
 		if (result == LeftResult.Closable)
 		{
-			_roomCounter[(int)joinedRoom.SceneNameType]--;
-			_rooms.Remove(joinedRoom);
+			_rooms.Remove(_rooms.FirstOrDefault(room => room.Value == joinedRoom).Key);
 		}
 		else if (result == LeftResult.Fail)
 		{
@@ -160,10 +167,9 @@ public class RoomManager : MonoBehaviour
 
 	private Room Create(SceneNameType activityType, int roomNumber)
 	{
-		string nextSessionName = activityType + ":" + _roomCounter[(int)activityType];
-		_rooms.Add(new Room(activityType, roomNumber, nextSessionName));
-		_roomCounter[(int)activityType]++;
-		return _rooms.LastOrDefault();
+		string nextSessionName = activityType + ":" + roomNumber;
+		_rooms.Add(roomNumber, new Room(activityType, roomNumber, nextSessionName));
+		return _rooms.Values.LastOrDefault();
 	}
 
 	public void ChangeSessionName(PlayerRef playerRef, string currentSessionName)
@@ -196,21 +202,18 @@ public class RoomManager : MonoBehaviour
 	/// </summary>
 	public void Initialize(PlayerRef myPlayerRef)
 	{
-		_roomCounter = new int[System.Enum.GetValues(typeof(SceneNameType)).Length];
-
 		Room myRoom = GetCurrentRoom(myPlayerRef);
 		if (myRoom == null)
 		{
+			XDebug.LogWarning("ルームに参加してません", KumaDebugColor.WarningColor);
 			_rooms.Clear();
 			return;
 		}
 
-		_roomCounter[(int)myRoom.SceneNameType]++;
-
-		IEnumerable<Room> deleteRooms = _rooms.Where(room => room != myRoom);
-		foreach (Room room in deleteRooms)
+		IEnumerable<KeyValuePair<int, Room>> deleteRooms = _rooms.Where(room => room.Value != myRoom);
+		foreach (KeyValuePair<int, Room> room in deleteRooms)
 		{
-			_rooms.Remove(room);
+			_rooms.Remove(room.Key);
 		}
 
 	}
@@ -218,7 +221,12 @@ public class RoomManager : MonoBehaviour
 	[ContextMenu("DebugRoomData")]
 	public void Test()
 	{
-		foreach (Room room in _rooms)
+		if (_rooms.Count <= 0)
+		{
+			XDebug.LogWarning("ルームがありません", KumaDebugColor.MessageColor);
+			return;
+		}
+		foreach (Room room in _rooms.Values)
 		{
 			XDebug.LogWarning(
 				$"RoomData::,NextSessionName:{room.NextSessionName}" +

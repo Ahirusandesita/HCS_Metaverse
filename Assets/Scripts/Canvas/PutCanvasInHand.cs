@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 public class PutCanvasInHand : MonoBehaviour
 {
@@ -56,7 +57,7 @@ public class PutCanvasInHand : MonoBehaviour
 
     private void Update()
     {
-        if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch)|| Input.GetKeyDown(KeyCode.W))
+        if ((OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch)|| Input.GetKeyDown(KeyCode.W)) && SceneManager.GetActiveScene() != SceneManager.GetSceneByBuildIndex(1))
         {
             GateOfFusion.Instance.ActivityStart();
         }

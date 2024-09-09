@@ -8,8 +8,8 @@ namespace HCSMeta.Activity
 		public ISelectedNotification SelectedNotification => this;
 		[SerializeField]
 		private GameFrame gameFrame;
-		[SerializeField, Header("アクティビティ(ワールド)")]
-		private SceneNameType _sceneNameType;
+		[SerializeField, Header("移動するアクティビティ(ワールド)")]
+		private SceneNameType _sceneNameType = SceneNameType.CookActivity;
 		private MasterServerConect _masterServer;
 		private NetworkRunner NetworkRunner => GateOfFusion.Instance.NetworkRunner;
 		private MasterServerConect MasterServerConect

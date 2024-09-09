@@ -130,6 +130,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		NetworkEvents events = networkRunner.GetComponent<NetworkEvents>();
 		events.PlayerJoined.AddListener(OnPlayerJoined);
 		events.PlayerLeft.AddListener(OnPlayerLeft);
+		events.OnDisconnectedFromServer.AddListener(OnDisconnectedFromMasterServer);
 		events.OnShutdown.AddListener(OnShutdown);
 		events.OnConnectedToServer.AddListener(OnConnectedToServer);
 		XDebug.LogWarning("UpdateRunner", KumaDebugColor.SuccessColor);
@@ -178,7 +179,6 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		}
 	}
 
-
 	private void OnConnectedToServer(NetworkRunner runner)
 	{
 		XDebug.LogWarning("OnConnectedToServer",KumaDebugColor.MessageColor);
@@ -186,9 +186,14 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		_isConnected = true;
 	}
 
+	private void OnDisconnectedFromMasterServer(NetworkRunner runner, NetDisconnectReason reason)
+	{
+		XDebug.LogWarning($"OnDisconnectedFromMasterServer:{reason}", KumaDebugColor.MessageColor);
+	}
+
 	private void OnShutdown(NetworkRunner runner, ShutdownReason reason)
 	{
-		XDebug.LogWarning("OnDisconnectedFromServer", KumaDebugColor.MessageColor);
+		XDebug.LogWarning($"OnShutdown:{reason}", KumaDebugColor.MessageColor);
 		_isConnected = false;
 	}
 }
