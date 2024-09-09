@@ -26,7 +26,7 @@ public class RoomManager : MonoBehaviour
 
 	private void OnDisable()
 	{
-		XDebug.LogWarning($"DisableRoomManager", KumaDebugColor.ErrorColor);
+		XDebug.LogWarning($"削除：RoomManager", KumaDebugColor.ErrorColor);
 	}
 	private void Awake()
 	{
@@ -46,18 +46,9 @@ public class RoomManager : MonoBehaviour
 
 	public Room GetCurrentRoom(PlayerRef playerRef)
 	{
-		if (_rooms.Count <= 0)
-		{
-			return null;
-		}
-
-		var temp =
-			_rooms.Where(room => room.Value.JoinRoomPlayer.Contains(new RoomPlayer(playerRef)));
-		if (temp.Count() <= 0)
-		{
-			return null;
-		}
-		return temp.First().Value;
+		if (_rooms.Count < 1) { return null; }
+		Room temp = _rooms.Values.FirstOrDefault(room => room.JoinRoomPlayer.Contains(new RoomPlayer(playerRef)));
+		return temp;
 	}
 
 	public int GetCurrentRoomKey(Room room)
@@ -103,9 +94,8 @@ public class RoomManager : MonoBehaviour
 
 		if (roomTemp == null)
 		{
-			if (roomNumber < 0) { roomNumber = 0; }
+			if (roomNumber < 0) { roomNumber = 1; }
 			for (; _rooms.ContainsKey(roomNumber); roomNumber++) ;
-
 			roomTemp = Create(sceneNameType, roomNumber);
 			if (sceneNameType != SceneNameType.TestPhotonScene)
 			{
@@ -120,7 +110,7 @@ public class RoomManager : MonoBehaviour
 
 		roomTemp.Join(playerRef, currentSessionName);
 
-		XDebug.LogWarning($"Join:{sceneNameType}," +
+		XDebug.LogWarning($"参加:{sceneNameType}," +
 			$"Result:{result}\n," +
 			$"Player:{playerRef}",
 			KumaDebugColor.InformationColor);
@@ -151,7 +141,7 @@ public class RoomManager : MonoBehaviour
 		Room joinedRoom = GetCurrentRoom(playerRef);
 		if (joinedRoom is null) { return; }
 		XDebug.LogWarning(
-			$"Left:{joinedRoom.SceneNameType}" +
+			$"退出:{joinedRoom.SceneNameType}" +
 			$"\nRoomNum:{joinedRoom}" +
 			$"Player:{playerRef}", KumaDebugColor.InformationColor);
 		LeftResult result = joinedRoom.Left(playerRef);
@@ -185,7 +175,7 @@ public class RoomManager : MonoBehaviour
 
 	public void LeaderChange(PlayerRef leaderPlayer)
 	{
-		XDebug.LogWarning($"NewLeader{leaderPlayer}", KumaDebugColor.InformationColor);
+		XDebug.LogWarning($"新リーダー{leaderPlayer}", KumaDebugColor.InformationColor);
 		Room roomTemp = GetCurrentRoom(leaderPlayer);
 		//前のリーダーのリーダーオブジェクトを破棄する
 		MasterServerConect.SessionRPCManager.Rpc_DestroyLeaderObject(roomTemp.LeaderPlayerRef);
@@ -203,19 +193,9 @@ public class RoomManager : MonoBehaviour
 	public void Initialize(PlayerRef myPlayerRef)
 	{
 		Room myRoom = GetCurrentRoom(myPlayerRef);
-		if (myRoom == null)
-		{
-			XDebug.LogWarning("ルームに参加してません", KumaDebugColor.WarningColor);
-			_rooms.Clear();
-			return;
-		}
-
-		IEnumerable<KeyValuePair<int, Room>> deleteRooms = _rooms.Where(room => room.Value != myRoom);
-		foreach (KeyValuePair<int, Room> room in deleteRooms)
-		{
-			_rooms.Remove(room.Key);
-		}
-
+		int myRoomKey = GetCurrentRoomKey(myRoom);
+		_rooms.Clear();
+		_rooms.Add(myRoomKey, myRoom);
 	}
 
 	[ContextMenu("DebugRoomData")]

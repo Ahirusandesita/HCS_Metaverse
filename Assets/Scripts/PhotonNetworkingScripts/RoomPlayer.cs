@@ -11,7 +11,9 @@ public class RoomPlayer
 	public string SessionName { get => _sessionName; set => _sessionName = value; }
 	public PlayerRef PlayerData { get => _playerData; }
 	public static bool operator ==(RoomPlayer roomPlayer, RoomPlayer roomPlayer1)
-		=> roomPlayer._playerData == roomPlayer1._playerData;
+	{
+		return roomPlayer._playerData == roomPlayer1._playerData;
+	}
 	public static bool operator !=(RoomPlayer roomPlayer, RoomPlayer roomPlayer1)
 		=> roomPlayer._playerData != roomPlayer1._playerData;
 	public static bool operator ==(RoomPlayer roomPlayer, PlayerRef playerData)

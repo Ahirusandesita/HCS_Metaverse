@@ -35,14 +35,6 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		}
 	}
 	public SessionRPCManager SessionRPCManager => _sessionRPCManager ??= FindObjectOfType<SessionRPCManager>();
-	public async UniTask<NetworkRunner> GetRunnerAsync()
-	{
-		if (_networkRunner == null)
-		{
-			_networkRunner = await InstanceNetworkRunnerAsync();
-		}
-		return _networkRunner;
-	}
 
 	public async UniTask<SessionRPCManager> GetSessionRPCManagerAsync()
 	{
@@ -72,7 +64,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		{
 			return;
 		}
-		
+
 		SceneNameType firstWorldType = SceneNameType.TestPhotonScene;
 		_networkRunner = await InstanceNetworkRunnerAsync();
 		await Connect(firstWorldType.ToString());
@@ -95,25 +87,25 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	/// <summary>
 	/// セッションに入る。ない場合は作る
 	/// </summary>
-	public async UniTask JoinOrCreateSession(string sessionName)
+	public async UniTask JoinOrCreateSession(string sessionName, PlayerRef executePlayer)
 	{
 		if (!_isUsePhoton) { return; }
+		RoomManager.Instance.Initialize(executePlayer);
 		if (_networkRunner != null)
 		{
 			XDebug.LogWarning($"Runnerが破棄されていません", KumaDebugColor.ErrorColor);
 			await Disconnect();
 		}
-		RoomManager.Instance.Initialize(Runner.LocalPlayer);
 		_networkRunner = await InstanceNetworkRunnerAsync();
 		await Connect(sessionName);
 
 		if (_networkRunner.SessionInfo.PlayerCount > 1)
 		{
-			(await GetSessionRPCManagerAsync()).Rpc_ChangeRoomSessionName(Runner.LocalPlayer, sessionName);
+			(await GetSessionRPCManagerAsync()).Rpc_ChangeRoomSessionName(executePlayer, sessionName);
 		}
 		else
 		{
-			RoomManager.Instance.ChangeSessionName(Runner.LocalPlayer, sessionName);
+			RoomManager.Instance.ChangeSessionName(executePlayer, sessionName);
 		}
 	}
 
@@ -181,7 +173,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 
 	private void OnConnectedToServer(NetworkRunner runner)
 	{
-		XDebug.LogWarning("OnConnectedToServer",KumaDebugColor.MessageColor);
+		XDebug.LogWarning("OnConnectedToServer", KumaDebugColor.MessageColor);
 		OnConnect?.Invoke();
 		_isConnected = true;
 	}
