@@ -183,6 +183,7 @@ public class GateOfFusion
 		await MasterServer.Disconnect();
 		XDebug.LogWarning($"切断した", KumaDebugColor.MessageColor);
 		await SceneManager.LoadSceneAsync(sceneName);
+		XDebug.LogWarning($"シーンを読み込んだ");
 		await MasterServer.JoinOrCreateSession(sessionName);
 		XDebug.LogWarning($"自分がセッション移動した", KumaDebugColor.MessageColor);
 		_syncResult = SyncResult.Complete;

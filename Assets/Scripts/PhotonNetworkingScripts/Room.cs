@@ -6,14 +6,12 @@ public class Room
 {
 	private bool _isEndJoining = default;
 	private int _leaderIndex = default;
-	private int _roomNumber = default;
 	private readonly string _nextSessionName = default;
 	private SceneNameType _worldType = default;
 	private List<RoomPlayer> _roomPlayers = new();
 	private int _maxMemberCount = default;
 	public int LeaderIndex { get => _leaderIndex; }
 	public PlayerRef LeaderPlayerRef { get => _roomPlayers[_leaderIndex].PlayerData; }
-	public int RoomNumber { get => _roomNumber; }
 	public bool IsEndJoining { get => _isEndJoining; }
 	public string NextSessionName { get => _nextSessionName; }
 	public SceneNameType SceneNameType { get => _worldType; }
@@ -22,7 +20,6 @@ public class Room
 	public Room(SceneNameType activityType, int roomNumber, string nextSessionName)
 	{
 		this._worldType = activityType;
-		this._roomNumber = roomNumber;
 		this._leaderIndex = 0;
 		this._nextSessionName = nextSessionName;
 		switch (activityType)

@@ -77,10 +77,11 @@ public class SessionRPCManager : NetworkBehaviour
 	{
 		XDebug.LogWarning($"Rpc_RequestRoomData:{requestPlayer}", KumaDebugColor.RpcColor);
 		Room roomTemp = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
+		int roomKey = RoomManager.Instance.GetCurrentRoomKey(roomTemp);
 		if (roomTemp is null) { return; }
 		bool isLeader = roomTemp.LeaderIndex == roomTemp.GetPlayerIndex(Runner.LocalPlayer);
 		Rpc_SendRoomData(requestPlayer, roomTemp.SceneNameType, Runner.LocalPlayer
-			, isLeader, Runner.SessionInfo.Name, roomTemp.RoomNumber);
+			, isLeader, Runner.SessionInfo.Name, roomKey);
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
@@ -100,13 +101,5 @@ public class SessionRPCManager : NetworkBehaviour
 	{
 		XDebug.LogWarning("Rpc_DestroyLeaderObject:" + rpcTarget, KumaDebugColor.RpcColor);
 		RoomManager.Instance.DestroyLeaderObject();
-	}
-
-	[Rpc(RpcSources.All, RpcTargets.All)]
-	public void Rpc_ChangeMasterClient(PlayerRef nextMaster)
-	{
-		XDebug.LogWarning($"ChangeMaster:{Runner.IsSharedModeMasterClient}", KumaDebugColor.WarningColor);
-		if (!Runner.IsSharedModeMasterClient) { return; }
-		Runner.SetMasterClient(nextMaster);
 	}
 }
