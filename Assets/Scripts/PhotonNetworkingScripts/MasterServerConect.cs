@@ -5,6 +5,7 @@ using Photon.Voice.Unity;
 using UnityEngine.SceneManagement;
 using Cysharp.Threading.Tasks;
 using System;
+using KumaDebug;
 
 public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 {
@@ -24,6 +25,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	public event Action OnConnect;
 	public bool IsUsePhoton => _isUsePhoton;
 	public bool IsConnected => _isConnected;
+	public bool IsSolo => Runner.SessionInfo.PlayerCount <= 1;
 	/// <summary>
 	/// このクラスはランナーとの紐づけはしないためラップする
 	/// </summary>
@@ -35,6 +37,12 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		}
 	}
 	public SessionRPCManager SessionRPCManager => _sessionRPCManager ??= FindObjectOfType<SessionRPCManager>();
+#if UNITY_EDITOR
+	[SerializeField, HideAtPlaying]
+	private bool _isKumaDebug = false;
+	public bool IsKumaDebug => _isKumaDebug;
+#endif
+
 
 	public async UniTask<SessionRPCManager> GetSessionRPCManagerAsync()
 	{
@@ -46,7 +54,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 
 	public async UniTask<SessionRPCManager> InstanceSessionRPCManagerAsync()
 	{
-		XDebug.LogWarning($"InstanceRpcManager{_networkRunner.IsShutdown}", KumaDebugColor.ErrorColor);
+		XKumaDebugSystem.LogWarning($"InstanceRpcManager{_networkRunner.IsShutdown}", KumaDebugColor.ErrorColor);
 		NetworkObject networkObjectTemp = await _networkRunner.SpawnAsync(_sessionRPCManagerPrefab);
 		_sessionRPCManager = networkObjectTemp.GetComponent<SessionRPCManager>();
 		return _sessionRPCManager;
@@ -54,6 +62,8 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 
 	private async void Awake()
 	{
+		SceneNameType firstScene = SceneNameType.KumaKumaTest;
+
 		if (FindObjectsOfType<MasterServerConect>().Length > 1)
 		{
 			Destroy(this.gameObject);
@@ -62,22 +72,22 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		DontDestroyOnLoad(this.gameObject);
 		if (!_isUsePhoton)
 		{
+			await RoomManager.Instance.JoinOrCreate(firstScene, Runner.LocalPlayer, Runner.SessionInfo.Name);
 			return;
 		}
 
-		SceneNameType firstWorldType = SceneNameType.TestPhotonScene;
 		_networkRunner = await InstanceNetworkRunnerAsync();
-		await Connect(firstWorldType.ToString());
-		RoomManager.Instance.JoinOrCreate(firstWorldType, Runner.LocalPlayer, Runner.SessionInfo.Name);
+		await Connect(firstScene.ToString());
+		
 	}
 
 	public async UniTask Disconnect()
 	{
-		XDebug.LogWarning($"Disconnect", KumaDebugColor.SuccessColor);
+		XKumaDebugSystem.LogWarning($"Disconnect", KumaDebugColor.SuccessColor);
 		if (!_isUsePhoton) { return; }
 		if (_networkRunner == null)
 		{
-			XDebug.LogWarning($"Runnerがnullです", KumaDebugColor.ErrorColor);
+			XKumaDebugSystem.LogWarning($"Runnerがnullです", KumaDebugColor.ErrorColor);
 			return;
 		}
 		await _networkRunner.Shutdown(true, ShutdownReason.Ok);
@@ -93,7 +103,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		RoomManager.Instance.Initialize(executePlayer);
 		if (_networkRunner != null)
 		{
-			XDebug.LogWarning($"Runnerが破棄されていません", KumaDebugColor.ErrorColor);
+			XKumaDebugSystem.LogWarning($"Runnerが破棄されていません", KumaDebugColor.ErrorColor);
 			await Disconnect();
 		}
 		_networkRunner = await InstanceNetworkRunnerAsync();
@@ -125,7 +135,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		events.OnDisconnectedFromServer.AddListener(OnDisconnectedFromMasterServer);
 		events.OnShutdown.AddListener(OnShutdown);
 		events.OnConnectedToServer.AddListener(OnConnectedToServer);
-		XDebug.LogWarning("UpdateRunner", KumaDebugColor.SuccessColor);
+		XKumaDebugSystem.LogWarning("UpdateRunner", KumaDebugColor.SuccessColor);
 		return networkRunner;
 	}
 
@@ -145,13 +155,13 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		//ルームに参加する（ルームが存在しなければ作成して参加する）
 		StartGameResult result = await _networkRunner.StartGame(startGameArgs);
 
-		XDebug.LogWarning("Connect:" + (result.Ok ? "Success" : "Fail"), KumaDebugColor.InformationColor);
+		XKumaDebugSystem.LogWarning("Connect:" + (result.Ok ? "Success" : "Fail"), KumaDebugColor.InformationColor);
 
 	}
 
 	private async void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
 	{
-		XDebug.LogWarning($"JoinSession:{player}", KumaDebugColor.InformationColor);
+		XKumaDebugSystem.LogWarning($"JoinSession:{player}", KumaDebugColor.InformationColor);
 
 		if (Runner.LocalPlayer == player)
 		{
@@ -164,7 +174,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	}
 	private void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
 	{
-		XDebug.LogWarning($"LeftSession:{player}", KumaDebugColor.InformationColor);
+		XKumaDebugSystem.LogWarning($"LeftSession:{player}", KumaDebugColor.InformationColor);
 		if (runner.TryGetPlayerObject(player, out NetworkObject avater))
 		{
 			runner.Despawn(avater);
@@ -173,19 +183,19 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 
 	private void OnConnectedToServer(NetworkRunner runner)
 	{
-		XDebug.LogWarning("OnConnectedToServer", KumaDebugColor.MessageColor);
+		XKumaDebugSystem.LogWarning("OnConnectedToServer", KumaDebugColor.MessageColor);
 		OnConnect?.Invoke();
 		_isConnected = true;
 	}
 
 	private void OnDisconnectedFromMasterServer(NetworkRunner runner, NetDisconnectReason reason)
 	{
-		XDebug.LogWarning($"OnDisconnectedFromMasterServer:{reason}", KumaDebugColor.MessageColor);
+		XKumaDebugSystem.LogWarning($"OnDisconnectedFromMasterServer:{reason}", KumaDebugColor.MessageColor);
 	}
 
 	private void OnShutdown(NetworkRunner runner, ShutdownReason reason)
 	{
-		XDebug.LogWarning($"OnShutdown:{reason}", KumaDebugColor.MessageColor);
+		XKumaDebugSystem.LogWarning($"OnShutdown:{reason}", KumaDebugColor.MessageColor);
 		_isConnected = false;
 	}
 }

@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Fusion;
+using Cysharp.Threading.Tasks;
+using KumaDebug;
 
 public class RoomManager : MonoBehaviour
 {
@@ -26,7 +28,7 @@ public class RoomManager : MonoBehaviour
 
 	private void OnDisable()
 	{
-		XDebug.LogWarning($"削除：RoomManager", KumaDebugColor.ErrorColor);
+		XKumaDebugSystem.LogWarning($"削除：RoomManager", KumaDebugColor.ErrorColor);
 	}
 	private void Awake()
 	{
@@ -64,20 +66,13 @@ public class RoomManager : MonoBehaviour
 			.FirstOrDefault() != null).Key;
 	}
 
-	/// <summary>
-	/// アクティビティのルームに参加するまたはルームを作成する
-	/// </summary>
-	/// <param name="sceneNameType">入りたいActivity</param>
-	/// <param name="playerRef">入る人の情報</param>
-	/// <param name="roomNumber">入りたい部屋の番号　マイナスの場合は入れる部屋に入る</param>
-	/// <returns>JoinまたはCreateまたはFail</returns>
-	public JoinOrCreateResult JoinOrCreate(SceneNameType sceneNameType, PlayerRef playerRef, string currentSessionName, int roomNumber = -1)
+	public async UniTask<JoinOrCreateResult> JoinOrCreate(SceneNameType sceneNameType, PlayerRef joinPlayer, string currentSessionName, int roomNumber = -1)
 	{
-		Room myRoom = GetCurrentRoom(playerRef);
+		Room myRoom = GetCurrentRoom(joinPlayer);
 		if (myRoom != null)
 		{
-			XDebug.LogWarning($"すでにルームに参加しています", KumaDebugColor.WarningColor);
-			LeftOrClose(playerRef);
+			XKumaDebugSystem.LogWarning($"{joinPlayer}はすでにルームに参加しています", KumaDebugColor.WarningColor);
+			await Instance.LeftOrClose(joinPlayer);
 		}
 
 		JoinOrCreateResult result = default;
@@ -89,7 +84,13 @@ public class RoomManager : MonoBehaviour
 		}
 		else
 		{
-			roomTemp = _rooms[_rooms.Keys.FirstOrDefault(room => room == roomNumber)];
+			foreach (int a in _rooms.Keys)
+			{
+				XKumaDebugSystem.LogWarning(a);
+			}
+			int key = _rooms.Keys.FirstOrDefault(room => room == roomNumber);
+			XKumaDebugSystem.LogWarning(key, KumaDebugColor.MessageColor);
+			roomTemp = _rooms[key];
 		}
 
 		if (roomTemp == null)
@@ -108,11 +109,11 @@ public class RoomManager : MonoBehaviour
 			result = JoinOrCreateResult.Join;
 		}
 
-		roomTemp.Join(playerRef, currentSessionName);
+		roomTemp.Join(joinPlayer, currentSessionName);
 
-		XDebug.LogWarning($"参加:{sceneNameType}," +
+		XKumaDebugSystem.LogWarning($"参加:{sceneNameType}," +
 			$"Result:{result}\n," +
-			$"Player:{playerRef}",
+			$"Player:{joinPlayer}",
 			KumaDebugColor.InformationColor);
 
 		return result;
@@ -121,14 +122,14 @@ public class RoomManager : MonoBehaviour
 	public void InstantiateLeaderObject()
 	{
 		if (_leaderObject) { return; }
-		XDebug.LogWarning($"InstanceLeaderObject:{MasterServerConect.Runner.LocalPlayer}", KumaDebugColor.SuccessColor);
+		XKumaDebugSystem.LogWarning($"InstanceLeaderObject:{MasterServerConect.Runner.LocalPlayer}", KumaDebugColor.SuccessColor);
 		_leaderObject = Instantiate(_leaderObjectPrefab);
 	}
 
 	public void DestroyLeaderObject()
 	{
 		if (!_leaderObject) { return; }
-		XDebug.LogWarning($"DestoryLeaderObject:{MasterServerConect.Runner.LocalPlayer}", KumaDebugColor.SuccessColor);
+		XKumaDebugSystem.LogWarning($"DestoryLeaderObject:{MasterServerConect.Runner.LocalPlayer}", KumaDebugColor.SuccessColor);
 		Destroy(_leaderObject);
 	}
 
@@ -136,29 +137,31 @@ public class RoomManager : MonoBehaviour
 	/// ルームから退出するまたはルームを閉じる
 	/// </summary>
 	/// <param name="playerRef">退出するプレイヤー情報</param>
-	public void LeftOrClose(PlayerRef playerRef)
+	public async UniTask LeftOrClose(PlayerRef playerRef)
 	{
 		Room joinedRoom = GetCurrentRoom(playerRef);
 		if (joinedRoom is null) { return; }
-		XDebug.LogWarning(
+		XKumaDebugSystem.LogWarning(
 			$"退出:{joinedRoom.SceneNameType}" +
-			$"\nRoomNum:{joinedRoom}" +
+			$"\nRoom:{joinedRoom}" +
 			$"Player:{playerRef}", KumaDebugColor.InformationColor);
-		LeftResult result = joinedRoom.Left(playerRef);
+		LeftResult result = await joinedRoom.Left(playerRef);
 		if (result == LeftResult.Closable)
 		{
-			_rooms.Remove(_rooms.FirstOrDefault(room => room.Value == joinedRoom).Key);
+			int deleteRoomKey = _rooms.FirstOrDefault(room => room.Value == joinedRoom).Key;
+			XKumaDebugSystem.LogWarning($"{_rooms[deleteRoomKey].NextSessionName}を削除");
+			_rooms.Remove(deleteRoomKey);
 		}
 		else if (result == LeftResult.Fail)
 		{
-			XDebug.LogError("ルームに参加していません", KumaDebugColor.ErrorColor);
+			XKumaDebugSystem.LogError("ルームに参加していません", KumaDebugColor.ErrorColor);
 		}
 	}
 
 	private Room Create(SceneNameType activityType, int roomNumber)
 	{
 		string nextSessionName = activityType + ":" + roomNumber;
-		_rooms.Add(roomNumber, new Room(activityType, roomNumber, nextSessionName));
+		_rooms.Add(roomNumber, new Room(activityType, nextSessionName));
 		return _rooms.Values.LastOrDefault();
 	}
 
@@ -167,24 +170,30 @@ public class RoomManager : MonoBehaviour
 		Room room = GetCurrentRoom(playerRef);
 		if (room == null)
 		{
-			XDebug.LogWarning("ルームが見つかりませんでした", KumaDebugColor.ErrorColor);
+			XKumaDebugSystem.LogWarning("ルームが見つかりませんでした", KumaDebugColor.ErrorColor);
 			return;
 		}
 		room.ChangeSessionName(playerRef, currentSessionName);
 	}
 
-	public void LeaderChange(PlayerRef leaderPlayer)
+	public void LeaderChange(PlayerRef nextLeaderPlayer)
 	{
-		XDebug.LogWarning($"新リーダー{leaderPlayer}", KumaDebugColor.InformationColor);
-		Room roomTemp = GetCurrentRoom(leaderPlayer);
+		XKumaDebugSystem.LogWarning($"新リーダー{nextLeaderPlayer}", KumaDebugColor.SuccessColor);
+		Room roomTemp = GetCurrentRoom(nextLeaderPlayer);
+		XKumaDebugSystem.LogWarning($"leaderIndex:{roomTemp.LeaderIndex}", KumaDebugColor.SuccessColor);
+		foreach (PlayerRef playerRef in MasterServerConect.Runner.ActivePlayers)
+		{
+			XKumaDebugSystem.LogWarning($"{playerRef}", KumaDebugColor.InformationColor);
+		}
+
 		//前のリーダーのリーダーオブジェクトを破棄する
 		MasterServerConect.SessionRPCManager.Rpc_DestroyLeaderObject(roomTemp.LeaderPlayerRef);
-		if (leaderPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer
-			&& roomTemp.SceneNameType != SceneNameType.TestPhotonScene)
+		bool isLeader = nextLeaderPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer;
+		if (isLeader)
 		{
 			InstantiateLeaderObject();
 		}
-		roomTemp.ChangeLeader(leaderPlayer);
+		roomTemp.ChangeLeader(nextLeaderPlayer);
 	}
 
 	/// <summary>
@@ -192,10 +201,13 @@ public class RoomManager : MonoBehaviour
 	/// </summary>
 	public void Initialize(PlayerRef myPlayerRef)
 	{
+		XKumaDebugSystem.LogWarning($"ルームマネージャー初期化", KumaDebugColor.SuccessColor);
 		Room myRoom = GetCurrentRoom(myPlayerRef);
 		int myRoomKey = GetCurrentRoomKey(myRoom);
+		bool isLeader = myRoom.LeaderPlayerRef == myPlayerRef;
 		_rooms.Clear();
 		_rooms.Add(myRoomKey, myRoom);
+		if (isLeader) { myRoom.ChangeLeader(myPlayerRef); }
 	}
 
 	[ContextMenu("DebugRoomData")]
@@ -203,18 +215,18 @@ public class RoomManager : MonoBehaviour
 	{
 		if (_rooms.Count <= 0)
 		{
-			XDebug.LogWarning("ルームがありません", KumaDebugColor.MessageColor);
+			XKumaDebugSystem.LogWarning("ルームがありません", KumaDebugColor.MessageColor);
 			return;
 		}
 		foreach (Room room in _rooms.Values)
 		{
-			XDebug.LogWarning(
+			XKumaDebugSystem.LogWarning(
 				$"RoomData::,NextSessionName:{room.NextSessionName}" +
 				$"Leader:{room.LeaderPlayerRef}," +
 				$"PlayerCount{room.JoinRoomPlayer.Count}", KumaDebugColor.InformationColor);
 			foreach (RoomPlayer roomPlayer in room.JoinRoomPlayer)
 			{
-				XDebug.LogWarning($"RoomPlayer:{roomPlayer.PlayerData}" +
+				XKumaDebugSystem.LogWarning($"RoomPlayer:{roomPlayer.PlayerData}" +
 					$"PlayerSessionData:{roomPlayer.SessionName}", KumaDebugColor.InformationColor);
 			}
 		}

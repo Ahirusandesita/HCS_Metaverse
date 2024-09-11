@@ -3,6 +3,7 @@ using UnityEngine;
 using Fusion;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using KumaDebug;
 
 public class GateOfFusion
 {
@@ -51,16 +52,16 @@ public class GateOfFusion
 	public void Grab(NetworkObject networkObject)
 	{
 		if (!MasterServer.IsUsePhoton) { return; }
-		XDebug.LogWarning($"Grab:{networkObject.name}", KumaDebugColor.InformationColor);
+		XKumaDebugSystem.LogWarning($"Grab:{networkObject.name}", KumaDebugColor.InformationColor);
 		StateAuthorityData stateAuthorityData = networkObject.GetComponent<StateAuthorityData>();
 		if (stateAuthorityData.IsNotReleaseStateAuthority)
 		{
-			XDebug.LogWarning($"権限がありませんでした", KumaDebugColor.WarningColor);
+			XKumaDebugSystem.LogWarning($"権限がありませんでした", KumaDebugColor.WarningColor);
 			return;
 		}
 		if (networkObject.HasStateAuthority)
 		{
-			XDebug.LogWarning($"自分が権限を持っています", KumaDebugColor.WarningColor);
+			XKumaDebugSystem.LogWarning($"自分が権限を持っています", KumaDebugColor.WarningColor);
 			return;
 		}
 		MasterServer.SessionRPCManager.Rpc_GrabStateAuthorityChanged(networkObject);
@@ -83,13 +84,13 @@ public class GateOfFusion
 			Object.Destroy(despawnObject.gameObject);
 			return;
 		}
-		XDebug.LogWarning($"Despawn:{despawnObject.gameObject}", KumaDebugColor.ErrorColor);
+		XKumaDebugSystem.LogWarning($"Despawn:{despawnObject.gameObject}", KumaDebugColor.ErrorColor);
 		if (despawnObject.TryGetComponent(out NetworkObject networkObject))
 		{
 			NetworkRunner.Despawn(networkObject);
 			return;
 		}
-		XDebug.LogError("NetworkObjectが取得できませんでした。なのでDestroyします。", KumaDebugColor.ErrorColor);
+		XKumaDebugSystem.LogError("NetworkObjectが取得できませんでした。なのでDestroyします。", KumaDebugColor.ErrorColor);
 		Object.Destroy(despawnObject.gameObject);
 	}
 
@@ -107,7 +108,7 @@ public class GateOfFusion
 		}
 		else
 		{
-			XDebug.LogError("NetworkObjectが取得できませんでした。なのでInstantiateします。", KumaDebugColor.ErrorColor);
+			XKumaDebugSystem.LogError("NetworkObjectが取得できませんでした。なのでInstantiateします。", KumaDebugColor.ErrorColor);
 			temp = Object.Instantiate(prefab, position, quaternion);
 		}
 		temp.transform.SetParent(parent);
@@ -129,7 +130,7 @@ public class GateOfFusion
 		}
 		else
 		{
-			XDebug.LogError("NetworkObjectが取得できませんでした。なのでInstantiateします。", KumaDebugColor.ErrorColor);
+			XKumaDebugSystem.LogError("NetworkObjectが取得できませんでした。なのでInstantiateします。", KumaDebugColor.ErrorColor);
 			temp = Object.Instantiate(prefab, position, quaternion);
 		}
 		temp.transform.SetParent(parent);
@@ -138,7 +139,7 @@ public class GateOfFusion
 
 	public async void ActivityStart()
 	{
-		XDebug.LogWarning("アクティビティスタート", KumaDebugColor.MessageColor);
+		XKumaDebugSystem.LogWarning("アクティビティスタート", KumaDebugColor.MessageColor);
 		if (_syncResult != SyncResult.Complete)
 		{
 			Debug.LogWarning("移動中です");
@@ -148,7 +149,7 @@ public class GateOfFusion
 		string sceneName = currentRoom.SceneNameType.ToString();
 		if (SceneManager.GetActiveScene().name == sceneName)
 		{
-			XDebug.LogWarning("現在いるシーンです", KumaDebugColor.WarningColor);
+			XKumaDebugSystem.LogWarning("現在いるシーンです", KumaDebugColor.WarningColor);
 			return;
 		}
 		_syncResult = SyncResult.Connecting;
@@ -160,13 +161,13 @@ public class GateOfFusion
 		}
 		if (currentRoom == null)
 		{
-			XDebug.LogWarning("どのルームにも入っていません", KumaDebugColor.ErrorColor);
+			XKumaDebugSystem.LogWarning("どのルームにも入っていません", KumaDebugColor.ErrorColor);
 			_syncResult = SyncResult.Complete;
 			return;
 		}
 		if (currentRoom.LeaderPlayerRef != NetworkRunner.LocalPlayer)
 		{
-			XDebug.LogWarning("リーダーではありません", KumaDebugColor.ErrorColor);
+			XKumaDebugSystem.LogWarning("リーダーではありません", KumaDebugColor.ErrorColor);
 			_syncResult = SyncResult.Complete;
 			return;
 		}
@@ -176,18 +177,18 @@ public class GateOfFusion
 		{
 			if (roomPlayer.PlayerData == NetworkRunner.LocalPlayer) { continue; }
 			MasterServer.SessionRPCManager.Rpc_JoinSession(sessionName, sceneName, roomPlayer.PlayerData);
-			XDebug.LogWarning($"{roomPlayer.PlayerData}を移動させた", KumaDebugColor.MessageColor);
+			XKumaDebugSystem.LogWarning($"{roomPlayer.PlayerData}を移動させた", KumaDebugColor.MessageColor);
 			await UniTask.WaitUntil(() => !NetworkRunner.ActivePlayers.Contains(roomPlayer.PlayerData));
 		}
-		XDebug.LogWarning($"全員移動させた", KumaDebugColor.MessageColor);
+		XKumaDebugSystem.LogWarning($"全員移動させた", KumaDebugColor.MessageColor);
 		await MasterServer.Disconnect();
-		XDebug.LogWarning($"切断した", KumaDebugColor.MessageColor);
+		XKumaDebugSystem.LogWarning($"切断した", KumaDebugColor.MessageColor);
 		await SceneManager.LoadSceneAsync(sceneName);
-		XDebug.LogWarning($"シーンを読み込んだ");
+		XKumaDebugSystem.LogWarning($"シーンを読み込んだ");
 		await MasterServer.JoinOrCreateSession(sessionName,localPlayerRef);
-		XDebug.LogWarning($"自分がセッション移動した", KumaDebugColor.MessageColor);
+		XKumaDebugSystem.LogWarning($"自分がセッション移動した", KumaDebugColor.MessageColor);
 		_syncResult = SyncResult.Complete;
-		XDebug.LogWarning($"移動終了", KumaDebugColor.MessageColor);
+		XKumaDebugSystem.LogWarning($"移動終了", KumaDebugColor.MessageColor);
 	}
 }
 
