@@ -28,7 +28,7 @@ namespace HCSMeta.Activity
 		[ContextMenu("Close")]
 		public void Close()
 		{
-			Debug.Log("Nishigaki");
+			Debug.LogWarning("Nishigaki");
 			gameFrame.Close();
 			MasterServerConect.SessionRPCManager.Rpc_LeftOrCloseRoom(NetworkRunner.LocalPlayer);
 		}
@@ -53,7 +53,7 @@ namespace HCSMeta.Activity
 			}
 			else
 			{
-				RoomManager.Instance.JoinOrCreate(
+				_ = RoomManager.Instance.JoinOrCreate(
 					_sceneNameType, NetworkRunner.LocalPlayer,
 					NetworkRunner.SessionInfo.Name);
 			}

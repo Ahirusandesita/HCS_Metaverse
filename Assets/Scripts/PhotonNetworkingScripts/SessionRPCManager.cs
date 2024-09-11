@@ -1,26 +1,39 @@
 using Fusion;
+using KumaDebug;
+using Cysharp.Threading.Tasks;
 
 public class SessionRPCManager : NetworkBehaviour
 {
 	public override void Spawned()
 	{
-		XDebug.LogWarning($"RPCManager_Spawned", KumaDebugColor.SuccessColor);
+		XKumaDebugSystem.LogWarning($"RPCManager_Spawned", KumaDebugColor.SuccessColor);
 		DontDestroyOnLoad(this.gameObject);
 		if (!Runner.IsSharedModeMasterClient)
 		{
 			Rpc_RequestRoomData(GateOfFusion.Instance.NetworkRunner.LocalPlayer);
 		}
+
+		SceneNameType firstScene = SceneNameType.KumaKumaTest;
+
+		if (FindObjectOfType<MasterServerConect>().IsSolo)
+		{
+			_ = RoomManager.Instance.JoinOrCreate(firstScene, Runner.LocalPlayer, Runner.SessionInfo.Name);
+		}
+		else
+		{
+			Rpc_JoinOrCreateRoom(firstScene, Runner.LocalPlayer);
+		}
 	}
 
 	private void OnDisable()
 	{
-		XDebug.LogWarning($"RpcManager_Destory", KumaDebugColor.ErrorColor);
+		XKumaDebugSystem.LogWarning($"RpcManager_Destory", KumaDebugColor.ErrorColor);
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All)]
 	public void Rpc_ChangeRoomSessionName(PlayerRef chengeTarget, string nextSessionName)
 	{
-		XDebug.LogWarning(
+		XKumaDebugSystem.LogWarning(
 			$"ChangeSessionName:{nextSessionName}" +
 			$"\nPlayerName:{chengeTarget}", KumaDebugColor.RpcColor);
 		RoomManager.Instance.ChangeSessionName(chengeTarget, nextSessionName);
@@ -33,14 +46,14 @@ public class SessionRPCManager : NetworkBehaviour
 	/// <param name="sessionName">セッション名</param>
 	/// <param name="rpcTarget">RPCの対象プレイヤー</param>
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
-	public async void Rpc_JoinSession(string sessionName,string sceneName, [RpcTarget] PlayerRef rpcTarget = new())
+	public async void Rpc_JoinSession(string sessionName, string sceneName, [RpcTarget] PlayerRef rpcTarget = new())
 	{
-		XDebug.LogWarning("RpcJoin", KumaDebugColor.SuccessColor);
+		XKumaDebugSystem.LogWarning("RpcJoin", KumaDebugColor.SuccessColor);
 		MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
 		await masterServer.Disconnect();
 		UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
 		//実行
-		await masterServer.JoinOrCreateSession(sessionName,rpcTarget);
+		await masterServer.JoinOrCreateSession(sessionName, rpcTarget);
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
@@ -61,35 +74,43 @@ public class SessionRPCManager : NetworkBehaviour
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All)]
-	public void Rpc_JoinOrCreateRoom(SceneNameType worldType, PlayerRef playerRef, int roomNumber = -1)
+	public async void Rpc_JoinOrCreateRoom(SceneNameType joinWorldType, PlayerRef joinPlayer, int roomNumber = -1)
 	{
-		RoomManager.Instance.JoinOrCreate(worldType, playerRef, Runner.SessionInfo.Name, roomNumber);
+		JoinOrCreateResult result = await RoomManager.Instance.JoinOrCreate(joinWorldType, joinPlayer, Runner.SessionInfo.Name, roomNumber);
+		string temp = result switch
+		{
+			JoinOrCreateResult.Create => "を作成",
+			JoinOrCreateResult.Join => "に参加",
+			_ => "の作成、参加に失敗",
+		};
+		XDebug.LogWarning($"{joinPlayer}が{joinWorldType}のルーム{temp}しました", KumaDebugColor.RpcColor);
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All)]
-	public void Rpc_LeftOrCloseRoom(PlayerRef playerRef)
+	public async void Rpc_LeftOrCloseRoom(PlayerRef leftPlayer)
 	{
-		RoomManager.Instance.LeftOrClose(playerRef);
+		await RoomManager.Instance.LeftOrClose(leftPlayer);
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 	public void Rpc_RequestRoomData(PlayerRef requestPlayer)
 	{
-		XDebug.LogWarning($"Rpc_RequestRoomData:{requestPlayer}", KumaDebugColor.RpcColor);
+		XKumaDebugSystem.LogWarning($"Rpc_RequestRoomData:{requestPlayer}", KumaDebugColor.RpcColor);
 		Room roomTemp = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
-		int roomKey = RoomManager.Instance.GetCurrentRoomKey(roomTemp);
 		if (roomTemp is null) { return; }
+		int roomKey = RoomManager.Instance.GetCurrentRoomKey(roomTemp);
+		XKumaDebugSystem.LogWarning($"{roomTemp.LeaderPlayerRef}:{Runner.LocalPlayer}", KumaDebugColor.ErrorColor);
 		bool isLeader = roomTemp.LeaderIndex == roomTemp.GetPlayerIndex(Runner.LocalPlayer);
 		Rpc_SendRoomData(requestPlayer, roomTemp.SceneNameType, Runner.LocalPlayer
 			, isLeader, Runner.SessionInfo.Name, roomKey);
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
-	private void Rpc_SendRoomData([RpcTarget] PlayerRef rpcTarget
+	private async void Rpc_SendRoomData([RpcTarget] PlayerRef rpcTarget
 		, SceneNameType worldType, PlayerRef playerRef, bool isLeader, string sessionName, int roomNumber = -1)
 	{
-		XDebug.LogWarning($"Rpc_SendRoomData:{playerRef}", KumaDebugColor.RpcColor);
-		RoomManager.Instance.JoinOrCreate(worldType, playerRef, sessionName, roomNumber);
+		XKumaDebugSystem.LogWarning($"Rpc_SendRoomData:{playerRef}", KumaDebugColor.RpcColor);
+		await RoomManager.Instance.JoinOrCreate(worldType, playerRef, sessionName, roomNumber);
 		if (isLeader)
 		{
 			RoomManager.Instance.LeaderChange(playerRef);
@@ -99,7 +120,12 @@ public class SessionRPCManager : NetworkBehaviour
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 	public void Rpc_DestroyLeaderObject([RpcTarget] PlayerRef rpcTarget)
 	{
-		XDebug.LogWarning("Rpc_DestroyLeaderObject:" + rpcTarget, KumaDebugColor.RpcColor);
+		XKumaDebugSystem.LogWarning("Rpc_DestroyLeaderObject:" + rpcTarget, KumaDebugColor.RpcColor);
 		RoomManager.Instance.DestroyLeaderObject();
+	}
+
+	public void Rpc_ChangeLeader(PlayerRef nextLeader)
+	{
+		RoomManager.Instance.LeaderChange(nextLeader);
 	}
 }
