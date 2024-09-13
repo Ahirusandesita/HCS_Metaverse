@@ -18,8 +18,8 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
             SafetyOpen();
             Interaction.Interact.Disable();
             Interaction.Disengage.Enable();
-                // プレイヤーの基本操作を停止（移動、ジャンプ、転回）
-                Player.Disable();
+            // プレイヤーの基本操作を停止（移動、ジャンプ、転回）
+            Player.Disable();
         };
         // Disengage入力の購読
         Interaction.Disengage.performed += _ =>
@@ -27,8 +27,8 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
             SafetyClose();
             Interaction.Interact.Enable();
             Interaction.Disengage.Disable();
-                // プレイヤーの基本操作を再開（移動、ジャンプ、転回）
-                Player.Enable();
+            // プレイヤーの基本操作を再開（移動、ジャンプ、転回）
+            Player.Enable();
         };
     }
 

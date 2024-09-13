@@ -472,6 +472,87 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""PlacingMode"",
+            ""id"": ""b4530abc-b76a-44d0-88c0-500c35b6ea14"",
+            ""actions"": [
+                {
+                    ""name"": ""Place"",
+                    ""type"": ""Button"",
+                    ""id"": ""4daadd39-d83d-4981-9bfc-b77f8f531949"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Rotate"",
+                    ""type"": ""Button"",
+                    ""id"": ""416669fb-7161-4d42-98cf-3d6906f0fa85"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""69c2e74e-c86a-48e9-9480-7915354a759b"",
+                    ""path"": ""<XRController>{RightHand}/triggerPressed"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Place"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c0f3c96e-2696-486f-8444-2779cdccb3dd"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Place"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""MouseButton"",
+                    ""id"": ""5a1b0e39-e37e-4edf-ab60-82251e2b28dd"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""081f61c6-0a6f-45d6-899c-00afa048645a"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""dc2e8ea2-b713-4cf6-9520-996551cbcc60"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -543,6 +624,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_VRHead_Position = m_VRHead.FindAction("Position", throwIfNotFound: true);
         m_VRHead_Rotation = m_VRHead.FindAction("Rotation", throwIfNotFound: true);
         m_VRHead_TrackingState = m_VRHead.FindAction("TrackingState", throwIfNotFound: true);
+        // PlacingMode
+        m_PlacingMode = asset.FindActionMap("PlacingMode", throwIfNotFound: true);
+        m_PlacingMode_Place = m_PlacingMode.FindAction("Place", throwIfNotFound: true);
+        m_PlacingMode_Rotate = m_PlacingMode.FindAction("Rotate", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -840,6 +925,60 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         }
     }
     public VRHeadActions @VRHead => new VRHeadActions(this);
+
+    // PlacingMode
+    private readonly InputActionMap m_PlacingMode;
+    private List<IPlacingModeActions> m_PlacingModeActionsCallbackInterfaces = new List<IPlacingModeActions>();
+    private readonly InputAction m_PlacingMode_Place;
+    private readonly InputAction m_PlacingMode_Rotate;
+    public struct PlacingModeActions
+    {
+        private @PlayerInputActions m_Wrapper;
+        public PlacingModeActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Place => m_Wrapper.m_PlacingMode_Place;
+        public InputAction @Rotate => m_Wrapper.m_PlacingMode_Rotate;
+        public InputActionMap Get() { return m_Wrapper.m_PlacingMode; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PlacingModeActions set) { return set.Get(); }
+        public void AddCallbacks(IPlacingModeActions instance)
+        {
+            if (instance == null || m_Wrapper.m_PlacingModeActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PlacingModeActionsCallbackInterfaces.Add(instance);
+            @Place.started += instance.OnPlace;
+            @Place.performed += instance.OnPlace;
+            @Place.canceled += instance.OnPlace;
+            @Rotate.started += instance.OnRotate;
+            @Rotate.performed += instance.OnRotate;
+            @Rotate.canceled += instance.OnRotate;
+        }
+
+        private void UnregisterCallbacks(IPlacingModeActions instance)
+        {
+            @Place.started -= instance.OnPlace;
+            @Place.performed -= instance.OnPlace;
+            @Place.canceled -= instance.OnPlace;
+            @Rotate.started -= instance.OnRotate;
+            @Rotate.performed -= instance.OnRotate;
+            @Rotate.canceled -= instance.OnRotate;
+        }
+
+        public void RemoveCallbacks(IPlacingModeActions instance)
+        {
+            if (m_Wrapper.m_PlacingModeActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IPlacingModeActions instance)
+        {
+            foreach (var item in m_Wrapper.m_PlacingModeActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_PlacingModeActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public PlacingModeActions @PlacingMode => new PlacingModeActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -898,5 +1037,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnPosition(InputAction.CallbackContext context);
         void OnRotation(InputAction.CallbackContext context);
         void OnTrackingState(InputAction.CallbackContext context);
+    }
+    public interface IPlacingModeActions
+    {
+        void OnPlace(InputAction.CallbackContext context);
+        void OnRotate(InputAction.CallbackContext context);
     }
 }
