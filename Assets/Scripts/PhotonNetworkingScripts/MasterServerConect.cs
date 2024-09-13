@@ -18,7 +18,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	[SerializeField]
 	private LocalRemoteSeparation localRemoteReparation;
 	[SerializeField, HideAtPlaying]
-	private bool _isUsePhoton = false;
+	private bool _isUsePhoton = true;
 	private NetworkRunner _networkRunner;
 	private SessionRPCManager _sessionRPCManager;
 	private bool _isConnected = default;
