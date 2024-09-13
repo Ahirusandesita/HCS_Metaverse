@@ -15,4 +15,5 @@ public static class Inputter
     public static PlayerInputActions.UIActions UI => InputActions.UI;
     public static PlayerInputActions.VRHeadActions VRHead => InputActions.VRHead;
     public static PlayerInputActions.InteractionActions Interaction => InputActions.Interaction;
+    public static PlayerInputActions.PlacingModeActions PlacingMode => InputActions.PlacingMode;
 }

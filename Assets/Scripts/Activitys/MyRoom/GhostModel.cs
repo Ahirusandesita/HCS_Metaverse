@@ -1,9 +1,15 @@
 using UnityEngine;
 
+public interface IEditOnlyGhost
+{
+    void SetPlaceableState(bool canPlace);
+    void ChangeColor(Color color);
+}
+
 /// <summary>
 /// Ghost Shaderを適用したモデルを生成する。主にハウジングで使用する
 /// </summary>
-public class GhostModel
+public class GhostModel : IEditOnlyGhost
 {
     private const string MATERIAL_NAME = "Ghost";
     private const string TEXTURE_NAME = "_Texture";
@@ -17,16 +23,36 @@ public class GhostModel
     private BoxCollider boxCollider = default;
     private Material material = default;
 
+    private bool enablePlacingFunction = false;
+    private bool canPlace = false;
+
+
+    public bool CanPlace
+    {
+        get
+        {
+            if (!enablePlacingFunction)
+            {
+                ThrowException();
+                return false;
+            }
+
+            return canPlace;
+        }
+    }
+
 
     public GhostModel()
     {
         instance = new GameObject(nameof(GhostModel));
         boxCollider = instance.AddComponent<BoxCollider>();
+        var rigidbody = instance.AddComponent<Rigidbody>();
         // 「Ghost」Materialをロード
         material = Resources.Load<Material>(MATERIAL_NAME);
 
         instance.SetActive(false);
         boxCollider.isTrigger = true;
+        rigidbody.isKinematic = true;
     }
 
     /// <summary>
@@ -69,15 +95,9 @@ public class GhostModel
             renderer.material = material;
             var texture = renderers[i].sharedMaterial.mainTexture;
             renderer.material.SetTexture(TEXTURE_NAME, texture);
-            // 初期カラー
-            if (defaultColor is null)
-            {
-                renderer.material.SetColor(COLOR_NAME, correctColor);
-            }
-            else
-            {
-                renderer.material.SetColor(COLOR_NAME, (Color)defaultColor);
-            }
+
+            defaultColor ??= correctColor;
+            renderer.material.SetColor(COLOR_NAME, (Color)defaultColor);
             // -----------------------------------------------------------------------------
 
             // Transform情報をコピー（Scaleは絶対Scaleを用いる）
@@ -98,9 +118,16 @@ public class GhostModel
         return this;
     }
 
-    public GhostModel SetParent(Transform parent)
+    /// <summary>
+    /// GhostModelに設置機能（ハウジング機能）を追加する
+    /// <br>※表示されるだけではなく、設置可能判定などが行われるようになる</br>
+    /// </summary>
+    /// <param name="parent">追従対象のオブジェクト（多くの場合プレイヤー）</param>
+    /// <returns></returns>
+    public GhostModel AddPlacingFunction(Transform player)
     {
-        instance.transform.SetParent(parent);
+        instance.AddComponent<PlacingTarget>().Initialize(this, player);
+        enablePlacingFunction = true;
         return this;
     }
 
@@ -149,16 +176,6 @@ public class GhostModel
         material = null;
     }
 
-    public void ChangeColor(bool condition)
-    {
-        var color = condition ? correctColor : incorrectColor;
-        var renderers = instance.GetComponentsInChildren<MeshRenderer>();
-        foreach (var renderer in renderers)
-        {
-            renderer.material.SetColor(COLOR_NAME, color);
-        }
-    }
-
     public void ChangeColor(Color color)
     {
         var renderers = instance.GetComponentsInChildren<MeshRenderer>();
@@ -166,5 +183,24 @@ public class GhostModel
         {
             renderer.material.SetColor(COLOR_NAME, color);
         }
+    }
+
+    void IEditOnlyGhost.SetPlaceableState(bool canPlace)
+    {
+        if (!enablePlacingFunction)
+        {
+            ThrowException();
+            return;
+        }
+
+        this.canPlace = canPlace;
+        var color = canPlace ? correctColor : incorrectColor;
+        ChangeColor(color);
+    }
+
+    private void ThrowException()
+    {
+        throw new System.NotSupportedException($"{nameof(GhostModel)} インスタンスで配置機能が許可されていません。" +
+            $"許可するには {nameof(AddPlacingFunction)} を実行してください。");
     }
 }

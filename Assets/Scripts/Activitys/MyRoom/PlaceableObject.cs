@@ -8,13 +8,21 @@ public class PlaceableObject : MonoBehaviour
     [Tooltip("root‚ð„§")]
     [SerializeField] protected GameObject ghostOrigin = default;
 
+    public GameObject GhostOrigin => ghostOrigin;
+
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
-    private void Reset()
+    protected virtual void Reset()
     {
         ghostOrigin = transform.root.gameObject;
     }
 
-    public virtual void OnPlacingModeEnter() { }
+    public virtual void OnPlacingModeEnter()
+    {
+        ghostOrigin.SetActive(false);
+    }
 
-    public virtual void OnPlacingModeExit() { }
+    public virtual void OnPlacingModeExit()
+    {
+        ghostOrigin.SetActive(true);
+    }
 }
