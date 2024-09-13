@@ -4,7 +4,7 @@ using System.Linq;
 using Fusion;
 using Cysharp.Threading.Tasks;
 using KumaDebug;
-
+using System;
 public class RoomManager : MonoBehaviour
 {
 	[SerializeField]
@@ -49,7 +49,11 @@ public class RoomManager : MonoBehaviour
 	public Room GetCurrentRoom(PlayerRef playerRef)
 	{
 		if (_rooms.Count < 1) { return null; }
-		Room temp = _rooms.Values.FirstOrDefault(room => room.JoinRoomPlayer.Contains(new RoomPlayer(playerRef)));
+		Room temp = _rooms.Values.FirstOrDefault(room => room.JoinRoomPlayer.Contains(playerRef));
+		if (temp == null)
+		{
+			XKumaDebugSystem.LogWarning("ルームに参加していません", KumaDebugColor.WarningColor);
+		}
 		return temp;
 	}
 
@@ -62,7 +66,7 @@ public class RoomManager : MonoBehaviour
 	{
 		return _rooms
 			.FirstOrDefault(roomData => roomData.Value.JoinRoomPlayer
-				.Where(playerData => playerData.PlayerData == playerRef)
+				.Where(playerData => playerData == playerRef)
 			.FirstOrDefault() != null).Key;
 	}
 
@@ -80,17 +84,12 @@ public class RoomManager : MonoBehaviour
 		//部屋番号指定なしの場合
 		if (roomNumber < 0)
 		{
-			roomTemp = _rooms.Values.FirstOrDefault(room => !room.IsEndJoining && room.SceneNameType == sceneNameType);
+			roomTemp = _rooms.Values.FirstOrDefault(room => !room.IsEndJoining 
+			&& room.SceneNameType == sceneNameType);
 		}
-		else
+		else if (_rooms.ContainsKey(roomNumber))
 		{
-			foreach (int a in _rooms.Keys)
-			{
-				XKumaDebugSystem.LogWarning(a);
-			}
-			int key = _rooms.Keys.FirstOrDefault(room => room == roomNumber);
-			XKumaDebugSystem.LogWarning(key, KumaDebugColor.MessageColor);
-			roomTemp = _rooms[key];
+			roomTemp = _rooms[roomNumber];
 		}
 
 		if (roomTemp == null)
@@ -109,7 +108,7 @@ public class RoomManager : MonoBehaviour
 			result = JoinOrCreateResult.Join;
 		}
 
-		roomTemp.Join(joinPlayer, currentSessionName);
+		roomTemp.Join(joinPlayer);
 
 		XKumaDebugSystem.LogWarning($"参加:{sceneNameType}," +
 			$"Result:{result}\n," +
@@ -176,15 +175,12 @@ public class RoomManager : MonoBehaviour
 		room.ChangeSessionName(playerRef, currentSessionName);
 	}
 
-	public void LeaderChange(PlayerRef nextLeaderPlayer)
+	public async void LeaderChange(PlayerRef nextLeaderPlayer)
 	{
 		XKumaDebugSystem.LogWarning($"新リーダー{nextLeaderPlayer}", KumaDebugColor.SuccessColor);
 		Room roomTemp = GetCurrentRoom(nextLeaderPlayer);
-		XKumaDebugSystem.LogWarning($"leaderIndex:{roomTemp.LeaderIndex}", KumaDebugColor.SuccessColor);
-		foreach (PlayerRef playerRef in MasterServerConect.Runner.ActivePlayers)
-		{
-			XKumaDebugSystem.LogWarning($"{playerRef}", KumaDebugColor.InformationColor);
-		}
+
+		await UniTask.WaitUntil(() => MasterServerConect.Runner.ActivePlayers.Contains(nextLeaderPlayer));
 
 		//前のリーダーのリーダーオブジェクトを破棄する
 		MasterServerConect.SessionRPCManager.Rpc_DestroyLeaderObject(roomTemp.LeaderPlayerRef);
@@ -204,6 +200,7 @@ public class RoomManager : MonoBehaviour
 		XKumaDebugSystem.LogWarning($"ルームマネージャー初期化", KumaDebugColor.SuccessColor);
 		Room myRoom = GetCurrentRoom(myPlayerRef);
 		int myRoomKey = GetCurrentRoomKey(myRoom);
+		XKumaDebugSystem.LogWarning($"{myRoom}:{myPlayerRef}:", KumaDebugColor.MessageColor);
 		bool isLeader = myRoom.LeaderPlayerRef == myPlayerRef;
 		_rooms.Clear();
 		_rooms.Add(myRoomKey, myRoom);
@@ -224,10 +221,9 @@ public class RoomManager : MonoBehaviour
 				$"RoomData::,NextSessionName:{room.NextSessionName}" +
 				$"Leader:{room.LeaderPlayerRef}," +
 				$"PlayerCount{room.JoinRoomPlayer.Count}", KumaDebugColor.InformationColor);
-			foreach (RoomPlayer roomPlayer in room.JoinRoomPlayer)
+			foreach (PlayerRef player in room.JoinRoomPlayer)
 			{
-				XKumaDebugSystem.LogWarning($"RoomPlayer:{roomPlayer.PlayerData}" +
-					$"PlayerSessionData:{roomPlayer.SessionName}", KumaDebugColor.InformationColor);
+				XKumaDebugSystem.LogWarning($"{player}", KumaDebugColor.InformationColor);
 			}
 		}
 	}
