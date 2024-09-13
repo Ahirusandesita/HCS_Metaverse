@@ -83,7 +83,7 @@ public class SessionRPCManager : NetworkBehaviour
 			JoinOrCreateResult.Join => "に参加",
 			_ => "の作成、参加に失敗",
 		};
-		XDebug.LogWarning($"{joinPlayer}が{joinWorldType}のルーム{temp}しました", KumaDebugColor.RpcColor);
+		XKumaDebugSystem.LogWarning($"{joinPlayer}が{joinWorldType}のルーム{temp}しました", KumaDebugColor.RpcColor);
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All)]

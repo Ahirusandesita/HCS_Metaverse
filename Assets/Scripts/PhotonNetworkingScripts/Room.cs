@@ -7,29 +7,21 @@ using KumaDebug;
 public class Room
 {
 	private bool _isEndJoining = default;
-	private int _leaderIndex = default;
+	private PlayerRef _leader = default;
 	private readonly string _nextSessionName = default;
 	private SceneNameType _worldType = default;
-	private List<RoomPlayer> _roomPlayers = new();
+	private List<PlayerRef> _roomPlayers = new();
 	private int _maxMemberCount = default;
-	public int LeaderIndex { get => _leaderIndex; }
-	public PlayerRef LeaderPlayerRef
-	{
-		get
-		{
-			XKumaDebugSystem.LogWarning($"{_leaderIndex}:{_roomPlayers.Count}:{_roomPlayers[0].PlayerData}:{_nextSessionName}", KumaDebugColor.ErrorColor);
-			return _roomPlayers[_leaderIndex].PlayerData;
-		}
-	}
+	public int LeaderIndex { get => _roomPlayers.IndexOf(LeaderPlayerRef); }
+	public PlayerRef LeaderPlayerRef => _leader;
 	public bool IsEndJoining { get => _isEndJoining; }
 	public string NextSessionName { get => _nextSessionName; }
 	public SceneNameType SceneNameType { get => _worldType; }
-	public List<RoomPlayer> JoinRoomPlayer { get => _roomPlayers; }
+	public List<PlayerRef> JoinRoomPlayer { get => _roomPlayers; }
 
 	public Room(SceneNameType activityType, string nextSessionName)
 	{
 		this._worldType = activityType;
-		this._leaderIndex = 0;
 		this._nextSessionName = nextSessionName;
 
 		_maxMemberCount = activityType switch
@@ -46,9 +38,13 @@ public class Room
 		return _roomPlayers.IndexOf(playerRef);
 	}
 
-	public void Join(PlayerRef playerRef, string sessionName)
+	public void Join(PlayerRef playerRef)
 	{
-		_roomPlayers.Add(new RoomPlayer(playerRef, sessionName));
+		if(_roomPlayers.Count <= 0)
+		{
+			_leader = playerRef;
+		}
+		_roomPlayers.Add(playerRef);
 		if (_maxMemberCount < 0) { return; }
 		if (_roomPlayers.Count >= _maxMemberCount)
 		{
@@ -60,36 +56,31 @@ public class Room
 	/// <summary>
 	/// 部屋から退出する
 	/// </summary>
-	/// <param name="playerRef">退出するプレイヤー</param>
+	/// <param name="leftPlayer">退出するプレイヤー</param>
 	/// <returns>リザルト</returns>
-	public async UniTask<LeftResult> Left(PlayerRef playerRef)
+	public async UniTask<LeftResult> Left(PlayerRef leftPlayer)
 	{
-		XKumaDebugSystem.LogWarning($"{playerRef}が退出しました:{LeaderIndex}", KumaDebugColor.ErrorColor);
-		int index = _roomPlayers.IndexOf(playerRef);
-		RoomPlayer leaderPlayer = _roomPlayers[LeaderIndex];
-		//参加していなかった場合
-		if (index < 0) { return LeftResult.Fail; }
-		_roomPlayers.RemoveAt(index);
+		const int NEXT_LEADER_INDEX = 0;
+		XKumaDebugSystem.LogWarning($"{leftPlayer}が退出しました:{LeaderIndex}", KumaDebugColor.ErrorColor);
 
+		//参加していなかった場合
+		if (!_roomPlayers.Contains(leftPlayer)) { return LeftResult.Fail; }
 		//部屋のメンバーがいない場合
-		if (_roomPlayers.Count <= 0) { return LeftResult.Closable; }
+		if (_roomPlayers.Count <= 1) { return LeftResult.Closable; }
 
 		LeftResult result = LeftResult.Success;
 
 		//↓リーダーの場合
-		if (_leaderIndex == index)
+		if (_leader == leftPlayer)
 		{
-			int nextLeaderIndex = Random.Range(0, _roomPlayers.Count);
-			XKumaDebugSystem.LogWarning($"{nextLeaderIndex}", KumaDebugColor.MessageColor);
-			leaderPlayer　= new RoomPlayer(JoinRoomPlayer[nextLeaderIndex].PlayerData);
+			_leader = JoinRoomPlayer[NEXT_LEADER_INDEX];
 			RoomManager.Instance.DestroyLeaderObject();
 			MasterServerConect masterServer = Object.FindObjectOfType<MasterServerConect>();
-			await UniTask.WaitUntil(() => masterServer.Runner.ActivePlayers.Contains(leaderPlayer.PlayerData));
-			masterServer.SessionRPCManager.Rpc_ChangeLeader(leaderPlayer.PlayerData);
+			await UniTask.WaitUntil(() => masterServer.Runner.ActivePlayers.Contains(_leader));
+			masterServer.SessionRPCManager.Rpc_ChangeLeader(_leader);
 			result = LeftResult.LeaderChanged;
 		}
-		_leaderIndex = _roomPlayers.IndexOf(leaderPlayer);
-
+		_roomPlayers.Remove(leftPlayer);
 
 		if (_isEndJoining)
 		{
@@ -101,8 +92,9 @@ public class Room
 
 	public void ChangeLeader(PlayerRef nextLeaderPlayer)
 	{
-		_leaderIndex = _roomPlayers.IndexOf(nextLeaderPlayer);
+		_leader = nextLeaderPlayer;
 	}
+
 	public void ChangeSessionName(PlayerRef playerRef, string sessionName)
 	{
 		int index = _roomPlayers.IndexOf(playerRef);
@@ -111,6 +103,5 @@ public class Room
 			XKumaDebugSystem.LogWarning("ルームに参加していません", KumaDebugColor.ErrorColor);
 			return;
 		}
-		_roomPlayers[index].SessionName = sessionName;
 	}
 }

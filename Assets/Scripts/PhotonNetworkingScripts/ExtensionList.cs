@@ -3,11 +3,11 @@ using Fusion;
 
 public static partial class ExtensionList
 {
-	public static int IndexOf(this List<RoomPlayer> list, PlayerRef playerRef)
+	public static int IndexOf(this List<PlayerRef> list, PlayerRef playerRef)
 	{
 		for (int i = 0; i < list.Count; i++)
 		{
-			if (list[i].PlayerData != playerRef) { continue; }
+			if (list[i] != playerRef) { continue; }
 			return i;
 		}
 		return -1;

@@ -173,12 +173,12 @@ public class GateOfFusion
 		}
 		string sessionName = currentRoom.NextSessionName;
 		PlayerRef localPlayerRef = NetworkRunner.LocalPlayer; 
-		foreach (RoomPlayer roomPlayer in currentRoom.JoinRoomPlayer)
+		foreach (PlayerRef roomPlayer in currentRoom.JoinRoomPlayer)
 		{
-			if (roomPlayer.PlayerData == NetworkRunner.LocalPlayer) { continue; }
-			MasterServer.SessionRPCManager.Rpc_JoinSession(sessionName, sceneName, roomPlayer.PlayerData);
-			XKumaDebugSystem.LogWarning($"{roomPlayer.PlayerData}‚ðˆÚ“®‚³‚¹‚½", KumaDebugColor.MessageColor);
-			await UniTask.WaitUntil(() => !NetworkRunner.ActivePlayers.Contains(roomPlayer.PlayerData));
+			if (roomPlayer == NetworkRunner.LocalPlayer) { continue; }
+			MasterServer.SessionRPCManager.Rpc_JoinSession(sessionName, sceneName, roomPlayer);
+			XKumaDebugSystem.LogWarning($"{roomPlayer}‚ðˆÚ“®‚³‚¹‚½", KumaDebugColor.MessageColor);
+			await UniTask.WaitUntil(() => !NetworkRunner.ActivePlayers.Contains(roomPlayer));
 		}
 		XKumaDebugSystem.LogWarning($"‘SˆõˆÚ“®‚³‚¹‚½", KumaDebugColor.MessageColor);
 		await MasterServer.Disconnect();

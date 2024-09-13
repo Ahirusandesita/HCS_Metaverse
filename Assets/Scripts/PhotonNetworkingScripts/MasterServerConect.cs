@@ -70,13 +70,13 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 			return;
 		}
 		DontDestroyOnLoad(this.gameObject);
+		_networkRunner = await InstanceNetworkRunnerAsync();
 		if (!_isUsePhoton)
 		{
 			await RoomManager.Instance.JoinOrCreate(firstScene, Runner.LocalPlayer, Runner.SessionInfo.Name);
 			return;
 		}
 
-		_networkRunner = await InstanceNetworkRunnerAsync();
 		await Connect(firstScene.ToString());
 		
 	}
@@ -190,6 +190,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 
 	private void OnDisconnectedFromMasterServer(NetworkRunner runner, NetDisconnectReason reason)
 	{
+		_ = RoomManager.Instance.LeftOrClose(runner.LocalPlayer);
 		XKumaDebugSystem.LogWarning($"OnDisconnectedFromMasterServer:{reason}", KumaDebugColor.MessageColor);
 	}
 
