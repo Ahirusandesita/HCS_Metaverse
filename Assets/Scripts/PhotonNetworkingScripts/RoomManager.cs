@@ -182,8 +182,16 @@ public class RoomManager : MonoBehaviour
 
 		await UniTask.WaitUntil(() => MasterServerConect.Runner.ActivePlayers.Contains(nextLeaderPlayer));
 
+
+		if (MasterServerConect.Runner.ActivePlayers.Count() > 1)
+		{
+			MasterServerConect.SessionRPCManager.Rpc_DestroyLeaderObject(roomTemp.LeaderPlayerRef);
+		}
+		else
+		{
+			DestroyLeaderObject();
+		}
 		//前のリーダーのリーダーオブジェクトを破棄する
-		MasterServerConect.SessionRPCManager.Rpc_DestroyLeaderObject(roomTemp.LeaderPlayerRef);
 		bool isLeader = nextLeaderPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer;
 		if (isLeader)
 		{
