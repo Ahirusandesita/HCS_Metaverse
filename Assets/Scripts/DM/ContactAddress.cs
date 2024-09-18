@@ -6,7 +6,7 @@ using Fusion;
 using TMPro;
 using System;
 
-public class ContactAddress : MonoBehaviour, IPointerClickHandler,ISendableMessage
+public class ContactAddress : MonoBehaviour, IPointerClickHandler, ISendableMessage
 {
     [SerializeField]
     private TextMeshProUGUI playerNameText;

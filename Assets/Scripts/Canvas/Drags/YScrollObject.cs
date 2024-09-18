@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class YScrollObject : MonoBehaviour, IVerticalOnlyScrollable,ITransformInjectable
+public class YScrollObject : MonoBehaviour, IVerticalOnlyScrollable, ITransformInjectable
 {
     private Transform canvasTransform;
     private ScrollLimitData upLimit = new ScrollLimitData(0f, false);
@@ -14,8 +14,8 @@ public class YScrollObject : MonoBehaviour, IVerticalOnlyScrollable,ITransformIn
     public void Scroll(Vector2 move, float sensitivity)
     {
         Vector3 nextPos = rectTransform.localPosition;
-        nextPos.x -= (canvasTransform.right * move / sensitivity).x;
-        nextPos.y -= (canvasTransform.right * move / sensitivity).y;
+        nextPos.x -= (canvasTransform.up * move / sensitivity).x;
+        nextPos.y -= (canvasTransform.up * move / sensitivity).y;
 
         if (upLimit.isUseLimit && upLimit.limit < nextPos.y)
         {
@@ -48,5 +48,13 @@ public class YScrollObject : MonoBehaviour, IVerticalOnlyScrollable,ITransformIn
     public void InjectDownLimit(float limitRightPos)
     {
         downLimit = new ScrollLimitData(limitRightPos, true);
+    }
+    public void UpLimitCancellation()
+    {
+        upLimit = new ScrollLimitData(0f, false);
+    }
+    public void DownLimitCancellation()
+    {
+        downLimit = new ScrollLimitData(0f, false);
     }
 }

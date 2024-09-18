@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using Cysharp.Threading.Tasks;
+
 public interface IParticipantsInformation
 {
     public OwnInformation Me { get; }

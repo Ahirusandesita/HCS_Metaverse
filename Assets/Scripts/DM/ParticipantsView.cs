@@ -6,13 +6,12 @@ public interface IDetailMenuInitialize
     void Initialize();
     void Dispose();
 }
-public class ParticipantsView : MonoBehaviour,IDetailMenuInitialize
+public class ParticipantsView : MonoBehaviour, IDetailMenuInitialize
 {
     [SerializeField]
     private ContactAddress contactAddress;
     [SerializeField]
     private RectTransform startTransform;
-
     [SerializeField]
     Participants participants;
     [SerializeField]
@@ -20,15 +19,16 @@ public class ParticipantsView : MonoBehaviour,IDetailMenuInitialize
 
     [SerializeField]
     private TestDMInjector testInjector;
-    
+
     private List<ContactAddress> contactAddressList = new List<ContactAddress>();
 
     public void Initialize()
     {
-        for(int i=0;i< participants.DeploymentParticipants().Participants.Count; i++)
+        for (int i = 0; i < participants.DeploymentParticipants().Participants.Count; i++)
         {
             contactAddressList.Add(Instantiate(contactAddress, this.transform));
-            contactAddressList[contactAddressList.Count - 1].OnConected += (sendable) => testInjector.InjectTest(sendable);
+            contactAddressList[contactAddressList.Count - 1].
+                OnConected += (sendable) => testInjector.InjectTest(sendable);
         }
 
         Vector3 position = startTransform.GetComponent<RectTransform>().localPosition;
@@ -42,9 +42,10 @@ public class ParticipantsView : MonoBehaviour,IDetailMenuInitialize
             contactAddressList[i].InjectDM(testDM);
         }
     }
+
     public void Dispose()
     {
-        foreach(ContactAddress contactAddress in contactAddressList)
+        foreach (ContactAddress contactAddress in contactAddressList)
         {
             Destroy(contactAddress);
         }
