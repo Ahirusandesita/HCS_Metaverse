@@ -123,6 +123,8 @@ public class DM : MonoBehaviour
                     Vector3 position = message.GetComponent<RectTransform>().localPosition;
                     position.x = SenderXPosition(messageInformations[maxIndex + 1].MessageSender);
                     message.GetComponent<RectTransform>().localPosition = position;
+
+                    message.ScrollCancellation();
                 }
                 else
                 {
@@ -164,6 +166,8 @@ public class DM : MonoBehaviour
                     Vector3 positionX = message.GetComponent<RectTransform>().localPosition;
                     positionX.x = SenderXPosition(messageInformations[minIndex - 1].MessageSender);
                     message.GetComponent<RectTransform>().localPosition = positionX;
+
+                    message.ScrollCancellation();
                 }
                 else
                 {
