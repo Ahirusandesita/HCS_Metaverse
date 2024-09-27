@@ -58,8 +58,8 @@ public class WhiteVignetteManager : MonoBehaviour
             // DOTweenでフェードインを表現
             DOVirtual.Float(from: 0f, to: 1f, duration: easeInDuration, onVirtualUpdate: value =>
             {
-                    // 値の更新
-                    vignettePropertyBlock.SetColor(ShaderPropertyLookup.vignetteColor, new Color(1f, 1f, 1f, value));
+                // 値の更新
+                vignettePropertyBlock.SetColor(ShaderPropertyLookup.vignetteColor, new Color(1f, 1f, 1f, value));
                 vignettePropertyBlock.SetColor(ShaderPropertyLookup.vignetteColorBlend, new Color(1f, 1f, 1f, value));
                 meshRenderer.SetPropertyBlock(vignettePropertyBlock);
             }).OnComplete(() =>
@@ -77,8 +77,8 @@ public class WhiteVignetteManager : MonoBehaviour
             // DOTweenでフェードアウトを表現
             DOVirtual.Float(from: 1f, to: 0f, duration: easeOutDuration, onVirtualUpdate: value =>
             {
-                    // 値の更新
-                    vignettePropertyBlock.SetColor(ShaderPropertyLookup.vignetteColor, new Color(1f, 1f, 1f, value));
+                // 値の更新
+                vignettePropertyBlock.SetColor(ShaderPropertyLookup.vignetteColor, new Color(1f, 1f, 1f, value));
                 vignettePropertyBlock.SetColor(ShaderPropertyLookup.vignetteColorBlend, new Color(1f, 1f, 1f, value));
                 meshRenderer.SetPropertyBlock(vignettePropertyBlock);
             });
