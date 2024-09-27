@@ -14,9 +14,9 @@ public class WhiteVignetteManager : MonoBehaviour
     }
 
     [Tooltip("Easeinの所要時間[s]")]
-    [SerializeField, Min(0f)] private float easeInDuration = 0.25f;
+    private const float EASEIN_DURATION = 0.25f;
     [Tooltip("EaseOutの所要時間[s]")]
-    [SerializeField, Min(0f)] private float easeOutDuration = 0.25f;
+    private const float EASEOUT_DURATION = 0.25f;
 
     private MeshRenderer meshRenderer = default;
     private MaterialPropertyBlock vignettePropertyBlock = default;
@@ -41,8 +41,9 @@ public class WhiteVignetteManager : MonoBehaviour
     /// ホワイトアウトする
     /// <br>フェードインが完了したタイミングでタスクの完了が通知される</br>
     /// </summary>
-    /// <returns></returns>
-    public UniTask WhiteOut()
+    /// <param name="easeInDuration">Easeinの所要時間[s]</param>
+    /// <param name="easeOutDuration">EaseOutの所要時間[s]</param>
+    public UniTask WhiteOut(float easeInDuration = EASEIN_DURATION, float easeOutDuration = EASEOUT_DURATION)
     {
         var tcs = new UniTaskCompletionSource();
 
