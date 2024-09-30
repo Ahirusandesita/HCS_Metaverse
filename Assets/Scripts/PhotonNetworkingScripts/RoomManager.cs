@@ -185,6 +185,7 @@ public class RoomManager : MonoBehaviour
 
 		if (MasterServerConect.Runner.ActivePlayers.Count() > 1)
 		{
+			await UniTask.WaitUntil(() => MasterServerConect.Runner.ActivePlayers.Contains(roomTemp.LeaderPlayerRef));
 			MasterServerConect.SessionRPCManager.Rpc_DestroyLeaderObject(roomTemp.LeaderPlayerRef);
 		}
 		else
