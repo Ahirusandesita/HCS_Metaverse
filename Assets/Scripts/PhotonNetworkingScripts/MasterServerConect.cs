@@ -37,24 +37,42 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		}
 	}
 	public SessionRPCManager SessionRPCManager => _sessionRPCManager ??= FindObjectOfType<SessionRPCManager>();
+	#region EditorOnly
 #if UNITY_EDITOR
 	[SerializeField, HideAtPlaying]
 	private bool _isKumaDebug = false;
 	public bool IsKumaDebug => _isKumaDebug;
 #endif
+	#endregion
 
+	[SerializeField]
+	private GameObject a;
+	[ContextMenu("dadada")]
+	private void AAA()
+	{
+		Runner.Spawn(a);
+	}
 
+	/// <summary>
+	/// SessionRPCManagerを取得する取得できない場合はできるまでまつ
+	/// </summary>
+	/// <returns>取得したオブジェクト</returns>
 	public async UniTask<SessionRPCManager> GetSessionRPCManagerAsync()
 	{
 		if (_sessionRPCManager != null) { return _sessionRPCManager; }
-		_sessionRPCManager = FindObjectOfType<SessionRPCManager>();
-		await UniTask.WaitUntil(() => _sessionRPCManager != null);
+		//キャッシュされていない場合
+		await UniTask.WaitUntil(() => (_sessionRPCManager = FindObjectOfType<SessionRPCManager>()) != null);
 		return _sessionRPCManager;
 	}
 
+	/// <summary>
+	/// SessionRPCManagerを生成する
+	/// </summary>
+	/// <returns>生成したオブジェクト</returns>
 	public async UniTask<SessionRPCManager> InstanceSessionRPCManagerAsync()
 	{
 		XKumaDebugSystem.LogWarning($"InstanceRpcManager{_networkRunner.IsShutdown}", KumaDebugColor.ErrorColor);
+		//GateOfFusion.Instance.SpawnAsync(_sessionRPCManagerPrefab);
 		NetworkObject networkObjectTemp = await _networkRunner.SpawnAsync(_sessionRPCManagerPrefab);
 		_sessionRPCManager = networkObjectTemp.GetComponent<SessionRPCManager>();
 		return _sessionRPCManager;
@@ -76,9 +94,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 			await RoomManager.Instance.JoinOrCreate(firstScene, Runner.LocalPlayer, Runner.SessionInfo.Name);
 			return;
 		}
-
-		await Connect(firstScene.ToString());
-		
+		await Connect(firstScene.ToString());	
 	}
 
 	public async UniTask Disconnect()
@@ -156,7 +172,6 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		StartGameResult result = await _networkRunner.StartGame(startGameArgs);
 
 		XKumaDebugSystem.LogWarning("Connect:" + (result.Ok ? "Success" : "Fail"), KumaDebugColor.InformationColor);
-
 	}
 
 	private async void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
