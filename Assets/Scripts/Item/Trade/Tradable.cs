@@ -29,7 +29,7 @@ public class Tradable : NetworkBehaviour
 	public event TradeHandler OnTrade;
 	private PlayerRef receiver = default;
 
-	[ContextMenu("aaaaa")]
+	[ContextMenu("Trade")]
 	private void TradeTest()
 	{
 		Trade(receiver);
@@ -41,7 +41,7 @@ public class Tradable : NetworkBehaviour
 		Rpc_ChangeItemOwner(receiver);
 	}
 
-	[ContextMenu("llllll")]
+	[ContextMenu("BecomeReceiver")]
 	private void TestTest()
 	{
 		Rpc_ChangeReceiver(Runner.LocalPlayer);
@@ -60,7 +60,7 @@ public class Tradable : NetworkBehaviour
 		_itemOwner = nextItemOwner;
 	}
 
-	[ContextMenu("dadada")]
+	[ContextMenu("OutPutOwnerState")]
 	private void Debug()
 	{
 		XKumaDebugSystem.LogWarning(OwnerState,KumaDebugColor.ErrorColor);
