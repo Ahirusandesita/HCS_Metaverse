@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace UnityEditor.HCSMeta
 {
+#if UNITY_EDITOR
     public class GroundWallAttachWindow : EditorWindow
     {
         private enum OperationMode
@@ -89,4 +90,5 @@ namespace UnityEditor.HCSMeta
             }
         }
     }
+#endif
 }
