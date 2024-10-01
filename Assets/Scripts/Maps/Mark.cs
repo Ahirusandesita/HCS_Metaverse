@@ -15,7 +15,6 @@ public class MarkData
 }
 public class Mark : MonoBehaviour
 {
-    [SerializeField]
     private MarkView markView;
     [SerializeField, InterfaceType(typeof(IMarkProcess))]
     private UnityEngine.Object IMarkProcess;
