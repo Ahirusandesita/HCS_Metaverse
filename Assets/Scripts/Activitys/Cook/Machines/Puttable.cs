@@ -4,12 +4,12 @@ using Oculus.Interaction;
 public class Puttable : MonoBehaviour
 {
     // 
-    private ILockedObjectBoard _parentLockedCuttingObject = default;
+    private IObjectLocker _parentLockedCuttingObject = default;
 
     // 掴んだ時や離した時にイベントを実行するクラス
     private PointableUnityEventWrapper _pointableUnityEventWrapper;
 
-    public void SetLockedCuttingObject(ILockedObjectBoard lockedCuttingObject)
+    public void SetLockedCuttingObject(IObjectLocker lockedCuttingObject)
     {
         // 
         _parentLockedCuttingObject = lockedCuttingObject;
@@ -35,6 +35,6 @@ public class Puttable : MonoBehaviour
 
     private void OnDestroy()
     {
-        _parentLockedCuttingObject.CanselCutting();
+        _parentLockedCuttingObject.CanselLock();
     }
 }

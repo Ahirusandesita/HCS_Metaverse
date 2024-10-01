@@ -41,62 +41,79 @@ public class ViewMoveDepth : MonoBehaviour
 
     private void Start()
     {
-        Vector3[] myVertexes = GetVertexPositionList(transform, _myCollider);
+        Vector3[] myVertexes = GetVertexPositionList(_myCollider.transform, _myCollider);
 
         _hitSurfaceData = GetHitSurfaceData(myVertexes, _hitCollider);
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         //if (Input.GetKeyDown(KeyCode.Return))
         //{
-        Vector3[] myVertexes = GetVertexPositionList(transform, _myCollider);
+            Vector3[] colliderVertexes = GetVertexPositionList(_myCollider.transform, _myCollider);
 
-        //_hitSurfaceData = GetHitSurfaceData(myVertexes, _hitCollider);
+            //_hitSurfaceData = GetHitSurfaceData(myVertexes, _hitCollider);
 
-        ProjectionData[] projectionDatas = GetDepth(_hitCollider, myVertexes);
+            ProjectionData[] projectionDatas = GetProjectionData(_hitCollider, colliderVertexes);
 
-        int deepestIndex = 0;
+            int deepestIndex = 0;
 
-        float deepestDepth = projectionDatas[0].depth;
+            float deepestDepth = projectionDatas[0].depth;
 
-        for (int i = 1; i < projectionDatas.Length; i++)
-        {
-            if (projectionDatas[i].depth > deepestDepth)
+            for (int i = 1; i < projectionDatas.Length; i++)
             {
-                deepestDepth = projectionDatas[i].depth;
+                if (projectionDatas[i].depth > deepestDepth)
+                {
+                    deepestDepth = projectionDatas[i].depth;
 
-                deepestIndex = i;
+                    deepestIndex = i;
+                }
             }
-        }
 
-        // 頂点
-        if (CheckOnHitSurface(projectionDatas[deepestIndex]))
-        {
-            Vector3 moveVector = GetUpByDepth(projectionDatas[deepestIndex]);
+            Vector3 moveVector = default;
 
-            transform.position += moveVector;
-        }
+            Debug.Log($"実体頂点:0<{colliderVertexes[0]}>,1<{colliderVertexes[1]}>,2<{colliderVertexes[2]}>,3<{colliderVertexes[3]}>,4<{colliderVertexes[4]}>,5<{colliderVertexes[5]}>,6<{colliderVertexes[6]}>,7<{colliderVertexes[7]}>");
+            Debug.Log($"射影頂点:0<{projectionDatas[0].position}>,1<{projectionDatas[1].position}>,2<{projectionDatas[2].position}>,3<{projectionDatas[3].position}>,4<{projectionDatas[4].position}>,5<{projectionDatas[5].position}>,6<{projectionDatas[6].position}>,7<{projectionDatas[7].position}>");
+            Debug.Log($"深度:0<{projectionDatas[0].depth}>,1<{projectionDatas[1].depth}>,2<{projectionDatas[2].depth}>,3<{projectionDatas[3].depth}>,4<{projectionDatas[4].depth}>,5<{projectionDatas[5].depth}>,6<{projectionDatas[6].depth}>,7<{projectionDatas[7].depth}>");
 
-        // 辺
-        if (CheckConnectingDeepestToOnSurf(deepestIndex, projectionDatas, out int onHitSurfaceVertexIndex))
-        {
+            // 頂点
+            if (CheckOnHitSurface(projectionDatas[deepestIndex]))
+            {
+                Debug.Log($"ちょーてん　{deepestIndex}番目");
+                moveVector = GetMoveDepth(projectionDatas[deepestIndex].depth);
+            }
+            // その他
+            else
+            {
+                Debug.Log("へんとか");
+                
+                float intersectDepth = GetDeepestIntersectDepth(colliderVertexes, projectionDatas);
 
-        }
+                float intoSurfaceDepth = GetDeepestIntoSurfaceDepth(colliderVertexes, projectionDatas);
 
-        // 面
+                Debug.Log("へん：" + intersectDepth + "  面：" + intoSurfaceDepth);
 
+                if (intoSurfaceDepth <= intersectDepth)
+                {
+                    moveVector = GetMoveDepth(intersectDepth);
+                }
+                else
+                {
+                    moveVector = GetMoveDepth(intoSurfaceDepth);
+                }
+            }
+            //Debug.Log("むーぶべくたー： x=" + moveVector.x + " , y=" + moveVector.y + " z=" + moveVector.z);
+            transform.position = transform.parent.position + moveVector;
+        //}
     }
 
-    private ProjectionData[] GetDepth(BoxCollider hitCollider, Vector3[] vertexList)
+    private ProjectionData[] GetProjectionData(BoxCollider hitCollider, Vector3[] vertexList)
     {
-        Vector3 samplePosition = _hitSurfaceData.vertexList[0];
-
         ProjectionData[] projectionDatas = new ProjectionData[vertexList.Length];
 
         for (int i = 0; i < projectionDatas.Length; i++)
         {
-            Vector3 sampleVector = samplePosition - vertexList[i];
+            Vector3 sampleVector = vertexList[i] - _hitSurfaceData.vertexList[0];
 
             Vector3 projectionVector = _hitSurfaceData.normal * Vector3.Dot(sampleVector, _hitSurfaceData.normal);
 
@@ -104,7 +121,7 @@ public class ViewMoveDepth : MonoBehaviour
 
             float projectionDistance = Vector3.Distance(projectionDatas[i].position, vertexList[i]);
 
-            if (Vector3.Dot(projectionVector, _hitSurfaceData.normal) < 0)
+            if (Vector3.Dot(projectionVector, _hitSurfaceData.normal) > 0)
             {
                 projectionDistance = -projectionDistance;
             }
@@ -115,9 +132,15 @@ public class ViewMoveDepth : MonoBehaviour
         return projectionDatas;
     }
 
-    private Vector3 GetUpByDepth(ProjectionData projectionData)
+    private Vector3 GetMoveDepth(ProjectionData projectionData)
     {
         return _hitSurfaceData.normal * projectionData.depth;
+    }
+
+    private Vector3 GetMoveDepth(float projectionData)
+    {
+        Debug.Log($"設定深度：{projectionData}");
+        return _hitSurfaceData.normal * projectionData;
     }
 
     private Vector3[] GetVertexPositionList(Transform transform, BoxCollider collider)
@@ -142,18 +165,6 @@ public class ViewMoveDepth : MonoBehaviour
         }
 
         return vertexList;
-    }
-
-    private int[] GetConnectingVertexIndexes(int parentIndex)
-    {
-        int[] connectingVertexIndexList = new int[3] 
-        {
-            (parentIndex ^ 1) & 2 & 4,
-            (parentIndex ^ 2) & 4 & 1,
-            (parentIndex ^ 4) & 1 & 2
-        };
-
-        return connectingVertexIndexList;
     }
 
     private int[] GetOnHitSurfaceVertexList(ProjectionData[] projectionDatas)
@@ -254,28 +265,251 @@ public class ViewMoveDepth : MonoBehaviour
         }
     }
 
-    private bool CheckConnectingDeepestToOnSurf(int DeepestIndex, ProjectionData[] projectionDatas, out int subjectIndex)
+    private float GetDeepestIntersectDepth(Vector3[] colliderVertexes, ProjectionData[] projectionDatas)
     {
-        int[] connectingVertexes = GetConnectingVertexIndexes(DeepestIndex);
+        Vector3[] checkLineVertexes = new Vector3[2];
 
-        int[] onHitSurfaceVertexes = GetOnHitSurfaceVertexList(projectionDatas);
+        Vector3[] projectionVertexes = new Vector3[projectionDatas.Length];
 
-        subjectIndex = -1;
-
-        for (int i = 0; i < connectingVertexes.Length; i++)
+        for (int i = 0; i < projectionVertexes.Length; i++)
         {
-            for (int k = 0; k < onHitSurfaceVertexes.Length; k++)
+            projectionVertexes[i] = projectionDatas[i].position;
+        }
+
+        float deepestDepth = default;
+
+        for (int i = 0; i < 4; i++)
+        {
+            int[] checkLineVertexesIndex = BoxColliderData.ConnectiongSurfaceVertexesIndexes(i);
+
+            checkLineVertexes[0] = _hitSurfaceData.vertexList[checkLineVertexesIndex[0]];
+            checkLineVertexes[1] = _hitSurfaceData.vertexList[checkLineVertexesIndex[1]];
+
+            Debug.Log($"{i}辺　判定面の頂点の座標0:{checkLineVertexes[0]}");
+            Debug.Log($"{i}辺　判定面の頂点の座標1:{checkLineVertexes[1]}");
+
+            for (int k = 0; k < 12; k++)
             {
-                if (connectingVertexes[i] == onHitSurfaceVertexes[k])
+                Debug.Log($"辺の番号：{BoxColliderData.GetLineIndexes(k)}");
+                if(FindClosestPoints(projectionVertexes, BoxColliderData.GetLineIndexes(k), checkLineVertexes, out Vector3 closestPointOnCheckLine, out float closestRatio))
                 {
-                    if (subjectIndex < 0 || projectionDatas[subjectIndex].depth < projectionDatas[connectingVertexes[i]].depth)
+                    float depth = GetIntersectDepth(colliderVertexes, BoxColliderData.GetLineIndexes(k), closestPointOnCheckLine, closestRatio);
+
+                    Debug.Log($"{k}番目　当たってる　深度{depth}");
+
+                    if (deepestDepth < depth)
                     {
-                        subjectIndex = connectingVertexes[i];
+                        deepestDepth = depth;
                     }
+                }
+                else
+                {
+                    Debug.Log($"{k}番目　当たってない");
                 }
             }
         }
 
-        return subjectIndex >= 0;
+        return deepestDepth;
+    }
+
+    private bool FindClosestPoints(Vector3[] colliderVertexes, int[] lineIndexes, Vector3[] checkLineVertexes, out Vector3 closestPointOnCheckLine, out float closestRatio)
+    {
+        Vector3 colliderVertex1 = colliderVertexes[lineIndexes[0]];
+        Vector3 colliderVertex2 = colliderVertexes[lineIndexes[1]];
+
+        Vector3 checkLineVertex1 = checkLineVertexes[0];
+        Vector3 checkLineVertex2 = checkLineVertexes[1];
+
+        Vector3 direction_ColliderLine = colliderVertex2 - colliderVertex1;
+        Vector3 direction_CheckLine = checkLineVertex2 - checkLineVertex1;
+        Vector3 temporaryLine = colliderVertex1 - checkLineVertex1;
+
+        float dot_ColliderLine = Vector3.Dot(direction_ColliderLine, direction_ColliderLine);
+        float dot_CheckLine = Vector3.Dot(direction_CheckLine, direction_CheckLine);
+        float dot_CheckToTemporary = Vector3.Dot(direction_CheckLine, temporaryLine);
+
+        float ratio_ColliderLine = default;
+        float ratio_CheckLine = default;
+
+        float dot_ColliderToTemporary = Vector3.Dot(direction_ColliderLine, temporaryLine);
+        float dot_ColliderToCheck = Vector3.Dot(direction_ColliderLine, direction_CheckLine);
+        float normalizer = dot_ColliderLine * dot_CheckLine - dot_ColliderToCheck * dot_ColliderToCheck;
+
+        if (normalizer != 0f)
+        {
+            ratio_ColliderLine = (dot_ColliderToCheck * dot_CheckToTemporary - dot_ColliderToTemporary * dot_CheckLine) / normalizer;
+        }
+        else
+        {
+            ratio_ColliderLine = 0f;
+        }
+
+        ratio_CheckLine = (dot_ColliderToCheck * ratio_ColliderLine + dot_CheckToTemporary) / dot_CheckLine;
+
+        closestPointOnCheckLine = checkLineVertex1 + ratio_CheckLine * direction_CheckLine;
+        closestRatio = ratio_ColliderLine;
+
+        Debug.Log($"ratio_ColliderLine = {ratio_ColliderLine}  ,  ratio_CheckLine = {ratio_CheckLine}");
+
+        if (ratio_ColliderLine <= 0 || 1 <= ratio_ColliderLine || ratio_CheckLine <= 0 || 1 <= ratio_CheckLine)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private float GetIntersectDepth(Vector3[] colliderVertexes, int[] lineIndexes, Vector3 closestPointOnCheckLine, float closestRatio)
+    {
+        Vector3 lineVector = colliderVertexes[lineIndexes[1]] - colliderVertexes[lineIndexes[0]];
+
+        Vector3 closestPointOnColliderLine = colliderVertexes[lineIndexes[0]] + lineVector * closestRatio;
+
+        Vector3 depthVector = closestPointOnColliderLine - closestPointOnCheckLine;
+
+        Debug.Log($"<color=red>LineVector={lineVector}  :  ClosestPointOnColliderLine={closestPointOnColliderLine}  :  ClosestPointOnCheckLine={closestPointOnCheckLine}  :  depthVector={depthVector}</color>");
+
+        float depth = depthVector.magnitude;
+
+        if (Vector3.Dot(depthVector, _hitSurfaceData.normal) >= 0)
+        {
+            depth *= -1;
+        }
+
+        return depth;
+    }
+
+    private float GetDeepestIntoSurfaceDepth(Vector3[] colliderVertexes, ProjectionData[] projectionDatas)
+    {
+        float deepestDepth = 0;
+
+        Vector3[] projectionVertexes = new Vector3[projectionDatas.Length];
+
+        Vector3[] surfaceNormalList = BoxColliderData.GetColliderNormals(_hitCollider.transform);
+
+        Vector3 projectionVector = _hitSurfaceData.normal;
+
+        for (int i = 0; i < projectionVertexes.Length; i++)
+        {
+            projectionVertexes[i] = projectionDatas[i].position;
+        }
+
+        int[,] intoSurfaceList = GetIntoSurfaceList(_hitSurfaceData.vertexList, projectionVertexes);
+
+        if (intoSurfaceList == default)
+        {
+            Debug.Log("めんにちょーてんあたってないよん");
+            return default;
+        }
+
+        for (int i = 0; i < intoSurfaceList.GetLength(0); i++)
+        {
+            Debug.Log($"頂点:{intoSurfaceList[i, 0]}   面：{intoSurfaceList[i, 1]}");
+            int[] projectionSurfaceVertexes = BoxColliderData.GetSurfaceIndexes(intoSurfaceList[i, 1]);
+
+            Vector3 surfaceNormal = surfaceNormalList[intoSurfaceList[i, 1]];
+
+            Vector3 checkVertex = _hitSurfaceData.vertexList[intoSurfaceList[i, 0]];
+
+            float projectionDot = Vector3.Dot(colliderVertexes[projectionSurfaceVertexes[0]] - checkVertex, surfaceNormal) / Vector3.Dot(projectionVector, surfaceNormal);
+
+            Vector3 projectionPoint = checkVertex - projectionDot * projectionVector;
+
+            Vector3 depthVector = checkVertex - projectionPoint;
+
+            float depth = depthVector.magnitude;
+
+            if (Vector3.Dot(depthVector, projectionVector) <= 0)
+            {
+                depth *= -1;
+            }
+
+            if (deepestDepth < depth)
+            {
+                deepestDepth = depth;
+            }
+        }
+
+        return deepestDepth;
+    }
+
+    private int[,] GetIntoSurfaceList(Vector3[] checkVertexList, Vector3[] projectionVertexes)
+    {
+        bool[,] intoSurfaceStats = new bool[checkVertexList.Length,6];
+
+        int intoCount = 0;
+
+        for (int i = 0; i < checkVertexList.Length; i++)
+        {
+            if (CheckIntoSurface(checkVertexList[i], projectionVertexes, out int[] intoSurfaceIndex))
+            {
+                for (int k = 0; k < intoSurfaceIndex.Length; k++)
+                {
+                    intoSurfaceStats[i, intoSurfaceIndex[k]] = true;
+                    intoCount++;
+                }
+            }
+        }
+
+        if (intoCount <= 0)
+        {
+            return default;
+        }
+
+        int[,] intoSurfaceList = new int[intoCount, 2];
+
+        int listIndex = 0;
+
+        for (int i = 0; i < intoSurfaceStats.GetLength(0); i++)
+        {
+            for (int k = 0; k < intoSurfaceStats.GetLength(1); k++)
+            {
+                if (intoSurfaceStats[i, k])
+                {
+                    intoSurfaceList[listIndex, 0] = i;
+                    intoSurfaceList[listIndex, 1] = k;
+                    listIndex++;
+                }
+            }
+        }
+
+        return intoSurfaceList;
+    }
+
+    private bool CheckIntoSurface(Vector3 checkVertexPosition, Vector3[] projectionVertexes, out int[] intoSurfaceIndex)
+    {
+        int[] intoList = new int[6];
+
+        int intoCount = 0;
+
+        for (int i = 0; i < 6; i++)
+        {
+            int[] surfaceIndexes = BoxColliderData.GetSurfaceIndexes(i);
+
+            Vector3 firstLineVector = projectionVertexes[surfaceIndexes[1]] - projectionVertexes[surfaceIndexes[0]];
+
+            Vector3 secondLineVector = projectionVertexes[surfaceIndexes[surfaceIndexes.Length - 1]] - projectionVertexes[surfaceIndexes[0]];
+
+            Vector3 checkVector = checkVertexPosition - projectionVertexes[surfaceIndexes[0]];
+
+            float firstDot = Vector3.Dot(checkVector, firstLineVector) / Vector3.Dot(firstLineVector, firstLineVector);
+
+            float secondDot = Vector3.Dot(checkVector, secondLineVector) / Vector3.Dot(secondLineVector, secondLineVector);
+
+            if (0 <= firstDot && firstDot <= 1 && 0 <= secondDot && secondDot <= 1)
+            {
+                intoList[intoCount] = i;
+                intoCount++;
+            }
+        }
+
+        intoSurfaceIndex = new int[intoCount];
+
+        for (int i = 0; i < intoCount; i++)
+        {
+            intoSurfaceIndex[i] = intoList[i];
+        }
+
+        return intoCount > 0;
     }
 }

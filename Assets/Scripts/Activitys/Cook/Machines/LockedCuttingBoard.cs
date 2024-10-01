@@ -2,13 +2,16 @@ using UnityEngine;
 using Oculus.Interaction;
 using Fusion;
 
-public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
+public class LockedCuttingBoard : Machine, IObjectLocker, IManualProcessing
 {
     [SerializeField, Tooltip("オブジェクトの取得範囲を指定するCollider")]
     private Collider _cuttingAreaCollider = default;
 
-    [SerializeField, Tooltip("固定位置")]
-    private Transform _machineTransform = default;
+    [Tooltip("行う加工の種類")]
+    private ProcessingType _processingType = ProcessingType.Cut;
+
+    // processingEvent１回あたりの作業進行度
+    private int _processingValue = 1;
 
     // オブジェクトの取得範囲を表す値 -----------------------
     // 中心
@@ -24,11 +27,11 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
     // オブジェクトを固定しているかどうか
     private bool _isLockedObject = default;
 
-    // 固定しているオブジェクトのIngrodients
-    private Ingrodients _lockingIngrodients = default;
+    // 
+    private IngrodientCatcher _ingrodientCatcher = default;
 
     // 固定しているオブジェクトのPuttable
-    private Puttable _lockedPuttable = default;
+    private Puttable _processingPuttable = default;
 
     // 掴んだ時や離した時にイベントを実行するクラス
     private PointableUnityEventWrapper _pointableUnityEventWrapper;
@@ -36,7 +39,7 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
     // 
     public Transform GetObjectLockTransform => _machineTransform;
 
-    private void Start()
+    protected override void Start()
     {
         // オブジェクトの取得範囲の各値を設定する
         // 中心
@@ -47,10 +50,20 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
 
         // 角度
         _hitBoxRotation = this.transform.rotation;
+
+        // IngrodientCatcherのインスタンスを生成する
+        _ingrodientCatcher = new IngrodientCatcher();
     }
 
     private void Update()
     {
+        // オブジェクトの操作権限がない場合
+        if (_networkObject.HasStateAuthority)
+        {
+            // 処理を中断
+            return;
+        }
+
         // オブジェクトを固定している場合
         if (_isLockedObject)
         {
@@ -58,79 +71,44 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
             return;
         }
 
-        // オブジェクトの取得範囲を形成して接触しているColliderを取得する
-        Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);
+        // 指定した判定に接触したIngrodientがないか判定する
+        bool isHitIngrodient = _ingrodientCatcher.SearchIngrodient(_hitBoxCenter, _hitBoxSize, _hitBoxRotation, out NetworkObject hitObject);
 
-        // 何も当たっていなかった場合
-        if (hitColliders is null)
+        // Ingrodientと当たった場合
+        if (isHitIngrodient)
         {
-            // 何もしない
-            Debug.Log($"なにも当たってないよん");
-            return;
-        }
-
-        // 範囲内のオブジェクトをすべて探索する
-        foreach (Collider hitCollider in hitColliders)
-        {
-            // NetworkObjectを持たない場合 または 移動権限を持たない場合
-            if (!hitCollider.transform.root.TryGetComponent<NetworkObject>(out var network) || !network.HasStateAuthority)
-            {
-                // 次のオブジェクトに移る
-                continue;
-            }
-
-            // Ingrodientsがついていた場合
-            if (hitCollider.transform.root.TryGetComponent<Ingrodients>(out var _))
-            {
-                // RigidbodyのKinematicがついている場合
-                if (hitCollider.GetComponent<Rigidbody>().isKinematic)
-                {
-                    // 次のオブジェクトに移る
-                    continue;
-                }
-
-                // 固定するオブジェクトを取得する
-                NetworkObject lockObject = hitCollider.transform.root.GetComponent<NetworkObject>();
-
-                // 食材に当たったときの処理を行う
-                RPC_HitIngrodients(lockObject);
-            }
-        }
+            // 食材に当たったときの処理を行う
+            RPC_HitIngrodients(hitObject);
+        }  
     }
 
-    public override void KnifeHitEvent()
+    public void ProcessingEvent()
     {
         // オブジェクトが固定されている　かつ　固定されているオブジェクトにIngrodientがついている場合
-        if (_isLockedObject && _lockingIngrodients is not null)
+        if (_isLockedObject && _processingIngrodient != default)
         {
-            // 切断フラグを立てる
-            bool isEndCut = _lockingIngrodients.SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType.Cut, 1);
+            // 加工を進める
+            bool isEndProcessing = ProcessingAction(_processingType, _processingValue, out Commodity createdCommodity);
 
-            // 切断グラグを立っていなかった
-            if (isEndCut)
+            // 加工が完了した場合
+            if (isEndProcessing)
             {
-                // 当たったオブジェクトのCommodityを取得しておく
-                Commodity processedCommodity = default;
+                // 
+                _processingPuttable.DestroyThis();
 
                 // 
-                processedCommodity = _lockingIngrodients.ProcessingStart(ProcessingType.Cut, _machineTransform);
+                _processingPuttable = createdCommodity.gameObject.AddComponent<Puttable>();
 
                 // 
-                _lockedPuttable.DestroyThis();
-
-                // 
-                _lockedPuttable = processedCommodity.gameObject.AddComponent<Puttable>();
-
-                // 
-                if (processedCommodity.gameObject.TryGetComponent<Ingrodients>(out Ingrodients ingrodients))
+                if (createdCommodity.gameObject.TryGetComponent<Ingrodients>(out Ingrodients ingrodients))
                 {
                     // 
-                    _lockingIngrodients = ingrodients;
+                    _processingIngrodient = ingrodients;
                 }
                 else
                 {
                     // 
-                    _lockingIngrodients = null;
+                    _processingIngrodient = default;
                 }
             }
         }
@@ -139,37 +117,37 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
     /// <summary>
     /// 食材に当たったときの処理
     /// </summary>
-    /// <param name="lockObject">当たった食材のNetworkObject</param>
+    /// <param name="hitObject">当たった食材のNetworkObject</param>
     [Rpc]
-    private void RPC_HitIngrodients(NetworkObject lockObject) // RPC
+    private void RPC_HitIngrodients(NetworkObject hitObject) // RPC
     {
-        // 固定するオブジェクトのIngrodientを取得する
-        _lockingIngrodients = lockObject.GetComponent<Ingrodients>();
+        // 当たったオブジェクトのIngrodientを取得する
+        _processingIngrodient = hitObject.GetComponent<Ingrodients>();
 
         // オブジェクトを固定している状態にする
         _isLockedObject = true;
 
-        // 固定しているオブジェクトにPuttableを追加して取得する
-        _lockedPuttable = lockObject.gameObject.AddComponent<Puttable>();
+        // 当たったオブジェクトにPuttableを追加して取得する
+        _processingPuttable = hitObject.gameObject.AddComponent<Puttable>();
 
         // Puttableに自身を渡す
-        _lockedPuttable.SetLockedCuttingObject(this);
+        _processingPuttable.SetLockedCuttingObject(this);
 
         // 
-        _pointableUnityEventWrapper = lockObject.GetComponentInChildren<PointableUnityEventWrapper>();
+        _pointableUnityEventWrapper = hitObject.GetComponentInChildren<PointableUnityEventWrapper>();
         _pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
 
-        Debug.LogWarning("まな板が" + lockObject.name + "を固定したよ");
+        Debug.LogWarning("まな板が" + hitObject.name + "を固定したよ");
     }
 
     [Rpc]
     private void RPC_Select() //RPC
     {
         // 
-        if (_lockedPuttable is not null)
+        if (_processingPuttable is not null)
         {
             // 
-            _lockedPuttable.DestroyThis();
+            _processingPuttable.DestroyThis();
         }
     }
 
@@ -178,7 +156,7 @@ public class LockedCuttingBoard : StopperObject, ILockedObjectBoard
         RPC_Select();
     }
 
-    public void CanselCutting()
+    public void CanselLock()
     {
         // 
         _isLockedObject = false;
