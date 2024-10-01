@@ -17,6 +17,7 @@ public class MarkManager : MonoBehaviour
                 }
                 else
                 {
+                    mark.MarkInCamera();
                     this.marks.Add(mark);
                 }
             }
@@ -27,6 +28,21 @@ public class MarkManager : MonoBehaviour
         {
             notExistMark.MarkOutCamera();
             this.marks.Remove(notExistMark);
+        }
+    }
+
+    public void Instance(Mark mark,Vector3 position)
+    {
+        Mark instance = Instantiate(mark);
+        instance.transform.position = position;
+        instance.TransformInject(this.transform);
+    }
+
+    private void Start()
+    {
+        foreach(Mark mark in FindObjectsOfType<Mark>())
+        {
+            mark.TransformInject(this.transform);
         }
     }
 }

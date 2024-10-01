@@ -1,93 +1,115 @@
 using System;
 using UnityEngine;
-public class AutoMachine : Machine,IAction<Ingrodients>,IAction
+using Fusion;
+using Oculus.Interaction;
+
+public class AutoMachine : Machine, IObjectLocker
 {
-    private bool canProcessing = false;
-    public bool CanProcessing
+    [SerializeField, Tooltip("行う加工の種類")]
+    private ProcessingType _processingType = default;
+
+    [SerializeField, Tooltip("オブジェクトの取得範囲を指定するCollider")]
+    private Collider _cuttingAreaCollider = default;
+
+    // 
+    private IngrodientCatcher _ingrodientCatcher = default;
+
+    // 固定しているオブジェクトのPuttable
+    private Puttable _processingPuttable = default;
+
+    // 掴んだ時や離した時にイベントを実行するクラス
+    private PointableUnityEventWrapper _pointableUnityEventWrapper;
+
+    // 
+    public Transform GetObjectLockTransform => _machineTransform;
+
+    protected override void Start()
     {
-        get
-        {
-            return canProcessing;
-        }
-        set
-        {
-            canProcessing = value;
-        }
+        // IngrodientCatcherのインスタンスを生成する
+        _ingrodientCatcher = new IngrodientCatcher();
     }
 
-    public bool isGrab = false;
-    public bool IsGrab
-    {
-        get
-        {
-            return isGrab;
-        }
-        set
-        {
-            isGrab = value;
-        }
-    }
-
-    private Action processingAction;
-    private IPracticableRPCEvent practicableRPCEvent;
     private void Update()
     {
-        processingAction?.Invoke();
-    }
-    public override void StartProcessed(IngrodientsDetailInformation ingrodientsDetailInformation)
-    {
-        //timeItTakes = ingrodientsDetailInformation.TimeItTakes;
-        ingrodients.transform.parent = ingrodientTransform;
-        //testRPC
-        practicableRPCEvent.RPC_Event<AutoMachine, Ingrodients>(this.gameObject, ingrodients.gameObject);
+        // processingIngrodientを設定する
+        ProcessingIngrodientSetting();
 
-        processingAction += () =>
+        // 常に加工を進めていく
+        bool isEndProcessing = ProcessingAction(_processingType, Time.deltaTime);
+    }
+
+    public void Select()
+    {
+        RPC_Select();
+    }
+
+    [Rpc]
+    private void RPC_Select() //RPC
+    {
+        // 
+        if (_processingPuttable is not null)
         {
-            if (!canProcessing)
-            {
-                return;
-            }
-
-            if (ingrodients.SubToIngrodientsDetailInformationsTimeItTakes(ProcessingType, Time.deltaTime))
-            {
-                Commodity commodity = ingrodients.ProcessingStart(ProcessingType, this.transform);
-                commodity.transform.parent = ingrodientTransform;
-                commodity.OnPointable += (eventArgs) =>
-                {
-                    if (eventArgs.GrabType == GrabType.Grab)
-                    {
-                        commodity.Grab();
-                    }
-                };
-                processingAction = null;
-                Debug.Log("加工完了");
-            }
-        };
+            // 
+            _processingPuttable.DestroyThis();
+        }
     }
 
-    //testRPC
+    private void ProcessingIngrodientSetting()
+    {
+        // オブジェクトの操作権限がない場合
+        if (_networkObject.HasStateAuthority)
+        {
+            // 処理を中断
+            return;
+        }
+
+        // すでにprocessingIngrodientが設定されていた場合
+        if (_processingIngrodient != default)
+        {
+            // 何もしない
+            return;
+        }
+
+        // 指定した判定に接触したIngrodientがあった場合
+        if (_ingrodientCatcher.SearchIngrodient(_cuttingAreaCollider.bounds.center, _cuttingAreaCollider.bounds.size / 2, transform.rotation, out NetworkObject hitObject))
+        {
+            // processingIngrodientを設定する
+            RPC_HitIngrodients(hitObject);
+
+            // 処理を終了する
+            return;
+        }
+    }
+
     /// <summary>
-    /// 加工中断
+    /// 食材に当たったときの処理
     /// </summary>
-    public void ProcessingInterruption()
+    /// <param name="hitObject">当たった食材のNetworkObject</param>
+    [Rpc]
+    private void RPC_HitIngrodients(NetworkObject hitObject) // RPC
     {
-        practicableRPCEvent.RPC_Event<AutoMachine>(this.gameObject);
+        // 当たったオブジェクトのIngrodientを取得する
+        _processingIngrodient = hitObject.GetComponent<Ingrodients>();
+
+        // 当たったオブジェクトにPuttableを追加して取得する
+        _processingPuttable = hitObject.gameObject.AddComponent<Puttable>();
+
+        // Puttableに自身を渡す
+        _processingPuttable.SetLockedCuttingObject(this);
+
+        // 
+        _pointableUnityEventWrapper = hitObject.GetComponentInChildren<PointableUnityEventWrapper>();
+        _pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
+
+        Debug.LogWarning("まな板が" + hitObject.name + "を固定したよ");
     }
 
-    public void Action(Ingrodients t)
+    public void CanselLock()
     {
-        ingrodients = t;
-        ingrodients.transform.parent = ingrodientTransform;
-    }
+        // processingIngrodientを初期化する
+        _processingIngrodient = default;
 
-    public void Inject(IPracticableRPCEvent practicableRPCEvent)
-    {
-        this.practicableRPCEvent = practicableRPCEvent;
-    }
-
-    public void Action()
-    {
-        processingAction = null;
-        ingrodients.transform.parent = null;
+        // Selectの登録を解除する
+        _pointableUnityEventWrapper.WhenSelect.RemoveListener((action) => { Select(); });
     }
 }

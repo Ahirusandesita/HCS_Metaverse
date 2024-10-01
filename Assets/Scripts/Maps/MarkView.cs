@@ -1,18 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class MarkView : MonoBehaviour
+using UnityEngine.EventSystems;
+public class MarkViewEventArgs : System.EventArgs
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+}
+public delegate void MarkClickHandler(MarkViewEventArgs markEventArgs);
+public class MarkView : MonoBehaviour, IPointerClickHandler
+{
+    public event MarkClickHandler OnMarkClick;
+    public void OnPointerClick(PointerEventData eventData)
     {
-        
+        OnMarkClick?.Invoke(new MarkViewEventArgs());
     }
 }

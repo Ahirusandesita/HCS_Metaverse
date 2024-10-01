@@ -161,7 +161,7 @@ public class Stoppable : NetworkBehaviour, IStopViewData
         _stopData.DataSetUp(this);
 
         // 接触したオブジェクトが持つ接触時の処理を実行する
-        hitObject.GetComponent<IKnifeHitEvent>().KnifeHitEvent();
+        hitObject.GetComponent<IManualProcessing>().ProcessingEvent();
     }
 
     /// <summary>
