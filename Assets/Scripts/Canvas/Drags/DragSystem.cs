@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -9,8 +11,10 @@ public class DragSystem : MonoBehaviour,IPointerDownHandler,IPointerUpHandler,ID
     /// <summary>
     /// スクロールする対象
     /// </summary>
-    private IScrollable[] scrollables;
-
+    private List<IScrollable> scrollables = new List<IScrollable>();
+    [SerializeField, InterfaceType(typeof(IScrollable))]
+    private List<UnityEngine.Object> IScrollables = new List<Object>();
+    private List<IScrollable> IScrollableList => IScrollables.OfType<IScrollable>().ToList();
     /// <summary>
     /// 最後の画面接触点
     /// </summary>
@@ -51,7 +55,22 @@ public class DragSystem : MonoBehaviour,IPointerDownHandler,IPointerUpHandler,ID
         //trigger.triggers.Add(entryPointerUp);
         /////////////////////////////////////////////////////////////////////////////////////////////
 
-        scrollables = this.transform.GetComponentsInChildren<IScrollable>(true);
+        scrollables = new List<IScrollable>(this.transform.GetComponentsInChildren<IScrollable>(true));
+        foreach(IScrollable scrollable in IScrollableList)
+        {
+            scrollables.Add(scrollable);
+        }
+    }
+    public void ScrollableInject(List<IScrollable> scrollables)
+    {
+        foreach(IScrollable scrollable in scrollables)
+        {
+            this.scrollables.Add(scrollable);
+        }
+    }
+    public void ScrollableInject(IScrollable scrollable)
+    {
+        scrollables.Add(scrollable);
     }
 
     /// <summary>

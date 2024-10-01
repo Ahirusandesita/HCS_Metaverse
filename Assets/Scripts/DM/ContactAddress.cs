@@ -17,6 +17,8 @@ public class ContactAddress : MonoBehaviour, IPointerClickHandler, ISendableMess
     private List<MessageInformation> messageHistories = new List<MessageInformation>();
 
     public event Action<ISendableMessage> OnConected;
+
+
     public void OnPointerClick(PointerEventData eventData)
     {
         dm.InjectMessage(messageHistories);

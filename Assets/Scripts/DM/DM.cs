@@ -48,6 +48,7 @@ public class DM : MonoBehaviour
                 messages[i].GetComponent<RectTransform>().localPosition = position;
             }
 
+            messages[i].ScrollCancellation();
             //InjectLimit(messages[i]);
         }
     }
@@ -57,8 +58,12 @@ public class DM : MonoBehaviour
         {
             this.messageInformations.Add(messageInformations[i]);
         }
-    }
 
+        for (int i = 0; i < messages.Count; i++)
+        {
+            messages[i].Message("");
+        }
+    }
     private void Start()
     {
         for (int i = 0; i < messages.Count; i++)
@@ -183,7 +188,6 @@ public class DM : MonoBehaviour
                         messageViews[i].InjectDownLimitPosition(messagesUpPositionLimit[i]);
                     }
                 }
-
                 break;
         }
     }
@@ -199,6 +203,7 @@ public class DM : MonoBehaviour
             return senderOther.GetComponent<RectTransform>().localPosition.x;
         }
     }
+    
     //private void InjectLimit(MessageView messageView)
     //{
     //    if (messageView.MessageIndex < messages.Count || messageView.MessageIndex > messageInformations.Count - messages.Count)
