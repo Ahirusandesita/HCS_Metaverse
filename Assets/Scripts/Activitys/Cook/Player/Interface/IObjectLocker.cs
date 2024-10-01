@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public interface ILockedObjectBoard
+public interface IObjectLocker
 {
     public Transform GetObjectLockTransform {get;}
 
-    public void CanselCutting();
+    public void CanselLock();
 }
