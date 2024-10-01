@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Oculus.Interaction.HandGrab;
 using Oculus.Interaction;
-
+using Fusion;
 
 public class DistanceInteractableActivatable : MonoBehaviour, IActivatableDistance
 {
     [SerializeField]
     private float activeDistance;
     public float ActiveDistance => activeDistance;
-
     private DistanceHandGrabInteractable[] distanceHandGrabInteractables;
     private DistanceGrabInteractable[] distanceGrabInteractables;
 

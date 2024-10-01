@@ -16,9 +16,9 @@ public class OwnInformation : NetworkBehaviour
 
     //test
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
-    public void RPC_Message([RpcTarget]PlayerRef target,string message,PlayerRef sender)
+    public void RPC_Message([RpcTarget] PlayerRef target, string message, PlayerRef sender)
     {
-        foreach(ContactAddress contactAddress in FindObjectsOfType<ContactAddress>())
+        foreach (ContactAddress contactAddress in FindObjectsOfType<ContactAddress>())
         {
             if (contactAddress.IsTarget(sender))
             {
