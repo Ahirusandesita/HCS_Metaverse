@@ -9,8 +9,10 @@ public class MarkObserver : MonoBehaviour
 	private Camera _mapCamera = default;
 	private List<Mark> _mapMarks = new();
 	private List<Mark> _cameraInMarks = new();
+	[SerializeField]
 	private RawImage _mapImage = default;
 	private MarkManager _markManager = default;
+	
 
 #if UNITY_EDITOR
 	private void Reset()
@@ -22,7 +24,6 @@ public class MarkObserver : MonoBehaviour
 	private void Start()
 	{
 		_mapMarks = FindObjectsOfType<Mark>().ToList();
-		_mapImage = GetComponent<RawImage>();
 		_markManager = FindObjectOfType<MarkManager>();
 	}
 
