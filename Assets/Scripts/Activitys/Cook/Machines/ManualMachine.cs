@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class ManualMachine : Machine, IManualProcessing
 {
-    public virtual void ProcessingEvent(ProcessingType processingType, float processingValue)
+    public virtual void ProcessingEvent()
     {
-        bool isEndProcessing = ProcessingAction(processingType, processingValue, out Commodity createdCommodity);
+        //bool isEndProcessing = ProcessingAction(processingType, processingValue, out Commodity createdCommodity);
     }
 }

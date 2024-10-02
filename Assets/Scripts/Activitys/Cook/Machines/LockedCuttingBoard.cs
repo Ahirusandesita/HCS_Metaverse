@@ -137,7 +137,7 @@ public class LockedCuttingBoard : Machine, IObjectLocker, IManualProcessing
         _pointableUnityEventWrapper = hitObject.GetComponentInChildren<PointableUnityEventWrapper>();
         _pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
 
-        Debug.LogWarning("まな板が" + hitObject.name + "を固定したよ");
+        Debug.LogWarning($"<color=green>{gameObject.name}</color>　が　<color=blue>{hitObject.name}</color>　を固定");
     }
 
     [Rpc]

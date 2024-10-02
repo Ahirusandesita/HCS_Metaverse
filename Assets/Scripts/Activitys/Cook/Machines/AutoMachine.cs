@@ -101,7 +101,7 @@ public class AutoMachine : Machine, IObjectLocker
         _pointableUnityEventWrapper = hitObject.GetComponentInChildren<PointableUnityEventWrapper>();
         _pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
 
-        Debug.LogWarning("‚Ü‚È”Â‚ª" + hitObject.name + "‚ğŒÅ’è‚µ‚½‚æ");
+        Debug.Log($"<color=green>{gameObject.name}</color>@‚ª@<color=blue>{hitObject.name}</color>@‚ğŒÅ’è");
     }
 
     public void CanselLock()
