@@ -5,8 +5,6 @@ using Fusion;
 public class TestRPC : MonoBehaviour
 {
     [SerializeField]
-    RPCEvent RPCEvent;
-    [SerializeField]
     TestObject testObject;
     void Start()
     {
@@ -21,13 +19,5 @@ public class TestRPC : MonoBehaviour
 
         //yield return new WaitForSeconds(2f);
         //networkObject.GetComponent<TestObject>().Inject(rp.GetComponent<RPCEvent>());
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            networkObject.GetComponent<TestObject>().RPC_A();
-        }
     }
 }
