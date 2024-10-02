@@ -7,20 +7,11 @@ public class MarkManager : MonoBehaviour
     private List<Mark> marks = new List<Mark>();
     public void MarkInCamera(Mark[] marks)
     {
-        foreach(Mark mark in marks)
+        List<Mark> existMark = marks.Except(this.marks).ToList();
+        foreach(Mark mark in existMark)
         {
-            foreach(Mark existMark in this.marks)
-            {
-                if(existMark == mark)
-                {
-                    continue;
-                }
-                else
-                {
-                    mark.MarkInCamera();
-                    this.marks.Add(mark);
-                }
-            }
+            mark.MarkInCamera();
+            this.marks.Add(mark);
         }
 
         List<Mark> notExistMarks = this.marks.Except(marks).ToList();
