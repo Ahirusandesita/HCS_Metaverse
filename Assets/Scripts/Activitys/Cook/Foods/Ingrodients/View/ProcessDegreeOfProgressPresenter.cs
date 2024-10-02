@@ -23,6 +23,6 @@ public class ProcessDegreeOfProgressPresenter : MonoBehaviour
     }
     private void Start()
     {
-        RPCSpawner.GetRPCSpawner().InjectAsync(this.gameObject);
+        //RPCSpawner.GetRPCSpawner().InjectAsync(this.gameObject);
     }
 }
