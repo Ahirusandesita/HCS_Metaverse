@@ -21,8 +21,10 @@ public class MarkObserver : MonoBehaviour
 	private Camera _mapCamera = default;
 	private List<MarkData> _mapMarks = new();
 	private List<Mark> _cameraInMarks = new();
+	[SerializeField]
 	private RawImage _mapImage = default;
 	private MarkManager _markManager = default;
+	
 
 #if UNITY_EDITOR
 	private void Reset()
@@ -45,21 +47,21 @@ public class MarkObserver : MonoBehaviour
 
 	private void Update()
 	{
-		//ƒJƒƒ‰“àƒ}[ƒN‚ğ‰Šú‰»‚·‚é
+		//ã‚«ãƒ¡ãƒ©å†…ãƒãƒ¼ã‚¯ã‚’åˆæœŸåŒ–ã™ã‚‹
 		_cameraInMarks.Clear();
 		for (int i = 0; i < _mapMarks.Count; i++)
 		{
 
 			Plane[] planes = GeometryUtility.CalculateFrustumPlanes(_mapCamera);
-			System.Array.Resize(ref planes, 4);     // near,far–Ê‚ğ”rœ			
-													//”ÍˆÍ“à
+			System.Array.Resize(ref planes, 4);     // near,faré¢ã‚’æ’é™¤			
+			//ç¯„å›²å†…
 			if (GeometryUtility.TestPlanesAABB(planes, _mapMarks[i].MeshRenderer.bounds))
 			{
 				_cameraInMarks.Add(_mapMarks[i].Mark);
 			}
 			else { continue; }
 			Vector3 viewportPosition = _mapCamera.WorldToViewportPoint(_mapMarks[i].Transform.position, Camera.MonoOrStereoscopicEye.Mono);
-			//pivot‚ªˆá‚¤ê‡‚É•â³‚·‚é
+			//pivotãŒé•ã†å ´åˆã«è£œæ­£ã™ã‚‹
 			Vector2 offset = default;
 			if (_mapImage.rectTransform.pivot != Vector2.zero)
 			{
@@ -69,7 +71,7 @@ public class MarkObserver : MonoBehaviour
 					* _mapImage.rectTransform.localScale.y;
 				offset = new Vector2(x, y);
 			}
-			//localPosition‚ğ“n‚·
+			//localPositionã‚’æ¸¡ã™
 			_mapMarks[i].Mark.MarkViewPosition((viewportPosition * _mapImage.rectTransform.sizeDelta
 				* _mapImage.rectTransform.localScale) - offset);
 		}
