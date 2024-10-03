@@ -21,6 +21,8 @@ public class Mark : MonoBehaviour
     private UnityEngine.Object IMarkProcess;
     private IMarkProcess markProcess => IMarkProcess as IMarkProcess;
     private MarkView instanceView;
+    [SerializeField]
+    private GameObject a;
     public void TransformInject(Transform mapCanvas)
     {
         instanceView = Instantiate(markView, mapCanvas);
@@ -28,7 +30,7 @@ public class Mark : MonoBehaviour
     }
     public void MarkViewPosition(Vector2 position)
     {
-        instanceView.GetComponent<RectTransform>().localPosition = position;
+        a.GetComponent<RectTransform>().localPosition = position;
     }
     public void MarkOutCamera()
     {

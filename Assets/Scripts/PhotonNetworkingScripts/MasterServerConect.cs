@@ -44,15 +44,6 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	public bool IsKumaDebug => _isKumaDebug;
 #endif
 	#endregion
-
-	[SerializeField]
-	private GameObject a;
-	[ContextMenu("dadada")]
-	private void AAA()
-	{
-		Runner.Spawn(a);
-	}
-
 	/// <summary>
 	/// SessionRPCManager‚ğæ“¾‚·‚éæ“¾‚Å‚«‚È‚¢ê‡‚Í‚Å‚«‚é‚Ü‚Å‚Ü‚Â
 	/// </summary>
