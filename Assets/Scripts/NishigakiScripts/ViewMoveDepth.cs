@@ -2,13 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ViewMoveDepth : MonoBehaviour
+public class ViewMoveDepth
 {
-    [SerializeField]
-    BoxCollider _myCollider = default;
+    public ViewMoveDepth(BoxCollider myCollider, BoxCollider hitCollider)
+    {
+        _myCollider = myCollider;
 
-    [SerializeField]
-    BoxCollider _hitCollider = default;
+        _hitCollider = hitCollider;
+
+        _hitSurfaceData = GetHitSurfaceData(GetVertexPositionList(_myCollider.transform, _myCollider), _hitCollider);
+    }
+
+    private BoxCollider _myCollider = default;
+
+    private BoxCollider _hitCollider = default;
 
     private SurfaceData _hitSurfaceData = default;
 
@@ -103,7 +110,7 @@ public class ViewMoveDepth : MonoBehaviour
                 }
             }
             //Debug.Log("ÇﬁÅ[Ç‘Ç◊Ç≠ÇΩÅ[ÅF x=" + moveVector.x + " , y=" + moveVector.y + " z=" + moveVector.z);
-            transform.position = transform.parent.position + moveVector;
+            _myCollider.transform.position = _myCollider.transform.parent.position + moveVector;
         //}
     }
 
