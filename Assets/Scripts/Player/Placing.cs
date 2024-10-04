@@ -13,7 +13,7 @@ public class Placing : MonoBehaviour
     private GhostModel ghostModel = default;
 
 
-    private void Awake()
+    private void Start()
     {
         //Inputter.PlacingMode.Place.performed += 
         AAA();
@@ -21,6 +21,11 @@ public class Placing : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            placingMode = !placingMode;
+        }
+
         if (placingMode)
         {
             ghostModel.Spawn();
