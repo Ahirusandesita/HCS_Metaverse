@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-
-public class ActivityStartButton : MonoBehaviour
+public class ActivityStartButton : MonoBehaviour, IPointerClickHandler
 {
-	[ContextMenu("Click")]
-	public void Click()
-	{
-		GateOfFusion.Instance.ActivityStart();
-	}
+    [ContextMenu("Click")]
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        GateOfFusion.Instance.ActivityStart();
+    }
 }
