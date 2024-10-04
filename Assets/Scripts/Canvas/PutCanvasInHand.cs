@@ -57,7 +57,7 @@ public class PutCanvasInHand : MonoBehaviour
 
 	private void Update()
 	{
-		if ((OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch) || Input.GetKeyDown(KeyCode.W)) && SceneManager.GetActiveScene().name != "CookActivity")
+		if ( Input.GetKeyDown(KeyCode.W) && SceneManager.GetActiveScene().name != "CookActivity")
 		{
 			GateOfFusion.Instance.ActivityStart();
 		}
