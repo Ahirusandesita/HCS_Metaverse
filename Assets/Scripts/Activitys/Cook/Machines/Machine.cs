@@ -41,7 +41,7 @@ public abstract class Machine : NetworkBehaviour
         if (isEndProcessing)
         {
             // オブジェクトの操作権限がある場合
-            if (!_networkObject.HasStateAuthority)
+            if (!_processingIngrodient.GetComponent<NetworkObject>().HasStateAuthority)
             {
                 // オブジェクトを変化させる
                 _processingIngrodient.ProcessingStart(processingType, _machineTransform);
@@ -80,9 +80,12 @@ public abstract class Machine : NetworkBehaviour
         // 加工が完了しているかどうか
         if (isEndProcessing)
         {
-            // オブジェクトを変化させる
-            createdCommodity = _processingIngrodient.ProcessingStart(processingType, _machineTransform);
-
+            // オブジェクトの操作権限がある場合
+            if (!_processingIngrodient.GetComponent<NetworkObject>().HasStateAuthority)
+            {
+                // オブジェクトを変化させる
+                _processingIngrodient.ProcessingStart(processingType, _machineTransform);
+            }
             // processingIngrodientを初期化する
             _processingIngrodient = default;
         }

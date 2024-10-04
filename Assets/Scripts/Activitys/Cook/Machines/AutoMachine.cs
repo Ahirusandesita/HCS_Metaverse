@@ -25,6 +25,9 @@ public class AutoMachine : Machine, IObjectLocker
 
     protected override void Start()
     {
+        // 親の処理を実行する
+        base.Start();
+
         // IngrodientCatcherのインスタンスを生成する
         _ingrodientCatcher = new IngrodientCatcher();
     }
@@ -33,6 +36,8 @@ public class AutoMachine : Machine, IObjectLocker
     {
         // processingIngrodientを設定する
         ProcessingIngrodientSetting();
+
+        Debug.Log($"加工中のIngrodient：{_processingIngrodient}");
 
         // 常に加工を進めていく
         bool isEndProcessing = ProcessingAction(_processingType, Time.deltaTime);
@@ -56,13 +61,6 @@ public class AutoMachine : Machine, IObjectLocker
 
     private void ProcessingIngrodientSetting()
     {
-        // オブジェクトの操作権限がない場合
-        if (_networkObject.HasStateAuthority)
-        {
-            // 処理を中断
-            return;
-        }
-
         // すでにprocessingIngrodientが設定されていた場合
         if (_processingIngrodient != default)
         {
