@@ -73,7 +73,6 @@ GameObject:
   - component: {fileID: 3790631520804085763}
   - component: {fileID: 2960713467853970673}
   - component: {fileID: 714795097869820508}
-  - component: {fileID: 3042756305034594846}
   - component: {fileID: 2999725658516084669}
   - component: {fileID: 2408380732226117005}
   m_Layer: 0
@@ -140,19 +139,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3042756305034594846
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7958457465440103425}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates: []
 --- !u!114 &2999725658516084669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,6 +152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sensitivity: 1
+  IScrollables: []
 --- !u!114 &2408380732226117005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -310,6 +297,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd0cd278d3889d043a60338d6e4756e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ITransformInjectables: []
 --- !u!1 &8157570219086196450
 GameObject:
   m_ObjectHideFlags: 0

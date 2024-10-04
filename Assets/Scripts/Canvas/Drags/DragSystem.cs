@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DragSystem : MonoBehaviour/*,IPointerDownHandler,IPointerUpHandler,IDragHandler*/
+public class DragSystem : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragHandler
 {
     [SerializeField]
     private float sensitivity = 1f;
@@ -24,35 +24,26 @@ public class DragSystem : MonoBehaviour/*,IPointerDownHandler,IPointerUpHandler,
     /// </summary>
     private bool canScroll = false;
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        OnPinterDown((PointerEventData)eventData);
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        OnPointerUp();
-    }
 
     private void Awake()
     {
         //EventTriggerÇ…ëŒâûÇ∑ÇÈä÷êîÇìoò^Ç∑ÇÈ///////////////////////////////////////////////////////
-        EventTrigger trigger = GetComponent<EventTrigger>();
-        EventTrigger.Entry entryDrag = new EventTrigger.Entry();
-        entryDrag.eventID = EventTriggerType.Drag;
-        entryDrag.callback.AddListener((data) => { OnDrag((PointerEventData)data); });
+        //EventTrigger trigger = GetComponent<EventTrigger>();
+        //EventTrigger.Entry entryDrag = new EventTrigger.Entry();
+        //entryDrag.eventID = EventTriggerType.Drag;
+        //entryDrag.callback.AddListener((data) => { OnDrag((PointerEventData)data); });
 
-        EventTrigger.Entry entryPointerDown = new EventTrigger.Entry();
-        entryPointerDown.eventID = EventTriggerType.PointerDown;
-        entryPointerDown.callback.AddListener((data) => OnPinterDown((PointerEventData)data));
+        //EventTrigger.Entry entryPointerDown = new EventTrigger.Entry();
+        //entryPointerDown.eventID = EventTriggerType.PointerDown;
+        //entryPointerDown.callback.AddListener((data) => OnPinterDown((PointerEventData)data));
 
-        EventTrigger.Entry entryPointerUp = new EventTrigger.Entry();
-        entryPointerUp.eventID = EventTriggerType.PointerUp;
-        entryPointerUp.callback.AddListener((x) => OnPointerUp());
+        //EventTrigger.Entry entryPointerUp = new EventTrigger.Entry();
+        //entryPointerUp.eventID = EventTriggerType.PointerUp;
+        //entryPointerUp.callback.AddListener((x) => OnPointerUp());
 
-        trigger.triggers.Add(entryDrag);
-        trigger.triggers.Add(entryPointerDown);
-        trigger.triggers.Add(entryPointerUp);
+        //trigger.triggers.Add(entryDrag);
+        //trigger.triggers.Add(entryPointerDown);
+        //trigger.triggers.Add(entryPointerUp);
         /////////////////////////////////////////////////////////////////////////////////////////////
 
         scrollables = new List<IScrollable>(this.transform.GetComponentsInChildren<IScrollable>(true));
@@ -97,10 +88,10 @@ public class DragSystem : MonoBehaviour/*,IPointerDownHandler,IPointerUpHandler,
         LastPointerPosition = data.position;
     }
 
-    //void IDragHandler.OnDrag(PointerEventData eventData)
-    //{
-    //    OnDrag((PointerEventData)eventData);
-    //}
+    void IDragHandler.OnDrag(PointerEventData eventData)
+    {
+        OnDrag((PointerEventData)eventData);
+    }
 
     /// <summary>
     /// âüÇ≥ÇÍÇΩÇ∆Ç´
@@ -120,5 +111,15 @@ public class DragSystem : MonoBehaviour/*,IPointerDownHandler,IPointerUpHandler,
     {
         //ÉXÉNÉçÅ[ÉãÇ≈Ç´Ç»Ç≠Ç∑ÇÈ
         canScroll = false;
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        OnPointerUp();
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        OnPinterDown((PointerEventData)eventData);
     }
 }

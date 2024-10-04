@@ -2,37 +2,44 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+public interface IReadonlyRectPositionAdapter
+{
+    public Vector2 Position { get; }
+}
+public enum MarkProcessType
+{
+    Select,
+    Hover,
+    UnHover
+}
 public class MarkViewEventArgs : System.EventArgs
 {
-
+    public readonly MarkProcessType MarkProcessType;
+    public readonly IReadonlyRectPositionAdapter ReadonlyRectPositionAdapter;
+    public MarkViewEventArgs(MarkProcessType markProcessType,IReadonlyRectPositionAdapter readonlyRectPositionAdapter)
+    {
+        this.MarkProcessType = markProcessType;
+        this.ReadonlyRectPositionAdapter = readonlyRectPositionAdapter;
+    }
 }
 public delegate void MarkClickHandler(MarkViewEventArgs markEventArgs);
-public class MarkView : MonoBehaviour
+public class MarkView : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IReadonlyRectPositionAdapter
 {
-    private EventTrigger eventTrigger;
-
     public event MarkClickHandler OnMarkClick;
+    public Vector2 Position => this.GetComponent<RectTransform>().localPosition;
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.LogError("é¿çs");
-        if (this.GetComponent<RectTransform>().Contains(eventData))
-        {
-            OnMarkClick?.Invoke(new MarkViewEventArgs());
-            Debug.LogError("îÕàÕì‡");
-        }
-        else
-        {
-            Debug.LogError("îÕàÕäO");
-        }
+        OnMarkClick?.Invoke(new MarkViewEventArgs(MarkProcessType.Select, this));
     }
 
-    private void Start()
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        eventTrigger = transform.parent.gameObject.GetComponent<EventTrigger>();
-        EventTrigger.Entry entryPointerUp = new EventTrigger.Entry();
-        entryPointerUp.eventID = EventTriggerType.PointerClick;
-        entryPointerUp.callback.AddListener((x) => OnPointerClick((PointerEventData)x));
-        eventTrigger.triggers.Add(entryPointerUp);
+        OnMarkClick?.Invoke(new MarkViewEventArgs(MarkProcessType.Hover, this));
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        OnMarkClick?.Invoke(new MarkViewEventArgs(MarkProcessType.UnHover, this));
     }
 }
 
