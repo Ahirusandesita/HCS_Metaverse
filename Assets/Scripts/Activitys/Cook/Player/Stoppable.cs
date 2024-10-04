@@ -109,7 +109,7 @@ public class Stoppable : NetworkBehaviour, IStopViewData
             foreach (Collider hitCollider in hitColliders)
             {
                 // Stoppable‚ğ‚Á‚Ä‚¢‚È‚¢ê‡
-                if (!hitCollider.transform.root.TryGetComponent<IStopper>(out var _))
+                if (!hitCollider.TryGetComponent<IStopper>(out var _))
                 {
                     // Ÿ‚ÌCollider‚Ö
                     continue;
