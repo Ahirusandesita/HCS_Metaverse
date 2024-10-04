@@ -37,15 +37,16 @@ public abstract class Machine : NetworkBehaviour
         // ProcessingIngrodientの加工を進める
         bool isEndProcessing = _processingIngrodient.SubToIngrodientsDetailInformationsTimeItTakes(processingType, processingValue);
 
+        if (isEndProcessing)
+        {
+            isEndProcessing = _processingIngrodient.GetComponent<NetworkObject>().HasStateAuthority;
+        }
+
         // 加工が完了しているかどうか
         if (isEndProcessing)
         {
-            // オブジェクトの操作権限がある場合
-            if (!_processingIngrodient.GetComponent<NetworkObject>().HasStateAuthority)
-            {
-                // オブジェクトを変化させる
-                _processingIngrodient.ProcessingStart(processingType, _machineTransform);
-            }
+            // オブジェクトを変化させる
+            _processingIngrodient.ProcessingStart(processingType, _machineTransform);
 
             // processingIngrodientを初期化する
             _processingIngrodient = default;
@@ -77,15 +78,17 @@ public abstract class Machine : NetworkBehaviour
         // ProcessingIngrodientの加工を進める
         bool isEndProcessing = _processingIngrodient.SubToIngrodientsDetailInformationsTimeItTakes(processingType, processingValue);
 
+        if (isEndProcessing)
+        {
+            isEndProcessing = _processingIngrodient.GetComponent<NetworkObject>().HasStateAuthority;
+        }
+
         // 加工が完了しているかどうか
         if (isEndProcessing)
         {
-            // オブジェクトの操作権限がある場合
-            if (!_processingIngrodient.GetComponent<NetworkObject>().HasStateAuthority)
-            {
-                // オブジェクトを変化させる
-                _processingIngrodient.ProcessingStart(processingType, _machineTransform);
-            }
+            // オブジェクトを変化させる
+            createdCommodity = _processingIngrodient.ProcessingStart(processingType, _machineTransform);
+
             // processingIngrodientを初期化する
             _processingIngrodient = default;
         }
