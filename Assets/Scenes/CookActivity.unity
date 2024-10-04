@@ -756,18 +756,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f86b14a27b52f4f9298c33015b5c26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &366862047
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 140082731}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3b0d56e59911604eba2f273eff16fed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &366862048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -816,6 +804,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 366862049}
   - {fileID: 366862048}
+  - {fileID: 366862051}
 --- !u!114 &366862051
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -825,12 +814,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 140082731}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c58f9a6659f36ce4290780ed46a23e93, type: 3}
+  m_Script: {fileID: 11500000, guid: 4752e4860e2b41f4a964ca3b44300f64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RPCSpawner: {fileID: 792876568}
-  IInjectPracticableRPCEvents:
-  - {fileID: 909364651}
+  _processingIngrodient: {fileID: 0}
+  _machineTransform: {fileID: 909364652}
+  _processingType: 0
+  _cuttingAreaCollider: {fileID: 909364651}
 --- !u!1 &372825940
 GameObject:
   m_ObjectHideFlags: 0
@@ -1361,17 +1351,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c133a862083f0a549b99e8e5496e5cfb, type: 3}
---- !u!114 &792876568 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7482598284569846020, guid: c133a862083f0a549b99e8e5496e5cfb, type: 3}
-  m_PrefabInstance: {fileID: 792876567}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e85074216762204b904a44a85c1c7c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &830730116 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1814192717690830801, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
@@ -1458,13 +1437,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Pan (1)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1923648779918393139, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6769853229865497647, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 366862047}
     - targetCorrespondingSourceObject: {fileID: 6769853229865497647, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
       insertIndex: -1
       addedObject: {fileID: 366862050}
@@ -1478,17 +1455,16 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 366862051}
   m_SourcePrefab: {fileID: 100100000, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
---- !u!114 &909364651 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1923648779918393139, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
+--- !u!65 &909364651 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 2496456825384213155, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
   m_PrefabInstance: {fileID: 909364650}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4752e4860e2b41f4a964ca3b44300f64, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+--- !u!4 &909364652 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 584611937445547234, guid: d5c0ebbed865f2e40a63209abe8efe68, type: 3}
+  m_PrefabInstance: {fileID: 909364650}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1018594463
 GameObject:
   m_ObjectHideFlags: 0
@@ -1719,8 +1695,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1133d8b5c9be10449d9c1f02ff6bf94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cuttingAreaCollider: {fileID: 1090330013}
+  _processingIngrodient: {fileID: 0}
   _machineTransform: {fileID: 1090330017}
+  _cuttingAreaCollider: {fileID: 1090330013}
 --- !u!114 &1090330020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4229,7 +4206,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2765555704164839303, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2872667949920892013, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: _interactors.Array.size
@@ -4277,22 +4254,30 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3906908712340784449, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3943412707121904053, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5412058012832892279, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5447822994804488579, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6575928984260407217, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6856146247086294139, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
+    - target: {fileID: 6882848034038207546, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8990828629529406647, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}

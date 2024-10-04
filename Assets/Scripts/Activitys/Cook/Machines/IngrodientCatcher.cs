@@ -33,14 +33,14 @@ public class IngrodientCatcher
             if (hitCollider.transform.root.TryGetComponent<Ingrodients>(out var _))
             {
                 // RigidbodyのKinematicがついている場合
-                if (hitCollider.GetComponent<Rigidbody>().isKinematic)
+                if (hitCollider.transform.root.GetComponent<Rigidbody>().isKinematic)
                 {
                     // 次のオブジェクトに移る
                     continue;
                 }
 
                 // 固定するオブジェクトを取得する
-                processingObject = hitCollider.transform.root.GetComponent<NetworkObject>();
+                processingObject = network;
 
                 // Ingrodientと当たったからTrueを返して終了する
                 return true;

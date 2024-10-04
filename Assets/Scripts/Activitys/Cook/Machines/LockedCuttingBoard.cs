@@ -2,7 +2,7 @@ using UnityEngine;
 using Oculus.Interaction;
 using Fusion;
 
-public class LockedCuttingBoard : Machine, IObjectLocker, IManualProcessing
+public class LockedCuttingBoard : Machine, IObjectLocker, IManualProcessing, IStopper
 {
     [SerializeField, Tooltip("オブジェクトの取得範囲を指定するCollider")]
     private Collider _cuttingAreaCollider = default;
@@ -41,6 +41,9 @@ public class LockedCuttingBoard : Machine, IObjectLocker, IManualProcessing
 
     protected override void Start()
     {
+        // 親の処理を実行する
+        base.Start();
+
         // オブジェクトの取得範囲の各値を設定する
         // 中心
         _hitBoxCenter = _cuttingAreaCollider.bounds.center;
@@ -57,13 +60,6 @@ public class LockedCuttingBoard : Machine, IObjectLocker, IManualProcessing
 
     private void Update()
     {
-        // オブジェクトの操作権限がない場合
-        if (_networkObject.HasStateAuthority)
-        {
-            // 処理を中断
-            return;
-        }
-
         // オブジェクトを固定している場合
         if (_isLockedObject)
         {
@@ -73,6 +69,8 @@ public class LockedCuttingBoard : Machine, IObjectLocker, IManualProcessing
 
         // 指定した判定に接触したIngrodientがないか判定する
         bool isHitIngrodient = _ingrodientCatcher.SearchIngrodient(_hitBoxCenter, _hitBoxSize, _hitBoxRotation, out NetworkObject hitObject);
+
+        Debug.Log($"まな板当たり判定：{isHitIngrodient}");
 
         // Ingrodientと当たった場合
         if (isHitIngrodient)

@@ -63,7 +63,7 @@ public class Stoppable : NetworkBehaviour, IStopViewData
     private void Update()
     {
         // オブジェクトの操作権限がない場合
-        if (_myNetwork.HasStateAuthority)
+        if (!_myNetwork.HasStateAuthority)
         {
             // 処理を中断
             return;
@@ -82,7 +82,7 @@ public class Stoppable : NetworkBehaviour, IStopViewData
                 foreach (Collider hitCollider in hitColliders)
                 {
                     // Stoppableを持っているオブジェクトがあった場合
-                    if (hitCollider.transform.root.TryGetComponent<StopperObject>(out var _))
+                    if (hitCollider.TryGetComponent<IStopper>(out var _))
                     {
                         // 処理を終了
                         return;
@@ -109,14 +109,14 @@ public class Stoppable : NetworkBehaviour, IStopViewData
             foreach (Collider hitCollider in hitColliders)
             {
                 // Stoppableを持っていない場合
-                if (!hitCollider.TryGetComponent<StopperObject>(out var stopperObject))
+                if (!hitCollider.transform.root.TryGetComponent<IStopper>(out var _))
                 {
                     // 次のColliderへ
                     continue;
                 }
 
                 // 
-                NetworkObject networkObject = stopperObject.transform.root.GetComponent<NetworkObject>();
+                NetworkObject networkObject = hitCollider.transform.root.GetComponent<NetworkObject>();
 
                 // 
                 RPC_HitStopCollider(networkObject);
