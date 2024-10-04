@@ -5,10 +5,13 @@ using Fusion;
 using Cysharp.Threading.Tasks;
 using KumaDebug;
 using System;
+
 public class RoomManager : MonoBehaviour
 {
 	[SerializeField]
 	private GameObject _leaderObjectPrefab;
+	[SerializeField]
+	private ActivityMemberTextController _activityMemberTextController;
 	private Dictionary<int, Room> _rooms = new();
 	private GameObject _leaderObject;
 	private static RoomManager _instance = default;
@@ -84,7 +87,7 @@ public class RoomManager : MonoBehaviour
 		//ïîâÆî‘çÜéwíËÇ»ÇµÇÃèÍçá
 		if (roomNumber < 0)
 		{
-			roomTemp = _rooms.Values.FirstOrDefault(room => !room.IsEndJoining 
+			roomTemp = _rooms.Values.FirstOrDefault(room => !room.IsEndJoining
 			&& room.SceneNameType == sceneNameType);
 		}
 		else if (_rooms.ContainsKey(roomNumber))
@@ -106,6 +109,10 @@ public class RoomManager : MonoBehaviour
 		else
 		{
 			result = JoinOrCreateResult.Join;
+			if (_activityMemberTextController != null)
+			{
+				_activityMemberTextController.UpdateText();
+			}
 		}
 
 		roomTemp.Join(joinPlayer);

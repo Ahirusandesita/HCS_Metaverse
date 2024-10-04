@@ -1,6 +1,6 @@
 using UnityEngine;
 using Fusion;
-using HCSMeta.Network;
+
 namespace HCSMeta.Activity
 {
 	public class TestGameZone : MonoBehaviour, IInteraction, ISelectedNotification
@@ -10,13 +10,15 @@ namespace HCSMeta.Activity
 		private GameFrame gameFrame;
 		[SerializeField, Header("移動するアクティビティ(ワールド)")]
 		private SceneNameType _sceneNameType = SceneNameType.CookActivity;
+		[SerializeField]
+		private GameObject _activityStartCanvasRootObject;
 		private MasterServerConect _masterServer;
 		private NetworkRunner NetworkRunner => GateOfFusion.Instance.NetworkRunner;
 		private MasterServerConect MasterServerConect
 		{
 			get
 			{
-				if(_masterServer == null)
+				if (_masterServer == null)
 				{
 					_masterServer = FindObjectOfType<MasterServerConect>();
 				}
@@ -31,6 +33,7 @@ namespace HCSMeta.Activity
 			Debug.LogWarning("Nishigaki");
 			gameFrame.Close();
 			MasterServerConect.SessionRPCManager.Rpc_LeftOrCloseRoom(NetworkRunner.LocalPlayer);
+			_activityStartCanvasRootObject.SetActive(false);
 		}
 
 		private void Update()
@@ -57,6 +60,8 @@ namespace HCSMeta.Activity
 					_sceneNameType, NetworkRunner.LocalPlayer,
 					NetworkRunner.SessionInfo.Name);
 			}
+
+			_activityStartCanvasRootObject.SetActive(true);
 		}
 
 		public void Select(SelectArgs selectArgs)
