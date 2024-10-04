@@ -15,19 +15,23 @@ namespace UnityEditor.HCSMeta
         [SerializeField] private GameObject prefab = default;
         [SerializeField] private OperationMode mode = default;
         [SerializeField] private int selectedIndex = default;
-        [SerializeField] private string[] types = new string[2];
+        [SerializeField] private string[] types = new string[3];
+        [SerializeField] private bool containsRoot = default;
         private GUIStyle style = default;
 
         [MenuItem("Window/Ground And Wall Attach Window")]
         public static void OpenWindow()
         {
-            GetWindow<GroundWallAttachWindow>();
+            var window = GetWindow<GroundWallAttachWindow>();
+            window.titleContent = new GUIContent("Ground and Wall Attach Window");
+            window.Show();
         }
 
         private void OnEnable()
         {
             types[0] = nameof(Ground);
             types[1] = nameof(Wall);
+            types[2] = nameof(Pedestal);
             style = new GUIStyle { richText = true, fontSize = 16 };
         }
 
@@ -43,6 +47,7 @@ namespace UnityEditor.HCSMeta
             mode = (OperationMode)EditorGUILayout.Popup("Mode", (int)mode, Enum.GetNames(typeof(OperationMode)));
             selectedIndex = EditorGUILayout.Popup("Attach Component", selectedIndex, types);
             prefab = EditorGUILayout.ObjectField("Target Root", prefab, typeof(GameObject), true) as GameObject;
+            containsRoot = EditorGUILayout.Toggle("Contains Root", containsRoot);
 
             EditorGUILayout.Space(32);
 
@@ -58,12 +63,16 @@ namespace UnityEditor.HCSMeta
                     case nameof(Wall):
                         type = typeof(Wall);
                         break;
+
+                    case nameof(Pedestal):
+                        type = typeof(Pedestal);
+                        break;
                 }
 
                 var childs = prefab.GetComponentsInChildren<Transform>();
                 for (int i = 0; i < childs.Length; i++)
                 {
-                    if (i == 0)
+                    if (i == 0 && !containsRoot)
                     {
                         continue;
                     }
