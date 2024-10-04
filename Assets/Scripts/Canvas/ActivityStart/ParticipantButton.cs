@@ -1,9 +1,10 @@
 using UnityEngine;
-
-public class ParticipantButton : MonoBehaviour
+using UnityEngine.EventSystems;
+public class ParticipantButton : MonoBehaviour,IPointerClickHandler
 {
-    public void Click()
-	{
-		RelatedParties.Instance.ActivityRelatedPartiesState = ActivityRelatedPartiesState.Participants;
-	}
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.LogWarning("dadada");
+        RelatedParties.Instance.ActivityRelatedPartiesState = ActivityRelatedPartiesState.Participants;
+    }
 }

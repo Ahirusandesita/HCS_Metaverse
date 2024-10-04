@@ -12,6 +12,8 @@ namespace HCSMeta.Activity
 		private SceneNameType _sceneNameType = SceneNameType.CookActivity;
 		[SerializeField]
 		private GameObject _activityStartCanvasRootObject;
+		[SerializeField]
+		private GameObject _activityStartCanvasPrefab;
 		private MasterServerConect _masterServer;
 		private NetworkRunner NetworkRunner => GateOfFusion.Instance.NetworkRunner;
 		private MasterServerConect MasterServerConect
@@ -33,6 +35,7 @@ namespace HCSMeta.Activity
 			Debug.LogWarning("Nishigaki");
 			gameFrame.Close();
 			MasterServerConect.SessionRPCManager.Rpc_LeftOrCloseRoom(NetworkRunner.LocalPlayer);
+			
 			_activityStartCanvasRootObject.SetActive(false);
 		}
 
@@ -60,7 +63,10 @@ namespace HCSMeta.Activity
 					_sceneNameType, NetworkRunner.LocalPlayer,
 					NetworkRunner.SessionInfo.Name);
 			}
-
+			if(_activityStartCanvasRootObject == null)
+            {
+				_activityStartCanvasRootObject = Instantiate(_activityStartCanvasPrefab);
+            }
 			_activityStartCanvasRootObject.SetActive(true);
 		}
 

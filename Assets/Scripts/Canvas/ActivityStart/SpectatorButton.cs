@@ -1,9 +1,10 @@
 using UnityEngine;
-
-public class SpectatorButton : MonoBehaviour
+using UnityEngine.EventSystems;
+public class SpectatorButton : MonoBehaviour,IPointerClickHandler
 {
-    public void Click()
-	{
-		RelatedParties.Instance.ActivityRelatedPartiesState = ActivityRelatedPartiesState.Spectators;
-	}
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        RelatedParties.Instance.ActivityRelatedPartiesState = ActivityRelatedPartiesState.Spectators;
+    }
 }
