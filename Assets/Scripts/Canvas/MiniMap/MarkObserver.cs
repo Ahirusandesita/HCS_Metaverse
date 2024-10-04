@@ -41,7 +41,6 @@ public class MarkObserver : MonoBehaviour
 			_mapMarks.Add(
 				 new MarkData(marks[i], marks[i].GetComponent<MeshRenderer>(), marks[i].transform));
 		}
-		_mapImage = GetComponent<RawImage>();
 		_markManager = FindObjectOfType<MarkManager>();
 	}
 

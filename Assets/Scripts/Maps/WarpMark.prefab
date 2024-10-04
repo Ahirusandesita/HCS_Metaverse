@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3272497867285709932}
   - component: {fileID: 7071633962366360581}
   - component: {fileID: 6341690664910939079}
-  - component: {fileID: -4246765593626090866}
+  - component: {fileID: 2741602607633055818}
   - component: {fileID: 391905226220056690}
   m_Layer: 0
   m_Name: WarpMark
@@ -122,12 +122,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   markView: {fileID: -2047829981184581724, guid: 801f859436841e646a1ef997930cab22, type: 3}
   IMarkClickProcess:
-  - {fileID: -4246765593626090866}
+  - {fileID: 2741602607633055818}
   IMarkHoverProcess:
-  - {fileID: -4246765593626090866}
+  - {fileID: 391905226220056690}
   IMarkUnHoverProcess:
-  - {fileID: -4246765593626090866}
---- !u!114 &-4246765593626090866
+  - {fileID: 391905226220056690}
+--- !u!114 &2741602607633055818
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
