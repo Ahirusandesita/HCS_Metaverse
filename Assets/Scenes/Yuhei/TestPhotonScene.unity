@@ -175,11 +175,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6341690664910939079, guid: c3405b2e6f75df24ca1fa19bb887c455, type: 3}
+      propertyPath: IMarkProcessClick
+      value: 
+      objectReference: {fileID: 9377061}
+    - target: {fileID: 6341690664910939079, guid: c3405b2e6f75df24ca1fa19bb887c455, type: 3}
+      propertyPath: IMarkProcessHover
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6341690664910939079, guid: c3405b2e6f75df24ca1fa19bb887c455, type: 3}
+      propertyPath: IMarkProcessUnHover
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066318324886614944, guid: c3405b2e6f75df24ca1fa19bb887c455, type: 3}
+      propertyPath: informationView
+      value: 
+      objectReference: {fileID: 843222058959211167, guid: 2fcdfaffd7affeb4ea38f00eecb68c56, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c3405b2e6f75df24ca1fa19bb887c455, type: 3}
+--- !u!114 &9377061 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -4246765593626090866, guid: c3405b2e6f75df24ca1fa19bb887c455, type: 3}
+  m_PrefabInstance: {fileID: 9377060}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b043e502385b25449a6fbebf409bbd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11850518 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2016271891207975271, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
@@ -2489,6 +2516,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2069234618284206964, guid: fa321b1f951dcb343862b04695478405, type: 3}
+    - {fileID: 3042756305034594846, guid: fa321b1f951dcb343862b04695478405, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3790631520804085763, guid: fa321b1f951dcb343862b04695478405, type: 3}
@@ -7183,11 +7211,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6341690664910939079, guid: c3405b2e6f75df24ca1fa19bb887c455, type: 3}
+      propertyPath: IMarkProcessClick
+      value: 
+      objectReference: {fileID: 1367608787}
+    - target: {fileID: 6341690664910939079, guid: c3405b2e6f75df24ca1fa19bb887c455, type: 3}
+      propertyPath: IMarkProcessHover
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6341690664910939079, guid: c3405b2e6f75df24ca1fa19bb887c455, type: 3}
+      propertyPath: IMarkProcessUnHover
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7066318324886614944, guid: c3405b2e6f75df24ca1fa19bb887c455, type: 3}
+      propertyPath: informationView
+      value: 
+      objectReference: {fileID: 843222058959211167, guid: 2fcdfaffd7affeb4ea38f00eecb68c56, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c3405b2e6f75df24ca1fa19bb887c455, type: 3}
+--- !u!114 &1367608787 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -4246765593626090866, guid: c3405b2e6f75df24ca1fa19bb887c455, type: 3}
+  m_PrefabInstance: {fileID: 1367608786}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b043e502385b25449a6fbebf409bbd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1379474055
 GameObject:
   m_ObjectHideFlags: 0
@@ -8351,7 +8406,8 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3042756305034594846, guid: fa321b1f951dcb343862b04695478405, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3790631520804085763, guid: fa321b1f951dcb343862b04695478405, type: 3}

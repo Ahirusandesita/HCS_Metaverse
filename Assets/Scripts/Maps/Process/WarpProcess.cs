@@ -6,10 +6,19 @@ public class WarpProcess : MonoBehaviour, IMarkProcess
 {
     private WhiteVignetteManager whiteVignette;
     private Transform player;
+
+    public void CanvasTransformInject(Transform canvasTransform)
+    {
+
+    }
+
     public void Process(MarkViewEventArgs markEventArgs, MarkData markData)
     {
-        whiteVignette = FindObjectOfType<WhiteVignetteManager>();
-        Warp(markData.MarkPosition).Forget();
+        if (markEventArgs.MarkProcessType == MarkProcessType.Select)
+        {
+            whiteVignette = FindObjectOfType<WhiteVignetteManager>();
+            Warp(markData.MarkPosition).Forget();
+        }
     }
 
     private async UniTaskVoid Warp(Vector3 position)

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7071633962366360581}
   - component: {fileID: 6341690664910939079}
   - component: {fileID: -4246765593626090866}
+  - component: {fileID: 391905226220056690}
   m_Layer: 0
   m_Name: WarpMark
   m_TagString: Untagged
@@ -120,7 +121,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   markView: {fileID: -2047829981184581724, guid: 801f859436841e646a1ef997930cab22, type: 3}
-  IMarkProcess: {fileID: -4246765593626090866}
+  IMarkClickProcess:
+  - {fileID: -4246765593626090866}
+  IMarkHoverProcess:
+  - {fileID: -4246765593626090866}
+  IMarkUnHoverProcess:
+  - {fileID: -4246765593626090866}
 --- !u!114 &-4246765593626090866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,3 +139,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b043e502385b25449a6fbebf409bbd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &391905226220056690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1026182429899305266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44c81d724a1ae6b42b12c7075f47e007, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  informationView: {fileID: 4563357440908985477, guid: 8e303d4ee17756744945d0dee11481f3, type: 3}
+  pinName: AA
