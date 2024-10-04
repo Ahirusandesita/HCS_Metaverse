@@ -1374,6 +1374,7 @@ GameObject:
   - component: {fileID: 4522849915732727832}
   - component: {fileID: 7011571691283869889}
   - component: {fileID: 6632934823874355765}
+  - component: {fileID: 1008322925437327410}
   m_Layer: 6
   m_Name: PlayerAvatar
   m_TagString: Untagged
@@ -1505,6 +1506,7 @@ MonoBehaviour:
   leftHandTransform: {fileID: 4506056486659746587}
   rightHandTransform: {fileID: 4635796941518141174}
   startHandType: 0
+  masterServerConect: {fileID: 0}
 --- !u!114 &9013771318999876011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1558,6 +1560,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ece4941ea7e4d145b6f2a5d886c5fe8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1008322925437327410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9142103114872535056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b953624d1bd0714fa1ff8ff00a70ac2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placingMode: 0
+  testOrigin: {fileID: 8820349977917249677, guid: 4b2d61582302a1e48a13fad15c0a40ec, type: 3}
 --- !u!1001 &209632335693756794
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9874,6 +9890,10 @@ PrefabInstance:
       propertyPath: maxDistance
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 3873572325155287652, guid: cb79cc0d7f501d24dbdd2a23b4df5d4b, type: 3}
+      propertyPath: characterController
+      value: 
+      objectReference: {fileID: 6856146247086294139}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
