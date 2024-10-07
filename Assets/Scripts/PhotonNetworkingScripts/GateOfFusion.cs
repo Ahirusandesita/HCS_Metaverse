@@ -13,6 +13,7 @@ public class GateOfFusion
 	private SyncResult _syncResult = SyncResult.Complete;
 	public static GateOfFusion Instance => _instance ??= new GateOfFusion();
 	public event System.Action OnConnect;
+	public event System.Action OnActivityConnected;
 
 	public GateOfFusion()
 	{
@@ -27,7 +28,6 @@ public class GateOfFusion
 			return _masterServer;
 		}
 	}
-
 	public bool IsUsePhoton { get => MasterServer.IsUsePhoton; }
 	public NetworkRunner NetworkRunner
 	{
@@ -172,7 +172,7 @@ public class GateOfFusion
 			return;
 		}
 		string sessionName = currentRoom.NextSessionName;
-		PlayerRef localPlayerRef = NetworkRunner.LocalPlayer; 
+		PlayerRef localPlayerRef = NetworkRunner.LocalPlayer;
 		foreach (PlayerRef roomPlayer in currentRoom.JoinRoomPlayer)
 		{
 			if (roomPlayer == NetworkRunner.LocalPlayer) { continue; }
@@ -185,10 +185,18 @@ public class GateOfFusion
 		XKumaDebugSystem.LogWarning($"切断した", KumaDebugColor.MessageColor);
 		await SceneManager.LoadSceneAsync(sceneName);
 		XKumaDebugSystem.LogWarning($"シーンを読み込んだ");
-		await MasterServer.JoinOrCreateSession(sessionName,localPlayerRef);
+		await MasterServer.JoinOrCreateSession(sessionName, localPlayerRef);
 		XKumaDebugSystem.LogWarning($"自分がセッション移動した", KumaDebugColor.MessageColor);
 		_syncResult = SyncResult.Complete;
 		XKumaDebugSystem.LogWarning($"移動終了", KumaDebugColor.MessageColor);
+		foreach (PlayerRef roomPlayer in currentRoom.JoinRoomPlayer)
+		{
+			await UniTask.WaitUntil(() => NetworkRunner.ActivePlayers.Contains(roomPlayer));
+		}
+		if (currentRoom.SceneNameType is not SceneNameType.KumaKumaTest or SceneNameType.TestPhotonScene)
+		{
+			OnActivityConnected?.Invoke();
+		}
 	}
 }
 
