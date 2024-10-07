@@ -7,22 +7,28 @@ public class ViewTrackParent : MonoBehaviour
     [SerializeField]
     private Transform _parentTransform = default;
 
-    private Rigidbody _myRigidbody = default;
+    [SerializeField]
+    private BoxCollider _myCollider = default;
+
+    [SerializeField]
+    private BoxCollider _hitCollider = default;
+
+    private ViewMoveDepth _viewMoveDepth = default;
 
     // Start is called before the first frame update
     void Start()
     {
-        //_parentTransform = transform.parent;
+        _viewMoveDepth = new ViewMoveDepth(_myCollider, _hitCollider, transform) ;
 
-        //_myRigidbody = GetComponent<Rigidbody>();
-
-        //Physics.IgnoreCollision(_parentTransform.GetComponent<Collider>(), _myRigidbody.GetComponent<Collider>(), true);
+        _viewMoveDepth.HitCollider();
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         transform.rotation = _parentTransform.rotation;
+
+        _viewMoveDepth.MoveDepth();
         //transform.position = _parentTransform.position;
     }
 }
