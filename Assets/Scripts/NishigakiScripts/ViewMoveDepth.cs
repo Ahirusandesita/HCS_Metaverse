@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class ViewMoveDepth
 {
-    public ViewMoveDepth(BoxCollider myCollider, BoxCollider hitCollider)
+    public ViewMoveDepth(BoxCollider myCollider, BoxCollider hitCollider, Transform viewTransform)
     {
         _myCollider = myCollider;
 
         _hitCollider = hitCollider;
+
+        _viewTransform = viewTransform;
 
         _hitSurfaceData = GetHitSurfaceData(GetVertexPositionList(_myCollider.transform, _myCollider), _hitCollider);
     }
@@ -16,6 +18,8 @@ public class ViewMoveDepth
     private BoxCollider _myCollider = default;
 
     private BoxCollider _hitCollider = default;
+
+    private Transform _viewTransform = default;
 
     private SurfaceData _hitSurfaceData = default;
 
@@ -46,14 +50,14 @@ public class ViewMoveDepth
         public float depth;
     }
 
-    private void Start()
+    public void HitCollider()
     {
         Vector3[] myVertexes = GetVertexPositionList(_myCollider.transform, _myCollider);
 
         _hitSurfaceData = GetHitSurfaceData(myVertexes, _hitCollider);
     }
 
-    private void LateUpdate()
+    public void MoveDepth()
     {
         //if (Input.GetKeyDown(KeyCode.Return))
         //{
@@ -79,26 +83,26 @@ public class ViewMoveDepth
 
             Vector3 moveVector = default;
 
-            Debug.Log($"実体頂点:0<{colliderVertexes[0]}>,1<{colliderVertexes[1]}>,2<{colliderVertexes[2]}>,3<{colliderVertexes[3]}>,4<{colliderVertexes[4]}>,5<{colliderVertexes[5]}>,6<{colliderVertexes[6]}>,7<{colliderVertexes[7]}>");
-            Debug.Log($"射影頂点:0<{projectionDatas[0].position}>,1<{projectionDatas[1].position}>,2<{projectionDatas[2].position}>,3<{projectionDatas[3].position}>,4<{projectionDatas[4].position}>,5<{projectionDatas[5].position}>,6<{projectionDatas[6].position}>,7<{projectionDatas[7].position}>");
-            Debug.Log($"深度:0<{projectionDatas[0].depth}>,1<{projectionDatas[1].depth}>,2<{projectionDatas[2].depth}>,3<{projectionDatas[3].depth}>,4<{projectionDatas[4].depth}>,5<{projectionDatas[5].depth}>,6<{projectionDatas[6].depth}>,7<{projectionDatas[7].depth}>");
+            //Debug.Log($"実体頂点:0<{colliderVertexes[0]}>,1<{colliderVertexes[1]}>,2<{colliderVertexes[2]}>,3<{colliderVertexes[3]}>,4<{colliderVertexes[4]}>,5<{colliderVertexes[5]}>,6<{colliderVertexes[6]}>,7<{colliderVertexes[7]}>");
+            //Debug.Log($"射影頂点:0<{projectionDatas[0].position}>,1<{projectionDatas[1].position}>,2<{projectionDatas[2].position}>,3<{projectionDatas[3].position}>,4<{projectionDatas[4].position}>,5<{projectionDatas[5].position}>,6<{projectionDatas[6].position}>,7<{projectionDatas[7].position}>");
+            //Debug.Log($"深度:0<{projectionDatas[0].depth}>,1<{projectionDatas[1].depth}>,2<{projectionDatas[2].depth}>,3<{projectionDatas[3].depth}>,4<{projectionDatas[4].depth}>,5<{projectionDatas[5].depth}>,6<{projectionDatas[6].depth}>,7<{projectionDatas[7].depth}>");
 
             // 頂点
             if (CheckOnHitSurface(projectionDatas[deepestIndex]))
             {
-                Debug.Log($"ちょーてん　{deepestIndex}番目");
+                //Debug.Log($"ちょーてん　{deepestIndex}番目");
                 moveVector = GetMoveDepth(projectionDatas[deepestIndex].depth);
             }
             // その他
             else
             {
-                Debug.Log("へんとか");
+                //Debug.Log("へんとか");
                 
                 float intersectDepth = GetDeepestIntersectDepth(colliderVertexes, projectionDatas);
 
                 float intoSurfaceDepth = GetDeepestIntoSurfaceDepth(colliderVertexes, projectionDatas);
 
-                Debug.Log("へん：" + intersectDepth + "  面：" + intoSurfaceDepth);
+                //Debug.Log("へん：" + intersectDepth + "  面：" + intoSurfaceDepth);
 
                 if (intoSurfaceDepth <= intersectDepth)
                 {
@@ -109,8 +113,9 @@ public class ViewMoveDepth
                     moveVector = GetMoveDepth(intoSurfaceDepth);
                 }
             }
-            //Debug.Log("むーぶべくたー： x=" + moveVector.x + " , y=" + moveVector.y + " z=" + moveVector.z);
-            _myCollider.transform.position = _myCollider.transform.parent.position + moveVector;
+        //Debug.Log("むーぶべくたー： x=" + moveVector.x + " , y=" + moveVector.y + " z=" + moveVector.z);
+
+            _viewTransform.position = _myCollider.transform.position + moveVector;
         //}
     }
 
@@ -146,7 +151,7 @@ public class ViewMoveDepth
 
     private Vector3 GetMoveDepth(float projectionData)
     {
-        Debug.Log($"設定深度：{projectionData}");
+        //Debug.Log($"設定深度：{projectionData}");
         return _hitSurfaceData.normal * projectionData;
     }
 
@@ -246,7 +251,7 @@ public class ViewMoveDepth
 
         Vector3[] vertexesOfSurface = BoxColliderData.GetVertexesOfSurface(maxInnerPloductIndex, hitCollider);
 
-        Debug.Log($"<color=red>面法線 : {hitNormal}</color>");
+        //Debug.Log($"<color=red>面法線 : {hitNormal}</color>");
 
         return new SurfaceData(hitNormal, vertexesOfSurface);
     }
@@ -292,17 +297,17 @@ public class ViewMoveDepth
             checkLineVertexes[0] = _hitSurfaceData.vertexList[checkLineVertexesIndex[0]];
             checkLineVertexes[1] = _hitSurfaceData.vertexList[checkLineVertexesIndex[1]];
 
-            Debug.Log($"{i}辺　判定面の頂点の座標0:{checkLineVertexes[0]}");
-            Debug.Log($"{i}辺　判定面の頂点の座標1:{checkLineVertexes[1]}");
+            //Debug.Log($"{i}辺　判定面の頂点の座標0:{checkLineVertexes[0]}");
+            //Debug.Log($"{i}辺　判定面の頂点の座標1:{checkLineVertexes[1]}");
 
             for (int k = 0; k < 12; k++)
             {
-                Debug.Log($"辺の番号：{BoxColliderData.GetLineIndexes(k)}");
+                //Debug.Log($"辺の番号：{BoxColliderData.GetLineIndexes(k)}");
                 if(FindClosestPoints(projectionVertexes, BoxColliderData.GetLineIndexes(k), checkLineVertexes, out Vector3 closestPointOnCheckLine, out float closestRatio))
                 {
                     float depth = GetIntersectDepth(colliderVertexes, BoxColliderData.GetLineIndexes(k), closestPointOnCheckLine, closestRatio);
 
-                    Debug.Log($"{k}番目　当たってる　深度{depth}");
+                    //Debug.Log($"{k}番目　当たってる　深度{depth}");
 
                     if (deepestDepth < depth)
                     {
@@ -311,7 +316,7 @@ public class ViewMoveDepth
                 }
                 else
                 {
-                    Debug.Log($"{k}番目　当たってない");
+                    //Debug.Log($"{k}番目　当たってない");
                 }
             }
         }
@@ -356,7 +361,7 @@ public class ViewMoveDepth
         closestPointOnCheckLine = checkLineVertex1 + ratio_CheckLine * direction_CheckLine;
         closestRatio = ratio_ColliderLine;
 
-        Debug.Log($"ratio_ColliderLine = {ratio_ColliderLine}  ,  ratio_CheckLine = {ratio_CheckLine}");
+        //Debug.Log($"ratio_ColliderLine = {ratio_ColliderLine}  ,  ratio_CheckLine = {ratio_CheckLine}");
 
         if (ratio_ColliderLine <= 0 || 1 <= ratio_ColliderLine || ratio_CheckLine <= 0 || 1 <= ratio_CheckLine)
         {
@@ -374,7 +379,7 @@ public class ViewMoveDepth
 
         Vector3 depthVector = closestPointOnColliderLine - closestPointOnCheckLine;
 
-        Debug.Log($"<color=red>LineVector={lineVector}  :  ClosestPointOnColliderLine={closestPointOnColliderLine}  :  ClosestPointOnCheckLine={closestPointOnCheckLine}  :  depthVector={depthVector}</color>");
+        //Debug.Log($"<color=red>LineVector={lineVector}  :  ClosestPointOnColliderLine={closestPointOnColliderLine}  :  ClosestPointOnCheckLine={closestPointOnCheckLine}  :  depthVector={depthVector}</color>");
 
         float depth = depthVector.magnitude;
 
@@ -405,13 +410,13 @@ public class ViewMoveDepth
 
         if (intoSurfaceList == default)
         {
-            Debug.Log("めんにちょーてんあたってないよん");
+            //Debug.Log("めんにちょーてんあたってないよん");
             return default;
         }
 
         for (int i = 0; i < intoSurfaceList.GetLength(0); i++)
         {
-            Debug.Log($"頂点:{intoSurfaceList[i, 0]}   面：{intoSurfaceList[i, 1]}");
+            //Debug.Log($"頂点:{intoSurfaceList[i, 0]}   面：{intoSurfaceList[i, 1]}");
             int[] projectionSurfaceVertexes = BoxColliderData.GetSurfaceIndexes(intoSurfaceList[i, 1]);
 
             Vector3 surfaceNormal = surfaceNormalList[intoSurfaceList[i, 1]];
