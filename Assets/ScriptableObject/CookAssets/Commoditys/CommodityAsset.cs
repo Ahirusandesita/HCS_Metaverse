@@ -36,6 +36,8 @@ public class CommodityAsset : ScriptableObject, IGrantableCommodityID, ICommodit
     private List<Commodity> commodities = new List<Commodity>();
     [SerializeField]
     private CommodityAppearance commodityAppearance;
+    [SerializeField]
+    private float waitTime = default;
     public IReadOnlyList<Commodity> Commodities => commodities;
     public int CommodityID => commodityID;
     public CommodityDetailAppearance GetCommodityDetailAppearance()
