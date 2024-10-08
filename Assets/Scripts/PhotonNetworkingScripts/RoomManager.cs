@@ -11,9 +11,11 @@ public class RoomManager : MonoBehaviour
 	[SerializeField]
 	private GameObject _leaderObjectPrefab;
 	[SerializeField]
+	private GameObject _activityStartUIPrefab;
 	private ActivityMemberTextController _activityMemberTextController;
 	private Dictionary<int, Room> _rooms = new();
 	private GameObject _leaderObject;
+	private GameObject _activityStartUI;
 	private static RoomManager _instance = default;
 	private MasterServerConect _masterServer = default;
 	public static RoomManager Instance { get => _instance; }
@@ -95,12 +97,13 @@ public class RoomManager : MonoBehaviour
 			roomTemp = _rooms[roomNumber];
 		}
 
+		
 		if (roomTemp == null)
 		{
 			if (roomNumber < 0) { roomNumber = 1; }
 			for (; _rooms.ContainsKey(roomNumber); roomNumber++) ;
 			roomTemp = Create(sceneNameType, roomNumber);
-			if (sceneNameType != SceneNameType.TestPhotonScene)
+			if (!roomTemp.IsNonLeader && joinPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer)
 			{
 				InstantiateLeaderObject();
 			}
@@ -117,6 +120,10 @@ public class RoomManager : MonoBehaviour
 
 		roomTemp.Join(joinPlayer);
 
+		if (!roomTemp.IsNonLeader&& joinPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer)
+		{
+			InstantiateActivityStartUI();
+		}
 		XKumaDebugSystem.LogWarning($"参加:{sceneNameType}," +
 			$"Result:{result}\n," +
 			$"Player:{joinPlayer}",
@@ -127,16 +134,47 @@ public class RoomManager : MonoBehaviour
 
 	public void InstantiateLeaderObject()
 	{
-		if (_leaderObject) { return; }
 		XKumaDebugSystem.LogWarning($"InstanceLeaderObject:{MasterServerConect.Runner.LocalPlayer}", KumaDebugColor.SuccessColor);
+
 		_leaderObject = Instantiate(_leaderObjectPrefab);
+	}
+	public void InstantiateActivityStartUI(bool isLeader = false)
+	{
+		_activityStartUI = Instantiate(_activityStartUIPrefab);
+		Room room = GetCurrentRoom(GateOfFusion.Instance.NetworkRunner.LocalPlayer);
+		XKumaDebugSystem.LogWarning($"{room}:{_activityStartUIPrefab}", KumaDebugColor.RpcColor);
+		if (room.LeaderPlayerRef != GateOfFusion.Instance.NetworkRunner.LocalPlayer || isLeader)
+		{
+			Destroy(FindObjectOfType<ActivityStartButton>().gameObject);
+		}
+		XKumaDebugSystem.LogWarning($"リーダーUI生成", KumaDebugColor.InformationColor);
+	}
+
+	public void DestroyActivityStartUI()
+	{
+		XKumaDebugSystem.LogWarning($"リーダーUI削除", KumaDebugColor.InformationColor);
+		if (_activityStartUI != null)
+		{
+			Destroy(_activityStartUI);
+		}
+		else
+		{
+			XKumaDebugSystem.LogWarning($"リーダーUIがNullなので破棄できませんでした。", KumaDebugColor.WarningColor);
+		}
 	}
 
 	public void DestroyLeaderObject()
 	{
-		if (!_leaderObject) { return; }
 		XKumaDebugSystem.LogWarning($"DestoryLeaderObject:{MasterServerConect.Runner.LocalPlayer}", KumaDebugColor.SuccessColor);
-		Destroy(_leaderObject);
+		if(_leaderObject != null)
+		{
+			Destroy(_leaderObject);
+		}
+		else
+		{
+			XKumaDebugSystem.LogWarning($"リーダーオブジェクトがNullなので破棄できませんでした。", KumaDebugColor.WarningColor);
+		}
+		
 	}
 
 	/// <summary>
@@ -195,17 +233,17 @@ public class RoomManager : MonoBehaviour
 			await UniTask.WaitUntil(() => MasterServerConect.Runner.ActivePlayers.Contains(roomTemp.LeaderPlayerRef));
 			MasterServerConect.SessionRPCManager.Rpc_DestroyLeaderObject(roomTemp.LeaderPlayerRef);
 		}
-		else
-		{
-			DestroyLeaderObject();
-		}
 		//前のリーダーのリーダーオブジェクトを破棄する
 		bool isLeader = nextLeaderPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer;
 		if (isLeader)
 		{
+			DestroyActivityStartUI();
 			InstantiateLeaderObject();
+			InstantiateActivityStartUI(true);
 		}
+		if (roomTemp.IsNonLeader) { return; }
 		roomTemp.ChangeLeader(nextLeaderPlayer);
+
 	}
 
 	/// <summary>
@@ -220,6 +258,7 @@ public class RoomManager : MonoBehaviour
 		bool isLeader = myRoom.LeaderPlayerRef == myPlayerRef;
 		_rooms.Clear();
 		_rooms.Add(myRoomKey, myRoom);
+		if (myRoom.IsNonLeader) { return; }
 		if (isLeader) { myRoom.ChangeLeader(myPlayerRef); }
 	}
 

@@ -145,7 +145,13 @@ public class GateOfFusion
 			Debug.LogWarning("ˆÚ“®’†‚Å‚·");
 			return;
 		}
+		RoomManager.Instance.DestroyActivityStartUI();
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer);
+		if(currentRoom == null)
+		{
+			XKumaDebugSystem.LogWarning("•”‰®‚ÉŠ‘®‚µ‚Ä‚¢‚Ü‚¹‚ñ", KumaDebugColor.WarningColor);
+			return;
+		}
 		string sceneName = currentRoom.SceneNameType.ToString();
 		if (SceneManager.GetActiveScene().name == sceneName)
 		{
@@ -180,6 +186,7 @@ public class GateOfFusion
 			XKumaDebugSystem.LogWarning($"{roomPlayer}‚ğˆÚ“®‚³‚¹‚½", KumaDebugColor.MessageColor);
 			await UniTask.WaitUntil(() => !NetworkRunner.ActivePlayers.Contains(roomPlayer));
 		}
+
 		XKumaDebugSystem.LogWarning($"‘SˆõˆÚ“®‚³‚¹‚½", KumaDebugColor.MessageColor);
 		await MasterServer.Disconnect();
 		XKumaDebugSystem.LogWarning($"Ø’f‚µ‚½", KumaDebugColor.MessageColor);

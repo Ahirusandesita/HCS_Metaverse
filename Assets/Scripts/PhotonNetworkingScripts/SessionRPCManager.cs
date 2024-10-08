@@ -99,7 +99,7 @@ public class SessionRPCManager : NetworkBehaviour
 		if (roomTemp is null) { return; }
 		int roomKey = RoomManager.Instance.GetCurrentRoomKey(roomTemp);
 		XKumaDebugSystem.LogWarning($"{roomTemp.LeaderPlayerRef}:{Runner.LocalPlayer}", KumaDebugColor.ErrorColor);
-		bool isLeader = roomTemp.LeaderIndex == roomTemp.GetPlayerIndex(Runner.LocalPlayer);
+		bool isLeader = roomTemp.LeaderPlayerRef == Runner.LocalPlayer;
 		Rpc_SendRoomData(requestPlayer, roomTemp.SceneNameType, Runner.LocalPlayer
 			, isLeader, Runner.SessionInfo.Name, roomKey);
 	}
@@ -110,9 +110,10 @@ public class SessionRPCManager : NetworkBehaviour
 	{
 		XKumaDebugSystem.LogWarning($"Rpc_SendRoomData:{playerRef}", KumaDebugColor.RpcColor);
 		await RoomManager.Instance.JoinOrCreate(worldType, playerRef, sessionName, roomNumber);
+		//自分がリーダーの場合リーダーを自分に変える
 		if (isLeader)
 		{
-			RoomManager.Instance.LeaderChange(playerRef);
+			Rpc_ChangeLeader(playerRef);
 		}
 	}
 
@@ -121,6 +122,7 @@ public class SessionRPCManager : NetworkBehaviour
 	{
 		XKumaDebugSystem.LogWarning("Rpc_DestroyLeaderObject:" + rpcTarget, KumaDebugColor.RpcColor);
 		RoomManager.Instance.DestroyLeaderObject();
+		RoomManager.Instance.DestroyActivityStartUI();
 	}
 
 	public void Rpc_ChangeLeader(PlayerRef nextLeader)

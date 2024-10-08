@@ -6,12 +6,14 @@ using Cysharp.Threading.Tasks;
 using KumaDebug;
 public class Room
 {
+	private bool _isNonLeader = false;
 	private bool _isEndJoining = default;
 	private PlayerRef _leader = default;
 	private readonly string _nextSessionName = default;
 	private SceneNameType _worldType = default;
 	private List<PlayerRef> _roomPlayers = new();
-	private int _maxMemberCount = default;
+	private int _maxParticipantCount = default;
+	public bool IsNonLeader => _isNonLeader;
 	public int LeaderIndex { get => _roomPlayers.IndexOf(LeaderPlayerRef); }
 	public PlayerRef LeaderPlayerRef => _leader;
 	public bool IsEndJoining { get => _isEndJoining; }
@@ -24,7 +26,11 @@ public class Room
 		this._worldType = activityType;
 		this._nextSessionName = nextSessionName;
 
-		_maxMemberCount = activityType switch
+		if (activityType is SceneNameType.KumaKumaTest)
+		{
+			_isNonLeader = true;
+		}
+		_maxParticipantCount = activityType switch
 		{
 			SceneNameType.TestPhotonScene => -1,
 			SceneNameType.CookActivity => -1,
@@ -40,15 +46,16 @@ public class Room
 
 	public void Join(PlayerRef playerRef)
 	{
-		if(_roomPlayers.Count <= 0)
+		if (!_isNonLeader && _roomPlayers.Count <= 0)
 		{
+			XKumaDebugSystem.LogWarning($"Leader{playerRef}", KumaDebugColor.ErrorColor);
 			_leader = playerRef;
 		}
 		_roomPlayers.Add(playerRef);
-		if (_maxMemberCount < 0) { return; }
-		if (_roomPlayers.Count >= _maxMemberCount)
+		if (_maxParticipantCount < 0) { return; }
+		if (_roomPlayers.Count >= _maxParticipantCount)
 		{
-			Debug.LogError($"{_roomPlayers.Count}:{_maxMemberCount}");
+			Debug.LogError($"{_roomPlayers.Count}:{_maxParticipantCount}");
 			_isEndJoining = true;
 		}
 	}
@@ -60,25 +67,43 @@ public class Room
 	/// <returns>リザルト</returns>
 	public async UniTask<LeftResult> Left(PlayerRef leftPlayer)
 	{
-		const int NEXT_LEADER_INDEX = 0;
+		int nextLeaderIndex = 0;
 		XKumaDebugSystem.LogWarning($"{leftPlayer}が退出しました:{LeaderIndex}", KumaDebugColor.ErrorColor);
 
 		//参加していなかった場合
 		if (!_roomPlayers.Contains(leftPlayer)) { return LeftResult.Fail; }
+		LeftResult result;
 		//部屋のメンバーがいない場合
-		if (_roomPlayers.Count <= 1) { return LeftResult.Closable; }
-
-		LeftResult result = LeftResult.Success;
+		if (_roomPlayers.Count <= 1)
+		{
+			result = LeftResult.Closable;
+		}
+		else
+		{
+			result = LeftResult.Success;
+		}
 
 		//↓リーダーの場合
 		if (_leader == leftPlayer)
 		{
-			_leader = JoinRoomPlayer[NEXT_LEADER_INDEX];
+			if (_roomPlayers.Count > 1)
+			{
+				if (LeaderIndex == nextLeaderIndex)
+				{
+					nextLeaderIndex++;
+				}
+				XKumaDebugSystem.LogWarning($"{nextLeaderIndex}:leaderindex", KumaDebugColor.InformationColor);
+				_leader = JoinRoomPlayer[nextLeaderIndex];
+				MasterServerConect masterServer = Object.FindObjectOfType<MasterServerConect>();
+				await UniTask.WaitUntil(() => masterServer.Runner.ActivePlayers.Contains(_leader));
+				masterServer.SessionRPCManager.Rpc_ChangeLeader(_leader);
+			}
 			RoomManager.Instance.DestroyLeaderObject();
-			MasterServerConect masterServer = Object.FindObjectOfType<MasterServerConect>();
-			await UniTask.WaitUntil(() => masterServer.Runner.ActivePlayers.Contains(_leader));
-			masterServer.SessionRPCManager.Rpc_ChangeLeader(_leader);
 			result = LeftResult.LeaderChanged;
+		}
+		if (GateOfFusion.Instance.NetworkRunner.LocalPlayer == leftPlayer)
+		{
+			RoomManager.Instance.DestroyActivityStartUI();
 		}
 		_roomPlayers.Remove(leftPlayer);
 
@@ -92,6 +117,7 @@ public class Room
 
 	public void ChangeLeader(PlayerRef nextLeaderPlayer)
 	{
+		XKumaDebugSystem.LogWarning($"Leader{nextLeaderPlayer}", KumaDebugColor.ErrorColor);
 		_leader = nextLeaderPlayer;
 	}
 
