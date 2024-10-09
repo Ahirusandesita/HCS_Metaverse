@@ -196,6 +196,8 @@ public class GateOfFusion
 		XKumaDebugSystem.LogWarning($"自分がセッション移動した", KumaDebugColor.MessageColor);
 		_syncResult = SyncResult.Complete;
 		XKumaDebugSystem.LogWarning($"移動終了", KumaDebugColor.MessageColor);
+		await UniTask.WaitUntil(() => NetworkRunner != null);
+
 		foreach (PlayerRef roomPlayer in currentRoom.JoinRoomPlayer)
 		{
 			await UniTask.WaitUntil(() => NetworkRunner.ActivePlayers.Contains(roomPlayer));
