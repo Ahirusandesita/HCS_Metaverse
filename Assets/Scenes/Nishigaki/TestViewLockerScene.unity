@@ -258,6 +258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd0cd278d3889d043a60338d6e4756e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ITransformInjectables: []
 --- !u!114 &44542718
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8537,6 +8538,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sensitivity: 1
+  IScrollables: []
 --- !u!114 &1556002664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12523,7 +12525,6 @@ GameObject:
   - component: {fileID: 973375575940787667}
   - component: {fileID: 6919265373599662714}
   - component: {fileID: 8480662986005717172}
-  - component: {fileID: 8480662986005717171}
   m_Layer: 6
   m_Name: Visual
   m_TagString: Untagged
@@ -12597,20 +12598,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7734838736873773713}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &8480662986005717171
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7734838736873773713}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a24aca0da535cf742b9b5f84feccc1ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _myCollider: {fileID: 1573857682}
-  _hitCollider: {fileID: 595973839}
 --- !u!114 &8480662986005717172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12624,6 +12611,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _parentTransform: {fileID: 1573857679}
+  _myCollider: {fileID: 1573857682}
+  _hitCollider: {fileID: 595973839}
 --- !u!1 &8529433500871342887
 GameObject:
   m_ObjectHideFlags: 0
