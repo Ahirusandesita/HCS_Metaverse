@@ -10,10 +10,6 @@ namespace HCSMeta.Activity
 		private GameFrame gameFrame;
 		[SerializeField, Header("移動するアクティビティ(ワールド)")]
 		private SceneNameType _sceneNameType = SceneNameType.CookActivity;
-		[SerializeField]
-		private GameObject _activityStartCanvasRootObject;
-		[SerializeField]
-		private GameObject _activityStartCanvasPrefab;
 		private MasterServerConect _masterServer;
 		private NetworkRunner NetworkRunner => GateOfFusion.Instance.NetworkRunner;
 		private MasterServerConect MasterServerConect
@@ -32,11 +28,8 @@ namespace HCSMeta.Activity
 		[ContextMenu("Close")]
 		public void Close()
 		{
-			Debug.LogWarning("Nishigaki");
 			gameFrame.Close();
 			MasterServerConect.SessionRPCManager.Rpc_LeftOrCloseRoom(NetworkRunner.LocalPlayer);
-			
-			_activityStartCanvasRootObject.SetActive(false);
 		}
 
 		private void Update()
@@ -44,6 +37,10 @@ namespace HCSMeta.Activity
 			if (Input.GetKeyDown(KeyCode.P))
 			{
 				Open();
+			}
+			else if (Input.GetKeyDown(KeyCode.Semicolon))
+			{
+				Close();
 			}
 		}
 
@@ -60,14 +57,8 @@ namespace HCSMeta.Activity
 			else
 			{
 				_ = RoomManager.Instance.JoinOrCreate(
-					_sceneNameType, NetworkRunner.LocalPlayer,
-					NetworkRunner.SessionInfo.Name);
+					_sceneNameType, NetworkRunner.LocalPlayer);
 			}
-			if(_activityStartCanvasRootObject == null)
-            {
-				_activityStartCanvasRootObject = Instantiate(_activityStartCanvasPrefab);
-            }
-			_activityStartCanvasRootObject.SetActive(true);
 		}
 
 		public void Select(SelectArgs selectArgs)
