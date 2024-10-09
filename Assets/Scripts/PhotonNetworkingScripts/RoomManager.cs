@@ -93,19 +93,17 @@ public class RoomManager : MonoBehaviour
 			//“ü‚ê‚é•”‰®‚ª‚ ‚é‚©
 			roomTemp = _rooms.Values.FirstOrDefault(room => !room.IsEndJoining
 			&& room.SceneNameType == sceneNameType);
-			XKumaDebugSystem.LogWarning($"aaaa{joinPlayer}:{roomNumber}");
 		}
 		else if (_rooms.ContainsKey(roomNumber))
 		{
 			roomTemp = _rooms[roomNumber];
-			XKumaDebugSystem.LogWarning($"bbbb{joinPlayer}:{roomNumber}");
 		}
 
 		//“ü‚ê‚é•”‰®‚ª‚È‚¢‚½‚ßì¬‚·‚é
 		if (roomTemp == null)
 		{
 			//©“®‚ÅƒL[‚ğì‚éê‡
-			if (roomNumber < 0) { roomNumber = 10000; }
+			if (roomNumber < 0) { roomNumber = 1; }
 			for (; _rooms.ContainsKey(roomNumber); roomNumber++) ;
 			roomTemp = Create(sceneNameType, roomNumber);
 			if (!roomTemp.IsNonLeader && joinPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer)
