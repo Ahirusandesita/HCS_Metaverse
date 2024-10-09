@@ -75,8 +75,9 @@ public class RoomManager : MonoBehaviour
 			.FirstOrDefault() != null).Key;
 	}
 
-	public async UniTask<JoinOrCreateResult> JoinOrCreate(SceneNameType sceneNameType, PlayerRef joinPlayer, string currentSessionName, int roomNumber = -1)
+	public async UniTask<JoinOrCreateResult> JoinOrCreate(SceneNameType sceneNameType, PlayerRef joinPlayer, int roomNumber = -1)
 	{
+		
 		Room myRoom = GetCurrentRoom(joinPlayer);
 		if (myRoom != null)
 		{
@@ -89,18 +90,22 @@ public class RoomManager : MonoBehaviour
 		//部屋番号指定なしの場合
 		if (roomNumber < 0)
 		{
+			//入れる部屋があるか
 			roomTemp = _rooms.Values.FirstOrDefault(room => !room.IsEndJoining
 			&& room.SceneNameType == sceneNameType);
+			XKumaDebugSystem.LogWarning($"aaaa{joinPlayer}:{roomNumber}");
 		}
 		else if (_rooms.ContainsKey(roomNumber))
 		{
 			roomTemp = _rooms[roomNumber];
+			XKumaDebugSystem.LogWarning($"bbbb{joinPlayer}:{roomNumber}");
 		}
 
-		
+		//入れる部屋がないため作成する
 		if (roomTemp == null)
 		{
-			if (roomNumber < 0) { roomNumber = 1; }
+			//自動でキーを作る場合
+			if (roomNumber < 0) { roomNumber = 10000; }
 			for (; _rooms.ContainsKey(roomNumber); roomNumber++) ;
 			roomTemp = Create(sceneNameType, roomNumber);
 			if (!roomTemp.IsNonLeader && joinPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer)
@@ -187,7 +192,7 @@ public class RoomManager : MonoBehaviour
 		if (joinedRoom is null) { return; }
 		XKumaDebugSystem.LogWarning(
 			$"退出:{joinedRoom.SceneNameType}" +
-			$"\nRoom:{joinedRoom}" +
+			$"\nRoom:{joinedRoom.NextSessionName}" +
 			$"Player:{playerRef}", KumaDebugColor.InformationColor);
 		LeftResult result = await joinedRoom.Left(playerRef);
 		if (result == LeftResult.Closable)
@@ -270,13 +275,14 @@ public class RoomManager : MonoBehaviour
 			XKumaDebugSystem.LogWarning("ルームがありません", KumaDebugColor.MessageColor);
 			return;
 		}
-		foreach (Room room in _rooms.Values)
+		foreach(KeyValuePair<int,Room> roomData in _rooms)
 		{
 			XKumaDebugSystem.LogWarning(
-				$"RoomData::,NextSessionName:{room.NextSessionName}" +
-				$"Leader:{room.LeaderPlayerRef}," +
-				$"PlayerCount{room.JoinRoomPlayer.Count}", KumaDebugColor.InformationColor);
-			foreach (PlayerRef player in room.JoinRoomPlayer)
+				$"RoomData::,NextSessionName:{roomData.Value.NextSessionName}" +
+				$"Leader:{roomData.Value.LeaderPlayerRef}," +
+				$"PlayerCount{roomData.Value.JoinRoomPlayer.Count}" +
+				$"RoomNumber:{roomData.Key}", KumaDebugColor.InformationColor);
+			foreach (PlayerRef player in roomData.Value.JoinRoomPlayer)
 			{
 				XKumaDebugSystem.LogWarning($"{player}", KumaDebugColor.InformationColor);
 			}

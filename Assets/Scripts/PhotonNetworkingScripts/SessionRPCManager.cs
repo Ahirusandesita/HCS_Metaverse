@@ -16,7 +16,7 @@ public class SessionRPCManager : NetworkBehaviour
 
 		if (FindObjectOfType<MasterServerConect>().IsSolo)
 		{
-			_ = RoomManager.Instance.JoinOrCreate(firstScene, Runner.LocalPlayer, Runner.SessionInfo.Name);
+			_ = RoomManager.Instance.JoinOrCreate(firstScene, Runner.LocalPlayer);
 		}
 		else
 		{
@@ -75,7 +75,7 @@ public class SessionRPCManager : NetworkBehaviour
 	[Rpc(RpcSources.All, RpcTargets.All)]
 	public async void Rpc_JoinOrCreateRoom(SceneNameType joinWorldType, PlayerRef joinPlayer, int roomNumber = -1)
 	{
-		JoinOrCreateResult result = await RoomManager.Instance.JoinOrCreate(joinWorldType, joinPlayer, Runner.SessionInfo.Name, roomNumber);
+		JoinOrCreateResult result = await RoomManager.Instance.JoinOrCreate(joinWorldType, joinPlayer, roomNumber);
 		string temp = result switch
 		{
 			JoinOrCreateResult.Create => "を作成",
@@ -98,18 +98,18 @@ public class SessionRPCManager : NetworkBehaviour
 		Room roomTemp = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
 		if (roomTemp is null) { return; }
 		int roomKey = RoomManager.Instance.GetCurrentRoomKey(roomTemp);
-		XKumaDebugSystem.LogWarning($"{roomTemp.LeaderPlayerRef}:{Runner.LocalPlayer}", KumaDebugColor.ErrorColor);
+		XKumaDebugSystem.LogWarning($"{roomTemp.SceneNameType}", KumaDebugColor.ErrorColor);
 		bool isLeader = roomTemp.LeaderPlayerRef == Runner.LocalPlayer;
 		Rpc_SendRoomData(requestPlayer, roomTemp.SceneNameType, Runner.LocalPlayer
-			, isLeader, Runner.SessionInfo.Name, roomKey);
+			, isLeader, roomKey);
 	}
 
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 	private async void Rpc_SendRoomData([RpcTarget] PlayerRef rpcTarget
-		, SceneNameType worldType, PlayerRef playerRef, bool isLeader, string sessionName, int roomNumber = -1)
+		, SceneNameType worldType, PlayerRef playerRef, bool isLeader , int roomNumber = -1)
 	{
-		XKumaDebugSystem.LogWarning($"Rpc_SendRoomData:{playerRef}", KumaDebugColor.RpcColor);
-		await RoomManager.Instance.JoinOrCreate(worldType, playerRef, sessionName, roomNumber);
+		XKumaDebugSystem.LogWarning($"Rpc_SendRoomData:{worldType}:{playerRef}:{isLeader}", KumaDebugColor.RpcColor);
+		await RoomManager.Instance.JoinOrCreate(worldType, playerRef, roomNumber);
 		//自分がリーダーの場合リーダーを自分に変える
 		if (isLeader)
 		{

@@ -57,8 +57,7 @@ namespace HCSMeta.Activity
 			else
 			{
 				_ = RoomManager.Instance.JoinOrCreate(
-					_sceneNameType, NetworkRunner.LocalPlayer,
-					NetworkRunner.SessionInfo.Name);
+					_sceneNameType, NetworkRunner.LocalPlayer);
 			}
 		}
 

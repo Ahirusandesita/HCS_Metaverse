@@ -82,7 +82,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		_networkRunner = await InstanceNetworkRunnerAsync();
 		if (!_isUsePhoton)
 		{
-			await RoomManager.Instance.JoinOrCreate(firstScene, Runner.LocalPlayer, Runner.SessionInfo.Name);
+			await RoomManager.Instance.JoinOrCreate(firstScene, Runner.LocalPlayer);
 			return;
 		}
 		await Connect(firstScene.ToString());	
