@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6668833273486038802
+--- !u!1 &1080545704841057552
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5516847497445971127}
-  - component: {fileID: 5470062202958232113}
+  - component: {fileID: 6556005577685371671}
+  - component: {fileID: 835674516224238973}
+  - component: {fileID: 8789724564405764592}
   m_Layer: 0
-  m_Name: LocalRemoteSeparation
+  m_Name: CharacterRPCManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5516847497445971127
+--- !u!4 &6556005577685371671
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6668833273486038802}
+  m_GameObject: {fileID: 1080545704841057552}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -32,20 +33,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5470062202958232113
+--- !u!114 &835674516224238973
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6668833273486038802}
+  m_GameObject: {fileID: 1080545704841057552}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69290763faafdf0468569ebf56446e98, type: 3}
+  m_Script: {fileID: 11500000, guid: 387929515ff8d7649af9c551860fd846, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  separationLifetimeScope: {fileID: 849916944389288812, guid: 31c5a603157478741b4d032230b902c1, type: 3}
-  _characterRPCManagerPrefab: {fileID: 835674516224238973, guid: 5634745973462d743a33e61390e828d9, type: 3}
-  localGameObject: {fileID: 9142103114872535056, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-  remoteViewObjectPrefab:
-    RawGuidValue: 8ff420c042d6836488ed159248f7b31a
+--- !u!114 &8789724564405764592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080545704841057552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 2713342226
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 835674516224238973}
