@@ -45,7 +45,7 @@ public class PlacingTarget : MonoBehaviour
     {
         // 計算誤差用の定数
         const float CALC_ERROR_OFFSET = 0.01f;
-        // 地面とみなす段差の高さ（この高さまで、自然と補正される）
+        // 設置できる段差の高さ（この高さまで、自然と補正される）
         const float STEP_HEIGHT_LIMIT = 1f;
 
         // 自分の身長の4分の1は床判定
@@ -55,12 +55,13 @@ public class PlacingTarget : MonoBehaviour
         // モデルによって、原点の位置が違う問題を、boundsによって一応解決した
         Vector3 center = boxCollider.bounds.center;
         Vector3 underOrigin = new Vector3(center.x, center.y - boxHalfSize.y, center.z);
+        float playerUnderOriginY = player.position.y - playerHeight / 2;
 
         // 接地判定
         // 
         Vector3 checkGroundCenter = center + Vector3.up * STEP_HEIGHT_LIMIT;
-        float distance = Mathf.Abs(player.position.y - playerHeight / 2 - STEP_HEIGHT_LIMIT - checkGroundCenter.y);
-        distance = distance < STEP_HEIGHT_LIMIT + boxHalfSize.y ? STEP_HEIGHT_LIMIT + boxHalfSize.y : distance;
+        float distance = Mathf.Abs(playerUnderOriginY - STEP_HEIGHT_LIMIT - checkGroundCenter.y);
+        //distance = distance < STEP_HEIGHT_LIMIT + boxHalfSize.y ? STEP_HEIGHT_LIMIT + boxHalfSize.y : distance;
 
         bool isHitGround = Physics.BoxCast(
             center: checkGroundCenter,
@@ -88,11 +89,19 @@ public class PlacingTarget : MonoBehaviour
 
         if (Vector3.Angle(Vector3.up, groundHitInfo.normal) > slopeLimit)
         {
+            XDebug.Log("slopLimit", "yellow");
             return false;
         }
 
-        // memo: rayが当たってないときに0になって落下しちゃう
-        yPosition = groundHitInfo.point.y + GROUND_OFFSET;
+        if (isHitGround)
+        {
+            // memo: rayが当たってないときに0になって落下しちゃう
+            yPosition = groundHitInfo.point.y + GROUND_OFFSET;
+        }
+        else
+        {
+            yPosition = playerUnderOriginY;
+        }
 
         //if (isHitFront && wallHitInfo.normal.y == 0f && wallHitInfo.collider.bounds.extents.y < 2f)
         //{
@@ -118,15 +127,18 @@ public class PlacingTarget : MonoBehaviour
 
         if (!(isHitSaikyou1 && isHitSaikyou2 && isHitSaikyou3 && isHitSaikyou4))
         {
+            XDebug.Log("ray", "yellow");
             return false;
         }
         // 1にすると誤差が出るのでちょっと引いてる
         if (groundHitInfo.normal.y < 1 - CALC_ERROR_OFFSET)
         {
+            XDebug.Log("normal", "yellow");
             return false;
         }
         if (isCollision)
         {
+            XDebug.Log("collision", "yellow");
             return false;
         }
 
@@ -135,6 +147,7 @@ public class PlacingTarget : MonoBehaviour
         bool isHitBack = Physics.Raycast(toPlayerRay, out RaycastHit _, toPlayer.magnitude, Layer.GROUNDWALL);
         if (isHitBack)
         {
+            XDebug.Log("wall", "yellow");
             return false;
         }
         // プレイヤーの頭の向きにRayを飛ばし、WarpPointerの要領で地面か机の上かを判定する。
@@ -147,6 +160,7 @@ public class PlacingTarget : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         isCollision = true;
+        XDebug.Log(other.gameObject.name);
     }
 
     private void OnTriggerExit(Collider other)

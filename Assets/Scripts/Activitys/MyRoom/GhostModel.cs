@@ -52,6 +52,7 @@ public class GhostModel : IEditOnlyGhost
 
         instance.SetActive(false);
         boxCollider.isTrigger = true;
+        boxCollider.excludeLayers = Layer.PLAYER;
         rigidbody.isKinematic = true;
     }
 
