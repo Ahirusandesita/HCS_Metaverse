@@ -1,9 +1,10 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
-
+using Fusion;
 
 namespace Layer_lab._3D_Casual_Character
 {
@@ -20,7 +21,7 @@ namespace Layer_lab._3D_Casual_Character
         Eyewear,
         Body
     }
-    
+
     public class CharacterBase : MonoBehaviour
     {
         public List<GameObject> PartsBody { get; set; } = new();
@@ -35,40 +36,50 @@ namespace Layer_lab._3D_Casual_Character
         public List<GameObject> PartsGlove { get; set; } = new();
 
         public int Index { get; set; } = 0;
-        
+
+        private CharacterRPCManager characterRPCManager;
+        private RemoteView remoteView;
+
         private void Awake()
         {
             SetRoot();
+
+            papa().Forget();
+        }
+
+        private async UniTaskVoid papa()
+        {
+            remoteView = await FindObjectOfType<LocalRemoteSeparation>().unko();
         }
 
 
         public void SavePrefab()
         {
-            #if UNITY_EDITOR
-            string localPath = "Assets/Layer lab/3D Props Casual Character Pack1/Prefabs/"+ gameObject.name +".prefab";
+#if UNITY_EDITOR
+            string localPath = "Assets/Layer lab/3D Props Casual Character Pack1/Prefabs/" + gameObject.name + ".prefab";
             bool isPrefabSuccess;
 
             GameObject instanceObject = Instantiate(gameObject);
             instanceObject.transform.localPosition = Vector3.zero;
             instanceObject.transform.rotation = Quaternion.identity;
             instanceObject.transform.localScale = Vector3.one;
-            
+
             PrefabUtility.SaveAsPrefabAsset(instanceObject, localPath, out isPrefabSuccess);
             if (isPrefabSuccess)
                 Debug.Log("Prefab was saved successfully");
             else
                 Debug.Log("Prefab failed to save" + isPrefabSuccess);
-            
+
             Destroy(instanceObject);
             AssetDatabase.Refresh();
-            #endif
+#endif
         }
-        
+
         public void SetRandom()
         {
             SetRoot();
             SetItem(PartsType.Hair, Random.Range(0, PartsHair.Count - 1));
-            SetItem(PartsType.Face,Random.Range(0, PartsFace.Count - 1));
+            SetItem(PartsType.Face, Random.Range(0, PartsFace.Count - 1));
             SetItem(PartsType.Headgear, Random.Range(-5, PartsHeadGear.Count - 1));
             SetItem(PartsType.Top, Random.Range(0, PartsTop.Count - 1));
             SetItem(PartsType.Bottom, Random.Range(0, PartsBottom.Count - 1));
@@ -77,7 +88,7 @@ namespace Layer_lab._3D_Casual_Character
             SetItem(PartsType.Shoes, Random.Range(0, PartsShoes.Count - 1));
             SetItem(PartsType.Glove, Random.Range(-5, PartsGlove.Count - 1));
         }
-        
+
         protected void SetRoot()
         {
             PartsHair.Clear();
@@ -105,13 +116,13 @@ namespace Layer_lab._3D_Casual_Character
                             child.gameObject.SetActive(false);
                             PartsBody.Add(child.gameObject);
                         }
-                            
+
                     }
                 }
             }
-            
-            
-            
+
+
+
 
             foreach (Transform g in parts)
             {
@@ -124,7 +135,7 @@ namespace Layer_lab._3D_Casual_Character
                 if (g.name.Contains($"{PartsType.Bag}")) foreach (Transform child in g.transform) PartsBag.Add(child.gameObject);
                 if (g.name.Contains($"{PartsType.Shoes}")) foreach (Transform child in g.transform) PartsShoes.Add(child.gameObject);
                 if (g.name.Contains($"{PartsType.Glove}")) foreach (Transform child in g.transform) PartsGlove.Add(child.gameObject);
-             
+
             }
         }
 
@@ -135,10 +146,11 @@ namespace Layer_lab._3D_Casual_Character
             PartsBody[0].SetActive(IsEquipGlove);
             PartsBody[1].SetActive(!IsEquipGlove);
         }
-        
+
         public void SetItem(PartsType partsType, int idx)
         {
-            
+            if (FindObjectOfType<CharacterRPCManager>())
+                FindObjectOfType<CharacterRPCManager>().Rpc_ChangeWear(partsType, idx, remoteView.GetComponent<NetworkObject>());
             switch (partsType)
             {
                 case PartsType.Hair:
@@ -164,10 +176,10 @@ namespace Layer_lab._3D_Casual_Character
                     break;
                 case PartsType.Glove:
                     IsEquipGlove = false;
-                    
+
                     for (int i = 0; i < PartsGlove.Count; i++)
                     {
-                        if (i == idx) IsEquipGlove = true; 
+                        if (i == idx) IsEquipGlove = true;
                         PartsGlove[i].gameObject.SetActive(i == idx);
                     }
                     break;
@@ -177,11 +189,11 @@ namespace Layer_lab._3D_Casual_Character
                 default:
                     throw new ArgumentOutOfRangeException(nameof(partsType), partsType, null);
             }
-            
+
             CheckBody();
         }
 
     }
 }
-        
+
 

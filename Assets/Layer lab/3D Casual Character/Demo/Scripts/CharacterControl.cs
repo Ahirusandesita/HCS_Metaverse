@@ -8,13 +8,17 @@ namespace Layer_lab._3D_Casual_Character
     {
         public static CharacterControl Instance;
         public CharacterBase CharacterBase { get; set; }
-        private Animator animator; 
+        private Animator animator;
         [SerializeField] private TMP_Text textAnimationName;
         private Coroutine _coroutine;
+
+        [SerializeField]
+        private bool baka = false;
         void Awake()
         {
-            Instance = this;
-            textAnimationName.text = "Stand_Idle1";
+            if (baka)
+                Instance = this;
+            //textAnimationName.text = "Stand_Idle1";
             animator = GetComponentInChildren<Animator>();
             CharacterBase = GetComponentInChildren<CharacterBase>();
         }
@@ -23,13 +27,13 @@ namespace Layer_lab._3D_Casual_Character
         {
             textAnimationName.text = clip.name;
             animator.CrossFadeInFixedTime(clip.name, 0.25f);
-            if(_coroutine != null) StopCoroutine(_coroutine);
-        
+            if (_coroutine != null) StopCoroutine(_coroutine);
+
             if (!clip.isLooping)
             {
                 StartCoroutine(ChangeIdleText(clip.length));
             }
-        
+
         }
 
         IEnumerator ChangeIdleText(float duration)
