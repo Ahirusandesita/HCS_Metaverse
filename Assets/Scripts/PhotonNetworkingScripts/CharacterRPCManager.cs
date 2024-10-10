@@ -4,7 +4,12 @@ using KumaDebug;
 
 public class CharacterRPCManager : NetworkBehaviour
 {
-	[Rpc(RpcSources.All,RpcTargets.All)]
+	public override void Spawned()
+	{
+		XKumaDebugSystem.LogWarning($"CharacterRPCManager_Spawned", KumaDebugColor.SuccessColor);
+		DontDestroyOnLoad(this.gameObject);
+	}
+	[Rpc(RpcSources.All,RpcTargets.All,InvokeLocal = false)]
     public void Rpc_ChangeWear(PartsType partsType,int index,NetworkObject remoteView)
 	{
 		XKumaDebugSystem.LogWarning($"ChangeWear", KumaDebugColor.WarningColor);
