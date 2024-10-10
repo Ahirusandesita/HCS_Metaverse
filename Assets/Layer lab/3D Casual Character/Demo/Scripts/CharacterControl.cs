@@ -36,7 +36,7 @@ namespace Layer_lab._3D_Casual_Character
         IEnumerator ChangeIdleText(float duration)
         {
             yield return new WaitForSeconds(duration);
-            textAnimationName.text = "Stand_Idle1";
+            //textAnimationName.text = "Stand_Idle1";
         }
     }
 }
