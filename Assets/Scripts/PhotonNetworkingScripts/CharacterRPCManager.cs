@@ -20,7 +20,7 @@ public class CharacterRPCManager : NetworkBehaviour
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 	public void Rpc_PlayEmote(AnimationControl.AnimType animType, int index, NetworkObject remoteView)
 	{
-		XKumaDebugSystem.LogWarning($"PlayEmote", KumaDebugColor.WarningColor);
-	
+		CharacterControl characterControl = remoteView.GetComponentInChildren<CharacterControl>();
+		characterControl.PlayAnimation(animType, index);
 	}
 }
