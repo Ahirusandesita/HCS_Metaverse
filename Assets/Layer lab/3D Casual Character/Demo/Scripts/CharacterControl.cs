@@ -50,7 +50,7 @@ namespace Layer_lab._3D_Casual_Character
                 FindObjectOfType<CharacterRPCManager>().Rpc_PlayEmote(animData.AnimType, animData.Index, remoteView.GetComponent<NetworkObject>());
             }
 
-            textAnimationName.text = clip.name;
+            //textAnimationName.text = clip.name;
             animator.CrossFadeInFixedTime(clip.name, 0.25f);
             if (_coroutine != null) StopCoroutine(_coroutine);
 
@@ -64,7 +64,7 @@ namespace Layer_lab._3D_Casual_Character
         IEnumerator ChangeIdleText(float duration)
         {
             yield return new WaitForSeconds(duration);
-            textAnimationName.text = "Stand_Idle1";
+            //textAnimationName.text = "Stand_Idle1";
         }
     }
 }
