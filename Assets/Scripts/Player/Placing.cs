@@ -9,7 +9,7 @@ public class Placing : MonoBehaviour
 {
     [Tooltip("設置（ハウジング）モード")]
     [SerializeField] private bool placingMode = default;
-    [SerializeField, HideAtPlaying] private GameObject testOrigin;
+    [SerializeField, HideAtPlaying] private PlaceableObject testOrigin;
     private GhostModel ghostModel = default;
 
 
@@ -38,6 +38,6 @@ public class Placing : MonoBehaviour
 
     public void AAA()
     {
-        ghostModel = new GhostModel().CreateModel(testOrigin).AddPlacingFunction(transform);
+        ghostModel = new GhostModel().CreateModel(testOrigin, transform);
     }
 }
