@@ -22,7 +22,7 @@ public class LocalRemoteSeparation : MonoBehaviour
 
         if (playerRef == networkRunner.LocalPlayer)
         {
-            CharacterControl characterController = remoteView.GetComponentInChildren<CharacterControl>();
+            RemoteCharacterControll characterController = remoteView.GetComponentInChildren<RemoteCharacterControll>();
             foreach (Renderer renderer in characterController.GetComponentsInChildren<Renderer>())
             {
                 renderer.gameObject.SetActive(false);
