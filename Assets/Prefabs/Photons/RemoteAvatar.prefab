@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1214586791013995699}
-  - component: {fileID: 4640730493662995584}
+  - component: {fileID: 6973867884442330446}
   m_Layer: 0
   m_Name: '#CharacterControl'
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   - {fileID: 5443370418421938653}
   m_Father: {fileID: 6570073382746287869}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4640730493662995584
+--- !u!114 &6973867884442330446
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,11 +42,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3005942541002529333}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fe162df572cd49c8bfddf529c276273, type: 3}
+  m_Script: {fileID: 11500000, guid: 027a5dd6be69f074d9b3522d18dd4d34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textAnimationName: {fileID: 0}
-  isLocal: 0
 --- !u!1 &7202047677650180228
 GameObject:
   m_ObjectHideFlags: 0
@@ -1582,14 +1580,14 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2beed5376eb37ac48b23a24754e4bf6d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1561150893707197629}
+      addedObject: {fileID: 2554429180673341204}
   m_SourcePrefab: {fileID: 100100000, guid: 2beed5376eb37ac48b23a24754e4bf6d, type: 3}
 --- !u!1 &4666129585175847783 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 2beed5376eb37ac48b23a24754e4bf6d, type: 3}
   m_PrefabInstance: {fileID: 5476383689532628534}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1561150893707197629
+--- !u!114 &2554429180673341204
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1598,10 +1596,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4666129585175847783}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f55422c4aa8842499afee331934358c, type: 3}
+  m_Script: {fileID: 11500000, guid: d479db7d464e45144bf34bfa94740439, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLocal: 0
 --- !u!4 &5443370418421938653 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2beed5376eb37ac48b23a24754e4bf6d, type: 3}
