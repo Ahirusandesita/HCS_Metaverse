@@ -31,10 +31,6 @@ public class LocalRemoteSeparation : MonoBehaviour
         Instantiate(separationLifetimeScope).SeparationSetup(localGameObject, remoteView).Build();
         remoteViewInstance = remoteView;
     }
-    private void Update()
-    {
-        Debug.LogError(existInstance);
-    }
     public async UniTask<RemoteView> unko()
     {
         await UniTask.WaitUntil(() => remoteViewInstance);
