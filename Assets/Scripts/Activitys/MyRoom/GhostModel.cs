@@ -11,6 +11,16 @@ public interface IEditOnlyGhost
 /// </summary>
 public class GhostModel : IEditOnlyGhost
 {
+    /// <summary>
+    /// ゴースト元モデルの原点の位置
+    /// </summary>
+    public enum PivotType
+    {
+        Under,
+        Center,
+        Other,
+    }
+
     private const string MATERIAL_NAME = "Ghost";
     private const string TEXTURE_NAME = "_Texture";
     private const string COLOR_NAME = "_Ghost_Color";
@@ -61,7 +71,7 @@ public class GhostModel : IEditOnlyGhost
     /// </summary>
     /// <param name="ghostOrigin"></param>
     /// <param name="defaultColor"></param>
-    public GhostModel CreateModel(GameObject ghostOrigin, Color? defaultColor = null)
+    public GhostModel CreateModelSimple(GameObject ghostOrigin, Color? defaultColor = null)
     {
         var filters = ghostOrigin.GetComponentsInChildren<MeshFilter>();
         var renderers = ghostOrigin.GetComponentsInChildren<MeshRenderer>();
@@ -116,18 +126,25 @@ public class GhostModel : IEditOnlyGhost
 
         boxCollider.size = bounds.size;
         boxCollider.center = bounds.center;
+        if (boxCollider.size == Vector3.zero && boxCollider.center == Vector3.zero)
+        {
+            Debug.LogError("PlaceableObject のMesh情報にアクセスできません。" +
+                "ModelImporterのRead/Write設定を直接ONにするか、ModelSettingChanger Window を使用して設定を変更してください。");
+        }
         return this;
     }
 
     /// <summary>
-    /// GhostModelに設置機能（ハウジング機能）を追加する
+    /// 渡されたGameObjectのGhostModelを生成し、設置機能（ハウジング機能）を追加する。表示の前に必ず行う必要がある。
     /// <br>※表示されるだけではなく、設置可能判定などが行われるようになる</br>
     /// </summary>
-    /// <param name="parent">追従対象のオブジェクト（多くの場合プレイヤー）</param>
-    /// <returns></returns>
-    public GhostModel AddPlacingFunction(Transform player)
+    /// <param name="placeableObject"></param>
+    /// <param name="player">追従対象のオブジェクト（多くの場合プレイヤー）</param>
+    /// <param name="defaultColor"></param>
+    public GhostModel CreateModel(PlaceableObject placeableObject, Transform player, Color? defaultColor = null)
     {
-        instance.AddComponent<PlacingTarget>().Initialize(this, player);
+        CreateModelSimple(placeableObject.GhostOrigin, defaultColor);
+        instance.AddComponent<PlacingTarget>().Initialize(this, placeableObject, player);
         enablePlacingFunction = true;
         return this;
     }
@@ -202,6 +219,6 @@ public class GhostModel : IEditOnlyGhost
     private void ThrowException()
     {
         throw new System.NotSupportedException($"{nameof(GhostModel)} インスタンスで配置機能が許可されていません。" +
-            $"許可するには {nameof(AddPlacingFunction)} を実行してください。");
+            $"許可するには {nameof(CreateModelSimple)} ではなく {nameof(CreateModel)} を実行してください。");
     }
 }

@@ -9,9 +9,9 @@ public class PlacingTarget : MonoBehaviour
 
     private BoxCollider boxCollider = default;
     private IEditOnlyGhost ghostModel = default;
+    private PlaceableObject placeableObject = default;
     private Transform player = default;
     private Transform playerHead = default;
-    private Collider[] hitResults = new Collider[4];
     private bool isCollision = default;
     private float yPosition = default;
     private Vector3 boxHalfSize = default;
@@ -19,9 +19,10 @@ public class PlacingTarget : MonoBehaviour
     private float playerHeight = default;
 
 
-    public PlacingTarget Initialize(IEditOnlyGhost ghostModel, Transform player)
+    public PlacingTarget Initialize(IEditOnlyGhost ghostModel, PlaceableObject placeableObject, Transform player)
     {
         this.ghostModel = ghostModel;
+        this.placeableObject = placeableObject;
         this.player = player;
         // Tmporary
         playerHead = player.Find("OVRCameraRig (1)").Find("TrackingSpace").Find("CenterEyeAnchor");
@@ -35,6 +36,8 @@ public class PlacingTarget : MonoBehaviour
 
     private void LateUpdate()
     {
+        XDebug.Log(placeableObject.PivotType);
+
         transform.SetPositionAndRotation(
             position: new Vector3(player.position.x, yPosition, player.position.z) + player.forward * FORWARD_OFFSET,
             rotation: player.rotation);
@@ -46,7 +49,7 @@ public class PlacingTarget : MonoBehaviour
         // 計算誤差用の定数
         const float CALC_ERROR_OFFSET = 0.01f;
         // 設置できる段差の高さ（この高さまで、自然と補正される）
-        const float STEP_HEIGHT_LIMIT = 1f;
+        float stepHeightLimit = playerHeight / 4;
 
         // 自分の身長の4分の1は床判定
         // GameObject.transformはモデルによって違うので、y軸補正の際はすべて足し算で行う
@@ -59,48 +62,48 @@ public class PlacingTarget : MonoBehaviour
 
         // 接地判定
         // 
-        Vector3 checkGroundCenter = center + Vector3.up * STEP_HEIGHT_LIMIT;
-        float distance = Mathf.Abs(playerUnderOriginY - STEP_HEIGHT_LIMIT - checkGroundCenter.y);
-        //distance = distance < STEP_HEIGHT_LIMIT + boxHalfSize.y ? STEP_HEIGHT_LIMIT + boxHalfSize.y : distance;
+        Vector3 checkGroundCenter = center + Vector3.up * stepHeightLimit;
+        float checkGroundBoxDistance = Mathf.Abs(playerUnderOriginY - stepHeightLimit - checkGroundCenter.y);
 
-        bool isHitGround = Physics.BoxCast(
+        bool isHitGroundBox = Physics.BoxCast(
             center: checkGroundCenter,
             halfExtents: boxHalfSize,
             direction: Vector3.down,
             hitInfo: out RaycastHit groundHitInfo,
             orientation: transform.rotation,
-            maxDistance: distance,
+            maxDistance: checkGroundBoxDistance,
             layerMask: Layer.GROUNDWALL
             );
 
         float rayDistance = Mathf.Abs(groundHitInfo.point.y - checkGroundCenter.y) + CALC_ERROR_OFFSET;
-        Ray saikyouRay1 = new Ray(underOrigin + boxHalfSize.x * transform.right + boxHalfSize.y * transform.up + boxHalfSize.z * transform.forward + Vector3.up * STEP_HEIGHT_LIMIT, Vector3.down);
-        Ray saikyouRay2 = new Ray(underOrigin + -boxHalfSize.x * transform.right + boxHalfSize.y * transform.up + boxHalfSize.z * transform.forward + Vector3.up * STEP_HEIGHT_LIMIT, Vector3.down);
-        Ray saikyouRay3 = new Ray(underOrigin + boxHalfSize.x * transform.right + boxHalfSize.y * transform.up + -boxHalfSize.z * transform.forward + Vector3.up * STEP_HEIGHT_LIMIT, Vector3.down);
-        Ray saikyouRay4 = new Ray(underOrigin + -boxHalfSize.x * transform.right + boxHalfSize.y * transform.up + -boxHalfSize.z * transform.forward + Vector3.up * STEP_HEIGHT_LIMIT, Vector3.down);
-        bool isHitSaikyou1 = Physics.Raycast(saikyouRay1, out RaycastHit saikyouInfo1, rayDistance, Layer.GROUNDWALL);
-        bool isHitSaikyou2 = Physics.Raycast(saikyouRay2, out RaycastHit saikyouInfo2, rayDistance, Layer.GROUNDWALL);
-        bool isHitSaikyou3 = Physics.Raycast(saikyouRay3, out RaycastHit saikyouInfo3, rayDistance, Layer.GROUNDWALL);
-        bool isHitSaikyou4 = Physics.Raycast(saikyouRay4, out RaycastHit saikyouInfo4, rayDistance, Layer.GROUNDWALL);
-        Debug.DrawRay(saikyouRay1.origin, saikyouRay1.direction * rayDistance, Color.yellow);
-        Debug.DrawRay(saikyouRay2.origin, saikyouRay2.direction * rayDistance, Color.yellow);
-        Debug.DrawRay(saikyouRay3.origin, saikyouRay3.direction * rayDistance, Color.yellow);
-        Debug.DrawRay(saikyouRay4.origin, saikyouRay4.direction * rayDistance, Color.yellow);
+        Ray checkGroundRay_rf = new Ray(underOrigin + boxHalfSize.x * transform.right + boxHalfSize.y * transform.up + boxHalfSize.z * transform.forward + Vector3.up * stepHeightLimit, Vector3.down);
+        Ray checkGroundRay_lf = new Ray(underOrigin + -boxHalfSize.x * transform.right + boxHalfSize.y * transform.up + boxHalfSize.z * transform.forward + Vector3.up * stepHeightLimit, Vector3.down);
+        Ray checkGroundRay_rb = new Ray(underOrigin + boxHalfSize.x * transform.right + boxHalfSize.y * transform.up + -boxHalfSize.z * transform.forward + Vector3.up * stepHeightLimit, Vector3.down);
+        Ray checkGroundRay_lb = new Ray(underOrigin + -boxHalfSize.x * transform.right + boxHalfSize.y * transform.up + -boxHalfSize.z * transform.forward + Vector3.up * stepHeightLimit, Vector3.down);
+        bool isHitGround_rf = Physics.Raycast(checkGroundRay_rf, out RaycastHit _, rayDistance, Layer.GROUNDWALL);
+        bool isHitGround_lf = Physics.Raycast(checkGroundRay_lf, out RaycastHit _, rayDistance, Layer.GROUNDWALL);
+        bool isHitGround_rb = Physics.Raycast(checkGroundRay_rb, out RaycastHit _, rayDistance, Layer.GROUNDWALL);
+        bool isHitGround_lb = Physics.Raycast(checkGroundRay_lb, out RaycastHit _, rayDistance, Layer.GROUNDWALL);
+        Debug.DrawRay(checkGroundRay_rf.origin, checkGroundRay_rf.direction * rayDistance, Color.yellow);
+        Debug.DrawRay(checkGroundRay_lf.origin, checkGroundRay_lf.direction * rayDistance, Color.yellow);
+        Debug.DrawRay(checkGroundRay_rb.origin, checkGroundRay_rb.direction * rayDistance, Color.yellow);
+        Debug.DrawRay(checkGroundRay_lb.origin, checkGroundRay_lb.direction * rayDistance, Color.yellow);
 
         if (Vector3.Angle(Vector3.up, groundHitInfo.normal) > slopeLimit)
         {
-            XDebug.Log("slopLimit", "yellow");
             return false;
         }
 
-        if (isHitGround)
+        // Rayが当たった位置をy軸の座標とする
+        // もしRayが当たらない = 高すぎる位置にいるときは「設置できない」と表現するため、プレイヤーと同じ高さでキープする（浮かせる）
+        yPosition = isHitGroundBox ?
+            groundHitInfo.point.y + GROUND_OFFSET :
+            playerUnderOriginY;
+
+        // 原点が足元にない場合は埋まってしまうので、その場合は補正する
+        if (placeableObject.PivotType == GhostModel.PivotType.Center)
         {
-            // memo: rayが当たってないときに0になって落下しちゃう
-            yPosition = groundHitInfo.point.y + GROUND_OFFSET;
-        }
-        else
-        {
-            yPosition = playerUnderOriginY;
+            yPosition += boxHalfSize.y;
         }
 
         //if (isHitFront && wallHitInfo.normal.y == 0f && wallHitInfo.collider.bounds.extents.y < 2f)
@@ -121,24 +124,19 @@ public class PlacingTarget : MonoBehaviour
 
         //}
 
-        //Ray toGroundRay = new Ray(transform.position, Vector3.down);
-        //bool isHitGround = Physics.Raycast(toGroundRay, out RaycastHit groundHitInfo, RAY_LIMIT, Layer.GROUNDWALL);
-        //const float NORMAL_OFFSET = 0.001f;
-
-        if (!(isHitSaikyou1 && isHitSaikyou2 && isHitSaikyou3 && isHitSaikyou4))
+        // Rayがすべて当たっている = 坂や崖に面さず、完璧に設置可能な状態であるか
+        bool isPerfectlyGrounded = isHitGround_rf && isHitGround_lf && isHitGround_rb && isHitGround_lb;
+        if (!isPerfectlyGrounded)
         {
-            XDebug.Log("ray", "yellow");
             return false;
         }
         // 1にすると誤差が出るのでちょっと引いてる
         if (groundHitInfo.normal.y < 1 - CALC_ERROR_OFFSET)
         {
-            XDebug.Log("normal", "yellow");
             return false;
         }
         if (isCollision)
         {
-            XDebug.Log("collision", "yellow");
             return false;
         }
 
@@ -147,7 +145,6 @@ public class PlacingTarget : MonoBehaviour
         bool isHitBack = Physics.Raycast(toPlayerRay, out RaycastHit _, toPlayer.magnitude, Layer.GROUNDWALL);
         if (isHitBack)
         {
-            XDebug.Log("wall", "yellow");
             return false;
         }
         // プレイヤーの頭の向きにRayを飛ばし、WarpPointerの要領で地面か机の上かを判定する。
@@ -157,10 +154,14 @@ public class PlacingTarget : MonoBehaviour
         return true;
     }
 
+    private void OnPlacing()
+    {
+
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         isCollision = true;
-        XDebug.Log(other.gameObject.name);
     }
 
     private void OnTriggerExit(Collider other)
