@@ -14,7 +14,6 @@ public class LocalRemoteSeparation : MonoBehaviour
     private NetworkPrefabRef remoteViewObjectPrefab;
 
     private RemoteView remoteViewInstance = null;
-
     public async void RemoteViewCreate(NetworkRunner networkRunner, PlayerRef playerRef)
     {
         NetworkObject remoteViewObject
@@ -32,11 +31,13 @@ public class LocalRemoteSeparation : MonoBehaviour
         Instantiate(separationLifetimeScope).SeparationSetup(localGameObject, remoteView).Build();
         remoteViewInstance = remoteView;
     }
-
+    private void Update()
+    {
+        Debug.LogError(existInstance);
+    }
     public async UniTask<RemoteView> unko()
     {
-        await UniTask.WaitUntil(() => remoteViewInstance != null);
+        await UniTask.WaitUntil(() => remoteViewInstance);
         return remoteViewInstance;
     }
-
 }
