@@ -78,10 +78,8 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	public async UniTask<CharacterRPCManager> InstanceCharacterRPCManagerAsync()
 	{
 		XKumaDebugSystem.LogWarning($"InstanceRpcManager{_networkRunner.IsShutdown}", KumaDebugColor.ErrorColor);
-		await GateOfFusion.Instance.SpawnAsync(_characterRPCManagerPrefab);
 
-		NetworkObject networkObjectTemp = await _networkRunner.SpawnAsync(_sessionRPCManagerPrefab);
-		return networkObjectTemp.GetComponent<CharacterRPCManager>();
+		return await GateOfFusion.Instance.SpawnAsync(_characterRPCManagerPrefab);
 	}
 
 	private async void Awake()
