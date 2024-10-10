@@ -12,6 +12,8 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	[SerializeField]
 	private NetworkPrefabRef _sessionRPCManagerPrefab;
 	[SerializeField]
+	private CharacterRPCManager _characterRPCManagerPrefab;
+	[SerializeField]
 	private Recorder _recorder;
 	[SerializeField]
 	private NetworkRunner _networkRunnerPrefab;
@@ -67,6 +69,19 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		NetworkObject networkObjectTemp = await _networkRunner.SpawnAsync(_sessionRPCManagerPrefab);
 		_sessionRPCManager = networkObjectTemp.GetComponent<SessionRPCManager>();
 		return _sessionRPCManager;
+	}
+
+	/// <summary>
+	/// SessionRPCManagerを生成する
+	/// </summary>
+	/// <returns>生成したオブジェクト</returns>
+	public async UniTask<CharacterRPCManager> InstanceCharacterRPCManagerAsync()
+	{
+		XKumaDebugSystem.LogWarning($"InstanceRpcManager{_networkRunner.IsShutdown}", KumaDebugColor.ErrorColor);
+		await GateOfFusion.Instance.SpawnAsync(_characterRPCManagerPrefab);
+
+		NetworkObject networkObjectTemp = await _networkRunner.SpawnAsync(_sessionRPCManagerPrefab);
+		return networkObjectTemp.GetComponent<CharacterRPCManager>();
 	}
 
 	private async void Awake()
@@ -175,6 +190,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 			if (Runner.IsSharedModeMasterClient)
 			{
 				await InstanceSessionRPCManagerAsync();
+				await InstanceCharacterRPCManagerAsync();
 			}
 		}
 	}
