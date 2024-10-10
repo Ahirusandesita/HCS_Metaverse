@@ -8,10 +8,6 @@ public class LocalRemoteSeparation : MonoBehaviour
 	private SeparationLifetimeScope separationLifetimeScope;
 
 	[SerializeField]
-	private CharacterRPCManager _characterRPCManagerPrefab;
-	private CharacterRPCManager _characterRPCManager;
-
-	[SerializeField]
 	private GameObject localGameObject;
 
 	[SerializeField]
@@ -22,9 +18,7 @@ public class LocalRemoteSeparation : MonoBehaviour
 		NetworkObject remoteViewObject
 			= networkRunner.Spawn(remoteViewObjectPrefab, Vector3.zero, Quaternion.identity);
 		RemoteView remoteView = remoteViewObject.GetComponent<RemoteView>();
-		_characterRPCManager = await GateOfFusion.Instance.SpawnAsync(_characterRPCManagerPrefab, parent: remoteView.transform);
 
-		_characterRPCManager.gameObject.name = networkRunner.LocalPlayer.ToString();
 		if (playerRef == networkRunner.LocalPlayer)
 		{
 			CharacterControl characterController = remoteView.GetComponentInChildren<CharacterControl>();
