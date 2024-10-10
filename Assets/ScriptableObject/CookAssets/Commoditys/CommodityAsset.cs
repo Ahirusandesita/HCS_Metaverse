@@ -38,8 +38,12 @@ public class CommodityAsset : ScriptableObject, IGrantableCommodityID, ICommodit
     private CommodityAppearance commodityAppearance;
     [SerializeField]
     private float waitTime = default;
+    [SerializeField]
+    private int score;
     public IReadOnlyList<Commodity> Commodities => commodities;
     public int CommodityID => commodityID;
+
+    public int Score => score;
     public CommodityDetailAppearance GetCommodityDetailAppearance()
     {
         return new CommodityDetailAppearance(commodityAppearance, commodities);
@@ -56,5 +60,7 @@ public class CommodityAsset : ScriptableObject, IGrantableCommodityID, ICommodit
     {
         this.commodities = commodities;
     }
+
+
 
 }

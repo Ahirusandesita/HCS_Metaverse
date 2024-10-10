@@ -1,33 +1,42 @@
 using UnityEngine;
 using Fusion;
 using Layer_lab._3D_Casual_Character;
-
+using Cysharp.Threading.Tasks;
 public class LocalRemoteSeparation : MonoBehaviour
 {
-	[SerializeField]
-	private SeparationLifetimeScope separationLifetimeScope;
+    [SerializeField]
+    private SeparationLifetimeScope separationLifetimeScope;
 
-	[SerializeField]
-	private GameObject localGameObject;
+    [SerializeField]
+    private GameObject localGameObject;
 
-	[SerializeField]
-	private NetworkPrefabRef remoteViewObjectPrefab;
+    [SerializeField]
+    private NetworkPrefabRef remoteViewObjectPrefab;
 
-	public async void RemoteViewCreate(NetworkRunner networkRunner, PlayerRef playerRef)
-	{
-		NetworkObject remoteViewObject
-			= networkRunner.Spawn(remoteViewObjectPrefab, Vector3.zero, Quaternion.identity);
-		RemoteView remoteView = remoteViewObject.GetComponent<RemoteView>();
+    private RemoteView remoteViewInstance = null;
 
-		if (playerRef == networkRunner.LocalPlayer)
-		{
-			CharacterControl characterController = remoteView.GetComponentInChildren<CharacterControl>();
-			foreach (Renderer renderer in characterController.GetComponentsInChildren<Renderer>())
-			{
-				renderer.gameObject.SetActive(false);
-			}
-		}
+    public async void RemoteViewCreate(NetworkRunner networkRunner, PlayerRef playerRef)
+    {
+        NetworkObject remoteViewObject
+            =await networkRunner.SpawnAsync(remoteViewObjectPrefab, Vector3.zero, Quaternion.identity);
+        RemoteView remoteView = remoteViewObject.GetComponent<RemoteView>();
 
-		Instantiate(separationLifetimeScope).SeparationSetup(localGameObject, remoteView).Build();
-	}
+        if (playerRef == networkRunner.LocalPlayer)
+        {
+            CharacterControl characterController = remoteView.GetComponentInChildren<CharacterControl>();
+            foreach (Renderer renderer in characterController.GetComponentsInChildren<Renderer>())
+            {
+                renderer.gameObject.SetActive(false);
+            }
+        }
+        Instantiate(separationLifetimeScope).SeparationSetup(localGameObject, remoteView).Build();
+        remoteViewInstance = remoteView;
+    }
+
+    public async UniTask<RemoteView> unko()
+    {
+        await UniTask.WaitUntil(() => remoteViewInstance != null);
+        return remoteViewInstance;
+    }
+
 }

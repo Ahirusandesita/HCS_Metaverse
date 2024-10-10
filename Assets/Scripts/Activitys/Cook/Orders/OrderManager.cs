@@ -9,7 +9,9 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     private OrderAsset orderAsset;
     [SerializeField]
     private Customer customer;
-    
+
+    private IScoreCalculator scoreCalculator;
+
     public class NullOrderable : IOrderable
     {
         public void Order(CommodityAsset commodityAsset, CustomerInformation customer)
@@ -34,14 +36,25 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     [SerializeField]
     private RemoteOrder remoteOrder;
     private RemoteOrder instance;
+
     private void Awake()
     {
+
         commodityAssets = new CommodityAsset[orderValue];
         commodityInformations = new CommodityInformation[orderValue];
         customers = new CustomerInformation[orderValue];
 
         if (GameObject.FindObjectOfType<Leader>())
+        {
             Initialize();
+            customer.IsLeader = true;
+        }
+        else
+        {
+            customer.IsLeader = false;
+        }
+
+        scoreCalculator = InterfaceUtils.FindObjectOfInterfaces<IScoreCalculator>()[0];
     }
     private async void Initialize()
     {
@@ -61,6 +74,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     private void Start()
     {
         OnOrderInitialize?.Invoke(new OrderInitializeEventArgs(orderValue));
+        customer.InjectOrderAsset(orderAsset);
     }
 
     public OrderTicket Inquiry()
@@ -119,6 +133,8 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
                 customers[i] = null;
                 PackOrders();
 
+                //Score
+                scoreCalculator.GetScoreCalculator.ScoreCalucuration(commodity.CommodityAsset.Score, 1);
                 instance.RPC_Submision(i);
                 break;
             }
@@ -146,7 +162,8 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
         commodityAssets[index] = null;
         customers[index] = null;
         PackOrders();
-
+        //score
+        scoreCalculator.GetScoreCalculator.ScoreCalucuration(1, 1);
         for (int i = 0; i < commodityAssets.Length; i++)
         {
             if (commodityAssets[i] == null)
