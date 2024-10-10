@@ -39,11 +39,14 @@ namespace Layer_lab._3D_Casual_Character
 
         private CharacterRPCManager characterRPCManager;
         private RemoteView remoteView;
-
+        [SerializeField]
+        private bool aho = false;
         private void Awake()
         {
             SetRoot();
-            papa().Forget();
+
+            if (aho)
+                papa().Forget();
         }
 
         private async UniTaskVoid papa()
@@ -149,8 +152,9 @@ namespace Layer_lab._3D_Casual_Character
 
         public void SetItem(PartsType partsType, int idx)
         {
-            if (FindObjectOfType<CharacterRPCManager>())
-                FindObjectOfType<CharacterRPCManager>().Rpc_ChangeWear(partsType, idx, remoteView.GetComponent<NetworkObject>());
+            if (aho)
+                if (FindObjectOfType<CharacterRPCManager>())
+                    FindObjectOfType<CharacterRPCManager>().Rpc_ChangeWear(partsType, idx, remoteView.GetComponent<NetworkObject>());
             switch (partsType)
             {
                 case PartsType.Hair:
