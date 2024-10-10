@@ -28,12 +28,15 @@ namespace Layer_lab._3D_Casual_Character
         {
             if (IsEmpty)
             {
-                CharacterControl.Instance.CharacterBase.SetItem(CurrentPartType, -1);
+                //CharacterControl.Instance.CharacterBase.SetItem(CurrentPartType, -1);
+                LocalCharacterControl.Instance.LocalCharcterBase.SetItem(CurrentPartType, -1);
+
                 _index = -1;
             }
             else
             {
-                CharacterControl.Instance.CharacterBase.SetItem(CurrentPartType, 0);
+               // CharacterControl.Instance.CharacterBase.SetItem(CurrentPartType, 0);
+                LocalCharacterControl.Instance.LocalCharcterBase.SetItem(CurrentPartType, 0);
             }
 
             _SetTitle();
@@ -79,7 +82,8 @@ namespace Layer_lab._3D_Casual_Character
 
         private void _SetParts()
         {
-            CharacterControl.Instance.CharacterBase.SetItem(CurrentPartType, _index);
+            //CharacterControl.Instance.CharacterBase.SetItem(CurrentPartType, _index);
+            LocalCharacterControl.Instance.LocalCharcterBase.SetItem(CurrentPartType, _index);
         }
     
 
@@ -114,7 +118,7 @@ namespace Layer_lab._3D_Casual_Character
             }
             
             _index = random;
-            CharacterControl.Instance.CharacterBase.SetItem(CurrentPartType, random);
+            LocalCharacterControl.Instance.LocalCharcterBase.SetItem(CurrentPartType, random);
             _SetTitle();
         }
     }

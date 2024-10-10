@@ -22,7 +22,7 @@ namespace Layer_lab._3D_Casual_Character
         Body
     }
 
-    public class CharacterBase : MonoBehaviour
+    public class CharacterBase : MonoBehaviour, ICharacterBase
     {
         public List<GameObject> PartsBody { get; set; } = new();
         public List<GameObject> PartsHair { get; set; } = new();
@@ -37,25 +37,10 @@ namespace Layer_lab._3D_Casual_Character
 
         public int Index { get; set; } = 0;
 
-        private CharacterRPCManager characterRPCManager;
-        private RemoteView remoteView;
-        [SerializeField]
-        private bool isLocal = false;
         private void Awake()
         {
             SetRoot();
-
-            //local‚Ì‚Ý
-            if (isLocal)
-                FindAsyncRemoteView().Forget();
         }
-
-        private async UniTaskVoid FindAsyncRemoteView()
-        {
-            remoteView = await FindObjectOfType<LocalRemoteSeparation>().ReceiveRemoteView();
-        }
-
-
 
         public void SavePrefab()
         {
@@ -153,9 +138,7 @@ namespace Layer_lab._3D_Casual_Character
 
         public void SetItem(PartsType partsType, int idx)
         {
-            if (isLocal)
-                if (FindObjectOfType<CharacterRPCManager>())
-                    FindObjectOfType<CharacterRPCManager>().Rpc_ChangeWear(partsType, idx, remoteView.GetComponent<NetworkObject>());
+
             switch (partsType)
             {
                 case PartsType.Hair:
