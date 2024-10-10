@@ -40,19 +40,19 @@ namespace Layer_lab._3D_Casual_Character
         private CharacterRPCManager characterRPCManager;
         private RemoteView remoteView;
         [SerializeField]
-        private bool aho = false;
+        private bool isLocal = false;
         private void Awake()
         {
             SetRoot();
 
             //local‚Ì‚Ý
-            if (aho)
-                papa().Forget();
+            if (isLocal)
+                FindAsyncRemoteView().Forget();
         }
 
-        private async UniTaskVoid papa()
+        private async UniTaskVoid FindAsyncRemoteView()
         {
-            remoteView = await FindObjectOfType<LocalRemoteSeparation>().unko();
+            remoteView = await FindObjectOfType<LocalRemoteSeparation>().ReceiveRemoteView();
         }
 
 
@@ -153,7 +153,7 @@ namespace Layer_lab._3D_Casual_Character
 
         public void SetItem(PartsType partsType, int idx)
         {
-            if (aho)
+            if (isLocal)
                 if (FindObjectOfType<CharacterRPCManager>())
                     FindObjectOfType<CharacterRPCManager>().Rpc_ChangeWear(partsType, idx, remoteView.GetComponent<NetworkObject>());
             switch (partsType)

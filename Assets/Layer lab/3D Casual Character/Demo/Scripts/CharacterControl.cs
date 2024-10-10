@@ -15,17 +15,17 @@ namespace Layer_lab._3D_Casual_Character
         private Coroutine _coroutine;
 
         [SerializeField]
-        private bool baka = false;
+        private bool isLocal = false;
         private AnimationControl animationControl;
 
         private RemoteView remoteView;
         void Awake()
         {
             //local‚Ì‚Ý
-            if (baka)
+            if (isLocal)
             {
                 Instance = this;
-                papa().Forget();
+                FindAsyncRemoteView().Forget();
             }
             animationControl = FindObjectOfType<AnimationControl>();
             //textAnimationName.text = "Stand_Idle1";
@@ -34,9 +34,9 @@ namespace Layer_lab._3D_Casual_Character
         }
 
 
-        private async UniTaskVoid papa()
+        private async UniTaskVoid FindAsyncRemoteView()
         {
-            remoteView = await FindObjectOfType<LocalRemoteSeparation>().unko();
+            remoteView = await FindObjectOfType<LocalRemoteSeparation>().ReceiveRemoteView();
         }
         public void PlayAnimation(AnimationControl.AnimType animType, int index)
         {
@@ -44,7 +44,7 @@ namespace Layer_lab._3D_Casual_Character
         }
         public void PlayAnimation(AnimationClip clip)
         {
-            if (baka)
+            if (isLocal)
             {
                 AnimationControl.AnimData animData = animationControl.GetAnimData(clip);
                 FindObjectOfType<CharacterRPCManager>().Rpc_PlayEmote(animData.AnimType, animData.Index, remoteView.GetComponent<NetworkObject>());
