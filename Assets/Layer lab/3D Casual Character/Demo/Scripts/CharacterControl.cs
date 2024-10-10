@@ -14,10 +14,13 @@ namespace Layer_lab._3D_Casual_Character
 
         [SerializeField]
         private bool baka = false;
+        private AnimationControl animationControl;
         void Awake()
         {
+            //local‚Ì‚Ý
             if (baka)
                 Instance = this;
+            animationControl = FindObjectOfType<AnimationControl>();
             //textAnimationName.text = "Stand_Idle1";
             animator = GetComponentInChildren<Animator>();
             CharacterBase = GetComponentInChildren<CharacterBase>();

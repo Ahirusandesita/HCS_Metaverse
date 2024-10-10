@@ -45,6 +45,7 @@ namespace Layer_lab._3D_Casual_Character
         {
             SetRoot();
 
+            //local‚Ì‚Ý
             if (aho)
                 papa().Forget();
         }
