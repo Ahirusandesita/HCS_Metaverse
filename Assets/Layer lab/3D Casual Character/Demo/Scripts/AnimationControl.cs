@@ -103,7 +103,7 @@ namespace Layer_lab._3D_Casual_Character
             {
                 if (animInteraction[i] == animationClip)
                 {
-                    return new AnimData(AnimType.Reaction, i);
+                    return new AnimData(AnimType.Interaction, i);
                 }
             }
 
@@ -124,6 +124,27 @@ namespace Layer_lab._3D_Casual_Character
             }
             return new AnimData(AnimType.Dance, 0);
 
+        }
+
+        public AnimationClip GetAnimation(AnimData animData)
+        {
+            switch (animData.AnimType)
+            {
+                case AnimType.Dance:
+                    return animDance[animData.Index];
+                case AnimType.Idle:
+                    return animIdle[animData.Index];
+                case AnimType.Reaction:
+                    return animReaction[animData.Index];
+                case AnimType.Interaction:
+                    return animInteraction[animData.Index];
+                case AnimType.Emoji:
+                    return animEmoji[animData.Index];
+                case AnimType.Action:
+                    return animAction[animData.Index];
+            }
+
+            return animDance[animData.Index];
         }
     
     }
