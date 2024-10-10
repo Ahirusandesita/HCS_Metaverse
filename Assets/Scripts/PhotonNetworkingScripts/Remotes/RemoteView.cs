@@ -6,7 +6,7 @@ public class RemoteView : NetworkBehaviour
 	private Transform _playerTransform;
 	private Transform _viewTransform;
 
-	public async override void Spawned()
+	public override void Spawned()
 	{
 		base.Spawned();
 		_playerTransform = FindObjectOfType<VRPlayerController>().transform;
