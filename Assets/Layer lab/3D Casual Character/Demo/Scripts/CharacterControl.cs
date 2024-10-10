@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Layer_lab._3D_Casual_Character
 {
-    public class CharacterControl : MonoBehaviour
+    public class CharacterControl : MonoBehaviour, ICharacterControl
     {
         public static CharacterControl Instance;
         public CharacterBase CharacterBase { get; set; }
@@ -14,43 +14,16 @@ namespace Layer_lab._3D_Casual_Character
         [SerializeField] private TMP_Text textAnimationName;
         private Coroutine _coroutine;
 
-        [SerializeField]
-        private bool isLocal = false;
-        private AnimationControl animationControl;
-
-        private RemoteView remoteView;
         void Awake()
         {
-            //local‚Ì‚Ý
-            if (isLocal)
-            {
-                Instance = this;
-                FindAsyncRemoteView().Forget();
-            }
-            animationControl = FindObjectOfType<AnimationControl>();
-            //textAnimationName.text = "Stand_Idle1";
+            textAnimationName.text = "Stand_Idle1";
             animator = GetComponentInChildren<Animator>();
             CharacterBase = GetComponentInChildren<CharacterBase>();
-        }
-
-
-        private async UniTaskVoid FindAsyncRemoteView()
-        {
-            remoteView = await FindObjectOfType<LocalRemoteSeparation>().ReceiveRemoteView();
-        }
-        public void PlayAnimation(AnimationControl.AnimType animType, int index)
-        {
-            PlayAnimation(animationControl.GetAnimation(new AnimationControl.AnimData(animType, index)));
+            Instance = this;
         }
         public void PlayAnimation(AnimationClip clip)
         {
-            if (isLocal)
-            {
-                AnimationControl.AnimData animData = animationControl.GetAnimData(clip);
-                FindObjectOfType<CharacterRPCManager>().Rpc_PlayEmote(animData.AnimType, animData.Index, remoteView.GetComponent<NetworkObject>());
-            }
-
-            //textAnimationName.text = clip.name;
+            textAnimationName.text = clip.name;
             animator.CrossFadeInFixedTime(clip.name, 0.25f);
             if (_coroutine != null) StopCoroutine(_coroutine);
 
@@ -58,7 +31,6 @@ namespace Layer_lab._3D_Casual_Character
             {
                 StartCoroutine(ChangeIdleText(clip.length));
             }
-
         }
 
         IEnumerator ChangeIdleText(float duration)
