@@ -43,13 +43,17 @@ namespace Layer_lab._3D_Casual_Character
         private void Awake()
         {
             SetRoot();
-
             papa().Forget();
         }
 
         private async UniTaskVoid papa()
         {
             remoteView = await FindObjectOfType<LocalRemoteSeparation>().unko();
+        }
+
+        private void Update()
+        {
+            Debug.LogError(remoteView);
         }
 
 
