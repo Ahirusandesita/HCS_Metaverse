@@ -1,6 +1,7 @@
 using Fusion;
 using Layer_lab._3D_Casual_Character;
 using KumaDebug;
+using UnityEngine;
 
 public class CharacterRPCManager : NetworkBehaviour
 {
@@ -22,5 +23,17 @@ public class CharacterRPCManager : NetworkBehaviour
     {
         ICharacterControl characterControl = remoteView.GetComponentInChildren<ICharacterControl>();
         characterControl.PlayAnimation(FindObjectOfType<AnimationControl>().GetAnimation(new AnimationControl.AnimData(animType, index)));
+    }
+
+    [Rpc(InvokeLocal = false)]
+    public void Rpc_AnimationBoolControl(NetworkObject remoteView,string boolName,bool value)
+    {
+        remoteView.GetComponentInChildren<Animator>().SetBool(boolName,value);
+    }
+
+    [Rpc(InvokeLocal = false)]
+    public void Rpc_AnimationFloatControl(NetworkObject remoteView, string floatName, float value)
+    {
+        remoteView.GetComponentInChildren<Animator>().SetFloat(floatName, value);
     }
 }
