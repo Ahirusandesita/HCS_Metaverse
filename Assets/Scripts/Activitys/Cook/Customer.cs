@@ -9,11 +9,13 @@ public class Customer : MonoBehaviour
     private OrderManager orderManager;
     private RemoteOrder remoteOrder;
     public bool IsLeader { get; set; }
-    private void Awake()
+
+    [SerializeField]
+    private ActivityProgressManagement activityProgressManagement;
+    private void Start()
     {
-        GateOfFusion.Instance.OnActivityConnected += () =>
+        activityProgressManagement.OnStart += () =>
         {
-            Debug.LogError("Kumazako");
             StartCoroutine(Co());
         };
     }
