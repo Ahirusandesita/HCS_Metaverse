@@ -77,7 +77,7 @@ public class RoomManager : MonoBehaviour
 
 	public async UniTask<JoinOrCreateResult> JoinOrCreate(SceneNameType sceneNameType, PlayerRef joinPlayer, int roomNumber = -1)
 	{
-		
+
 		Room myRoom = GetCurrentRoom(joinPlayer);
 		if (myRoom != null)
 		{
@@ -105,7 +105,14 @@ public class RoomManager : MonoBehaviour
 			//自動でキーを作る場合
 			if (roomNumber < 0) { roomNumber = 1; }
 			for (; _rooms.ContainsKey(roomNumber); roomNumber++) ;
-			roomTemp = Create(sceneNameType, roomNumber);
+			if (sceneNameType == SceneNameType.TestPhotonScene)
+			{
+				roomTemp = Create(sceneNameType, 0);
+			}
+			else
+			{
+				roomTemp = Create(sceneNameType, roomNumber);
+			}
 			if (!roomTemp.IsNonLeader && joinPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer)
 			{
 				InstantiateLeaderObject();
@@ -123,7 +130,7 @@ public class RoomManager : MonoBehaviour
 
 		roomTemp.Join(joinPlayer);
 
-		if (!roomTemp.IsNonLeader&& joinPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer)
+		if (!roomTemp.IsNonLeader && joinPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer)
 		{
 			InstantiateActivityStartUI();
 		}
@@ -169,7 +176,7 @@ public class RoomManager : MonoBehaviour
 	public void DestroyLeaderObject()
 	{
 		XKumaDebugSystem.LogWarning($"DestoryLeaderObject:{MasterServerConect.Runner.LocalPlayer}", KumaDebugColor.SuccessColor);
-		if(_leaderObject != null)
+		if (_leaderObject != null)
 		{
 			Destroy(_leaderObject);
 		}
@@ -177,7 +184,7 @@ public class RoomManager : MonoBehaviour
 		{
 			XKumaDebugSystem.LogWarning($"リーダーオブジェクトがNullなので破棄できませんでした。", KumaDebugColor.WarningColor);
 		}
-		
+
 	}
 
 	/// <summary>
@@ -273,7 +280,7 @@ public class RoomManager : MonoBehaviour
 			XKumaDebugSystem.LogWarning("ルームがありません", KumaDebugColor.MessageColor);
 			return;
 		}
-		foreach(KeyValuePair<int,Room> roomData in _rooms)
+		foreach (KeyValuePair<int, Room> roomData in _rooms)
 		{
 			XKumaDebugSystem.LogWarning(
 				$"RoomData::,NextSessionName:{roomData.Value.NextSessionName}" +

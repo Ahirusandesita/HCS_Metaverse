@@ -26,8 +26,13 @@ public class CharacterAnimatorController : MonoBehaviour
         Inputter.Player.Move.performed += MoveAnimationActive;
         Inputter.Player.Move.canceled += MoveAnimationCancel;
     }
+	private void OnDisable()
+	{
+        Inputter.Player.Move.performed -= MoveAnimationActive;
+        Inputter.Player.Move.canceled -= MoveAnimationCancel;
+    }
 
-    private async UniTask FindMyRemoteViewNetworkObject()
+	private async UniTask FindMyRemoteViewNetworkObject()
     {
         RemoteView remoteView = await FindObjectOfType<LocalRemoteSeparation>().ReceiveRemoteView();
         _myRemoteViewNetworkObject = remoteView.GetComponent<NetworkObject>();

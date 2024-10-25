@@ -147,7 +147,7 @@ public class GateOfFusion
 		}
 		RoomManager.Instance.DestroyActivityStartUI();
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer);
-		if(currentRoom == null)
+		if (currentRoom == null)
 		{
 			XKumaDebugSystem.LogWarning("部屋に所属していません", KumaDebugColor.WarningColor);
 			return;
@@ -206,6 +206,42 @@ public class GateOfFusion
 		{
 			OnActivityConnected?.Invoke();
 		}
+	}
+
+	public async void ReturnMainRoom()
+	{
+		XKumaDebugSystem.LogWarning("アクティビティスタート", KumaDebugColor.MessageColor);
+		if (_syncResult != SyncResult.Complete)
+		{
+			Debug.LogWarning("移動中です");
+			return;
+		}
+
+		string sceneName = SceneNameType.TestPhotonScene.ToString();
+		if (SceneManager.GetActiveScene().name == sceneName)
+		{
+			XKumaDebugSystem.LogWarning("現在いるシーンです", KumaDebugColor.WarningColor);
+			return;
+		}
+		_syncResult = SyncResult.Connecting;
+		if (!MasterServer.IsUsePhoton)
+		{
+			SceneManager.LoadScene(sceneName);
+			_syncResult = SyncResult.Complete;
+			return;
+		}
+		string sessionName = $"{sceneName}:0";
+		PlayerRef localPlayerRef = NetworkRunner.LocalPlayer;
+
+		await MasterServer.Disconnect();
+		XKumaDebugSystem.LogWarning($"切断した", KumaDebugColor.MessageColor);
+		await SceneManager.LoadSceneAsync(sceneName);
+		XKumaDebugSystem.LogWarning($"シーンを読み込んだ");
+		await MasterServer.JoinOrCreateSession(sessionName, localPlayerRef);
+		XKumaDebugSystem.LogWarning($"自分がセッション移動した", KumaDebugColor.MessageColor);
+		_syncResult = SyncResult.Complete;
+		XKumaDebugSystem.LogWarning($"移動終了", KumaDebugColor.MessageColor);
+		await UniTask.WaitUntil(() => NetworkRunner != null);
 	}
 }
 
