@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 /// <summary>
 /// ÇPÇ¬ÇÃÉCÉìÉxÉìÉgÉää«óù
 /// </summary>
@@ -7,10 +8,7 @@ public class InventoryManager : MonoBehaviour
 {
     [SerializeField]
     private NotExistMaterial notExistMaterial;
-
     private IInventoryOneFrame[] inventories;
-
-    private List<IItem> items = new List<IItem>();
 
     private void Awake()
     {
@@ -29,26 +27,27 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public void SendItem(IItem item)
+    public void ReturnItem(ItemAsset itemAsset)
     {
-        foreach(IInventoryOneFrame inventory in inventories)
-        {
-            if (!inventory.HasItem)
-            {
-                items.Add(item);
-                inventory.PutAway(item);
-                item.CleanUp();
+        SpawnItem(itemAsset).Forget();
+    }
+    private async UniTaskVoid SpawnItem(ItemAsset itemAsset)
+    {
+        GameObject item = await GateOfFusion.Instance.SpawnAsync(itemAsset.DisplayItem.gameObject, this.transform.position);    
+        GameObject.FindObjectOfType<PlayerInteraction>().Add(item.GetComponent<IItem>() as ISelectedNotificationInjectable);
+    }
 
-                GameObject.FindObjectOfType<PlayerInteraction>().Add(item as ISelectedNotificationInjectable);
+    [SerializeField]
+    private ItemBundleAsset itemBundle;
+    public void SendItem(int id)
+    {
+        foreach (IInventoryOneFrame inventory in inventories)
+        {
+            if (!inventory.HasItem && inventory.MatchItem(itemBundle.GetItemAssetByID(id)))
+            {
+                inventory.PutAway(itemBundle.GetItemAssetByID(id));
                 break;
             }
         }
-    }
-
-    public void ReturnItem(IItem item)
-    {
-        item.TakeOut(this.transform.position);
-        item.Use();
-        items.Remove(item);
     }
 }

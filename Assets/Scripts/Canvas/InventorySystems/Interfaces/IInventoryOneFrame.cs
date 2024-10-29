@@ -7,11 +7,12 @@ public interface IInventoryOneFrame
     /// インベントリに格納されているか
     /// </summary>
     bool HasItem { get; }
+    bool MatchItem(ItemAsset itemAsset);
     /// <summary>
     /// インベントリに格納する
     /// </summary>
     /// <param name="item"></param>
-    void PutAway(IItem item);
+    void PutAway(ItemAsset itemAsset);
     /// <summary>
     /// インベントリから取り出す
     /// </summary>

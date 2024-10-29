@@ -17,7 +17,7 @@ public class TestGetItem : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            inventoryManager.SendItem(Instantiate(Item_Cube));
+            //inventoryManager.SendItem(Instantiate(Item_Cube));
         }
     }
 }

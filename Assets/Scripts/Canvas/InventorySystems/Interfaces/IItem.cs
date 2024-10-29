@@ -17,5 +17,8 @@ public interface IItem
     /// </summary>
     /// <param name="position">æ‚èo‚·êŠ</param>
     void TakeOut(Vector3 position);
+
+    int MaxInventoryCapacity { get; }
 }
+
 

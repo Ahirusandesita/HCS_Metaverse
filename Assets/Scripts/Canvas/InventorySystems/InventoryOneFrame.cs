@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 /// <summary>
 /// ÉCÉìÉxÉìÉgÉäÇPògä«óù
 /// </summary>
@@ -21,6 +22,9 @@ public class InventoryOneFrame : MonoBehaviour
 
     private AppearanceInfo_Mesh appearanceInfo_Mesh;
 
+    [SerializeField]
+    private Image icon;
+
     private void Awake()
     {
         meshRenderer.enabled = false;
@@ -34,16 +38,20 @@ public class InventoryOneFrame : MonoBehaviour
         InventoryView();
     }
 
-    public void TakeOut()
-    {
-        meshRenderer.enabled = false;
-    }
-
     private void InventoryView()
     {
         meshRenderer.enabled = true;
         meshRenderer.materials = appearanceInfo_Mesh.Material;
         meshRenderer.transform.localScale = appearanceInfo_Mesh.Size;
         meshFilter.mesh = appearanceInfo_Mesh.Mesh;
+    }
+
+    public void PutAway(ItemAsset itemAsset)
+    {
+        icon.sprite = itemAsset.ItemIcon;
+    }
+    public void TakeOut()
+    {
+        icon.sprite = null;
     }
 }
