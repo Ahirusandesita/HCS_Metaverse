@@ -439,6 +439,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   notExistMaterial: {fileID: 2038849823305017806, guid: 21b0bfda6f073d349ab75af702eb934b, type: 3}
+  itemBundle: {fileID: 11400000, guid: 4b0a8552cd5992449aab6ed722f30dde, type: 2}
 --- !u!1 &7947830563235409854
 GameObject:
   m_ObjectHideFlags: 0
@@ -717,10 +718,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory_Y1
       objectReference: {fileID: 0}
-    - target: {fileID: 1905373819786608032, guid: 8aea37aa7a55b0a48822bd964b95097b, type: 3}
-      propertyPath: inventoryManager
-      value: 
-      objectReference: {fileID: 736212166337849392}
     - target: {fileID: 6945094910259144600, guid: 8aea37aa7a55b0a48822bd964b95097b, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

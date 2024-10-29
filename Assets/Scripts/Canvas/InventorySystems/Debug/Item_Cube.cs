@@ -15,7 +15,10 @@ public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable, ISelectedN
     private MeshFilter meshFilter;
     [SerializeField]
     private MeshRenderer meshRenderer;
+    [SerializeField]
+    private int maxInventoryCapacity;
 
+    public int MaxInventoryCapacity => maxInventoryCapacity;
     private void Awake()
     {
         appearanceInfo_Mesh = new AppearanceInfo_Mesh(
