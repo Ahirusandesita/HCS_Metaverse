@@ -1,10 +1,12 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 [CreateAssetMenu(fileName = "ItemData", menuName = "ScriptableObjects/ItemAsset/Item")]
 public class ItemAsset : ScriptableObject
 {
     [SerializeField] private int itemID = default;
     [SerializeField] private string itemName = default;
+    [SerializeField] private Image itemIcon = default;
     [SerializeField] private string itemText = default;
     [SerializeField] private ItemGenre itemGenre = default;
     [SerializeField] private GameObject prefab = default;
@@ -15,6 +17,7 @@ public class ItemAsset : ScriptableObject
 
     public int ID => itemID;
     public string Name => itemName;
+    public Image ItemIcon => itemIcon;
     public string Text => itemText;
     public ItemGenre Genre => itemGenre;
     public GameObject Prefab => prefab;
