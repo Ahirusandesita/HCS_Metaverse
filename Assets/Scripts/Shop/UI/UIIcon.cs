@@ -2,16 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class UIIcon : MonoBehaviour
 {
-
-    [SerializeField]
-    private Image _iconImage = default;
-	private ShopCartUIManager _shopCartUIManager = default;
+	[SerializeField]
+	private MeshRenderer _inCartItemViewPrefab = default;
+	 
 	[SerializeField]
 	private TMP_Text _text = default;
+	private ShopCartUIManager _shopCartUIManager = default;
 	private int _id;
 
 	private void Update()
@@ -22,11 +21,24 @@ public class UIIcon : MonoBehaviour
 		}
 	}
 
-	public void Init(Sprite icon,ShopCartUIManager shopCartUIManager,int id)
+	public void Init(MeshFilter[] meshFilters,MeshRenderer[] meshRenderers,ShopCartUIManager shopCartUIManager,int id)
 	{
 		_id = id;
 		_shopCartUIManager = shopCartUIManager;
-		_iconImage.sprite = icon;
+		Transform myTransform = transform;
+
+		for(int i = 0; i < meshFilters.Length ;i++)
+		{
+			MeshRenderer meshRenderer = Instantiate(_inCartItemViewPrefab,myTransform);
+			meshRenderer.material = meshRenderers[i].sharedMaterial;
+			meshRenderer.GetComponent<MeshFilter>().mesh = meshFilters[i].sharedMesh;
+			Transform targetTransform = meshRenderers[i].transform;
+			Transform viewTransform = meshRenderer.transform;
+			viewTransform.position = targetTransform.localPosition;
+			viewTransform.rotation = targetTransform.rotation;
+			viewTransform.localScale = targetTransform.lossyScale;
+
+		}
 	}
 
 	public void UpdateCount(int count)

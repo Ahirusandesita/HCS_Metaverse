@@ -27,7 +27,9 @@ public class ShopCartUIManager : MonoBehaviour
 			RectTransform rectTransformTemp = uiIconTemp.transform as RectTransform;
 			Vector3 offset = new Vector3(100 * (_itemIcons.Count % 3), -100 * (_itemIcons.Count / 3)  , 0) ;
 			rectTransformTemp.localPosition = _startPosition.localPosition + offset;
-			uiIconTemp.Init(itemAsset.ItemIcon, this,id);
+			MeshFilter[] meshFilters = itemAsset.DisplayItem.gameObject.GetComponentsInChildren<MeshFilter>();
+			MeshRenderer[] meshRenderers = itemAsset.DisplayItem.gameObject.GetComponentsInChildren<MeshRenderer>();
+			uiIconTemp.Init(meshFilters.Clone() as MeshFilter[],meshRenderers.Clone() as MeshRenderer[], this,id);
 			_itemIcons.Add(id, uiIconTemp);
 		}
 		else
