@@ -23,10 +23,14 @@ public class TestJointCalculator : MonoBehaviour
 
     private JointCalculator _jointCalculator = default;
 
+    private Quaternion _defaultLowerRotation = default;
+
     // Start is called before the first frame update
     void Start()
     {
         _jointCalculator = new JointCalculator(_startTarget, _endTarget, _hintTarget);
+
+        _defaultLowerRotation = _lowerArm.localRotation;
     }
 
     // Update is called once per frame
@@ -34,16 +38,20 @@ public class TestJointCalculator : MonoBehaviour
     {
         _jointTarget.position = _jointCalculator.GetJointPosition(_startHalf, _endHalf);
 
-        Vector3 lowerPos = Vector3.Lerp(_endTarget.position,_jointTarget.position,0.5f);
+        //Vector3 lowerPos = Vector3.Lerp(_endTarget.position, _jointTarget.position, 0.5f);
 
-        Vector3 upperPos = Vector3.Lerp(_jointTarget.position, _startTarget.position,0.5f);
+        //Vector3 upperPos = Vector3.Lerp(_jointTarget.position, _startTarget.position, 0.5f);
 
-        _upperArm.position = upperPos;
+        //_upperArm.position = upperPos;
 
-        _lowerArm.position = lowerPos;
+        //_lowerArm.position = lowerPos;
 
-        _upperArm.LookAt(_startTarget, Vector3.forward);
+        Quaternion upperRotation = Quaternion.LookRotation(_startTarget.position - _upperArm.position, Vector3.right) ;
 
-        _lowerArm.LookAt(_jointTarget, Vector3.forward);
+        _upperArm.rotation = upperRotation;
+
+        Quaternion lowerRotation = Quaternion.LookRotation(_jointTarget.position - _lowerArm.position, Vector3.right);
+
+        _lowerArm.rotation = lowerRotation * _defaultLowerRotation;
     }
 }
