@@ -2,125 +2,161 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class VisualShop : SafetyInteractionObject, IDependencyInjector<PlayerBodyDependencyInformation>
+public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjector<PlayerBodyDependencyInformation>
 {
-    [SerializeField] private ItemBundleAsset allItemAsset = default;
-    [SerializeField] private BuyArea buyArea = default;
-    [SerializeField] private List<Transform> viewPoints = default;
-    [SerializeField] private List<ItemIDView> itemLineup = default;
-    private List<GameObject> displayedItems = default;
-    private IReadonlyPositionAdapter positionAdapter = default;
+	[ContextMenu("test")]
+	private void Test()
+	{
+		
+		shopCart.AddCart(_id);
+	}
 
-    public IReadOnlyList<ItemIDView> ItemLineup => itemLineup;
+	private void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.RightShift)) { shopCart.AddCart(_id); }
+	}
+	[SerializeField] private int _id = 000;
+	//カートクラスを作る
+	[SerializeField] private ItemBundleAsset allItemAsset = default;
+	[SerializeField] private BuyArea buyArea = default;
+	[SerializeField] private List<Transform> viewPoints = default;
+	[SerializeField] private List<ItemIDView> itemLineup = default;
+	[SerializeField] private ShopCart shopCart = default;
+	private List<GameObject> displayedItems = default;
+	private IReadonlyPositionAdapter positionAdapter = default;
 
-    [System.Diagnostics.Conditional("UNITY_EDITOR")]
-    private void Reset()
-    {
+	public IReadOnlyList<ItemIDView> ItemLineup => itemLineup;
+
+	[System.Diagnostics.Conditional("UNITY_EDITOR")]
+	private void Reset()
+	{
 #if UNITY_EDITOR
-        // Conditionalはメソッド内はコンパイルされてしまうので、仕方なく二重
-        allItemAsset = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(ItemBundleAsset)}")
-                .Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
-                .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<ItemBundleAsset>)
-                .Where(asset => asset.GenresHandled == ItemGenre.All)
-                .First();
+		// Conditionalはメソッド内はコンパイルされてしまうので、仕方なく二重
+		allItemAsset = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(ItemBundleAsset)}")
+				.Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
+				.Select(UnityEditor.AssetDatabase.LoadAssetAtPath<ItemBundleAsset>)
+				.Where(asset => asset.GenresHandled == ItemGenre.All)
+				.First();
 #endif
-        buyArea = GetComponentInChildren<BuyArea>();
-    }
+		buyArea = GetComponentInChildren<BuyArea>();
+	}
 
-    protected override void Awake()
-    {
-        base.Awake();
-        PlayerInitialize.ConsignmentInject_static(this);
-    }
+	private void Awake()
+	{
+		//NotificationUIManager.Instance.DisplayInteraction();
+		PlayerInitialize.ConsignmentInject_static(this);
+		InstanceShop();
+	}
 
-    protected override void SafetyOpen()
-    {
-        displayedItems = new List<GameObject>();
+	private void OnDisable()
+	{
+		//NotificationUIManager.Instance.HideInteraction();
+		DestroyShop();
+	}
 
-        for (int i = 0; i < itemLineup.Count; i++)
-        {
-            var asset = allItemAsset.GetItemAssetByID(itemLineup[i]);
-            var position = viewPoints[i].position;
-            var item = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
-            displayedItems.Add(item.gameObject);
-        }
-    }
+	private void OutCart()
+	{
 
-    protected override void SafetyClose()
-    {
-        foreach (var obj in displayedItems)
-        {
-            Destroy(obj);
-        }
-    }
+	}
 
-    public override void Select(SelectArgs selectArgs)
-    {
-        var itemSelectArgs = selectArgs as ItemSelectArgs;
-        var asset = allItemAsset.GetItemAssetByID(itemSelectArgs.id);
-        var position = itemSelectArgs.position;
+	/// <summary>
+	/// カートに入っているものを買う
+	/// </summary>
+	public void Buy()
+	{
+		//お金を減らす
+		//店の収益にプラス？
+		//所有権を移動
 
-        // 選択されたアイテムと同じものを生成する（コピーを表現）
-        var item = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
-        displayedItems.Add(item.gameObject);
+	}
 
-        buyArea.Display(positionAdapter.Position);
-    }
+	private void InstanceShop()
+	{
+		//生成
+		displayedItems = new List<GameObject>();
 
-    public override void Unselect(SelectArgs selectArgs)
-    {
-        var itemSelectArgs = selectArgs as ItemSelectArgs;
-        var unselectedPosition = itemSelectArgs.gameObject.transform.position;
+		for (int i = 0; i < itemLineup.Count; i++)
+		{
+			var asset = allItemAsset.GetItemAssetByID(itemLineup[i].ID);
+			var position = viewPoints[i].position;
+			var item = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
+			displayedItems.Add(item.gameObject);
+		}
+	}
 
-        // 掴んだアイテムを離したポイントが、購入エリアだったら購入
-        if (buyArea.IsExist(unselectedPosition))
-        {
-            // Buy
-            Debug.Log("BuyArea");
-        }
+	private void DestroyShop()
+	{
+		//削除
+		foreach (var obj in displayedItems)
+		{
+			Destroy(obj);
+		}
+	}
 
-        displayedItems.Remove(itemSelectArgs.gameObject);
-        Destroy(itemSelectArgs.gameObject);
-        buyArea.Hide();
-    }
+	public void Select(SelectArgs selectArgs)
+	{
+		//つかまれた時に新しいものを生成する
+		var itemSelectArgs = selectArgs as ItemSelectArgs;
+		var asset = allItemAsset.GetItemAssetByID(itemSelectArgs.id);
+		var position = itemSelectArgs.position;
 
-    public override void Hover(SelectArgs selectArgs)
-    {
+		// 選択されたアイテムと同じものを生成する（コピーを表現）
+		var item = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
+		displayedItems.Add(item.gameObject);
 
-    }
+		//かごの表示
+		buyArea.Display(positionAdapter.Position);
+	}
 
-    public override void Unhover(SelectArgs selectArgs)
-    {
+	public void Unselect(SelectArgs selectArgs)
+	{
+		//つかんだものを離したときの処理
+		var itemSelectArgs = selectArgs as ItemSelectArgs;
+		var unselectedPosition = itemSelectArgs.gameObject.transform.position;
 
-    }
+		// 掴んだアイテムを離したポイントが、購入エリアだったら購入
+		if (buyArea.IsExist(unselectedPosition))
+		{
+			// Buy
+			Debug.Log("BuyArea");
+			//カートに入れる
+			shopCart.AddCart(itemSelectArgs.id);
+		}
+		//とったやつを消している
+		displayedItems.Remove(itemSelectArgs.gameObject);
+		//展示されているオブジェクトを破棄
+		Destroy(itemSelectArgs.gameObject);
+		//かごを隠す
+		buyArea.Hide();
+	}
 
-    void IDependencyInjector<PlayerBodyDependencyInformation>.Inject(PlayerBodyDependencyInformation information)
-    {
-        positionAdapter = information.PlayerBody;
-    }
+	void IDependencyInjector<PlayerBodyDependencyInformation>.Inject(PlayerBodyDependencyInformation information)
+	{
+		positionAdapter = information.PlayerBody;
+	}
 }
 
 #if UNITY_EDITOR
 namespace UnityEditor.HCSMeta
 {
-    [CustomEditor(typeof(VisualShop))]
-    public class ShopEditor : Editor
-    {
-        public override void OnInspectorGUI()
-        {
-            base.OnInspectorGUI();
-            EditorGUILayout.Space(12f);
+	[CustomEditor(typeof(VisualShop))]
+	public class ShopEditor : Editor
+	{
+		public override void OnInspectorGUI()
+		{
+			base.OnInspectorGUI();
+			EditorGUILayout.Space(12f);
 
-            if (GUILayout.Button("Update Display Options"))
-            {
-                try
-                {
-                    ItemIDViewDrawer.UpdateDisplayOptions();
-                }
-                // 要素ない状態でボタン押すと例外出る→うざいので握りつぶす
-                catch (System.NullReferenceException) { }
-            }
-        }
-    }
+			if (GUILayout.Button("Update Display Options"))
+			{
+				try
+				{
+					ItemIDViewDrawer.UpdateDisplayOptions();
+				}
+				// 要素ない状態でボタン押すと例外出る→うざいので握りつぶす
+				catch (System.NullReferenceException) { }
+			}
+		}
+	}
 }
 #endif

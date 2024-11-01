@@ -9,7 +9,22 @@ using Result = UnityEngine.Networking.UnityWebRequest.Result;
 /// </summary>
 public class ShopRequester : MonoBehaviour
 {
-    [System.Serializable]
+    private static ShopRequester _shopRequester = default;
+    
+	private void Awake()
+	{
+        if(_shopRequester == null)
+		{
+            _shopRequester = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+		else
+		{
+            Destroy(this.gameObject);
+            return;
+		}
+	}
+	[System.Serializable]
     private class LineupData
     {
         [SerializeField] private int responseCode = default;
@@ -69,5 +84,12 @@ public class ShopRequester : MonoBehaviour
         {
             //XDebug.Log(item.ID, "green");
         }
+    }
+
+    public async UniTask<Dictionary<int, int>> UpdateStock(int shopID)
+	{
+        using var request = UnityWebRequest.Post(DETABASE_PATH, new WWWForm());
+        await request.SendWebRequest();
+        return default;
     }
 }
