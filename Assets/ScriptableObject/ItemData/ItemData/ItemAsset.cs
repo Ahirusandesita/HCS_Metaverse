@@ -23,15 +23,24 @@ public class ItemAsset : ScriptableObject
     public GameObject Prefab => prefab;
     public bool IsDisplayable => isDisplayable;
     public IDisplayItem DisplayItem => displayItem as IDisplayItem;
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (itemName == string.Empty) 
+        {
+            itemName = name;
+        }
+    }
+#endif
 }
 
 public enum ItemGenre
 {
-    All,
-    Usable,
-    Food,
     Interior,
     Costume,
+    Usable,
+    Food,
 }
 
 #if UNITY_EDITOR
