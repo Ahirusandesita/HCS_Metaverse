@@ -14,8 +14,3 @@ public class FishAsset : ScriptableObject
     public int SellingPrice => sellingPrice;
     public float ResistTime => resistTime;
 }
-
-public enum Resist
-{
-
-}

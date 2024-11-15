@@ -8,17 +8,14 @@ using UnityEngine;
 public interface IEditorItemBundleAsset
 {
     List<ItemAsset> EditorItems { set; }
-    ItemGenre GenresHandled { get; }
 }
 
 [CreateAssetMenu(fileName = "ItemBundleData", menuName = "ScriptableObjects/ItemAsset/Bundle")]
 public class ItemBundleAsset : ScriptableObject, IEditorItemBundleAsset
 {
     [SerializeField] private List<ItemAsset> items = default;
-    [SerializeField] private ItemGenre genresHandled = default;
 
     public IReadOnlyList<ItemAsset> Items => items;
-    public ItemGenre GenresHandled => genresHandled;
 
     List<ItemAsset> IEditorItemBundleAsset.EditorItems { set => items = value; }
 
@@ -40,28 +37,18 @@ namespace UnityEditor.HCSMeta
 
             EditorGUILayout.Space(12f);
 
-            if (GUILayout.Button("Set Selected Genre Items"))
+            if (GUILayout.Button("Auto Set"))
             {
                 try
                 {
                     var itemBundleAsset = target as IEditorItemBundleAsset;
                     List<ItemAsset> itemAsset = default;
 
-                    if (itemBundleAsset.GenresHandled == ItemGenre.All)
-                    {
-                        itemAsset = AssetDatabase.FindAssets($"t:{nameof(ItemAsset)}")
-                            .Select(AssetDatabase.GUIDToAssetPath)
-                            .Select(AssetDatabase.LoadAssetAtPath<ItemAsset>)
-                            .ToList();
-                    }
-                    else
-                    {
-                        itemAsset = AssetDatabase.FindAssets($"t:{nameof(ItemAsset)}")
-                            .Select(AssetDatabase.GUIDToAssetPath)
-                            .Select(AssetDatabase.LoadAssetAtPath<ItemAsset>)
-                            .Where(asset => asset.Genre == itemBundleAsset.GenresHandled)
-                            .ToList();
-                    }
+                    itemAsset = AssetDatabase.FindAssets($"t:{nameof(ItemAsset)}")
+                        .Select(AssetDatabase.GUIDToAssetPath)
+                        .Select(AssetDatabase.LoadAssetAtPath<ItemAsset>)
+                        .OrderBy(asset => asset.Genre)
+                        .ToList();
 
                     itemBundleAsset.EditorItems = itemAsset;
                 }

@@ -35,7 +35,6 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		allItemAsset = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(ItemBundleAsset)}")
 				.Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
 				.Select(UnityEditor.AssetDatabase.LoadAssetAtPath<ItemBundleAsset>)
-				.Where(asset => asset.GenresHandled == ItemGenre.All)
 				.First();
 #endif
 		buyArea = GetComponentInChildren<BuyArea>();
