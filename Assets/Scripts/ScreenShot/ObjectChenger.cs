@@ -64,12 +64,12 @@ public class ObjectChenger : MonoBehaviour
 
         if (Input.GetKey(KeyCode.W))
         {
-            _targetObject.transform.position += new Vector3(0, 0.1f, 0) * Time.deltaTime;
+            _targetObject.transform.position += new Vector3(0, 0.5f, 0) * Time.deltaTime;
         }
 
         if (Input.GetKey(KeyCode.S))
         {
-            _targetObject.transform.position -= new Vector3(0, 0.1f, 0) * Time.deltaTime;
+            _targetObject.transform.position -= new Vector3(0, 0.5f, 0) * Time.deltaTime;
         }
 
         if (Input.GetKey(KeyCode.Q))
