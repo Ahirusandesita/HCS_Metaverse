@@ -1883,6 +1883,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 694e89715c2dcdf46b773e53c5e8def3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _id: 0
   allItemAsset: {fileID: 11400000, guid: 4b0a8552cd5992449aab6ed722f30dde, type: 2}
   buyArea: {fileID: 923266261}
   viewPoints:
@@ -1893,12 +1894,13 @@ MonoBehaviour:
   - {fileID: 561780728}
   - {fileID: 141874818}
   itemLineup:
-  - id: 10001
-    displayName: Item1
-    selectedIndex: 0
   - id: 10002
     displayName: Item2
-    selectedIndex: 1
+    selectedIndex: 2
+  - id: 20004
+    displayName: Bunz
+    selectedIndex: 0
+  shopCart: {fileID: 0}
 --- !u!4 &1603575182
 Transform:
   m_ObjectHideFlags: 0

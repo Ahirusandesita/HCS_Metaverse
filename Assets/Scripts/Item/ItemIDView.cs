@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Text;
 
 [System.Serializable]
 public class ItemIDView
@@ -50,7 +51,6 @@ namespace UnityEditor.HCSMeta
                 allItemAsset = AssetDatabase.FindAssets($"t:{nameof(ItemBundleAsset)}")
                     .Select(AssetDatabase.GUIDToAssetPath)
                     .Select(AssetDatabase.LoadAssetAtPath<ItemBundleAsset>)
-                    .Where(asset => asset.GenresHandled == ItemGenre.All)
                     .First();
                 UpdateDisplayOptions();
             }
@@ -73,19 +73,22 @@ namespace UnityEditor.HCSMeta
         public static void UpdateDisplayOptions()
         {
             var tmpList = new List<string>();
+            StringBuilder stringBuilder = new StringBuilder();
+
             foreach (var item in allItemAsset.Items)
             {
-                string content = item.Name;
-
                 if (!item.IsDisplayable)
                 {
-                    content += " (No Visual)";
+                    stringBuilder.Append("NoPrefab : ");
                 }
-                else if (item.Genre != ItemGenre.All)
+                else
                 {
-                    content += $" ({item.Genre})";
+                    stringBuilder.Append($"{item.Genre} : ");
                 }
-                tmpList.Add(content);
+
+                stringBuilder.Append(item.Name);
+                tmpList.Add(stringBuilder.ToString());
+                stringBuilder.Clear();
             }
             displayedOptions = tmpList.ToArray();
         }

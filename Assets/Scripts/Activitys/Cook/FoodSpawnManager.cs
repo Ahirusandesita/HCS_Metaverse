@@ -7,10 +7,10 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
     [System.Serializable]
     private class FoodInfo
     {
-        [SerializeField] private FoodIDView foodID = default;
+        [SerializeField] private ItemIDView foodID = default;
         [SerializeField] private Transform foodBox = default;
 
-        public FoodIDView FoodID => foodID;
+        public ItemIDView FoodID => foodID;
         public Transform FoodBox => foodBox;
     }
 
@@ -32,7 +32,6 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
         foodItemAsset = UnityEditor.AssetDatabase.FindAssets($"t:{nameof(ItemBundleAsset)}")
                 .Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
                 .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<ItemBundleAsset>)
-                .Where(asset => asset.GenresHandled == ItemGenre.Food)
                 .First();
 #endif
     }
@@ -90,7 +89,7 @@ namespace UnityEditor.HCSMeta
             {
                 try
                 {
-                    FoodIDViewDrawer.UpdateDisplayOptions();
+                    ItemIDViewDrawer.UpdateDisplayOptions();
                 }
                 // 要素ない状態でボタン押すと例外出る→うざいので握りつぶす
                 catch (System.NullReferenceException) { }

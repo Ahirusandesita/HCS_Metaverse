@@ -30,6 +30,8 @@ public enum ItemGenre
     All,
     Usable,
     Food,
+    Interior,
+    Costume,
 }
 
 #if UNITY_EDITOR
