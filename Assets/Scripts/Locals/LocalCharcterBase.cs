@@ -27,6 +27,7 @@ public class LocalCharcterBase : MonoBehaviour
         {
             FindObjectOfType<CharacterRPCManager>().Rpc_ChangeWear(partsType, idx, remoteView.GetComponent<NetworkObject>());
             canvasCharacterBase.SetItem(partsType, idx);
+            this.GetComponent<CharacterBase>().SetItem(partsType, idx);
         }
     }
 }

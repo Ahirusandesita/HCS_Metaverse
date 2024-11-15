@@ -38,6 +38,7 @@ public class LocalCharacterControl : MonoBehaviour
         AnimationControl.AnimData animData = animationControl.GetAnimData(clip);
         FindObjectOfType<CharacterRPCManager>().Rpc_PlayEmote(animData.AnimType, animData.Index, remoteView.GetComponent<NetworkObject>());
         canvasCharacterControl.PlayAnimation(clip);
+        this.GetComponent<CharacterControl>().PlayAnimation(clip);
     }
 }
 public interface ICharacterControl
