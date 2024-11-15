@@ -17,7 +17,7 @@ public class CookTimeUI : MonoBehaviour
     {
         cookTime.OnTime += (time) =>
         {
-            textMesh.text = "TIME : "+time.ToString();
+            textMesh.text = "TIME : " + time.ToString();
         };
     }
 }
