@@ -22,10 +22,14 @@ public class ObjectChenger : MonoBehaviour
 
     private float _defaultCameraSize = default;
 
+    private Screenshot _screenshot = default;
+
 
     // Start is called before the first frame update
     private void Start()
     {
+        _screenshot = GameObject.FindObjectOfType<Screenshot>();
+
         _targetObject = GetNextTarget();
 
         _defaultCameraSize = _photoCamera.orthographicSize;
@@ -97,6 +101,8 @@ public class ObjectChenger : MonoBehaviour
             _beforePositoin = target.position;
 
             target.position = _photographPosition;
+
+            _screenshot.IconName (target.name);
 
             return target.gameObject;
         }
