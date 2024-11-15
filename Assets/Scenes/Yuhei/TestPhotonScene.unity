@@ -6374,6 +6374,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2beed5376eb37ac48b23a24754e4bf6d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 798662960}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2beed5376eb37ac48b23a24754e4bf6d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 798662961}
   m_SourcePrefab: {fileID: 100100000, guid: 2beed5376eb37ac48b23a24754e4bf6d, type: 3}
 --- !u!4 &798662958 stripped
 Transform:
@@ -6395,6 +6398,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cd9d7ecb8bf98e5499abf0dd81d8f04e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &798662961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 798662959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f55422c4aa8842499afee331934358c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &817716074
@@ -11881,6 +11896,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1414244305}
   - component: {fileID: 1414244307}
+  - component: {fileID: 1414244308}
   m_Layer: 0
   m_Name: '#CharacterControl'
   m_TagString: Untagged
@@ -11916,6 +11932,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a376677d9fc3ba5478a0827561b1deee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1414244308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1414244304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fe162df572cd49c8bfddf529c276273, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textAnimationName: {fileID: 0}
 --- !u!1 &1416479010 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3604958128133132613, guid: 096060ced8bd3b9478f5b45358f08b7a, type: 3}
