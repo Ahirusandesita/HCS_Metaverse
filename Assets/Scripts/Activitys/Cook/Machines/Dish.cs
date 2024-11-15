@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Fusion;
 
 public class NullPutableOnDish : IPutableOnDish
 {
@@ -10,12 +11,14 @@ public class NullPutableOnDish : IPutableOnDish
     }
     public void CommodityReset() { }
 }
-public class Dish : MonoBehaviour, IPutableOnDish
+public class Dish : NetworkBehaviour, IPutableOnDish
 {
     [SerializeField]
     private Transform fixedTransform;
     private ISwitchableGrabbableActive switchable;
     bool canPut = true;
+
+    [Rpc]
     public void PutCommodity(ISwitchableGrabbableActive switchable)
     {
         if (this.switchable != null)
