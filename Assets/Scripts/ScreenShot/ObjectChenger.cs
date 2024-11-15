@@ -34,7 +34,7 @@ public class ObjectChenger : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (Input.GetKeyDown(KeyCode.Z))
         {
             ReleaseTarget();
 
@@ -43,7 +43,7 @@ public class ObjectChenger : MonoBehaviour
             _targetObject = GetNextTarget();
         }
 
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        if (Input.GetKeyDown(KeyCode.X))
         {
             ReleaseTarget();
 
@@ -59,7 +59,7 @@ public class ObjectChenger : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.A))
         {
-            _targetObject.transform.rotation *= Quaternion.Euler(0, 15, 0);
+            _targetObject.transform.rotation *= Quaternion.Euler(0, -15, 0);
         }
 
         if (Input.GetKey(KeyCode.W))
