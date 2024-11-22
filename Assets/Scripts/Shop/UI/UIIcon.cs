@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using KumaDebug;
+using UnityEngine.UI;
 
 public class UIIcon : MonoBehaviour
-{
-	[SerializeField]
-	private MeshRenderer _inCartItemViewPrefab = default;
-	 
+{	 
 	[SerializeField]
 	private TMP_Text _text = default;
+	[SerializeField]
+	private Image _image = default;
 	private ShopCartUIManager _shopCartUIManager = default;
 	private int _id;
 
@@ -21,24 +22,13 @@ public class UIIcon : MonoBehaviour
 		}
 	}
 
-	public void Init(MeshFilter[] meshFilters,MeshRenderer[] meshRenderers,ShopCartUIManager shopCartUIManager,int id)
+	public void Init(Sprite itemSprite,ShopCartUIManager shopCartUIManager,Vector2 popAnchoredPosition,int id)
 	{
 		_id = id;
+		RectTransform myTransform = this.transform as RectTransform;
 		_shopCartUIManager = shopCartUIManager;
-		Transform myTransform = transform;
-
-		for(int i = 0; i < meshFilters.Length ;i++)
-		{
-			MeshRenderer meshRenderer = Instantiate(_inCartItemViewPrefab,myTransform);
-			meshRenderer.material = meshRenderers[i].sharedMaterial;
-			meshRenderer.GetComponent<MeshFilter>().mesh = meshFilters[i].sharedMesh;
-			Transform targetTransform = meshRenderers[i].transform;
-			Transform viewTransform = meshRenderer.transform;
-			viewTransform.position = targetTransform.localPosition;
-			viewTransform.rotation = targetTransform.rotation;
-			viewTransform.localScale = targetTransform.lossyScale;
-
-		}
+		_image.sprite = itemSprite;
+		myTransform.anchoredPosition = popAnchoredPosition;
 	}
 
 	public void UpdateCount(int count)

@@ -8,6 +8,8 @@ public class ShopCart : MonoBehaviour
 	public Dictionary<int, int> InCarts { get => _inCarts; }
 	[SerializeField]
 	private ShopCartUIManager _shopCartUIManager = default;
+	[SerializeField]
+	private VisualShop _visualShop = default;
 
 	public void AddCart(int id)
 	{
@@ -34,9 +36,9 @@ public class ShopCart : MonoBehaviour
 		}
 	}
 
-	private void Buy()
+	public void Buy()
 	{
-
+		_visualShop.Buy();
 		_inCarts.Clear();
 	}
 }

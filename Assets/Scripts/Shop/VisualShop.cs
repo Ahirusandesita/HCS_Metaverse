@@ -13,6 +13,7 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 
 	private void Update()
 	{
+		//dev
 		if (Input.GetKeyDown(KeyCode.RightShift)) { shopCart.AddCart(_id); }
 	}
 	[SerializeField] private int _id = 000;
@@ -53,11 +54,6 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		DestroyShop();
 	}
 
-	private void OutCart()
-	{
-
-	}
-
 	/// <summary>
 	/// カートに入っているものを買う
 	/// </summary>
@@ -66,7 +62,10 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		//お金を減らす
 		//店の収益にプラス？
 		//所有権を移動
-
+		foreach(KeyValuePair<int,int> pair in shopCart.InCarts)
+		{
+			XDebug.Log($"id:{pair.Key} count:{pair.Value}");
+		}
 	}
 
 	private void InstanceShop()
