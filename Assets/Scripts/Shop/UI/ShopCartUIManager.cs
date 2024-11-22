@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using KumaDebug;
 
 public class ShopCartUIManager : MonoBehaviour
 {
@@ -14,8 +15,19 @@ public class ShopCartUIManager : MonoBehaviour
 	private Transform _parent;
 	[SerializeField]
 	private RectTransform _startPosition;
-
 	private Dictionary<int, UIIcon> _itemIcons = new();
+	private float _offsetX = 100;
+	private float _offsetY = 100;
+	private int _horizontalLimit = 3;
+
+	private void Start()
+	{
+		RectTransform iconTransform = _itemIconPrefab.transform as RectTransform;
+
+		_offsetX = iconTransform.sizeDelta.x;
+		_offsetY = iconTransform.sizeDelta.y;
+		_horizontalLimit = Mathf.FloatToHalf((_parent.transform as RectTransform).sizeDelta.x / _offsetX);
+	}
 
 	public void AddCartUI(int id)
 	{
@@ -23,13 +35,12 @@ public class ShopCartUIManager : MonoBehaviour
 		if (!_itemIcons.Keys.Contains(id))
 		{
 			ItemAsset itemAsset = _allItemAsset.GetItemAssetByID(id);
-			uiIconTemp = Instantiate(_itemIconPrefab,_parent);
-			RectTransform rectTransformTemp = uiIconTemp.transform as RectTransform;
-			Vector3 offset = new Vector3(100 * (_itemIcons.Count % 3), -100 * (_itemIcons.Count / 3)  , 0) ;
-			rectTransformTemp.localPosition = _startPosition.localPosition + offset;
-			MeshFilter[] meshFilters = itemAsset.DisplayItem.gameObject.GetComponentsInChildren<MeshFilter>();
-			MeshRenderer[] meshRenderers = itemAsset.DisplayItem.gameObject.GetComponentsInChildren<MeshRenderer>();
-			uiIconTemp.Init(meshFilters.Clone() as MeshFilter[],meshRenderers.Clone() as MeshRenderer[], this,id);
+			Vector2 popAnchoredPosition =
+				_startPosition.anchoredPosition
+				+ Vector2.right * (_itemIcons.Count % _horizontalLimit) * _offsetX
+				+ Vector2.up * (_itemIcons.Count / _horizontalLimit) * -_offsetY;
+			uiIconTemp = Instantiate(_itemIconPrefab, _parent);
+			uiIconTemp.Init(itemAsset.ItemIcon, this, popAnchoredPosition, id);
 			_itemIcons.Add(id, uiIconTemp);
 		}
 		else
@@ -38,6 +49,12 @@ public class ShopCartUIManager : MonoBehaviour
 		}
 		uiIconTemp.UpdateCount(_shopCart.InCarts[id]);
 
+	}
+
+	public void BuyButtonPush()
+	{
+		_shopCart.Buy();
+		
 	}
 
 	public void DestoryCartUI(int id)

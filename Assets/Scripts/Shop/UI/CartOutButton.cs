@@ -12,10 +12,4 @@ public class CartOutButton : MonoBehaviour
     {
         uiIconController.Delete();
     }
-
-	[ContextMenu("click")]
-    private void Test()
-	{
-        uiIconController.Delete();
-    }
 }
