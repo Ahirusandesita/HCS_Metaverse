@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public interface IEditOnlyGhost
@@ -103,12 +104,23 @@ public class GhostModel : IEditOnlyGhost
 
             // 見た目を設定 -----------------------------------------------------------------
             filter.sharedMesh = filters[i].sharedMesh;
-            renderer.material = material;
-            var texture = renderers[i].sharedMaterial.mainTexture;
-            renderer.material.SetTexture(TEXTURE_NAME, texture);
+            // 元々ついていた数分、Materialを作成
+            var ghostMaterials = new List<Material>();
+            for (int j = 0; j < renderers[i].sharedMaterials.Length; j++)
+            {
+                ghostMaterials.Add(material);
+            }
 
+            renderer.SetMaterials(ghostMaterials);
             defaultColor ??= correctColor;
-            renderer.material.SetColor(COLOR_NAME, (Color)defaultColor);
+
+            for (int k = 0; k < renderers[i].sharedMaterials.Length; k++)
+            {
+                // 作成するMaterialはすべてGhostだが、中身のTextureを変える
+                ghostMaterials.Add(material);
+                renderer.materials[k].SetTexture(TEXTURE_NAME, renderers[i].sharedMaterials[k].mainTexture);
+                renderer.materials[k].SetColor(COLOR_NAME, (Color)defaultColor);
+            }
             // -----------------------------------------------------------------------------
 
             // Transform情報をコピー（Scaleは絶対Scaleを用いる）
