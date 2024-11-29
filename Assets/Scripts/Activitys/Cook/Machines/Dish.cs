@@ -18,7 +18,6 @@ public class Dish : NetworkBehaviour, IPutableOnDish
     private ISwitchableGrabbableActive switchable;
     bool canPut = true;
 
-    [Rpc]
     public void PutCommodity(ISwitchableGrabbableActive switchable)
     {
         if (this.switchable != null)
