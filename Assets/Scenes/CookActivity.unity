@@ -6321,8 +6321,20 @@ MonoBehaviour:
   Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
+  - {fileID: 1728129290}
   - {fileID: 1728129288}
   - {fileID: 1728129287}
+--- !u!114 &1728129290 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2434605363613086055, guid: 1fa3f41b8a81cb24abbdfc8d40d988fc, type: 3}
+  m_PrefabInstance: {fileID: 1728129285}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1728129286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b272f7bbef9047a4483a919188cc5425, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1728609128
 GameObject:
   m_ObjectHideFlags: 0
@@ -8475,6 +8487,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7594199887262647102, guid: 77b89df1a37234546b33ae0d392d9651, type: 3}
+      propertyPath: foodItemAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 4b0a8552cd5992449aab6ed722f30dde, type: 2}
     - target: {fileID: 7594199887262647102, guid: 77b89df1a37234546b33ae0d392d9651, type: 3}
       propertyPath: foodLineup.Array.size
       value: 4
