@@ -13,7 +13,7 @@ public class BuyButton : MonoBehaviour
         _shopCartUIManager.BuyButtonPush();
     }
 
-    [ContextMenu("aaa")]
+    [ContextMenu("test")]
     public void Test()
 	{
         _shopCartUIManager.BuyButtonPush();

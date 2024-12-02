@@ -6,8 +6,7 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 {
 	[ContextMenu("test")]
 	private void Test()
-	{
-		
+	{	
 		shopCart.AddCart(_id);
 	}
 
