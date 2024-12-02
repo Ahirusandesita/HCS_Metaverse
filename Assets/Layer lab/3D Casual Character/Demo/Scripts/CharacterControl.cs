@@ -16,7 +16,7 @@ namespace Layer_lab._3D_Casual_Character
 
         void Awake()
         {
-            textAnimationName.text = "Stand_Idle1";
+            //textAnimationName.text = "Stand_Idle1";
             animator = GetComponentInChildren<Animator>();
             CharacterBase = GetComponentInChildren<CharacterBase>();
             Instance = this;

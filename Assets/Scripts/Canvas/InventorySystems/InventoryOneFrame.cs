@@ -6,8 +6,6 @@ using UnityEngine.UI;
 public class InventoryOneFrame : MonoBehaviour
 {
     [SerializeField]
-    private MeshRenderer meshRenderer;
-    [SerializeField]
     private MeshFilter meshFilter;
 
     
@@ -27,7 +25,7 @@ public class InventoryOneFrame : MonoBehaviour
 
     private void Awake()
     {
-        meshRenderer.enabled = false;
+
     }
 
     public void PutAway(IItem item)
@@ -40,9 +38,6 @@ public class InventoryOneFrame : MonoBehaviour
 
     private void InventoryView()
     {
-        meshRenderer.enabled = true;
-        meshRenderer.materials = appearanceInfo_Mesh.Material;
-        meshRenderer.transform.localScale = appearanceInfo_Mesh.Size;
         meshFilter.mesh = appearanceInfo_Mesh.Mesh;
     }
 
