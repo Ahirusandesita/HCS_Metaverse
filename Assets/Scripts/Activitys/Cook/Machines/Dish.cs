@@ -16,6 +16,7 @@ public class Dish : NetworkBehaviour, IPutableOnDish
 {
     [SerializeField]
     private Transform fixedTransform;
+    private Vector3 fixedPosition;
     private ISwitchableGrabbableActive switchable;
     bool canPut = true;
 
@@ -42,10 +43,15 @@ public class Dish : NetworkBehaviour, IPutableOnDish
         {
             putObject.transform.parent = this.transform;
             putObject.transform.rotation = this.transform.rotation;
-            putObject.transform.position = fixedTransform.position;
+            putObject.transform.localPosition = fixedPosition;
         }
 
         putObject.GetComponent<Rigidbody>().isKinematic = true;
+    }
+
+    private void Awake()
+    {
+        fixedPosition = fixedTransform.localPosition;
     }
 
     private void Update()
