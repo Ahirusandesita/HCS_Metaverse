@@ -14,6 +14,8 @@ public class PlacingTarget : MonoBehaviour
     private Transform playerHead = default;
     private bool isCollision = default;
     private float yPosition = default;
+    private float xPositionOffset = default;
+    private float zPositionOffset = default;
     private Vector3 boxHalfSize = default;
     private float slopeLimit = default;
     private float playerHeight = default;
@@ -31,7 +33,14 @@ public class PlacingTarget : MonoBehaviour
         playerHeight = cc.height;
         boxCollider = transform.GetComponent<BoxCollider>();
         boxHalfSize = boxCollider.size / 2;
+
         return this;
+    }
+
+    private void Start()
+    {
+        xPositionOffset = player.position.x - boxCollider.bounds.center.x;
+        zPositionOffset = player.position.z - boxCollider.bounds.center.z;
     }
 
     private void LateUpdate()
@@ -39,7 +48,7 @@ public class PlacingTarget : MonoBehaviour
         XDebug.Log(placeableObject.PivotType);
 
         transform.SetPositionAndRotation(
-            position: new Vector3(player.position.x, yPosition, player.position.z) + player.forward * FORWARD_OFFSET,
+            position: new Vector3(player.position.x + xPositionOffset, yPosition, player.position.z + zPositionOffset) + player.forward * FORWARD_OFFSET,
             rotation: player.rotation);
         ghostModel.SetPlaceableState(PreviewPlacing());
     }
