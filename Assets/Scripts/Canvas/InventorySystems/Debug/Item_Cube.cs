@@ -31,18 +31,18 @@ public class Item_Cube : MonoBehaviour, IItem, IInventoryRetractable, ISelectedN
         return appearanceInfo_Mesh;
     }
 
-    void IItem.CleanUp()
-    {
-        this.GetComponent<MeshRenderer>().enabled = false;
-        this.GetComponent<BoxCollider>().enabled = false;
-    }
+    //void IItem.CleanUp()
+    //{
+    //    this.GetComponent<MeshRenderer>().enabled = false;
+    //    this.GetComponent<BoxCollider>().enabled = false;
+    //}
 
-    void IItem.TakeOut(Vector3 position)
-    {
-        this.GetComponent<MeshRenderer>().enabled = true;
-        this.GetComponent<BoxCollider>().enabled = true;
-        this.transform.position = position;
-    }
+    //void IItem.TakeOut(Vector3 position)
+    //{
+    //    this.GetComponent<MeshRenderer>().enabled = true;
+    //    this.GetComponent<BoxCollider>().enabled = true;
+    //    this.transform.position = position;
+    //}
 
 
     void IItem.Use()

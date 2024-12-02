@@ -9,36 +9,65 @@ public class InventoryManager : MonoBehaviour
     [SerializeField]
     private NotExistIcon notExistIcon;
     private IInventoryOneFrame[] inventories;
+    [SerializeField]
+    private ItemBundleAsset itemBundle;
+    [SerializeField]
+    private SelectItem selectItem;
 
     private void Awake()
     {
+        NotExistIcon oject = Instantiate(notExistIcon);
         inventories = GetComponentsInChildren<IInventoryOneFrame>(true);
 
-        foreach(IInventoryOneFrame inventoryOneFrame in inventories)
+        foreach (IInventoryOneFrame inventoryOneFrame in inventories)
         {
             inventoryOneFrame.Inject(this);
+            inventoryOneFrame.SelectItemInject(selectItem,notExistIcon);
         }
 
-        NotExistIcon oject = Instantiate(notExistIcon);
 
-        foreach(InventoryOneFrame inventoryOneFrame in GetComponentsInChildren<InventoryOneFrame>(true))
+        foreach (InventoryOneFrame inventoryOneFrame in GetComponentsInChildren<InventoryOneFrame>(true))
         {
             inventoryOneFrame.Inject(oject);
         }
     }
 
-    public void ReturnItem(ItemAsset itemAsset)
+    public async void ReturnItem(ItemAsset itemAsset)
     {
-        SpawnItem(itemAsset).Forget();
+        if (itemAsset.DisplayItem.IsAvailable())
+        {
+            IDisplayItem item = await SpawnItem(itemAsset);
+
+            if (item.CanUseAtStart)
+            {
+                item.Use();
+            }
+        }
+        else
+        {
+            Debug.LogError("使用できない場所");
+        }
     }
-    private async UniTaskVoid SpawnItem(ItemAsset itemAsset)
+    public bool IsAvailableItem(ItemAsset itemAsset)
     {
-        GameObject item = await GateOfFusion.Instance.SpawnAsync(itemAsset.DisplayItem.gameObject, this.transform.position);    
-        GameObject.FindObjectOfType<PlayerInteraction>().Add(item.GetComponent<IItem>() as ISelectedNotificationInjectable);
+        return itemAsset.DisplayItem.IsAvailable();
     }
 
-    [SerializeField]
-    private ItemBundleAsset itemBundle;
+    private async UniTask<IDisplayItem> SpawnItem(ItemAsset itemAsset)
+    {
+        GameObject item = await GateOfFusion.Instance.SpawnAsync(itemAsset.DisplayItem.gameObject, this.transform.position);
+        if (item.GetComponent<IDisplayItem>() is ISelectedNotificationInjectable)
+        {
+            GameObject.FindObjectOfType<PlayerInteraction>().Add(item.GetComponent<IDisplayItem>() as ISelectedNotificationInjectable);
+        }
+        else
+        {
+            Debug.LogWarning("掴んだ時にイベント発行したければ、ISelectedNotificationInjectableを実装してね");
+        }
+
+        return item.GetComponent<IDisplayItem>();
+    }
+
     public void SendItem(int id)
     {
         foreach (IInventoryOneFrame inventory in inventories)
