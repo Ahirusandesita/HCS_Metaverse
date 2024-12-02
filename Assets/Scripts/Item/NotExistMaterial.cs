@@ -1,5 +1,4 @@
 using UnityEngine;
-
 public class NotExistMaterial : MonoBehaviour, IInventoryRetractable
 {
     private AppearanceInfo_Mesh appearanceInfo_Mesh;

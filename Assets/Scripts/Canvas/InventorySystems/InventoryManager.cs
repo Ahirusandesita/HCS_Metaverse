@@ -7,7 +7,7 @@ using Cysharp.Threading.Tasks;
 public class InventoryManager : MonoBehaviour
 {
     [SerializeField]
-    private NotExistMaterial notExistMaterial;
+    private NotExistIcon notExistIcon;
     private IInventoryOneFrame[] inventories;
 
     private void Awake()
@@ -19,7 +19,7 @@ public class InventoryManager : MonoBehaviour
             inventoryOneFrame.Inject(this);
         }
 
-        NotExistMaterial oject = Instantiate(notExistMaterial);
+        NotExistIcon oject = Instantiate(notExistIcon);
 
         foreach(InventoryOneFrame inventoryOneFrame in GetComponentsInChildren<InventoryOneFrame>(true))
         {
