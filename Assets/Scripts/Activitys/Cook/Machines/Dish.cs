@@ -5,7 +5,8 @@ using Fusion;
 
 public class NullPutableOnDish : IPutableOnDish
 {
-    public void PutCommodity(ISwitchableGrabbableActive switchable)
+    [Rpc]
+    public void Rpc_PutCommodity(NetworkObject putObject)
     {
 
     }
@@ -18,8 +19,13 @@ public class Dish : NetworkBehaviour, IPutableOnDish
     private ISwitchableGrabbableActive switchable;
     bool canPut = true;
 
-    public void PutCommodity(ISwitchableGrabbableActive switchable)
+    [Rpc]
+    public void Rpc_PutCommodity(NetworkObject putObject)
     {
+        Debug.Log($"<color=red>Put:{putObject.name}</color>");
+
+        ISwitchableGrabbableActive switchable = putObject.GetComponent<ISwitchableGrabbableActive>();
+
         if (this.switchable != null)
         {
             return;
@@ -31,11 +37,15 @@ public class Dish : NetworkBehaviour, IPutableOnDish
         
         this.switchable = switchable;
         switchable.Inactive();
-        switchable.gameObject.transform.parent = this.transform;
-        switchable.gameObject.transform.rotation = this.transform.rotation;
-        switchable.gameObject.transform.position = fixedTransform.position;
 
-        switchable.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+        if (putObject.StateAuthority == Runner.LocalPlayer)
+        {
+            putObject.transform.parent = this.transform;
+            putObject.transform.rotation = this.transform.rotation;
+            putObject.transform.position = fixedTransform.position;
+        }
+
+        putObject.GetComponent<Rigidbody>().isKinematic = true;
     }
 
     private void Update()
