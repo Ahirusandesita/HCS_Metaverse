@@ -57,7 +57,6 @@ public class Dish : NetworkBehaviour, IPutableOnDish
 
     private void Update()
     {
-
         if (switchable == null)
         {
             return;
@@ -109,6 +108,8 @@ public class Dish : NetworkBehaviour, IPutableOnDish
             }
             table.Submit(switchable.gameObject.GetComponent<Commodity>());
             switchable = null;
+
+            GameObject.FindObjectOfType<DishManager>().InstanceNewDish(GetComponent<NetworkObject>());
         }
     }
 
