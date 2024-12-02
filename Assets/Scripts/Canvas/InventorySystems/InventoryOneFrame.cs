@@ -13,10 +13,10 @@ public class InventoryOneFrame : MonoBehaviour
 
     [SerializeField]
     private Image icon;
-
+    
     public void PutAway(ItemAsset itemAsset)
     {
-        icon.sprite = itemAsset.ItemIcon;
+        icon.sprite = itemAsset.ItemIcon == null ? notExistIcon.Icon : itemAsset.ItemIcon;
     }
     public void TakeOut()
     {

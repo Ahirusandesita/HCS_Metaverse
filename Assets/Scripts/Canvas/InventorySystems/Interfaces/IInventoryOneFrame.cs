@@ -19,4 +19,5 @@ public interface IInventoryOneFrame
     /// <returns></returns>
     void TakeOut();
     void Inject(InventoryManager inventoryManager);
+    void SelectItemInject(SelectItem selectItem,NotExistIcon notExistIcon);
 }

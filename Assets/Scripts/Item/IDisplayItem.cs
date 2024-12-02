@@ -125,5 +125,29 @@ public interface IDisplayItem
 		displayItem.Inject_ItemSelectArgsAndSelectedNotification(itemSelectArgs, caller);
 		return displayItem;
 	}
-	#endregion
+    #endregion
+
+
+    #region これは崩壊の始まり DisplayItemの製作者はうんち！
+    //   /// <summary>
+    /// アイテム使用
+    /// </summary>
+    void Use();
+    /// <summary>
+    /// アイテムをしまう
+    /// </summary>
+    void CleanUp();
+    /// <summary>
+    /// アイテムを取り出す
+    /// </summary>
+    /// <param name="position">取り出す場所</param>
+    void TakeOut(Vector3 position);
+
+    int MaxInventoryCapacity { get; }
+
+    bool CanUseAtStart { get; }
+	bool IsAvailable();
+    #endregion
+
+
 }

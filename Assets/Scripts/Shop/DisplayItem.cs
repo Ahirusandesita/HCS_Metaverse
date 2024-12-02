@@ -1,6 +1,7 @@
 using Oculus.Interaction;
+using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 /// <summary>
 /// GrabbableかつCloneなオブジェクト。生成元にVR特有の通知（Hover, Select）を送信する役割。
 /// </summary>
@@ -10,6 +11,30 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
     [SerializeField] private PointableUnityEventWrapper onGrabbed = default;
     private ItemSelectArgs itemSelectArgs = default;
     private ISelectedNotification sn = default;
+
+    [SerializeField]
+    private List<BuildSettingScene.Scenes> availableScenes = new List<BuildSettingScene.Scenes>();
+    [SerializeField]
+    private bool canUseAtStart = false;
+    [SerializeField]
+    private int maxInventoryCapacity;
+
+    public int MaxInventoryCapacity => maxInventoryCapacity;
+
+    public bool CanUseAtStart { get; set; }
+
+    public bool IsAvailable()
+    {
+        foreach(BuildSettingScene.Scenes item in availableScenes)
+        {
+            if(item.ToString() == SceneManager.GetActiveScene().name)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
@@ -57,5 +82,22 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
     private void WhenUnhover(PointerEvent pointerEvent)
     {
         sn.Unhover(itemSelectArgs);
+    }
+
+
+
+    public void Use()
+    {
+        
+    }
+
+    public void CleanUp()
+    {
+        GateOfFusion.Instance.Despawn(this);
+    }
+
+    public void TakeOut(Vector3 position)
+    {
+        
     }
 }

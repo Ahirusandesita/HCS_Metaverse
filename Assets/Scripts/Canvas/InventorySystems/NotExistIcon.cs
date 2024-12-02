@@ -4,7 +4,7 @@ public class NotExistIcon : MonoBehaviour
 {
     [SerializeField]
     private Sprite sprite;
-    public Sprite Sprite
+    public Sprite Icon
     {
         get => sprite;
         private set
