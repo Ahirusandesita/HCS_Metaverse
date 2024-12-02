@@ -70,7 +70,7 @@ public class Stoppable : NetworkBehaviour, IStopViewData
         }
 
         // ÚG‚µ‚½Collider‚ğ”»’è‚µ‚ÄŠi”[‚·‚é
-        Collider[] hitColliders = Physics.OverlapBox(_knifeCollider.bounds.center, _knifeCollider.bounds.size, this.transform.rotation);
+        Collider[] hitColliders = Physics.OverlapBox(_knifeCollider.bounds.center, _knifeCollider.bounds.size / 2, this.transform.rotation);
 
         // 
         if (_onStopperObject)
