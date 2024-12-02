@@ -1,5 +1,7 @@
+using Fusion;
+
 public interface IPutableOnDish
 {
-    void PutCommodity(ISwitchableGrabbableActive switchable);
+    void Rpc_PutCommodity(NetworkObject putObject);
     void CommodityReset();
 }

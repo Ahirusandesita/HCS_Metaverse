@@ -139,9 +139,11 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
 
         if (collision.transform.root.gameObject.TryGetComponent<IPutableOnDish>(out IPutableOnDish putableOnDish))
         {
+            Debug.Log("put:commodity");
+
             isOnDish = true;
             this.putableOnDish = putableOnDish;
-            this.putableOnDish.PutCommodity(this);
+            this.putableOnDish.Rpc_PutCommodity(GetComponent<NetworkObject>());
 
             //RPCEvents.RPC_Event<Commodity>(this.GetComponent<NetworkObject>(), collision.transform.root.gameObject.GetComponent<NetworkObject>());
         }
@@ -160,7 +162,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
     {
         this.isOnDish = isOnDish;
         this.putableOnDish = putableOnDish;
-        this.putableOnDish.PutCommodity(this);
+        this.putableOnDish.Rpc_PutCommodity(GetComponent<NetworkObject>());
     }
     public void Inject(ISwitchableGrabbableActive t)
     {
