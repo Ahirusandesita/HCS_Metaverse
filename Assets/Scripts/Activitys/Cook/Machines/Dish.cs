@@ -39,9 +39,10 @@ public class Dish : NetworkBehaviour, IPutableOnDish
         this.switchable = switchable;
         switchable.Inactive();
 
+        putObject.transform.parent = this.transform;
+
         if (putObject.StateAuthority == Runner.LocalPlayer)
         {
-            putObject.transform.parent = this.transform;
             putObject.transform.rotation = this.transform.rotation;
             putObject.transform.localPosition = fixedPosition;
         }
