@@ -30,7 +30,14 @@ public class MenuBar : MonoBehaviour, IMenuManager
 
             menuButton.GetComponent<RectTransform>().localScale = size;
             menuButton.GetComponent<RectTransform>().localPosition = position;
-            menuButton.GetComponent<XScrollObject>().InjectLeftLimit(position.x);
+
+            int s = 0;
+            if(menuButtons.Count > 5)
+            {
+                s = menuButtons.Count - 5;
+            }
+            menuButton.GetComponent<XScrollObject>().InjectLeftLimit(position.x - ((size.x + 0.25f) * 100f) * s );
+            menuButton.GetComponent<XScrollObject>().InjectRightLimit(position.x);
             //test
             position.x += (size.x + 0.25f) * 100f;
         }
