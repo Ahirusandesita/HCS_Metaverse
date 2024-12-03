@@ -494,6 +494,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Look"",
+                    ""type"": ""Value"",
+                    ""id"": ""56ebc5dc-3840-44a8-aab9-14f7be903cb3"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -531,9 +540,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""negative"",
+                    ""name"": ""Negative"",
                     ""id"": ""081f61c6-0a6f-45d6-899c-00afa048645a"",
-                    ""path"": ""<Mouse>/leftButton"",
+                    ""path"": ""<Keyboard>/leftArrow"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""KeyboardMouse"",
@@ -542,15 +551,81 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""positive"",
+                    ""name"": ""Positive"",
                     ""id"": ""dc2e8ea2-b713-4cf6-9520-996551cbcc60"",
-                    ""path"": ""<Mouse>/rightButton"",
+                    ""path"": ""<Keyboard>/rightArrow"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""KeyboardMouse"",
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Trigger"",
+                    ""id"": ""e935fc2f-b1a0-4cb6-b6d2-03d933318e04"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""554e2902-d45d-428f-b9b6-a50c44b3f652"",
+                    ""path"": ""<XRController>{LeftHand}/triggerPressed"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""e60728ef-7209-4474-a881-ca7efdaeb111"",
+                    ""path"": ""<XRController>{RightHand}/triggerPressed"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4bff1f1f-defb-432e-83ed-515f78b51f7b"",
+                    ""path"": ""<Pointer>/delta"",
+                    ""interactions"": """",
+                    ""processors"": ""InvertVector2(invertX=false),ScaleVector2(x=0.05,y=0.05)"",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""12a5c469-0bca-4ca2-b021-cd21812d5632"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": ""InvertVector2(invertX=false),StickDeadzone,ScaleVector2(x=300,y=300)"",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9f4f676b-ea80-471a-9c28-69e0d4ac9c70"",
+                    ""path"": ""<XRController>{RightHand}/thumbstick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -628,6 +703,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_PlacingMode = asset.FindActionMap("PlacingMode", throwIfNotFound: true);
         m_PlacingMode_Place = m_PlacingMode.FindAction("Place", throwIfNotFound: true);
         m_PlacingMode_Rotate = m_PlacingMode.FindAction("Rotate", throwIfNotFound: true);
+        m_PlacingMode_Look = m_PlacingMode.FindAction("Look", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -931,12 +1007,14 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private List<IPlacingModeActions> m_PlacingModeActionsCallbackInterfaces = new List<IPlacingModeActions>();
     private readonly InputAction m_PlacingMode_Place;
     private readonly InputAction m_PlacingMode_Rotate;
+    private readonly InputAction m_PlacingMode_Look;
     public struct PlacingModeActions
     {
         private @PlayerInputActions m_Wrapper;
         public PlacingModeActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Place => m_Wrapper.m_PlacingMode_Place;
         public InputAction @Rotate => m_Wrapper.m_PlacingMode_Rotate;
+        public InputAction @Look => m_Wrapper.m_PlacingMode_Look;
         public InputActionMap Get() { return m_Wrapper.m_PlacingMode; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -952,6 +1030,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Rotate.started += instance.OnRotate;
             @Rotate.performed += instance.OnRotate;
             @Rotate.canceled += instance.OnRotate;
+            @Look.started += instance.OnLook;
+            @Look.performed += instance.OnLook;
+            @Look.canceled += instance.OnLook;
         }
 
         private void UnregisterCallbacks(IPlacingModeActions instance)
@@ -962,6 +1043,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Rotate.started -= instance.OnRotate;
             @Rotate.performed -= instance.OnRotate;
             @Rotate.canceled -= instance.OnRotate;
+            @Look.started -= instance.OnLook;
+            @Look.performed -= instance.OnLook;
+            @Look.canceled -= instance.OnLook;
         }
 
         public void RemoveCallbacks(IPlacingModeActions instance)
@@ -1042,5 +1126,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     {
         void OnPlace(InputAction.CallbackContext context);
         void OnRotate(InputAction.CallbackContext context);
+        void OnLook(InputAction.CallbackContext context);
     }
 }

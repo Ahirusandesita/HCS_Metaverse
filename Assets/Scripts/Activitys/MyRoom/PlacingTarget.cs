@@ -1,11 +1,12 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
 
 public class PlacingTarget : MonoBehaviour
 {
     private const float GROUND_OFFSET = 0.01f;
-    private const float FORWARD_OFFSET = 1.2f;
+    private const float ROTATE_DURATION = 30f;  // 1秒間に回転する角度（度数法）
 
     private BoxCollider boxCollider = default;
     private IEditOnlyGhost ghostModel = default;
@@ -14,11 +15,14 @@ public class PlacingTarget : MonoBehaviour
     private Transform playerHead = default;
     private bool isCollision = default;
     private float yPosition = default;
-    private float xPositionOffset = default;
-    private float zPositionOffset = default;
     private Vector3 boxHalfSize = default;
     private float slopeLimit = default;
     private float playerHeight = default;
+    private float rotateAngle = default;
+    private float cacheAngle = default;
+
+    private float forwardOffset = 1.2f;
+    private Action UpdateAction = default; 
 
 
     public PlacingTarget Initialize(IEditOnlyGhost ghostModel, PlaceableObject placeableObject, Transform player)
@@ -33,24 +37,44 @@ public class PlacingTarget : MonoBehaviour
         playerHeight = cc.height;
         boxCollider = transform.GetComponent<BoxCollider>();
         boxHalfSize = boxCollider.size / 2;
+        // xとzで大きい方
+        forwardOffset = boxCollider.size.x > boxCollider.size.z
+            ? boxCollider.size.x
+            : boxCollider.size.z;
+
+        // Tmporary（Inputの変更はどこか別の場所で行う）--------------
+        Inputter.PlacingMode.Rotate.Enable();
+        // -------------------------------------------------------
+        Inputter.PlacingMode.Rotate.performed += angle =>
+        {
+            // オブジェクト（ゴースト）自身の転回処理
+            // ボタンを押している間回る
+            UpdateAction += () => rotateAngle += Time.deltaTime * angle.ReadValue<float>() * ROTATE_DURATION;
+        };
+        Inputter.PlacingMode.Rotate.canceled += angle =>
+        {
+            UpdateAction = null;
+        };
 
         return this;
     }
 
-    private void Start()
-    {
-        xPositionOffset = player.position.x - boxCollider.bounds.center.x;
-        zPositionOffset = player.position.z - boxCollider.bounds.center.z;
-    }
-
     private void LateUpdate()
     {
-        XDebug.Log(placeableObject.PivotType);
-
-        transform.SetPositionAndRotation(
-            position: new Vector3(player.position.x + xPositionOffset, yPosition, player.position.z + zPositionOffset) + player.forward * FORWARD_OFFSET,
-            rotation: player.rotation);
         ghostModel.SetPlaceableState(PreviewPlacing());
+
+        UpdateAction?.Invoke();
+
+        transform.position = new Vector3(player.position.x, yPosition, player.position.z) + player.forward * forwardOffset;
+        // プレイヤーの転回に合わせたrotationと、オブジェクト自身の転回をマージ
+        transform.rotation = Quaternion.Euler(new Vector3(player.rotation.x, player.rotation.eulerAngles.y + rotateAngle, player.rotation.z));
+    }
+
+    private void OnDestroy()
+    {
+        // Tmporary
+        Inputter.PlacingMode.Rotate.Disable();
+        UpdateAction = null;
     }
 
     private bool PreviewPlacing()
@@ -93,10 +117,12 @@ public class PlacingTarget : MonoBehaviour
         bool isHitGround_lf = Physics.Raycast(checkGroundRay_lf, out RaycastHit _, rayDistance, Layer.GROUNDWALL);
         bool isHitGround_rb = Physics.Raycast(checkGroundRay_rb, out RaycastHit _, rayDistance, Layer.GROUNDWALL);
         bool isHitGround_lb = Physics.Raycast(checkGroundRay_lb, out RaycastHit _, rayDistance, Layer.GROUNDWALL);
+#if UNITY_EDITOR
         Debug.DrawRay(checkGroundRay_rf.origin, checkGroundRay_rf.direction * rayDistance, Color.yellow);
         Debug.DrawRay(checkGroundRay_lf.origin, checkGroundRay_lf.direction * rayDistance, Color.yellow);
         Debug.DrawRay(checkGroundRay_rb.origin, checkGroundRay_rb.direction * rayDistance, Color.yellow);
         Debug.DrawRay(checkGroundRay_lb.origin, checkGroundRay_lb.direction * rayDistance, Color.yellow);
+#endif
 
         if (Vector3.Angle(Vector3.up, groundHitInfo.normal) > slopeLimit)
         {
@@ -114,6 +140,7 @@ public class PlacingTarget : MonoBehaviour
         {
             yPosition += boxHalfSize.y;
         }
+
 
         //if (isHitFront && wallHitInfo.normal.y == 0f && wallHitInfo.collider.bounds.extents.y < 2f)
         //{
@@ -178,6 +205,7 @@ public class PlacingTarget : MonoBehaviour
         isCollision = false;
     }
 
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         var center = boxCollider.bounds.center;
@@ -188,4 +216,5 @@ public class PlacingTarget : MonoBehaviour
         Gizmos.DrawWireCube(new Vector3(underOrigin.x, player.position.y - playerHeight / 2 - 2, underOrigin.z), boxCollider.size);
         Gizmos.DrawRay(checkGroundCenter, Vector3.down * Mathf.Abs(player.position.y - playerHeight / 2 - 2 - checkGroundCenter.y));
     }
+#endif
 }
