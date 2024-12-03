@@ -78,6 +78,12 @@ public class DragSystem : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
 
         //前回の接触点から現在の接触点を引いて接触点の移動量を求める
         Vector3 scrollMove = LastPointerPosition - data.position;
+
+        if(scrollMove.x > 150f || scrollMove.y > 150f)
+        {
+            scrollMove = Vector3.zero;
+        }
+
         //スクロールする対象に移動量を渡してスクロールさせる
         foreach (IScrollable scrollable in scrollables)
         {
