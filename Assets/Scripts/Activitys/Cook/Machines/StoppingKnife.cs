@@ -164,6 +164,8 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
 
         // 接触したオブジェクトが持つ接触時の処理を実行する
         hitObject.GetComponent<IManualProcessing>().ProcessingEvent();
+
+        Debug.Log($"<color=red>掴んだよん：ほーちょー</color>");
     }
 
     /// <summary>
@@ -183,5 +185,7 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
 
         // フラグを消す
         _onStopperObject = false;
+
+        Debug.Log($"<color=red>離したよん：ほーちょー</color>");
     }
 }
