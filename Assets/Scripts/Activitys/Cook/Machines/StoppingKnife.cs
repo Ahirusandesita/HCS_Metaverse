@@ -44,6 +44,12 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
     private void Start()
     {
         // 
+        if (_originTransform == null)
+        {
+            _originTransform = GameObject.Find("KnifeOrigin").transform;
+        }
+
+        // 
         pointableUnityEventWrapper = this.transform.root.GetComponent<PointableUnityEventWrapper>();
         pointableUnityEventWrapper.WhenUnselect.AddListener((action) => { UnSelect(); });
 
