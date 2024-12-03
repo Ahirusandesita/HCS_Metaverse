@@ -70,8 +70,6 @@ public class LockedCuttingBoard : Machine, IObjectLocker, IManualProcessing, ISt
         // 指定した判定に接触したIngrodientがないか判定する
         bool isHitIngrodient = _ingrodientCatcher.SearchIngrodient(_hitBoxCenter, _hitBoxSize, _hitBoxRotation, out NetworkObject hitObject);
 
-        Debug.Log($"まな板当たり判定：{isHitIngrodient}");
-
         // Ingrodientと当たった場合
         if (isHitIngrodient)
         {

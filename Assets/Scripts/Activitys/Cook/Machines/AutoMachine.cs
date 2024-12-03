@@ -37,8 +37,6 @@ public class AutoMachine : Machine, IObjectLocker
         // processingIngrodient‚ğİ’è‚·‚é
         ProcessingIngrodientSetting();
 
-        Debug.Log($"‰ÁH’†‚ÌIngrodientF{_processingIngrodient}");
-
         // í‚É‰ÁH‚ği‚ß‚Ä‚¢‚­
         bool isEndProcessing = ProcessingAction(_processingType, Time.deltaTime);
     }
