@@ -27,8 +27,8 @@ Transform:
   m_GameObject: {fileID: 1665247896880004808}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.48, y: 0.48, z: 0.48}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3091349198449375307}
@@ -416,7 +416,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  _pointableElement: {fileID: 0}
+  _pointableElement: {fileID: 5561495818154030980}
 --- !u!114 &8916499897139730425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -458,7 +458,7 @@ Transform:
   m_GameObject: {fileID: 7026240600628622063}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.042}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -483,8 +483,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.111387365, y: 0.20000012, z: 0.638419}
-  m_Center: {x: -0.0063511096, y: 0, z: 0.29491296}
+  m_Size: {x: 0.021595648, y: 0.04847765, z: 0.30591965}
+  m_Center: {x: 0.0028837733, y: 0, z: 0.15080175}
 --- !u!1 &8242325877928751802
 GameObject:
   m_ObjectHideFlags: 0
@@ -742,6 +742,7 @@ GameObject:
   - component: {fileID: 461123671200620639}
   - component: {fileID: 8034518197616682167}
   - component: {fileID: 955682431830729521}
+  - component: {fileID: 631769978160948285}
   m_Layer: 7
   m_Name: Knife
   m_TagString: Untagged
@@ -912,7 +913,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf0c7f6de2429f4083e678316326153, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activeDistance: 0
+  activeDistance: 5
 --- !u!114 &4738233576240591066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -961,11 +962,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SortKey: 2812200916
   ObjectInterest: 1
-  Flags: 786433
+  Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 8034518197616682167}
   - {fileID: 955682431830729521}
+  - {fileID: 631769978160948285}
 --- !u!114 &8034518197616682167
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -981,7 +983,7 @@ MonoBehaviour:
   SyncScale: 0
   SyncParent: 0
   _autoAOIOverride: 1
-  DisableSharedModeInterpolation: 0
+  DisableSharedModeInterpolation: 1
 --- !u!114 &955682431830729521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -997,6 +999,19 @@ MonoBehaviour:
   _visualObjectTransform: {fileID: 4196008245216988978}
   _originTransform: {fileID: 0}
   _knifeCollider: {fileID: 5977924233419729105}
+--- !u!114 &631769978160948285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9059914398412049686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 826b17ef5a16c854bb99e8c9b1835040, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _IsNotReleaseStateAuthority: 0
 --- !u!1001 &4193993034870680464
 PrefabInstance:
   m_ObjectHideFlags: 0
