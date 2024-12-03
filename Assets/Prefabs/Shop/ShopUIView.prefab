@@ -141,7 +141,7 @@ GameObject:
   - component: {fileID: 6400552169774493}
   - component: {fileID: 4511116606501797385}
   - component: {fileID: 2571235483519459857}
-  - component: {fileID: 8564160507717021119}
+  - component: {fileID: 8282603205577733383}
   m_Layer: 0
   m_Name: CartOutButton
   m_TagString: Untagged
@@ -181,6 +181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiIconController: {fileID: 4742327771195128530}
+  eventTrigger: {fileID: 8282603205577733383}
 --- !u!222 &4511116606501797385
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -219,7 +220,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8564160507717021119
+--- !u!114 &8282603205577733383
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -228,10 +229,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2622754757434925745}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65460498792f54f458ff9009abe14960, type: 3}
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiIconController: {fileID: 4742327771195128530}
+  m_Delegates: []
 --- !u!1 &4287974188828186070
 GameObject:
   m_ObjectHideFlags: 0
