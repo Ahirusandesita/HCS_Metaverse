@@ -32,7 +32,6 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3091349198449375307}
-  - {fileID: 2438756075118165872}
   m_Father: {fileID: 1517593533523936145}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &1534768199580840468
@@ -486,37 +485,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.111387365, y: 0.20000012, z: 0.638419}
   m_Center: {x: -0.0063511096, y: 0, z: 0.29491296}
---- !u!1 &7222130130615960826
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2438756075118165872}
-  m_Layer: 7
-  m_Name: Collider (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2438756075118165872
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7222130130615960826}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.019, z: 0.042}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5564414475497871604}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8242325877928751802
 GameObject:
   m_ObjectHideFlags: 0
@@ -770,10 +738,10 @@ GameObject:
   - component: {fileID: 1061398971341571833}
   - component: {fileID: 4823269317034822372}
   - component: {fileID: 4738233576240591066}
-  - component: {fileID: 7636402119903782261}
   - component: {fileID: 817949525172695443}
   - component: {fileID: 461123671200620639}
   - component: {fileID: 8034518197616682167}
+  - component: {fileID: 955682431830729521}
   m_Layer: 7
   m_Name: Knife
   m_TagString: Untagged
@@ -958,21 +926,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hide: 0
---- !u!114 &7636402119903782261
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9059914398412049686}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0e8d73aaad45194fb76ddbedb302cd7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _visualObjectTransform: {fileID: 4196008245216988978}
-  _originTransform: {fileID: 0}
-  _knifeCollider: {fileID: 0}
 --- !u!65 &817949525172695443
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1008,11 +961,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SortKey: 2812200916
   ObjectInterest: 1
-  Flags: 1
+  Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
-  - {fileID: 7636402119903782261}
   - {fileID: 8034518197616682167}
+  - {fileID: 955682431830729521}
 --- !u!114 &8034518197616682167
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1029,6 +982,21 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 0
+--- !u!114 &955682431830729521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9059914398412049686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cc8470158a9e0147a227764cccd503e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _visualObjectTransform: {fileID: 4196008245216988978}
+  _originTransform: {fileID: 0}
+  _knifeCollider: {fileID: 5977924233419729105}
 --- !u!1001 &4193993034870680464
 PrefabInstance:
   m_ObjectHideFlags: 0
