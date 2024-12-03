@@ -512,7 +512,7 @@ Transform:
   m_GameObject: {fileID: 54160011}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.556, y: 2.014, z: -0.884}
+  m_LocalPosition: {x: -1.6, y: 1.7, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6826,6 +6826,10 @@ PrefabInstance:
       propertyPath: NetworkedBehaviours.Array.size
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 955682431830729521, guid: bc23edf9f1b561f4885f2bffc9682c6e, type: 3}
+      propertyPath: _originTransform
+      value: 
+      objectReference: {fileID: 54160012}
     - target: {fileID: 1517593533523936145, guid: bc23edf9f1b561f4885f2bffc9682c6e, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.6
@@ -6922,18 +6926,6 @@ PrefabInstance:
       propertyPath: _pointableElement
       value: 
       objectReference: {fileID: 1825777143}
-    - target: {fileID: 7636402119903782261, guid: bc23edf9f1b561f4885f2bffc9682c6e, type: 3}
-      propertyPath: _knifeCollider
-      value: 
-      objectReference: {fileID: 1825777146}
-    - target: {fileID: 7636402119903782261, guid: bc23edf9f1b561f4885f2bffc9682c6e, type: 3}
-      propertyPath: _originTransform
-      value: 
-      objectReference: {fileID: 54160012}
-    - target: {fileID: 7636402119903782261, guid: bc23edf9f1b561f4885f2bffc9682c6e, type: 3}
-      propertyPath: _stoppingEventObject
-      value: 
-      objectReference: {fileID: 1090330012}
     - target: {fileID: 8034518197616682167, guid: bc23edf9f1b561f4885f2bffc9682c6e, type: 3}
       propertyPath: DisableSharedModeInterpolation
       value: 1
@@ -6942,9 +6934,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: Knife
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 7222130130615960826, guid: bc23edf9f1b561f4885f2bffc9682c6e, type: 3}
+    m_RemovedComponents:
+    - {fileID: 7636402119903782261, guid: bc23edf9f1b561f4885f2bffc9682c6e, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bc23edf9f1b561f4885f2bffc9682c6e, type: 3}
@@ -6962,11 +6954,6 @@ MonoBehaviour:
 --- !u!65 &1825777144 stripped
 BoxCollider:
   m_CorrespondingSourceObject: {fileID: 817949525172695443, guid: bc23edf9f1b561f4885f2bffc9682c6e, type: 3}
-  m_PrefabInstance: {fileID: 1825777142}
-  m_PrefabAsset: {fileID: 0}
---- !u!65 &1825777146 stripped
-BoxCollider:
-  m_CorrespondingSourceObject: {fileID: 5977924233419729105, guid: bc23edf9f1b561f4885f2bffc9682c6e, type: 3}
   m_PrefabInstance: {fileID: 1825777142}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1849615941
