@@ -21,7 +21,7 @@ public class InventoryTouch : MonoBehaviour, IInventoryOneFrame
     }
     public bool MatchItem(ItemAsset itemAsset)
     {
-        if(this.itemAsset == null)
+        if (this.itemAsset == null)
         {
             return true;
         }
@@ -34,11 +34,10 @@ public class InventoryTouch : MonoBehaviour, IInventoryOneFrame
         displayItem = itemAsset.DisplayItem;
 
         this.itemAsset = itemAsset;
-        inventoryOneFrame.PutAway(itemAsset);
-
         hasItemValue++;
+        inventoryOneFrame.PutAway(itemAsset,hasItemValue);
 
-        if(hasItemValue >= displayItem.MaxInventoryCapacity)
+        if (hasItemValue >= displayItem.MaxInventoryCapacity)
         {
             hasItem = true;
         }
@@ -46,7 +45,7 @@ public class InventoryTouch : MonoBehaviour, IInventoryOneFrame
 
     public void TakeOut()
     {
-        if(itemAsset == null)
+        if (itemAsset == null)
         {
             return;
         }
@@ -57,15 +56,16 @@ public class InventoryTouch : MonoBehaviour, IInventoryOneFrame
             return;
         }
 
-        inventoryOneFrame.TakeOut();
         hasItemValue--;
-        if(hasItemValue <= 0)
+        inventoryManager.ReturnItem(itemAsset);
+        if (hasItemValue <= 0)
         {
             hasItem = false;
+            inventoryOneFrame.TakeOut();
+            displayItem = null;
+            itemAsset = null;
+            hasItemValue = 0;
         }
-        inventoryManager.ReturnItem(itemAsset);
-        displayItem = null;
-        itemAsset = null;
     }
 
     private void Awake()
@@ -90,15 +90,11 @@ public class InventoryTouch : MonoBehaviour, IInventoryOneFrame
     }
     private void PointerUp()
     {
-        if (!HasItem)
-        {
-            return;
-        }
         TakeOut();
     }
     private void PointerEnter()
     {
-        if(itemAsset == null)
+        if (itemAsset == null)
         {
             return;
         }
@@ -112,7 +108,7 @@ public class InventoryTouch : MonoBehaviour, IInventoryOneFrame
     {
         this.inventoryManager = inventoryManager;
     }
-    public void SelectItemInject(SelectItem selectItem,NotExistIcon notExistIcon)
+    public void SelectItemInject(SelectItem selectItem, NotExistIcon notExistIcon)
     {
         this.selectItem = selectItem;
         selectItem.NotExistIconInject(notExistIcon);
