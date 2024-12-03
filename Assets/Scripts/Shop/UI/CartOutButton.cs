@@ -7,9 +7,13 @@ public class CartOutButton : MonoBehaviour
 {
     [SerializeField]
     private UIIcon uiIconController = default;
-
     public void OnPointerClick(PointerEventData eventData)
     {
         uiIconController.Delete();
     }
+    [ContextMenu("test")]
+    private void OnPointerClickTest()
+	{
+        uiIconController.Delete();
+	}
 }

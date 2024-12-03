@@ -15,10 +15,13 @@ public class ShopCartUIManager : MonoBehaviour
 	private Transform _parent;
 	[SerializeField]
 	private RectTransform _startPosition;
+	[SerializeField]
+	private GameObject _shopCanvasObject;
 	private Dictionary<int, UIIcon> _itemIcons = new();
 	private float _offsetX = 100;
 	private float _offsetY = 100;
 	private int _horizontalLimit = 3;
+
 
 	private void Start()
 	{
@@ -31,6 +34,10 @@ public class ShopCartUIManager : MonoBehaviour
 
 	public void AddCartUI(int id)
 	{
+		if (!_shopCanvasObject.activeSelf)
+		{
+			_shopCanvasObject.SetActive(true);
+		}
 		UIIcon uiIconTemp;
 		if (!_itemIcons.Keys.Contains(id))
 		{
@@ -53,8 +60,17 @@ public class ShopCartUIManager : MonoBehaviour
 
 	public void BuyButtonPush()
 	{
+		Clear();
 		_shopCart.Buy();
-		
+	}
+	private void Clear()
+	{
+		foreach (UIIcon uiIcon in _itemIcons.Values)
+		{
+			Destroy(uiIcon.gameObject);
+		}
+		_itemIcons.Clear();
+		_shopCanvasObject.SetActive(false);
 	}
 
 	public void DestoryCartUI(int id)
@@ -64,6 +80,10 @@ public class ShopCartUIManager : MonoBehaviour
 		{
 			_itemIcons[id].UpdateCount(0);
 			_itemIcons.Remove(id);
+			if (0 >= _shopCart.InCarts.Keys.Count)
+			{
+				_shopCanvasObject.SetActive(false);
+			}
 		}
 		else
 		{

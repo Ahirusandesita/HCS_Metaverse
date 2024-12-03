@@ -82,7 +82,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 
 	private async void Awake()
 	{
-		SceneNameType firstScene = SceneNameType.KumaKumaTest;
+		SceneNameType firstScene = SceneNameType.TestPhotonScene;
 
 		if (FindObjectsOfType<MasterServerConect>().Length > 1)
 		{
@@ -160,7 +160,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	public async UniTask Connect(string sessionName)
 	{
 		NetworkSceneInfo networkSceneInfo = default;
-
+		XKumaDebugSystem.LogWarning($"セッション名：{sessionName}", KumaDebugColor.ErrorColor);
 		networkSceneInfo.AddSceneRef(SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex));
 
 		StartGameArgs startGameArgs = new StartGameArgs

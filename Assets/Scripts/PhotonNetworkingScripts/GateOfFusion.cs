@@ -117,7 +117,6 @@ public class GateOfFusion
 
 	public async UniTask<GameObject> SpawnAsync(GameObject prefab, Vector3 position = default, Quaternion quaternion = default, Transform parent = default)
 	{
-
 		GameObject temp;
 		if (!MasterServer.IsUsePhoton)
 		{
