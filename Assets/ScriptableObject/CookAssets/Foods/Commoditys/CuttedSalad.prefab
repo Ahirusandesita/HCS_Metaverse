@@ -552,6 +552,7 @@ GameObject:
   - component: {fileID: 5523559382060686228}
   - component: {fileID: 5312789918648521757}
   - component: {fileID: 7196264025257678434}
+  - component: {fileID: -5247038549720308551}
   m_Layer: 7
   m_Name: CuttedSalad
   m_TagString: Untagged
@@ -701,6 +702,19 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 1
+--- !u!114 &-5247038549720308551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6232795639646853607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf0c7f6de2429f4083e678316326153, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeDistance: 2
 --- !u!1 &7859801155355870210
 GameObject:
   m_ObjectHideFlags: 0

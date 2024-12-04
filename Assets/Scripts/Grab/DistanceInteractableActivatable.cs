@@ -5,40 +5,31 @@ using Oculus.Interaction.HandGrab;
 using Oculus.Interaction;
 using Fusion;
 
-public class DistanceInteractableActivatable : MonoBehaviour, IActivatableDistance
+public class DistanceInteractableActivatable : MonoBehaviour, IActivatableDistance,IGrabbableActiveChangeRequester
 {
     [SerializeField]
     private float activeDistance;
     public float ActiveDistance => activeDistance;
-    private DistanceHandGrabInteractable[] distanceHandGrabInteractables;
-    private DistanceGrabInteractable[] distanceGrabInteractables;
-
+    ISwitchableGrabbableActive grabbableActive;
     private void Awake()
     {
-        distanceHandGrabInteractables = this.gameObject.GetComponentsInChildren<DistanceHandGrabInteractable>();
-        distanceGrabInteractables = this.gameObject.GetComponentsInChildren<DistanceGrabInteractable>();
+        grabbableActive = this.GetComponent<ISwitchableGrabbableActive>();
+        if(grabbableActive == null)
+        {
+            Debug.LogError($"ISwitchableGrabbableActiveがアタッチされていません" + this.gameObject.name);
+            return;
+        }
+        grabbableActive.Regist(this);
     }
 
     void IActivatableDistance.Active()
     {
-        InteractableEnable(true);
+        grabbableActive.Active(this);
     }
 
     void IActivatableDistance.Passive()
     {
-        InteractableEnable(false);
-    }
-
-    private void InteractableEnable(bool active)
-    {
-        foreach (DistanceGrabInteractable distanceGrabInteractable in distanceGrabInteractables)
-        {
-            distanceGrabInteractable.enabled = active;
-        }
-        foreach (DistanceHandGrabInteractable distanceHandGrabInteractable in distanceHandGrabInteractables)
-        {
-            distanceHandGrabInteractable.enabled = active;
-        }
+        grabbableActive.Inactive(this);
     }
 
 }

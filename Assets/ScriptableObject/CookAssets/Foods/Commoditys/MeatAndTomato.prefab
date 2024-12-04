@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 6323647407871834527}
   - component: {fileID: 4540733175409425832}
   - component: {fileID: 2488536670914375520}
+  - component: {fileID: -2405014808102566910}
   m_Layer: 7
   m_Name: MeatAndTomato
   m_TagString: Untagged
@@ -166,6 +167,19 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 1
+--- !u!114 &-2405014808102566910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 972525112594119794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf0c7f6de2429f4083e678316326153, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeDistance: 2
 --- !u!1 &1161976638822330236
 GameObject:
   m_ObjectHideFlags: 0

@@ -739,6 +739,7 @@ GameObject:
   - component: {fileID: 2597773152576185073}
   - component: {fileID: 1642583171003262116}
   - component: {fileID: 5891287808198404606}
+  - component: {fileID: 3296309842910316815}
   m_Layer: 7
   m_Name: Banzu
   m_TagString: Untagged
@@ -917,6 +918,19 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 1
+--- !u!114 &3296309842910316815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5505800928937417532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf0c7f6de2429f4083e678316326153, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeDistance: 2
 --- !u!1 &9059811968028275196
 GameObject:
   m_ObjectHideFlags: 0
