@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using Oculus.Interaction;
 
 public class NullPutableOnDish : IPutableOnDish
 {
@@ -53,11 +54,18 @@ public class Dish : NetworkBehaviour, IPutableOnDish,IGrabbableActiveChangeReque
         putObject.GetComponent<Rigidbody>().isKinematic = true;
     }
 
-    private void Awake()
+    private void Start()
     {
+        PointableUnityEventWrapper pointableUnityEventWrapper;
+
+        pointableUnityEventWrapper = GetComponent<PointableUnityEventWrapper>();
+
         fixedPosition = fixedTransform.localPosition;
 
         _myNetwork = GetComponent<NetworkObject>();
+
+        pointableUnityEventWrapper.WhenSelect.AddListener((data) => GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()));
+        pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
     }
 
     private void Update()

@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: -9104087912647757293}
   - component: {fileID: 513945491030842782}
   - component: {fileID: -274983709568289408}
+  - component: {fileID: -8236553899790063030}
   m_Layer: 7
   m_Name: DIsh
   m_TagString: Untagged
@@ -193,6 +194,40 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeDistance: 2
+--- !u!114 &-8236553899790063030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856034322866127083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2f8f6e9e6f3e114b9bf9a57c2160615, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _pointable: {fileID: 7376902524256903264}
+  _whenRelease:
+    m_PersistentCalls:
+      m_Calls: []
+  _whenHover:
+    m_PersistentCalls:
+      m_Calls: []
+  _whenUnhover:
+    m_PersistentCalls:
+      m_Calls: []
+  _whenSelect:
+    m_PersistentCalls:
+      m_Calls: []
+  _whenUnselect:
+    m_PersistentCalls:
+      m_Calls: []
+  _whenMove:
+    m_PersistentCalls:
+      m_Calls: []
+  _whenCancel:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &3169842819116642680
 GameObject:
   m_ObjectHideFlags: 0

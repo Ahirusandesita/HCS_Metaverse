@@ -53,6 +53,9 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
         pointableUnityEventWrapper = this.transform.root.GetComponent<PointableUnityEventWrapper>();
         pointableUnityEventWrapper.WhenUnselect.AddListener((action) => { UnSelect(); });
 
+        pointableUnityEventWrapper.WhenSelect.AddListener((data) => GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()));
+        pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
+
         // 
         _detailEventIssuer = GameObject.FindObjectOfType<InteractorDetailEventIssuer>();
 
