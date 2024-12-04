@@ -51,7 +51,7 @@ public class Customer : MonoBehaviour
 
     private void On(ResetOrderArrayEventArgs resetOrderArrayEventArgs)
     {
-        if (FindObjectOfType<Leader>())
+        if (FindObjectOfType<Leader>().IsLeader)
         {
             StartCoroutine(Co());
         }
