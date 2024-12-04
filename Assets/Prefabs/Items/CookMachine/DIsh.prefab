@@ -15,6 +15,9 @@ GameObject:
   - component: {fileID: 945054919637469903}
   - component: {fileID: 7979851738362713699}
   - component: {fileID: 6956797211569918104}
+  - component: {fileID: -9104087912647757293}
+  - component: {fileID: 513945491030842782}
+  - component: {fileID: -274983709568289408}
   m_Layer: 7
   m_Name: DIsh
   m_TagString: Untagged
@@ -153,6 +156,43 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 1
+--- !u!114 &-9104087912647757293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856034322866127083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aa19703ac9ff464784a6b79a7b4c12c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &513945491030842782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856034322866127083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1676082f09d57134fb7c3c978b371b71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-274983709568289408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856034322866127083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf0c7f6de2429f4083e678316326153, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeDistance: 2
 --- !u!1 &3169842819116642680
 GameObject:
   m_ObjectHideFlags: 0

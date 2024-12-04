@@ -20,6 +20,10 @@ public class DistanceInteractableChecker : MonoBehaviour
         }
         activeDistances.Add(activatableDistance);
     }
+    public void Remove(IActivatableDistance activatableDistance)
+    {
+        activeDistances.Remove(activatableDistance);
+    }
     private void Update()
     {
         CheckDistance();

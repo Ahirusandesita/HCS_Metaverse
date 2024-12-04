@@ -34,4 +34,8 @@ public class DistanceInteractableActivatable : MonoBehaviour, IActivatableDistan
         grabbableActive.Inactive(this);
     }
 
+    private void OnDestroy()
+    {
+        GameObject.FindObjectOfType<DistanceInteractableChecker>().Remove(this);
+    }
 }
