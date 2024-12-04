@@ -19,6 +19,7 @@ public class Dish : NetworkBehaviour, IPutableOnDish,IGrabbableActiveChangeReque
     private Vector3 fixedPosition;
     private ISwitchableGrabbableActive switchable;
     bool canPut = true;
+    NetworkObject _myNetwork;
 
     [Rpc]
     public void Rpc_PutCommodity(NetworkObject putObject)
@@ -55,11 +56,13 @@ public class Dish : NetworkBehaviour, IPutableOnDish,IGrabbableActiveChangeReque
     private void Awake()
     {
         fixedPosition = fixedTransform.localPosition;
+
+        _myNetwork = GetComponent<NetworkObject>();
     }
 
     private void Update()
     {
-        if (switchable == null)
+        if (switchable == null || !_myNetwork.HasStateAuthority)
         {
             return;
         }
@@ -105,7 +108,21 @@ public class Dish : NetworkBehaviour, IPutableOnDish,IGrabbableActiveChangeReque
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.TryGetComponent<SubmisionTable>(out SubmisionTable table))
+        if (_myNetwork.HasStateAuthority)
+        {
+            CollisionTable(collision.gameObject.GetComponent<NetworkObject>());
+        }
+    }
+
+    public void Inject(ISwitchableGrabbableActive t)
+    {
+        
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void CollisionTable(NetworkObject networkObject)
+    {
+        if (networkObject.TryGetComponent<SubmisionTable>(out SubmisionTable table))
         {
             if (switchable is null)
             {
@@ -116,10 +133,5 @@ public class Dish : NetworkBehaviour, IPutableOnDish,IGrabbableActiveChangeReque
 
             GameObject.FindObjectOfType<DishManager>().InstanceNewDish(GetComponent<NetworkObject>());
         }
-    }
-
-    public void Inject(ISwitchableGrabbableActive t)
-    {
-        
     }
 }
