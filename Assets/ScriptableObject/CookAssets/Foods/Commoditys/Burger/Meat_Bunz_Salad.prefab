@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 8828785301851713454}
   - component: {fileID: 2788012350368920807}
   - component: {fileID: 5079451648298834250}
+  - component: {fileID: -799139013828347664}
   m_Layer: 7
   m_Name: Meat_Bunz_Salad
   m_TagString: Untagged
@@ -167,6 +168,19 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 1
+--- !u!114 &-799139013828347664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767805352094301928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf0c7f6de2429f4083e678316326153, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeDistance: 2
 --- !u!1 &846670969408330396
 GameObject:
   m_ObjectHideFlags: 0
