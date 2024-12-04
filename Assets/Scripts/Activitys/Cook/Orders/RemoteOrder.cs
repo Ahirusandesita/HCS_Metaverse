@@ -15,7 +15,7 @@ public class RemoteOrder : NetworkBehaviour
         customer.RemoteOrder(index);
     }
 
-    [Rpc(RpcSources.All,RpcTargets.All)]
+    [Rpc(RpcSources.All,RpcTargets.All,InvokeLocal = false)]
     public void RPC_Submision(int index)
     {
         orderManager = GameObject.FindObjectOfType<OrderManager>();
