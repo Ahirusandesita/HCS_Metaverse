@@ -8,7 +8,7 @@ using Fusion;
 /// <summary>
 /// ãÔçﬁ
 /// </summary>
-public class Ingrodients : MonoBehaviour, IIngrodientsModerator, ISwitchableGrabbableActive, IInject<ISwitchableGrabbableActive>
+public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitchableGrabbableActive>,IGrabbableActiveChangeRequester
 {
     [SerializeField]
     private IngrodientsAsset ingrodientsAsset;
@@ -35,8 +35,6 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, ISwitchableGrab
             ingrodientsAsset = value;
         }
     }
-
-    GameObject ISwitchableGrabbableActive.gameObject => throw new NotImplementedException();
 
     private CommodityFactory commodityFactory;
 
@@ -65,11 +63,11 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, ISwitchableGrab
         {
             if (data.Authrity)
             {
-                switchableGrabbableActive.Active();
+                switchableGrabbableActive.Active(this);
             }
             else if (data.Authrity)
             {
-                switchableGrabbableActive.Inactive();
+                switchableGrabbableActive.Inactive(this);
             }
         };
     }
@@ -105,18 +103,9 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, ISwitchableGrab
         return instanceCommodity;
     }
 
-    void ISwitchableGrabbableActive.Active()
-    {
-        switchableGrabbableActive.Active();
-    }
-
-    void ISwitchableGrabbableActive.Inactive()
-    {
-        switchableGrabbableActive.Inactive();
-    }
-
     void IInject<ISwitchableGrabbableActive>.Inject(ISwitchableGrabbableActive t)
     {
         this.switchableGrabbableActive = t;
+        this.switchableGrabbableActive.Regist(this);
     }
 }

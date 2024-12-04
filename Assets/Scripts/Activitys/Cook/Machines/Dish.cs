@@ -12,7 +12,7 @@ public class NullPutableOnDish : IPutableOnDish
     }
     public void CommodityReset() { }
 }
-public class Dish : NetworkBehaviour, IPutableOnDish
+public class Dish : NetworkBehaviour, IPutableOnDish,IGrabbableActiveChangeRequester
 {
     [SerializeField]
     private Transform fixedTransform;
@@ -27,6 +27,8 @@ public class Dish : NetworkBehaviour, IPutableOnDish
 
         ISwitchableGrabbableActive switchable = putObject.GetComponent<ISwitchableGrabbableActive>();
 
+        switchable.Regist(this);
+
         if (this.switchable != null)
         {
             return;
@@ -37,7 +39,7 @@ public class Dish : NetworkBehaviour, IPutableOnDish
         }
         
         this.switchable = switchable;
-        switchable.Inactive();
+        switchable.Inactive(this);
 
         putObject.transform.parent = this.transform;
 
@@ -66,20 +68,22 @@ public class Dish : NetworkBehaviour, IPutableOnDish
 
         if (vector3.x > 70f && vector3.x < 290f)
         {
-            switchable.Active();
+            switchable.Active(this);
             switchable.gameObject.GetComponent<Commodity>().InjectPutableOnDish(new NullPutableOnDish());
             switchable.gameObject.GetComponent<Rigidbody>().isKinematic = false;
             switchable.gameObject.transform.parent = null;
+            switchable.Cancellation(this);
             switchable = null;
             canPut = false;
             StartCoroutine(NotPutOn());
         }
         else if (vector3.z > 70f && vector3.z < 290f)
         {
-            switchable.Active();
+            switchable.Active(this);
             switchable.gameObject.GetComponent<Commodity>().InjectPutableOnDish(new NullPutableOnDish());
             switchable.gameObject.GetComponent<Rigidbody>().isKinematic = false;
             switchable.gameObject.transform.parent = null;
+            switchable.Cancellation(this);
             switchable = null;
             StartCoroutine(NotPutOn());
         }
@@ -94,6 +98,7 @@ public class Dish : NetworkBehaviour, IPutableOnDish
 
     public void CommodityReset()
     {
+        switchable.Cancellation(this);
         switchable = null;
     }
 
