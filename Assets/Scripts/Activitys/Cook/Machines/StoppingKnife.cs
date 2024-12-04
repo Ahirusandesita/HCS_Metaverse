@@ -135,7 +135,13 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
 
     public void UnSelect()
     {
-        // 
+        // 座標を初期状態に戻す
+        this.transform.position = _originTransform.position;
+
+        // 角度を初期状態に戻す
+        this.transform.rotation = _originTransform.rotation;
+
+        // オブジェクトの固定を解除する
         RPC_ReleaseObject();
     }
 
@@ -171,27 +177,19 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
         // 接触したオブジェクトが持つ接触時の処理を実行する
         hitObject.GetComponent<IManualProcessing>().ProcessingEvent();
 
-        Debug.Log($"<color=red>掴んだよん：ほーちょー</color>");
+        Debug.Log("当たったよん：ほーちょー");
     }
 
     /// <summary>
-    /// オブジェクトから手を離した時の処理
+    /// オブジェクトの固定を解除する処理
     /// </summary>
     [Rpc]
     private void RPC_ReleaseObject()
     {
-        // 座標を初期状態に戻す
-        this.transform.position = _originTransform.position;
-
-        // 角度を初期状態に戻す
-        this.transform.rotation = _originTransform.rotation;
-
         // Viewオブジェクトの固定を解除する
         DestroyStopData();
 
         // フラグを消す
         _onStopperObject = false;
-
-        Debug.Log($"<color=red>離したよん：ほーちょー</color>");
     }
 }

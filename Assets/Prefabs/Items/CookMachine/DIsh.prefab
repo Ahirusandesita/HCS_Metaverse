@@ -12,7 +12,10 @@ GameObject:
   - component: {fileID: 2434605363613086055}
   - component: {fileID: 1487631166640387327}
   - component: {fileID: 7376902524256903264}
-  m_Layer: 0
+  - component: {fileID: 945054919637469903}
+  - component: {fileID: 7979851738362713699}
+  - component: {fileID: 6956797211569918104}
+  m_Layer: 7
   m_Name: DIsh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -101,6 +104,55 @@ MonoBehaviour:
   _rigidbody: {fileID: 1487631166640387327}
   _kinematicWhileSelected: 1
   _throwWhenUnselected: 1
+--- !u!114 &945054919637469903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856034322866127083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 728629989
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 2434605363613086055}
+  - {fileID: 7979851738362713699}
+  - {fileID: 6956797211569918104}
+--- !u!114 &7979851738362713699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856034322866127083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 826b17ef5a16c854bb99e8c9b1835040, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _IsNotReleaseStateAuthority: 0
+--- !u!114 &6956797211569918104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856034322866127083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 1
 --- !u!1 &3169842819116642680
 GameObject:
   m_ObjectHideFlags: 0
@@ -110,7 +162,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2886509805029487509}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FixedPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -144,7 +196,7 @@ GameObject:
   - component: {fileID: 8749860848480465076}
   - component: {fileID: 4971533904475967913}
   - component: {fileID: 8855142807236416911}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GrabInteractable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -256,7 +308,7 @@ GameObject:
   - component: {fileID: 1274919075835762966}
   - component: {fileID: 2437152005296513667}
   - component: {fileID: 693260259689192260}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabInteractable(Left)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -423,7 +475,7 @@ GameObject:
   m_Component:
   - component: {fileID: 71514489545951276}
   - component: {fileID: 4213496536232284501}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabPose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -494,7 +546,7 @@ GameObject:
   - component: {fileID: 5744711611839610342}
   - component: {fileID: 5927444271720183081}
   - component: {fileID: 357027600989587971}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabInteractable(Right)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -661,7 +713,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3635092802272709499}
   - component: {fileID: 1756736638100419304}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HandGrabPose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -731,6 +783,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Plate1
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: f6c0da0ba5de33b4b9547f2cca90a5fd, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f6c0da0ba5de33b4b9547f2cca90a5fd, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.11
@@ -745,7 +801,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f6c0da0ba5de33b4b9547f2cca90a5fd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.0000000035858756
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f6c0da0ba5de33b4b9547f2cca90a5fd, type: 3}
       propertyPath: m_LocalPosition.y
@@ -753,7 +809,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f6c0da0ba5de33b4b9547f2cca90a5fd, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.000000011605197
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f6c0da0ba5de33b4b9547f2cca90a5fd, type: 3}
       propertyPath: m_LocalRotation.w
