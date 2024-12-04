@@ -10,7 +10,6 @@ public class RemoteOrder : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RPC_Order(int index)
     {
-        Debug.LogWarning("‚Õ‚ñ‚Õ‚ñ");
         customer = GameObject.FindObjectOfType<Customer>();
         customer.RemoteOrder(index);
     }

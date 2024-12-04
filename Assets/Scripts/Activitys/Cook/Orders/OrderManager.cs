@@ -32,6 +32,8 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     public event OrderInitializeHandler OnOrderInitialize;
     public event ResetOrderArrayHandler OnResetOrder;
 
+    public event Action OnSubmission;
+
     private int orderCode = 0;
     [SerializeField]
     private RemoteOrder remoteOrder;
@@ -154,6 +156,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
         }
 
         OnResetOrder?.Invoke(new ResetOrderArrayEventArgs(commodityInformations));
+        OnSubmission?.Invoke();
     }
 
     public void RemoteSubmision(int index)
