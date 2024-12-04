@@ -110,7 +110,7 @@ public class Dish : NetworkBehaviour, IPutableOnDish,IGrabbableActiveChangeReque
     {
         if (_myNetwork.HasStateAuthority)
         {
-            CollisionTable(collision.gameObject.GetComponent<NetworkObject>());
+            Rpc_CollisionTable(collision.gameObject.GetComponent<NetworkObject>());
         }
     }
 
@@ -120,7 +120,7 @@ public class Dish : NetworkBehaviour, IPutableOnDish,IGrabbableActiveChangeReque
     }
 
     [Rpc(RpcSources.All, RpcTargets.All)]
-    public void CollisionTable(NetworkObject networkObject)
+    public void Rpc_CollisionTable(NetworkObject networkObject)
     {
         if (networkObject.TryGetComponent<SubmisionTable>(out SubmisionTable table))
         {
