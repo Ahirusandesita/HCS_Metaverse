@@ -5354,23 +5354,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 817716074}
   m_CullTransparentMesh: 1
---- !u!1 &825914577 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6508186075653957376, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-  m_PrefabInstance: {fileID: 921979061}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &825914582
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 825914577}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60797b2b1e1103b4789523628e4b77fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &835147611
 GameObject:
   m_ObjectHideFlags: 0
@@ -6146,10 +6129,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5671115918361860096, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-      propertyPath: Head
-      value: 
-      objectReference: {fileID: 825914582}
     - target: {fileID: 7398685987471483529, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: masterServerConect
       value: 
@@ -6201,10 +6180,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6508186075653957376, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 825914582}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
 --- !u!114 &921979062 stripped
 MonoBehaviour:
