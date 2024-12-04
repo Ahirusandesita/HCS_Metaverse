@@ -38,7 +38,7 @@ public class OrderViewDetailImformation : MonoBehaviour
     {
         Active();
 
-        textMeshProUGUI.text = commodityAsset.name;
+        //textMeshProUGUI.text = commodityAsset.name;
 
         orderImage.sprite = commodityAsset.CommodityAppearance.CommoditySprite;
 
