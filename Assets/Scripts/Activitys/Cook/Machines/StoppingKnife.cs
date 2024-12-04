@@ -99,7 +99,7 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
             }
 
             // 固定を解除
-            RPC_ReleaseObject();
+            RPC_UnlockedObject();
 
             return;
         }
@@ -135,14 +135,8 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
 
     public void UnSelect()
     {
-        // 座標を初期状態に戻す
-        this.transform.position = _originTransform.position;
-
-        // 角度を初期状態に戻す
-        this.transform.rotation = _originTransform.rotation;
-
         // オブジェクトの固定を解除する
-        RPC_ReleaseObject();
+        RPC_UnSelectObject();
     }
 
     /// <summary>
@@ -162,7 +156,7 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
     /// 停止するオブジェクトに接触したときの処理を行うメソッド
     /// </summary>
     /// <param name="hitObject">接触したオブジェクトのNetworkObject</param>
-    [Rpc]
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     private void RPC_HitStopCollider(NetworkObject hitObject)
     {
         // フラグを立てる
@@ -177,19 +171,40 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
         // 接触したオブジェクトが持つ接触時の処理を実行する
         hitObject.GetComponent<IManualProcessing>().ProcessingEvent();
 
-        Debug.Log("当たったよん：ほーちょー");
+        Debug.Log($"<color=blue>当たったよん：ほーちょー</color>");
     }
 
     /// <summary>
     /// オブジェクトの固定を解除する処理
     /// </summary>
-    [Rpc]
-    private void RPC_ReleaseObject()
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
+    private void RPC_UnlockedObject()
     {
         // Viewオブジェクトの固定を解除する
         DestroyStopData();
 
         // フラグを消す
         _onStopperObject = false;
+        Debug.Log($"<color=red>はずれたよん：ほーちょー</color>");
+    }
+
+    /// <summary>
+    /// オブジェクトから手を離した時の処理
+    /// </summary>
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
+    private void RPC_UnSelectObject()
+    {
+        // 座標を初期状態に戻す
+        this.transform.position = _originTransform.position;
+
+        // 角度を初期状態に戻す
+        this.transform.rotation = _originTransform.rotation;
+
+        // Viewオブジェクトの固定を解除する
+        DestroyStopData();
+
+        // フラグを消す
+        _onStopperObject = false;
+        Debug.Log($"<color=yellow>はなしたよん：ほーちょー</color>");
     }
 }
