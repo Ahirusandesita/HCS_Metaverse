@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Customer : MonoBehaviour
+public class OrderSystem : MonoBehaviour
 {
     private OrderAsset orderAsset;
     [SerializeField]
@@ -19,9 +19,13 @@ public class Customer : MonoBehaviour
             StartCoroutine(Co());
         };
     }
-    public void Order(int index)
+    public OrderTicket Order(int index, float orderWaitingTime, OrderWaitingType orderWaitingType)
     {
-        remoteOrder.RPC_Order(index);
+        remoteOrder.RPC_Order(index, orderWaitingTime, (int)orderWaitingType);
+        OrderTicket orderTicket = orderManager.Inquiry(orderWaitingTime, orderWaitingType);
+        orderTicket.Orderable.Order(orderAsset.OrderDetailInformations[index].CommodityAsset, orderTicket.CustomerInformation);
+
+        return orderTicket;
     }
 
     public void InjectRemoteOrder(RemoteOrder remoteOrder)
@@ -39,13 +43,13 @@ public class Customer : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.C))
         {
-            Order(0);
+            StartCoroutine(Co());
         }
     }
 
-    public void RemoteOrder(int index)
+    public void RemoteOrder(int index, float orderWaitingTime, int orderWaitingType)
     {
-        OrderTicket orderTicket = orderManager.Inquiry();
+        OrderTicket orderTicket = orderManager.Inquiry(orderWaitingTime, (OrderWaitingType)orderWaitingType);
         orderTicket.Orderable.Order(orderAsset.OrderDetailInformations[index].CommodityAsset, orderTicket.CustomerInformation);
     }
 
@@ -57,6 +61,13 @@ public class Customer : MonoBehaviour
     private IEnumerator Co()
     {
         yield return new WaitForSeconds(2f);
-        Order(Random.Range(0, orderAsset.OrderDetailInformations.Count));
+        OrderTicket orderTicket = Order(Random.Range(0, orderAsset.OrderDetailInformations.Count), 5f, OrderWaitingType.Manifest);
+        StartCoroutine(CancelTime(orderTicket));
+    }
+
+    private IEnumerator CancelTime(OrderTicket orderTicket)
+    {
+        yield return new WaitForSeconds(orderTicket.CustomerInformation.OrderWaitingTime);
+        orderTicket.Orderable.Cancel(orderTicket.CustomerInformation);
     }
 }

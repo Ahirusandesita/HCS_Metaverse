@@ -4,17 +4,17 @@ using UnityEngine;
 using Fusion;
 public class RemoteOrder : NetworkBehaviour
 {
-    private Customer customer;
+    private OrderSystem customer;
     private OrderManager orderManager;
 
-    [Rpc(RpcSources.All, RpcTargets.All)]
-    public void RPC_Order(int index)
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
+    public void RPC_Order(int index, float orderWaitingTime, int orderWaitingType)
     {
-        customer = GameObject.FindObjectOfType<Customer>();
-        customer.RemoteOrder(index);
+        customer = GameObject.FindObjectOfType<OrderSystem>();
+        customer.RemoteOrder(index, orderWaitingTime, orderWaitingType);
     }
 
-    [Rpc(RpcSources.All,RpcTargets.All,InvokeLocal = false)]
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     public void RPC_Submision(int index)
     {
         orderManager = GameObject.FindObjectOfType<OrderManager>();
@@ -25,5 +25,12 @@ public class RemoteOrder : NetworkBehaviour
     {
         orderManager = GameObject.FindObjectOfType<OrderManager>();
         orderManager.Inject(this);
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
+    public void RPC_Cancel(int index)
+    {
+        orderManager = GameObject.FindObjectOfType<OrderManager>();
+        orderManager.RemoteSubmision(index);
     }
 }

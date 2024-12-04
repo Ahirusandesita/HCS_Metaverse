@@ -3,11 +3,13 @@ public class OrderEventArgs : System.EventArgs
     public readonly CommodityInformation CommodityInformation;
     public readonly OrderType OrderType;
     public readonly int OrderIndex;
-    public OrderEventArgs(CommodityInformation commodityInformation, OrderType orderType, int orderIndex)
+    public readonly CustomerInformation CustomerInformation;
+    public OrderEventArgs(CommodityInformation commodityInformation, OrderType orderType, int orderIndex, CustomerInformation customerInformation)
     {
         this.CommodityInformation = commodityInformation;
         this.OrderType = orderType;
         this.OrderIndex = orderIndex;
+        this.CustomerInformation = customerInformation;
     }
 }
 public class OrderInitializeEventArgs : System.EventArgs
