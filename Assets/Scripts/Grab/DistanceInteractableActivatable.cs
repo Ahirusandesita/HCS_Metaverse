@@ -11,16 +11,16 @@ public class DistanceInteractableActivatable : MonoBehaviour, IActivatableDistan
     private float activeDistance;
     public float ActiveDistance => activeDistance;
     ISwitchableGrabbableActive grabbableActive;
-    private void Awake()
+
+    private void Start()
     {
         grabbableActive = this.GetComponent<ISwitchableGrabbableActive>();
-        if(grabbableActive == null)
+        if (grabbableActive == null)
         {
             Debug.LogError($"ISwitchableGrabbableActiveがアタッチされていません" + this.gameObject.name);
             return;
         }
         grabbableActive.Regist(this);
-
         GameObject.FindObjectOfType<DistanceInteractableChecker>().Add(this);
     }
 

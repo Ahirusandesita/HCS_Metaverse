@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DistanceInteractableChecker : MonoBehaviour
 {
-    private List<IActivatableDistance> activeDistances;
+    private List<IActivatableDistance> activeDistances = new List<IActivatableDistance>();
     private void Awake()
     {
         activeDistances = InterfaceUtils.FindObjectOfInterfaces<IActivatableDistance>().ToList();
