@@ -326,6 +326,7 @@ GameObject:
   - component: {fileID: 8276699945407225908}
   - component: {fileID: 263063388803635081}
   - component: {fileID: 8138851004313255567}
+  - component: {fileID: -1703298148533343024}
   m_Layer: 7
   m_Name: Salad
   m_TagString: Untagged
@@ -530,6 +531,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeDistance: 2
+--- !u!114 &-1703298148533343024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3206259490211938747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aa19703ac9ff464784a6b79a7b4c12c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3498574826486432006
 GameObject:
   m_ObjectHideFlags: 0

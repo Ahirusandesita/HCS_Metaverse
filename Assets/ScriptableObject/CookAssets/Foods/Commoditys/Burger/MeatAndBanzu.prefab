@@ -308,6 +308,7 @@ GameObject:
   - component: {fileID: 6734508259967496177}
   - component: {fileID: 6119727296266401690}
   - component: {fileID: 7142545952718137601}
+  - component: {fileID: 655310375922528413}
   m_Layer: 7
   m_Name: MeatAndBanzu
   m_TagString: Untagged
@@ -471,6 +472,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeDistance: 2
+--- !u!114 &655310375922528413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2724284899508978560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aa19703ac9ff464784a6b79a7b4c12c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3235710923864443451
 GameObject:
   m_ObjectHideFlags: 0

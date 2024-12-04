@@ -1,13 +1,25 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class DistanceInteractableChecker : MonoBehaviour
 {
-    private IActivatableDistance[] activeDistances;
+    private List<IActivatableDistance> activeDistances;
     private void Awake()
     {
-        activeDistances = InterfaceUtils.FindObjectOfInterfaces<IActivatableDistance>();
+        activeDistances = InterfaceUtils.FindObjectOfInterfaces<IActivatableDistance>().ToList();
     }
-
+    public void Add(IActivatableDistance activatableDistance)
+    {
+        foreach(IActivatableDistance item in activeDistances)
+        {
+            if(item == activatableDistance)
+            {
+                return;
+            }
+        }
+        activeDistances.Add(activatableDistance);
+    }
     private void Update()
     {
         CheckDistance();

@@ -20,6 +20,8 @@ public class DistanceInteractableActivatable : MonoBehaviour, IActivatableDistan
             return;
         }
         grabbableActive.Regist(this);
+
+        GameObject.FindObjectOfType<DistanceInteractableChecker>().Add(this);
     }
 
     void IActivatableDistance.Active()

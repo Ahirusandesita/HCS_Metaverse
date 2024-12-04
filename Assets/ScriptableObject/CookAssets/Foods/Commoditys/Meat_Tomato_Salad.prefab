@@ -791,6 +791,7 @@ GameObject:
   - component: {fileID: 2581325152030747297}
   - component: {fileID: 2357308615107443475}
   - component: {fileID: -106134961237639801}
+  - component: {fileID: -7724010354839662713}
   m_Layer: 7
   m_Name: Meat_Tomato_Salad
   m_TagString: Untagged
@@ -955,6 +956,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeDistance: 2
+--- !u!114 &-7724010354839662713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8589668024187831927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aa19703ac9ff464784a6b79a7b4c12c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4960171631900198839
 PrefabInstance:
   m_ObjectHideFlags: 0

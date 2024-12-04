@@ -536,6 +536,7 @@ GameObject:
   - component: {fileID: 7961468362606612610}
   - component: {fileID: 7825030911570459481}
   - component: {fileID: -2014264716549503923}
+  - component: {fileID: 2578431454751584648}
   m_Layer: 7
   m_Name: Bunz_Salad
   m_TagString: Untagged
@@ -699,6 +700,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeDistance: 2
+--- !u!114 &2578431454751584648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6572114968366764773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aa19703ac9ff464784a6b79a7b4c12c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7007153203609583598
 GameObject:
   m_ObjectHideFlags: 0

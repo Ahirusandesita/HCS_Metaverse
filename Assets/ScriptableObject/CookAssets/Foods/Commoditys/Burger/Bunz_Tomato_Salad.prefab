@@ -187,6 +187,7 @@ GameObject:
   - component: {fileID: 4747855238827818000}
   - component: {fileID: 8260877868949621766}
   - component: {fileID: -9000750226039259948}
+  - component: {fileID: 4897156767626725855}
   m_Layer: 7
   m_Name: Bunz_Tomato_Salad
   m_TagString: Untagged
@@ -351,6 +352,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeDistance: 2
+--- !u!114 &4897156767626725855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 563161898823742931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aa19703ac9ff464784a6b79a7b4c12c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1626570583806510247
 GameObject:
   m_ObjectHideFlags: 0
