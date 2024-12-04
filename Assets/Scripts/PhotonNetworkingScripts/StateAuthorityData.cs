@@ -6,8 +6,17 @@ public class StateAuthorityData : NetworkBehaviour
 {
 	[Networked]
 	public bool IsNotReleaseStateAuthority { get; set ; }
+	public bool IsEnable => isEnable;
 	public event AuthrityHandler OnAuthrity;
 	private bool isGrabbable = true;
+	private bool isEnable = false;
+
+	public override void Spawned()
+	{
+		base.Spawned();
+		isEnable = true;
+	}
+
 	public bool IsGrabbable
 	{
 		get
