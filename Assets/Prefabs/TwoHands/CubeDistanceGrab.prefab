@@ -330,6 +330,7 @@ GameObject:
   - component: {fileID: 5174111756998106995}
   - component: {fileID: 1110261906825148273}
   - component: {fileID: 6783313010882628786}
+  - component: {fileID: 7755360207607233945}
   m_Layer: 0
   m_Name: CubeDistanceGrab
   m_TagString: Untagged
@@ -446,6 +447,7 @@ MonoBehaviour:
   test: {fileID: 3948318762203839077}
   meshFilter: {fileID: 4914370798919331968}
   meshRenderer: {fileID: 8686110422837731480}
+  maxInventoryCapacity: 0
 --- !u!114 &1110261906825148273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -517,6 +519,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeDistance: 5
+--- !u!114 &7755360207607233945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2043863576534226860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1676082f09d57134fb7c3c978b371b71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3948318762203839077
 GameObject:
   m_ObjectHideFlags: 0
