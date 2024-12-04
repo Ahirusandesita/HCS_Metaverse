@@ -3,7 +3,7 @@ using UnityEngine;
 using Oculus.Interaction;
 using Fusion;
 
-public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbableActive, IInject<ISwitchableGrabbableActive>
+public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchableGrabbableActive>,IGrabbableActiveChangeRequester
 {
     [SerializeField]
     private CommodityAsset commodityAsset;
@@ -41,11 +41,11 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
         {
             if (data.Authrity)
             {
-                switchableGrabbableActive.Active();
+                switchableGrabbableActive.Active(this);
             }
             else if (data.Authrity)
             {
-                switchableGrabbableActive.Inactive();
+                switchableGrabbableActive.Inactive(this);
             }
         };
 
@@ -149,15 +149,6 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
         }
     }
 
-    public void Active()
-    {
-        switchableGrabbableActive.Active();
-    }
-
-    public void Inactive()
-    {
-        switchableGrabbableActive.Inactive();
-    }
     public void PutOnDish(IPutableOnDish putableOnDish, bool isOnDish)
     {
         this.isOnDish = isOnDish;
@@ -167,5 +158,6 @@ public class Commodity : MonoBehaviour, ICommodityModerator, ISwitchableGrabbabl
     public void Inject(ISwitchableGrabbableActive t)
     {
         this.switchableGrabbableActive = t;
+        this.switchableGrabbableActive.Regist(this);
     }
 }
