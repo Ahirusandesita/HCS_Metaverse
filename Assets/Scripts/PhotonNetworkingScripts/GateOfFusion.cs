@@ -45,15 +45,34 @@ public class GateOfFusion
 		}
 	}
 
+	public bool IsLeader { get
+		{
+			Room currentRoom = RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer);
+			if(currentRoom == null)
+			{
+				XKumaDebugSystem.LogWarning("ルームに所属していません");
+				return false;
+			}
+			if(NetworkRunner == null)
+			{
+				XKumaDebugSystem.LogWarning("ランナーがありません");
+				return false; 
+			}
+			
+			return currentRoom.LeaderPlayerRef == NetworkRunner.LocalPlayer;
+		} 
+	}
+
 	/// <summary>
 	/// 掴むときに呼ぶ
 	/// </summary>
 	/// <param name="networkObject">掴んだオブジェクト</param>
-	public void Grab(NetworkObject networkObject)
+	public async UniTask Grab(NetworkObject networkObject)
 	{
 		if (!MasterServer.IsUsePhoton) { return; }
 		XKumaDebugSystem.LogWarning($"Grab:{networkObject.name}", KumaDebugColor.InformationColor);
 		StateAuthorityData stateAuthorityData = networkObject.GetComponent<StateAuthorityData>();
+		await UniTask.WaitUntil(() => stateAuthorityData.IsEnable);
 		if (stateAuthorityData.IsNotReleaseStateAuthority)
 		{
 			XKumaDebugSystem.LogWarning($"権限がありませんでした", KumaDebugColor.WarningColor);
