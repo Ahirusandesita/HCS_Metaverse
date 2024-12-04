@@ -32,7 +32,7 @@ public class Customer : MonoBehaviour
     public void InjectOrderAsset(OrderAsset orderAsset)
     {
         this.orderAsset = orderAsset;
-        orderManager.OnResetOrder += On;
+        orderManager.OnSubmission += On;
     }
 
     private void Update()
@@ -49,12 +49,9 @@ public class Customer : MonoBehaviour
         orderTicket.Orderable.Order(orderAsset.OrderDetailInformations[index].CommodityAsset, orderTicket.CustomerInformation);
     }
 
-    private void On(ResetOrderArrayEventArgs resetOrderArrayEventArgs)
+    private void On()
     {
-        if (FindObjectOfType<Leader>().IsLeader)
-        {
-            StartCoroutine(Co());
-        }
+        StartCoroutine(Co());
     }
 
     private IEnumerator Co()
