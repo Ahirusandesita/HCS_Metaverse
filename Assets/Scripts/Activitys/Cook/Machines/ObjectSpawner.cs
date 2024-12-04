@@ -13,20 +13,25 @@ public class ObjectSpawner : MonoBehaviour
 
     private void Start()
     {
-        try
+        Leader leader = GameObject.FindObjectOfType<Leader>();
+
+        if (leader.IsLeader)
         {
-            if (_spawnTransform != null)
+            try
             {
-                GateOfFusion.Instance.SpawnAsync(_spawnObject, _spawnTransform.position, _spawnTransform.rotation).Forget();
+                if (_spawnTransform != null)
+                {
+                    GateOfFusion.Instance.SpawnAsync(_spawnObject, _spawnTransform.position, _spawnTransform.rotation).Forget();
+                }
+                else
+                {
+                    GateOfFusion.Instance.SpawnAsync(_spawnObject).Forget();
+                }
             }
-            else
+            catch
             {
                 GateOfFusion.Instance.SpawnAsync(_spawnObject).Forget();
             }
-        }
-        catch
-        {
-            GateOfFusion.Instance.SpawnAsync(_spawnObject).Forget();
         }
     }
 }

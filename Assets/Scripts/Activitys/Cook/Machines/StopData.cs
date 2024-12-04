@@ -51,6 +51,7 @@ public class StopData : MonoBehaviour, IDependencyInjector<PlayerVisualHandDepen
 
     private void LateUpdate()
     {
+        Debug.Log($"<color=green>‚Æ‚ß‚Ä‚é‚æ‚ñF‚Ù‚¿‚åStopData</color>");
         // 
         if (_isEndSetUp)
         {
