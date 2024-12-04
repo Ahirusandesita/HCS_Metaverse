@@ -94,4 +94,9 @@ public class PokeableCanvasInHandInitialize : InitializeBase, IAvailableSpecific
         IDependencyProvider<PokeableCanvasInformation> pokeableCanvasProvider = pokeableCanvasProvider_static;
         dependencyInjector.Inject(pokeableCanvasProvider.Information);
     }
+
+    private void OnDestroy()
+    {
+        pokeableCanvasProvider_static = null;
+    }
 }
