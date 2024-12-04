@@ -743,6 +743,8 @@ GameObject:
   - component: {fileID: 8034518197616682167}
   - component: {fileID: 955682431830729521}
   - component: {fileID: 631769978160948285}
+  - component: {fileID: 8357089072842475530}
+  - component: {fileID: -9090745957046713397}
   m_Layer: 7
   m_Name: Knife
   m_TagString: Untagged
@@ -913,7 +915,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf0c7f6de2429f4083e678316326153, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activeDistance: 5
+  activeDistance: 2
 --- !u!114 &4738233576240591066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1012,6 +1014,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _IsNotReleaseStateAuthority: 0
+--- !u!114 &8357089072842475530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9059914398412049686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1676082f09d57134fb7c3c978b371b71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-9090745957046713397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9059914398412049686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aa19703ac9ff464784a6b79a7b4c12c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4193993034870680464
 PrefabInstance:
   m_ObjectHideFlags: 0
