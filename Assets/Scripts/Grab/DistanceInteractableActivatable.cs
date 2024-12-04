@@ -5,7 +5,7 @@ using Oculus.Interaction.HandGrab;
 using Oculus.Interaction;
 using Fusion;
 
-public class DistanceInteractableActivatable : MonoBehaviour, IActivatableDistance,IGrabbableActiveChangeRequester
+public class DistanceInteractableActivatable : MonoBehaviour, IActivatableDistance, IGrabbableActiveChangeRequester
 {
     [SerializeField]
     private float activeDistance;
@@ -36,6 +36,9 @@ public class DistanceInteractableActivatable : MonoBehaviour, IActivatableDistan
 
     private void OnDestroy()
     {
-        GameObject.FindObjectOfType<DistanceInteractableChecker>().Remove(this);
+        if (GameObject.FindObjectOfType<DistanceInteractableChecker>())
+        {
+            GameObject.FindObjectOfType<DistanceInteractableChecker>().Remove(this);
+        }
     }
 }
