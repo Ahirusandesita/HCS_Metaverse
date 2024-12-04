@@ -42,12 +42,10 @@ public class WebAPIRequester : MonoBehaviour
         //XDebug.Log(b.UserID);
     }
 
-    public async UniTask Get(int genre, int large, int small)
+    public async UniTask<OnEntryData> PostEntry(int shopId)
     {
         WWWForm form = new WWWForm();
-        form.AddField("genre", genre);
-        form.AddField("large", large);
-        form.AddField("small", small);
+        form.AddField("shopId", shopId);
         using var request = UnityWebRequest.Post(DETABASE_PATH, form);
         await request.SendWebRequest();
 
@@ -57,14 +55,19 @@ public class WebAPIRequester : MonoBehaviour
                 throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
 
             case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
-                throw new System.InvalidOperationException(request.error);
+                var itemList = new List<OnEntryData.Lineup>();
+                itemList.Add(new OnEntryData.Lineup(20004, 15000, 0, 3, 1));
+                itemList.Add(new OnEntryData.Lineup(10001, 10000, 0, 5, 0));
+                itemList.Add(new OnEntryData.Lineup(10002, 8000, 0.1f, 1, 0));
+                itemList.Add(new OnEntryData.Lineup(20001, 500, 0, 15, 1));
+                itemList.Add(new OnEntryData.Lineup(20002, 24000, 0.9f, 6, 0));
+                itemList.Add(new OnEntryData.Lineup(20003, 16000, 1f, 1, 1));
+                return new OnEntryData(itemList);
+                //throw new System.InvalidOperationException(request.error);
         }
 
-        var lineupData = JsonUtility.FromJson<LineupData>($"{request.downloadHandler.text}");
-        foreach (var item in lineupData.Lineup)
-        {
-            //XDebug.Log(item.ID, "green");
-        }
+        var onEntryData = JsonUtility.FromJson<OnEntryData>($"{request.downloadHandler.text}");
+        return onEntryData;
     }
 
     public async UniTask<Dictionary<int, int>> UpdateStock(int shopID)
@@ -97,36 +100,57 @@ public class WebAPIRequester : MonoBehaviour
     }
 
     [System.Serializable]
-    public class LineupData
+    public class OnEntryData
     {
-        [SerializeField] private int responseCode = default;
-        [SerializeField] private string message = default;
-        [SerializeField] private List<Body> body = default;
+        public OnEntryData(List<Lineup> itemList)
+        {
+            this.itemList = itemList;
+        }
 
-        public int ResponseCode => responseCode;
-        public string Message => message;
-        public IReadOnlyList<Body> Lineup => body;
+        [SerializeField] private List<Lineup> itemList = default;
+
+        public IReadOnlyList<Lineup> ItemLineup => itemList;
 
         [System.Serializable]
-        public class Body
+        public class Lineup
         {
-            [SerializeField] private int id = default;
-            [SerializeField] private int price = default;
+            public Lineup(int itemId, int salesPrice, float discount, int stock, int size)
+            {
+                this.itemId = itemId;
+                this.salesPrice = salesPrice;
+                this.discount = discount;
+                this.stock = stock;
+                this.size = size;
+            }
+
+            [SerializeField] private int itemId = default;
+            [SerializeField] private int salesPrice = default;
             [SerializeField] private float discount = default;
             [SerializeField] private int stock = default;
-            [SerializeField] private ItemSize size = default;
+            [SerializeField] private int size = default;
 
-            public int ID => id;
-            public int Price => price;
+            public int ItemID => itemId;
+            public int Price => salesPrice;
             public float Discount => discount;
             public int Stock => stock;
-            public ItemSize Size => size;
+            /// <summary>
+            /// 0: large, 1: small
+            /// </summary>
+            public int Size => size;
         }
     }
 
     [System.Serializable]
     public class OnPaymentData
     {
+        public OnPaymentData(List<Inventory> inventory, int money, int stock, int userId)
+        {
+            this.inventory = inventory;
+            this.money = money;
+            this.stock = stock;
+            this.userId = userId;
+        }
+
         [SerializeField] private List<Inventory> inventory = default;
         [SerializeField] private int money = default;
         [SerializeField] private int stock = default;
