@@ -11,14 +11,20 @@ public class OrderViewDetailImformation : MonoBehaviour
     private Image orderImage;
     [SerializeField]
     private List<Image> orderDetailImages;
-
+    [SerializeField]
+    private Image slider;
+    
     public Image OrderImage => orderImage;
     public IReadOnlyList<Image> OrderDetailImages => orderDetailImages;
+
+    private CustomerInformation customerInformation;
+
 
     public void Disable()
     {
         textMeshProUGUI.enabled = false;
         orderImage.enabled = false;
+        slider.enabled = false;
         foreach (Image image in orderDetailImages)
         {
             image.enabled = false;
@@ -28,18 +34,24 @@ public class OrderViewDetailImformation : MonoBehaviour
     {
         textMeshProUGUI.enabled = true;
         orderImage.enabled = true;
+        slider.enabled = true;
         foreach (Image image in orderDetailImages)
         {
             image.enabled = true;
         }
     }
 
-    public void View(CommodityAsset commodityAsset)
+    public void View(CommodityAsset commodityAsset,CustomerInformation customerInformation)
     {
         Active();
 
         //textMeshProUGUI.text = commodityAsset.name;
-
+        this.customerInformation = customerInformation;
+        if (customerInformation.IsFirst)
+        {
+            customerInformation.RemainingTime = customerInformation.OrderWaitingTime;
+            customerInformation.IsFirst = false;
+        }
         orderImage.sprite = commodityAsset.CommodityAppearance.CommoditySprite;
 
         for (int i = 0; i < commodityAsset.Commodities.Count; i++)
@@ -60,13 +72,31 @@ public class OrderViewDetailImformation : MonoBehaviour
 
     public void Reset()
     {
+        customerInformation = null;
+
         textMeshProUGUI.text = "";
         orderImage.sprite = null;
+        slider.enabled = false;
         foreach (Image image in orderDetailImages)
         {
             image.sprite = null;
         }
 
         Disable();
+    }
+
+    private void Update()
+    {
+        if(customerInformation == null)
+        {
+            return;
+        }
+        if(customerInformation.OrderWaitingType == OrderWaitingType.Hide)
+        {
+            slider.enabled = false;
+        }
+
+        slider.fillAmount = customerInformation.RemainingTime / customerInformation.OrderWaitingTime;
+        customerInformation.RemainingTime -= Time.deltaTime;
     }
 }

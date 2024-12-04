@@ -1,6 +1,10 @@
 using UnityEngine;
 using System;
-
+public enum OrderWaitingType
+{
+    Hide,
+    Manifest
+}
 
 public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
 {
@@ -8,13 +12,17 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     [SerializeField]
     private OrderAsset orderAsset;
     [SerializeField]
-    private Customer customer;
+    private OrderSystem customer;
 
     private IScoreCalculator scoreCalculator;
 
     public class NullOrderable : IOrderable
     {
         public void Order(CommodityAsset commodityAsset, CustomerInformation customer)
+        {
+
+        }
+        public void Cancel(CustomerInformation customerInformation)
         {
 
         }
@@ -79,13 +87,13 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
         customer.InjectOrderAsset(orderAsset);
     }
 
-    public OrderTicket Inquiry()
+    public OrderTicket Inquiry(float orderWaitingTime, OrderWaitingType orderWaitingType)
     {
         if (SearchVacantSeatOrder() == commodityAssets.Length)
         {
-            return new OrderTicket(new NullOrderable(), new CustomerInformation(-1));
+            return new OrderTicket(new NullOrderable(), new CustomerInformation(-1, orderWaitingTime, orderWaitingType));
         }
-        return new OrderTicket(this, new CustomerInformation(orderCode));
+        return new OrderTicket(this, new CustomerInformation(orderCode, orderWaitingTime, orderWaitingType));
     }
 
     /// <summary>
@@ -99,7 +107,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
         commodityAssets[vacantSeatOrder] = commodityAsset;
         customers[vacantSeatOrder] = customer;
 
-        OrderEventArgs orderEventArgs = new OrderEventArgs(new CommodityInformation(commodityAsset), OrderType.Order, vacantSeatOrder);
+        OrderEventArgs orderEventArgs = new OrderEventArgs(new CommodityInformation(commodityAsset, customer), OrderType.Order, vacantSeatOrder, customer);
         OnOrder?.Invoke(orderEventArgs);
         orderCode++;
     }
@@ -128,9 +136,6 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
             }
             if (commodity.IsMatchCommodity(commodityAssets[i]))
             {
-                //íÒèoäÆóπ
-                Debug.Log("íÒèoäÆóπ");
-                OrderEventArgs orderEventArgs = new OrderEventArgs(new CommodityInformation(commodityAssets[i]), OrderType.Submit, i);
                 commodityAssets[i] = null;
                 customers[i] = null;
                 PackOrders();
@@ -152,7 +157,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
                 commodityInformations[i] = null;
                 continue;
             }
-            commodityInformations[i] = new CommodityInformation(commodityAssets[i]);
+            commodityInformations[i] = new CommodityInformation(commodityAssets[i], customers[i]);
         }
 
         OnResetOrder?.Invoke(new ResetOrderArrayEventArgs(commodityInformations));
@@ -161,7 +166,6 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
 
     public void RemoteSubmision(int index)
     {
-        OrderEventArgs orderEventArgs = new OrderEventArgs(new CommodityInformation(commodityAssets[index]), OrderType.Submit, index);
         commodityAssets[index] = null;
         customers[index] = null;
         PackOrders();
@@ -174,7 +178,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
                 commodityInformations[i] = null;
                 continue;
             }
-            commodityInformations[i] = new CommodityInformation(commodityAssets[i]);
+            commodityInformations[i] = new CommodityInformation(commodityAssets[i], customers[i]);
         }
 
         OnResetOrder?.Invoke(new ResetOrderArrayEventArgs(commodityInformations));
@@ -184,13 +188,48 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     {
         for (int i = 0; i < customers.Length; i++)
         {
+            if (customers[i] == null)
+            {
+                continue;
+            }
             if (customers[i].OrderCode == customer.OrderCode)
             {
                 commodityAssets[i] = null;
                 customers[i] = null;
                 PackOrders();
+
+                instance.RPC_Cancel(i);
+                break;
             }
         }
+
+        for (int i = 0; i < commodityAssets.Length; i++)
+        {
+            if (commodityAssets[i] == null)
+            {
+                commodityInformations[i] = null;
+                continue;
+            }
+            commodityInformations[i] = new CommodityInformation(commodityAssets[i], customers[i]);
+        }
+        OnResetOrder?.Invoke(new ResetOrderArrayEventArgs(commodityInformations));
+    }
+    public void Cancel(int index)
+    {
+        commodityAssets[index] = null;
+        customers[index] = null;
+        PackOrders();
+
+        for (int i = 0; i < commodityAssets.Length; i++)
+        {
+            if (commodityAssets[i] == null)
+            {
+                commodityInformations[i] = null;
+                continue;
+            }
+            commodityInformations[i] = new CommodityInformation(commodityAssets[i], customers[i]);
+        }
+        OnResetOrder?.Invoke(new ResetOrderArrayEventArgs(commodityInformations));
     }
 
     private int SearchVacantSeatOrder()

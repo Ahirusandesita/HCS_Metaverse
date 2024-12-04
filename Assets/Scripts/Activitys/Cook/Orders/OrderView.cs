@@ -20,7 +20,7 @@ public class OrderView : MonoBehaviour
     {
         if (orderEventArgs.OrderType == OrderType.Order)
         {
-            orderViewDetailInformations[orderEventArgs.OrderIndex].View(orderEventArgs.CommodityInformation.CommodityAsset);
+            orderViewDetailInformations[orderEventArgs.OrderIndex].View(orderEventArgs.CommodityInformation.CommodityAsset, orderEventArgs.CustomerInformation);
         }
 
         if (orderEventArgs.OrderType == OrderType.Submit)
@@ -37,7 +37,7 @@ public class OrderView : MonoBehaviour
                 orderViewDetailInformations[i].Reset();
                 continue;
             }
-            orderViewDetailInformations[i].View(resetOrderArrayEventArgs.CommodityInformations[i].CommodityAsset);
+            orderViewDetailInformations[i].View(resetOrderArrayEventArgs.CommodityInformations[i].CommodityAsset, resetOrderArrayEventArgs.CommodityInformations[i].CustomerInformation);
         }
     }
 }
