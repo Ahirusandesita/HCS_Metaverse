@@ -37,6 +37,9 @@ public class Puttable : MonoBehaviour,IGrabbableActiveChangeRequester
 
     private void OnDestroy()
     {
-        _parentLockedCuttingObject.CanselLock();
+        if (_parentLockedCuttingObject != null)
+        {
+            _parentLockedCuttingObject.CanselLock();
+        }
     }
 }

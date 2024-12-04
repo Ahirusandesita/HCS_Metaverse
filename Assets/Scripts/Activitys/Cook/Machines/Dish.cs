@@ -118,7 +118,17 @@ public class Dish : NetworkBehaviour, IPutableOnDish,IGrabbableActiveChangeReque
     {
         if (_myNetwork.HasStateAuthority)
         {
-            Rpc_CollisionTable(collision.gameObject.GetComponent<NetworkObject>());
+            if (collision.gameObject.TryGetComponent<SubmisionTable>(out SubmisionTable table))
+            {
+                if (switchable is null)
+                {
+                    return;
+                }
+                table.Submit(switchable.gameObject.GetComponent<Commodity>());
+                switchable = null;
+
+                GameObject.FindObjectOfType<DishManager>().InstanceNewDish(GetComponent<NetworkObject>());
+            }
         }
     }
 
@@ -127,8 +137,7 @@ public class Dish : NetworkBehaviour, IPutableOnDish,IGrabbableActiveChangeReque
         
     }
 
-    [Rpc(RpcSources.All, RpcTargets.All)]
-    public void Rpc_CollisionTable(NetworkObject networkObject)
+    public void CollisionTable(NetworkObject networkObject)
     {
         if (networkObject.TryGetComponent<SubmisionTable>(out SubmisionTable table))
         {
