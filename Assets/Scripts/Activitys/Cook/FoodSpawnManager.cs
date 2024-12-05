@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Fusion;
 public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityNotification
 {
     [System.Serializable]
@@ -19,6 +19,10 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
     private List<GameObject> displayFoods = default;
 
     public ItemBundleAsset FoodItemAsset => foodItemAsset;
+
+    [SerializeField]
+    private FoodSpawnManagerRPC selectedNotification;
+
     private void Awake()
     {
         OnStart();
@@ -42,9 +46,16 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
         var asset = foodItemAsset.GetItemAssetByID(itemSelectArgs.id);
         var position = itemSelectArgs.position;
         var foodItem = await IDisplayItem.InstantiateSync(asset, position, Quaternion.identity, this);
-        Debug.LogError($"point1Å@DisplayItemÇê∂ê¨ snÇInject");
+        selectedNotification.RPC_Unti(foodItem.gameObject.GetComponent<NetworkObject>(), itemSelectArgs.id, itemSelectArgs.position);
         displayFoods.Add(foodItem.gameObject);
         displayFoods.Remove(itemSelectArgs.gameObject);
+    }
+    public void UntiHuzakennaSelect(NetworkObject networkObject,int id,Vector3 position)
+    {
+        IDisplayItem displayItem = networkObject.GetComponent<IDisplayItem>();
+        var asset = foodItemAsset.GetItemAssetByID(id);
+        var itemSelectArgs = new ItemSelectArgs(asset.ID, asset.Name, position, displayItem.gameObject);
+        displayItem.Inject_ItemSelectArgsAndSelectedNotification(itemSelectArgs, this);
     }
 
     public void Unselect(SelectArgs selectArgs)
@@ -54,16 +65,29 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
 
     public async void OnStart()
     {
-        displayFoods = new List<GameObject>();
-
-        foreach (var food in foodLineup)
+        if (GateOfFusion.Instance.IsLeader)
         {
-            var asset = foodItemAsset.GetItemAssetByID(food.FoodID);
-            var position = food.FoodBox.position + Vector3.up;
+            displayFoods = new List<GameObject>();
 
-            var foodItem = await IDisplayItem.InstantiateSync(asset, position, Quaternion.identity, this);
-            displayFoods.Add(foodItem.gameObject);
+            for(int i = 0; i<foodLineup.Count;i++)
+            { 
+                var asset = foodItemAsset.GetItemAssetByID(foodLineup[i].FoodID);
+                var position = foodLineup[i].FoodBox.position + Vector3.up;
+
+                var foodItem = await IDisplayItem.InstantiateSync(asset, position, Quaternion.identity, this);
+                selectedNotification.RPC_FoodSpawn(foodItem.gameObject.GetComponent<NetworkObject>(), i);
+                displayFoods.Add(foodItem.gameObject);
+            }
         }
+    }
+    public void UntiHuzakenna(NetworkObject networkObject,int index)
+    {
+        IDisplayItem displayItem = networkObject.GetComponent<IDisplayItem>();
+        var asset = foodItemAsset.GetItemAssetByID(foodLineup[index].FoodID);
+        var position = foodLineup[index].FoodBox.position + Vector3.up;
+
+        var itemSelectArgs = new ItemSelectArgs(asset.ID, asset.Name, position, displayItem.gameObject);
+        displayItem.Inject_ItemSelectArgsAndSelectedNotification(itemSelectArgs,this);
     }
 
     void IActivityNotification.OnFinish()
