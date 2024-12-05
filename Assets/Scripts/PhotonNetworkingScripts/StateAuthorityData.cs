@@ -15,6 +15,10 @@ public class StateAuthorityData : NetworkBehaviour
 	{
 		base.Spawned();
 		isEnable = true;
+		//if(TryGetComponent<NetworkObject>(out NetworkObject networkObject))
+		//{
+		//	IsNotReleaseStateAuthority = networkObject.HasStateAuthority;
+		//}
 	}
 
 	public bool IsGrabbable
