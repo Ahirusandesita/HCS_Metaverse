@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using Oculus.Interaction;
+using Cysharp.Threading.Tasks;
 
 public class NullPutableOnDish : IPutableOnDish
 {
@@ -64,7 +65,7 @@ public class Dish : NetworkBehaviour, IPutableOnDish,IGrabbableActiveChangeReque
 
         _myNetwork = GetComponent<NetworkObject>();
 
-        pointableUnityEventWrapper.WhenSelect.AddListener((data) => GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()));
+        pointableUnityEventWrapper.WhenSelect.AddListener((data) => GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()).Forget());
         pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
     }
 
@@ -135,20 +136,5 @@ public class Dish : NetworkBehaviour, IPutableOnDish,IGrabbableActiveChangeReque
     public void Inject(ISwitchableGrabbableActive t)
     {
         
-    }
-
-    public void CollisionTable(NetworkObject networkObject)
-    {
-        if (networkObject.TryGetComponent<SubmisionTable>(out SubmisionTable table))
-        {
-            if (switchable is null)
-            {
-                return;
-            }
-            table.Submit(switchable.gameObject.GetComponent<Commodity>());
-            switchable = null;
-
-            GameObject.FindObjectOfType<DishManager>().InstanceNewDish(GetComponent<NetworkObject>());
-        }
     }
 }

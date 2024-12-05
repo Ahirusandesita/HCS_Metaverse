@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Oculus.Interaction;
 using Fusion;
+using Cysharp.Threading.Tasks;
 
 public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchableGrabbableActive>,IGrabbableActiveChangeRequester
 {
@@ -30,7 +31,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
         pointableUnityEventWrapper.WhenSelect.AddListener((data) => OnPointable?.Invoke(new GrabEventArgs(GrabType.Grab)));
         pointableUnityEventWrapper.WhenUnselect.AddListener((data) => OnPointable?.Invoke(new GrabEventArgs(GrabType.UnGrab)));
 
-        pointableUnityEventWrapper.WhenSelect.AddListener((data) => GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()));
+        pointableUnityEventWrapper.WhenSelect.AddListener((data) => GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()).Forget());
         pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
 
         grabObjectScale = new GrabObjectScale();
