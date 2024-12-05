@@ -66,7 +66,7 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
             {
                 switchableGrabbableActive.Active(this);
             }
-            else if (data.Authrity)
+            else if (!data.Authrity)
             {
                 switchableGrabbableActive.Inactive(this);
             }
