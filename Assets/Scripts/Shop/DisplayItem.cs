@@ -61,6 +61,10 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
 
     private void WhenSelect(PointerEvent pointerEvent)
     {
+        if (sn == null)
+        {
+            Debug.LogError($"SelectéûÅ@{this.gameObject.name}ÇÃsnÇ™Null");
+        }
         sn.Select(itemSelectArgs);
 
         onGrabbed.WhenSelect.RemoveListener(WhenSelect);
@@ -99,5 +103,13 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
     public void TakeOut(Vector3 position)
     {
         
+    }
+
+    void Update()
+    {
+        if(sn == null)
+        {
+            Debug.LogError($"{this.gameObject.name}ÇÃsnÇ™Null");
+        }
     }
 }
