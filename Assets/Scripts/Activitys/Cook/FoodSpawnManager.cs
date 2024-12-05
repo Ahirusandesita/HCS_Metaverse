@@ -98,9 +98,9 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
         displayItem.Inject_ItemSelectArgsAndSelectedNotification(itemSelectArgs,this);
     }
 
-    void OnFinish()
+    async void OnFinish()
     {
-        if (GateOfFusion.Instance.IsLeader)
+        if (await GateOfFusion.Instance.GetIsLeader())
         {
             foreach (var foodObj in displayFoods)
             {
