@@ -17,6 +17,8 @@ public class OrderSystem : MonoBehaviour
         activityProgressManagement.OnStart += () =>
         {
             StartCoroutine(Co());
+
+            Debug.LogError(GateOfFusion.Instance.IsLeader);
         };
     }
     public OrderTicket Order(int index, float orderWaitingTime, OrderWaitingType orderWaitingType)
@@ -55,13 +57,16 @@ public class OrderSystem : MonoBehaviour
 
     private void On()
     {
-        StartCoroutine(Co());
+        if (GateOfFusion.Instance.IsLeader)
+        {
+            StartCoroutine(Co());
+        }
     }
 
     private IEnumerator Co()
     {
         yield return new WaitForSeconds(2f);
-        OrderTicket orderTicket = Order(Random.Range(0, orderAsset.OrderDetailInformations.Count), 5f, OrderWaitingType.Manifest);
+        OrderTicket orderTicket = Order(Random.Range(0, orderAsset.OrderDetailInformations.Count), Random.Range(60f, 120f), OrderWaitingType.Manifest);
         StartCoroutine(CancelTime(orderTicket));
     }
 

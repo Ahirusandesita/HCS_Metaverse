@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Cysharp.Threading.Tasks;
+
 public class CookProgressUI : MonoBehaviour
 {
     [SerializeField]
@@ -20,9 +22,17 @@ public class CookProgressUI : MonoBehaviour
             textMesh.text = "Ready?";
         };
 
-        activityProgressManagement.OnStart += () =>
+        activityProgressManagement.OnStart += async () =>
         {
             textMesh.text = "Go!";
+            await UniTask.Delay(3000);
+            textMesh.text = "";
+        };
+
+        activityProgressManagement.OnFinish += async () =>
+        {
+            textMesh.text = "Finish!";
+            await UniTask.Delay(5000);
         };
     }
 }

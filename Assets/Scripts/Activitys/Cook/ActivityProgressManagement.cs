@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Cysharp.Threading.Tasks;
+using System.Linq;
+
 public interface ITimeManager
 {
     void CountDownBegins();
@@ -24,7 +26,8 @@ public class ActivityProgressManagement : MonoBehaviour
     /// <summary>
     /// ActivityÇèIóπÇ∑ÇÈÇ∆Ç´Ç…î≠çsÇ≥ÇÍÇÈ
     /// </summary>
-    public event Action OnFinish;
+    public event WaitWithHandler OnFinish;
+    public delegate UniTask WaitWithHandler();
 
     private ITimeManager timeManager_ready;
     private ITimeManager timeManager_main;
@@ -34,10 +37,11 @@ public class ActivityProgressManagement : MonoBehaviour
         {
             await UniTask.Delay(1000);
             OnReady?.Invoke();
-
+            Debug.LogError("AAAA");
             timeManager_ready.CountDownBegins();
             await UniTask.WaitUntil(() => timeManager_ready.IsCountdownEnds());
             OnStart?.Invoke();
+            Debug.LogError("BBBB");
             timeManager_ready.Dispose();
         };
 
@@ -45,11 +49,20 @@ public class ActivityProgressManagement : MonoBehaviour
         {
             timeManager_main.CountDownBegins();
             await UniTask.WaitUntil(() => timeManager_main.IsCountdownEnds());
-            OnFinish?.Invoke();
             timeManager_main.Dispose();
+            ActivityFinish().Forget();
         };
     }
 
+    private async UniTaskVoid ActivityFinish()
+    {
+        await UniTask.WhenAll(
+            OnFinish?.GetInvocationList()
+               .OfType<WaitWithHandler>()
+               .Select(async (OnAysncEvent) => await OnAysncEvent.Invoke()));
+
+        GateOfFusion.Instance.ReturnMainRoom();
+    }
 
     public void InjectTimeManager_Ready(ITimeManager timeManager)
     {
