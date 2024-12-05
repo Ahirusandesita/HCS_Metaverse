@@ -37,11 +37,9 @@ public class ActivityProgressManagement : MonoBehaviour
         {
             await UniTask.Delay(1000);
             OnReady?.Invoke();
-            Debug.LogError("AAAA");
             timeManager_ready.CountDownBegins();
             await UniTask.WaitUntil(() => timeManager_ready.IsCountdownEnds());
             OnStart?.Invoke();
-            Debug.LogError("BBBB");
             timeManager_ready.Dispose();
         };
 
