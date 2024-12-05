@@ -11,17 +11,22 @@ public class SessionRPCManager : NetworkBehaviour
 		{
 			Rpc_RequestRoomData(GateOfFusion.Instance.NetworkRunner.LocalPlayer);
 		}
-
-		SceneNameType firstScene = SceneNameType.KumaKumaTest;
-
-		if (FindObjectOfType<MasterServerConect>().IsSolo)
+		Room currentRoom = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
+		if (currentRoom == null)
 		{
-			_ = RoomManager.Instance.JoinOrCreate(firstScene, Runner.LocalPlayer);
+			SceneNameType firstScene = SceneNameType.KumaKumaTest;
+
+			if (FindObjectOfType<MasterServerConect>().IsSolo)
+			{
+				_ = RoomManager.Instance.JoinOrCreate(firstScene, Runner.LocalPlayer);
+			}
+			else
+			{
+				Rpc_JoinOrCreateRoom(firstScene, Runner.LocalPlayer);
+			}
 		}
-		else
-		{
-			Rpc_JoinOrCreateRoom(firstScene, Runner.LocalPlayer);
-		}
+		
+		
 	}
 
 	private void OnDisable()
