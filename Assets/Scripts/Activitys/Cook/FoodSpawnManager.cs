@@ -63,22 +63,25 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
 
     }
 
-    public async void OnStart()
+    public void OnStart()
     {
-        if (GateOfFusion.Instance.IsLeader)
+        GateOfFusion.Instance.OnActivityConnected += async () =>
         {
-            displayFoods = new List<GameObject>();
+            if (GateOfFusion.Instance.IsLeader)
+            {
+                displayFoods = new List<GameObject>();
 
-            for(int i = 0; i<foodLineup.Count;i++)
-            { 
-                var asset = foodItemAsset.GetItemAssetByID(foodLineup[i].FoodID);
-                var position = foodLineup[i].FoodBox.position + Vector3.up;
+                for (int i = 0; i < foodLineup.Count; i++)
+                {
+                    var asset = foodItemAsset.GetItemAssetByID(foodLineup[i].FoodID);
+                    var position = foodLineup[i].FoodBox.position + Vector3.up;
 
-                var foodItem = await IDisplayItem.InstantiateSync(asset, position, Quaternion.identity, this);
-                selectedNotification.RPC_FoodSpawn(foodItem.gameObject.GetComponent<NetworkObject>(), i);
-                displayFoods.Add(foodItem.gameObject);
+                    var foodItem = await IDisplayItem.InstantiateSync(asset, position, Quaternion.identity, this);
+                    selectedNotification.RPC_FoodSpawn(foodItem.gameObject.GetComponent<NetworkObject>(), i);
+                    displayFoods.Add(foodItem.gameObject);
+                }
             }
-        }
+        };
     }
     public void UntiHuzakenna(NetworkObject networkObject,int index)
     {
