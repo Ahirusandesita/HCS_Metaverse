@@ -141,25 +141,6 @@ MonoBehaviour:
   - {fileID: 1971044503300279276}
   - {fileID: 1749536307191769646}
   - {fileID: 5029445918733743647}
-  itemLineup:
-  - id: 10001
-    displayName: Item1
-    selectedIndex: 0
-  - id: 10002
-    displayName: Item2
-    selectedIndex: 1
-  - id: 20001
-    displayName: RawMeat
-    selectedIndex: 3
-  - id: 20002
-    displayName: Salad
-    selectedIndex: 4
-  - id: 20003
-    displayName: Tomato
-    selectedIndex: 5
-  - id: 10002
-    displayName: Item2
-    selectedIndex: 2
   shopCart: {fileID: 8193003864273062663}
   uiManager: {fileID: 5954294512950122465}
 --- !u!65 &8458157920760373022
@@ -800,7 +781,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.392}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
