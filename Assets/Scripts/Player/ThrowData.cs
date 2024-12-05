@@ -42,7 +42,7 @@ public class ThrowData
     private const float REVOCATION_TIME = 0.2f;
 
     // 軌道ベクトルの生成に必要な情報たち　軌道座標と保存時刻を持つ
-    private OrbitData[] _orbitDatas = new OrbitData[3];
+    private OrbitData[] _orbitDatas = new OrbitData[7];
     #endregion
 
     #region メソッド・プロパティ
@@ -70,7 +70,7 @@ public class ThrowData
     public void SetOrbitPosition(Vector3 newPosition)
     {
         // 保存してある情報の保存位置を更新する
-        for (int beforeIndex = 0; beforeIndex < _orbitDatas.Length - 1; beforeIndex++)
+        for (int beforeIndex = _orbitDatas.Length - 1; beforeIndex >= 0; beforeIndex--)
         {
             // 一つ後ろに移していく
             _orbitDatas[beforeIndex + 1] = _orbitDatas[beforeIndex];
@@ -103,6 +103,8 @@ public class ThrowData
         {
             // 軌道座標の差を求める
             Vector3 positionDifference = _orbitDatas[positionsIndex]._orbitPosition - _orbitDatas[positionsIndex + 1]._orbitPosition;
+
+            Debug.Log($"<color=green>投擲標本{positionsIndex}番目：{_orbitDatas[positionsIndex]._orbitPosition}, {_orbitDatas[positionsIndex]._storeTime}</color>");
 
             // 軌道座標の差を加算する
             orbitVector += positionDifference;
