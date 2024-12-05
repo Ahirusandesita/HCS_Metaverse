@@ -19,7 +19,7 @@ public class ScoreManager : MonoBehaviour, IScoreProperty, IScoreCalculator
     private ReactiveProperty<int> _nowScore = new ReactiveProperty<int>();
 
     // 現在のスコアを設定するためのプロパティ
-    public int ScoreSetter { set { _nowScore.Value = value; } }
+    public int ScoreSetter { get { return _nowScore.Value; } set { _nowScore.Value = value; } }
 
     // スコア表示の固定部分
     private const string SCORE_PREAMBLE = "SCORE : ";

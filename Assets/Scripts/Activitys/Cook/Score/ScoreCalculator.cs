@@ -14,6 +14,6 @@ public class ScoreCalculator
     // スコアを計算して加算するメソッド
     public void ScoreCalucuration(int scorePoint, int chainCount)
     {
-        _scoreProperty.ScoreSetter = scorePoint * (1 + (int)(chainCount * 0.5f));
+        _scoreProperty.ScoreSetter += scorePoint * (1 + (int)(chainCount * 0.5f));
     }
 }

@@ -6,5 +6,5 @@ public interface IScoreProperty
     /// 現在のスコアを設定するためのプロパティ
     /// </summary>
     // 現在のスコア
-    int ScoreSetter { set; }
+    int ScoreSetter { get;  set; }
 }

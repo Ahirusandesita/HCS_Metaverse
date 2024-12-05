@@ -39413,13 +39413,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2860053236599943707}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0.9617652, y: 0, z: 0, w: 0.27387524}
   m_LocalPosition: {x: -0.13819438, y: 0.000000012516975, z: 2.842171e-16}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 74075282912098832}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -148.21, y: 0, z: 0}
 --- !u!1 &4336837598765193834
 GameObject:
   m_ObjectHideFlags: 0
@@ -46566,7 +46566,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5199014643547776973
 Transform:
   m_ObjectHideFlags: 0
@@ -49868,6 +49868,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IReadonlyPositionAdapter: {fileID: 7011571691261209499}
+  Head: {fileID: 0}
   playerLeftHand: {fileID: 1828488130}
   playerRightHand: {fileID: 2059643830}
   playerVisualLeftHand: {fileID: 72039804}
@@ -60616,6 +60617,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 599975513303440536, guid: ea16c3c8c1688234fa81a4f39339bf1b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.84
+      objectReference: {fileID: 0}
     - target: {fileID: 1258151580205763149, guid: ea16c3c8c1688234fa81a4f39339bf1b, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -69614,13 +69619,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6918503799038959849}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.5088912, y: -0, z: -0, w: -0.8608309}
+  m_LocalRotation: {x: -0.9570669, y: 0, z: 0, w: 0.28986716}
   m_LocalPosition: {x: 0.13819438, y: -0.000000011920928, z: 0.0000000067293247}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7357088571154473688}
-  m_LocalEulerAnglesHint: {x: 298.82, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -146.3, y: 0, z: 0}
 --- !u!114 &7836242855934427963
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79519,7 +79524,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &9143866051738206527
 Transform:
   m_ObjectHideFlags: 0
