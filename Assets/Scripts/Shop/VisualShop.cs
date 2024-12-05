@@ -10,13 +10,10 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 	[SerializeField] private BuyArea buyArea = default;
 	[SerializeField] private List<Transform> smallViewPoints = default;
 	[SerializeField] private List<Transform> largeViewPoints = default;
-	[SerializeField] private List<ItemIDView> itemLineup = default;
 	[SerializeField] private ShopCart shopCart = default;
 	[SerializeField] private ShopCartUIManager uiManager = default;
 	private List<GameObject> displayedItems = default;
 	private IReadonlyPositionAdapter positionAdapter = default;
-
-	public IReadOnlyList<ItemIDView> ItemLineup => itemLineup;
 
 	[System.Diagnostics.Conditional("UNITY_EDITOR")]
 	private void Reset()

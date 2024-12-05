@@ -45,22 +45,20 @@ public class GateOfFusion
 		}
 	}
 
-	public bool IsLeader { get
+	public async UniTask<bool> GetIsLeader()
+	{
+		await UniTask.WaitUntil(() => NetworkRunner != null);
+		Room currentRoom = RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer);
+		if (currentRoom == null)
 		{
-			Room currentRoom = RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer);
-			if(currentRoom == null)
-			{
-				XKumaDebugSystem.LogWarning("ルームに所属していません");
-				return false;
-			}
-			if(NetworkRunner == null)
-			{
-				XKumaDebugSystem.LogWarning("ランナーがありません");
-				return false; 
-			}
-			
-			return currentRoom.LeaderPlayerRef == NetworkRunner.LocalPlayer;
-		} 
+			return false;
+		}
+		if (NetworkRunner == null)
+		{
+			XKumaDebugSystem.LogWarning("ランナーがありません");
+			return false;
+		}
+		return currentRoom.LeaderPlayerRef == NetworkRunner.LocalPlayer;
 	}
 
 	/// <summary>
@@ -84,8 +82,8 @@ public class GateOfFusion
 			return;
 		}
 		MasterServer.SessionRPCManager.Rpc_GrabStateAuthorityChanged(networkObject);
-		networkObject.RequestStateAuthority();
 		stateAuthorityData.IsNotReleaseStateAuthority = true;
+		networkObject.RequestStateAuthority();
 	}
 
 	public void Release(NetworkObject networkObject)
