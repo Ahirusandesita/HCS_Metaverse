@@ -44,17 +44,17 @@ public class WebAPIRequester : MonoBehaviour
 
     public async UniTask<OnEntryData> PostEntry(int shopId)
     {
-        WWWForm form = new WWWForm();
-        form.AddField("shopId", shopId);
-        using var request = UnityWebRequest.Post(DETABASE_PATH, form);
-        await request.SendWebRequest();
+        //WWWForm form = new WWWForm();
+        //form.AddField("shopId", shopId);
+        //using var request = UnityWebRequest.Post(DETABASE_PATH, form);
+        //await request.SendWebRequest();
 
-        switch (request.result)
-        {
-            case Result.InProgress:
-                throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+        //switch (request.result)
+        //{
+        //    case Result.InProgress:
+        //        throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
 
-            case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+        //    case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
                 var itemList = new List<OnEntryData.Lineup>();
                 itemList.Add(new OnEntryData.Lineup(20004, 15000, 0, 3, 1));
                 itemList.Add(new OnEntryData.Lineup(10001, 10000, 0, 5, 0));
@@ -64,10 +64,10 @@ public class WebAPIRequester : MonoBehaviour
                 itemList.Add(new OnEntryData.Lineup(20003, 16000, 1f, 1, 1));
                 return new OnEntryData(itemList);
                 //throw new System.InvalidOperationException(request.error);
-        }
+        //}
 
-        var onEntryData = JsonUtility.FromJson<OnEntryData>($"{request.downloadHandler.text}");
-        return onEntryData;
+        //var onEntryData = JsonUtility.FromJson<OnEntryData>($"{request.downloadHandler.text}");
+        //return onEntryData;
     }
 
     public async UniTask<Dictionary<int, int>> UpdateStock(int shopID)

@@ -5,10 +5,10 @@ using UnityEngine;
 using KumaDebug;
 using UnityEngine.UI;
 
-public class UIIcon : MonoBehaviour
+public class InCartItemUI : MonoBehaviour
 {	 
 	[SerializeField]
-	private TMP_Text _text = default;
+	private TMP_Text _countText = default;
 	[SerializeField]
 	private Image _image = default;
 	private ShopCartUIManager _shopCartUIManager = default;
@@ -38,7 +38,7 @@ public class UIIcon : MonoBehaviour
 			Destroy(this.gameObject);
 			return;
 		}
-		_text.SetText(count.ToString("x#"));
+		_countText.SetText(count.ToString("x#"));
 	}
 
 	public void Delete()

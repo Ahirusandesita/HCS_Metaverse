@@ -1,23 +1,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using KumaDebug;
 
 public class ShopCartUIManager : MonoBehaviour
 {
 	[SerializeField]
 	private ItemBundleAsset _allItemAsset;
 	[SerializeField]
-	private UIIcon _itemIconPrefab;
+	private InCartItemUI _itemIconPrefab;
 	[SerializeField]
 	private ShopCart _shopCart;
 	[SerializeField]
-	private Transform _parent;
+	private Transform _shopUIParent;
 	[SerializeField]
 	private RectTransform _startPosition;
 	[SerializeField]
 	private GameObject _shopCanvasObject;
-	private Dictionary<int, UIIcon> _itemIcons = new();
+	[SerializeField]
+	private ProductUI _productUIPrefab;
+	[SerializeField]
+	private Transform _productParent;
+	[SerializeField]
+	private Vector3 _priceCardPositionOffset = default;
+	private Dictionary<int, ProductUI> _productUIs = new();
+	private Dictionary<int, InCartItemUI> _itemIcons = new();
 	private float _offsetX = 100;
 	private float _offsetY = 100;
 	private int _horizontalLimit = 3;
@@ -29,7 +35,16 @@ public class ShopCartUIManager : MonoBehaviour
 
 		_offsetX = iconTransform.sizeDelta.x;
 		_offsetY = iconTransform.sizeDelta.y;
-		_horizontalLimit = Mathf.FloatToHalf((_parent.transform as RectTransform).sizeDelta.x / _offsetX);
+		_horizontalLimit = Mathf.FloatToHalf((_shopUIParent.transform as RectTransform).sizeDelta.x / _offsetX);
+	}
+
+	public void AddProductUI(int id, int price,int discountedPrice, int stock,float discount, Vector3 position)
+	{
+		ProductUI productUITemp = Instantiate(_productUIPrefab,_productParent);
+		productUITemp.Init(price,discountedPrice,discount,stock);
+		_productUIs.Add(id, productUITemp);
+
+		productUITemp.transform.position = position + _priceCardPositionOffset;
 	}
 
 	public void AddCartUI(int id)
@@ -38,7 +53,7 @@ public class ShopCartUIManager : MonoBehaviour
 		{
 			_shopCanvasObject.SetActive(true);
 		}
-		UIIcon uiIconTemp;
+		InCartItemUI uiIconTemp;
 		if (!_itemIcons.Keys.Contains(id))
 		{
 			ItemAsset itemAsset = _allItemAsset.GetItemAssetByID(id);
@@ -46,7 +61,7 @@ public class ShopCartUIManager : MonoBehaviour
 				_startPosition.anchoredPosition
 				+ Vector2.right * (_itemIcons.Count % _horizontalLimit) * _offsetX
 				+ Vector2.up * (_itemIcons.Count / _horizontalLimit) * -_offsetY;
-			uiIconTemp = Instantiate(_itemIconPrefab, _parent);
+			uiIconTemp = Instantiate(_itemIconPrefab, _shopUIParent);
 			uiIconTemp.Init(itemAsset.ItemIcon, this, popAnchoredPosition, id);
 			_itemIcons.Add(id, uiIconTemp);
 		}
@@ -65,7 +80,7 @@ public class ShopCartUIManager : MonoBehaviour
 	}
 	private void Clear()
 	{
-		foreach (UIIcon uiIcon in _itemIcons.Values)
+		foreach (InCartItemUI uiIcon in _itemIcons.Values)
 		{
 			Destroy(uiIcon.gameObject);
 		}

@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 464119166475583090}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1, y: 1, z: 0}
+  m_LocalPosition: {x: 1, y: 2, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -131,13 +131,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 694e89715c2dcdf46b773e53c5e8def3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: 20004
   allItemAsset: {fileID: 11400000, guid: 4b0a8552cd5992449aab6ed722f30dde, type: 2}
   buyArea: {fileID: 4949189375194756114}
-  viewPoints:
+  smallViewPoints:
   - {fileID: 321046913248611111}
   - {fileID: 8573313129162860973}
   - {fileID: 5883844033963842191}
+  largeViewPoints:
   - {fileID: 1971044503300279276}
   - {fileID: 1749536307191769646}
   - {fileID: 5029445918733743647}
@@ -161,6 +161,7 @@ MonoBehaviour:
     displayName: Item2
     selectedIndex: 2
   shopCart: {fileID: 8193003864273062663}
+  uiManager: {fileID: 5954294512950122465}
 --- !u!65 &8458157920760373022
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -209,7 +210,7 @@ Transform:
   m_GameObject: {fileID: 2220975658258607896}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1, y: 0, z: 0}
+  m_LocalPosition: {x: -1, y: 1, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -326,7 +327,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -635,11 +636,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _allItemAsset: {fileID: 11400000, guid: 4b0a8552cd5992449aab6ed722f30dde, type: 2}
-  _itemIconPrefab: {fileID: 4742327771195128530, guid: abcc06a159769a2468081f57d2fa692c, type: 3}
+  _itemIconPrefab: {fileID: 7304815664490633925, guid: abcc06a159769a2468081f57d2fa692c, type: 3}
   _shopCart: {fileID: 8193003864273062663}
-  _parent: {fileID: 1916540449568865231}
+  _shopUIParent: {fileID: 1916540449568865231}
   _startPosition: {fileID: 6136296327773532696}
   _shopCanvasObject: {fileID: 7474700477425182553}
+  _productUIPrefab: {fileID: 2601286247830737497, guid: 45d7699a06c0dda42a7ba070a7284a07, type: 3}
+  _productParent: {fileID: 9222298592507558460}
+  _priceCardPositionOffset: {x: 0, y: -0.5, z: 0}
 --- !u!1 &4182613528688559333
 GameObject:
   m_ObjectHideFlags: 0
@@ -973,7 +977,7 @@ Transform:
   m_GameObject: {fileID: 6368872883826265381}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1044,12 +1048,12 @@ GameObject:
   - component: {fileID: 1248812182361102895}
   - component: {fileID: 5062652124111235176}
   m_Layer: 0
-  m_Name: Canvas
+  m_Name: CartCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1916540449568865231
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1297,6 +1301,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myCollider: {fileID: 4382919876374502986}
   meshRenderer: {fileID: 322466546777402635}
+  offsetPosition: {x: 0, y: 0.4, z: 0}
 --- !u!1 &7634115071575195794
 GameObject:
   m_ObjectHideFlags: 0
@@ -1324,7 +1329,7 @@ Transform:
   m_GameObject: {fileID: 7634115071575195794}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1406,7 +1411,7 @@ Transform:
   m_GameObject: {fileID: 7799082886019412291}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1454,7 +1459,7 @@ Transform:
   m_GameObject: {fileID: 8421139134251753713}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1, y: 1, z: 0}
+  m_LocalPosition: {x: -1, y: 2, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1537,7 +1542,7 @@ Transform:
   m_GameObject: {fileID: 8742143050752743109}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1, y: 0, z: 0}
+  m_LocalPosition: {x: 1, y: 1, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1603,7 +1608,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5144740118467756796}
   m_Layer: 0
-  m_Name: ShopView
+  m_Name: ShopViewPositions
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1618,7 +1623,7 @@ Transform:
   m_GameObject: {fileID: 8797515829868759294}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 3}
+  m_LocalPosition: {x: 0, y: 0, z: 3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
