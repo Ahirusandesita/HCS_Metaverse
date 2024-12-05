@@ -166,11 +166,11 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
 
     public void RemoteSubmision(int index)
     {
+        scoreCalculator.GetScoreCalculator.ScoreCalucuration(commodityAssets[index].Score, 1);
         commodityAssets[index] = null;
         customers[index] = null;
         PackOrders();
         //score
-        scoreCalculator.GetScoreCalculator.ScoreCalucuration(1, 1);
         for (int i = 0; i < commodityAssets.Length; i++)
         {
             if (commodityAssets[i] == null)
@@ -182,6 +182,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
         }
 
         OnResetOrder?.Invoke(new ResetOrderArrayEventArgs(commodityInformations));
+        OnSubmission?.Invoke();
     }
 
     public void Cancel(CustomerInformation customer)
