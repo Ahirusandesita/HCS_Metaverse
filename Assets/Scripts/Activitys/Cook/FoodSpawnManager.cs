@@ -27,6 +27,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     {
         FindObjectOfType<ActivityProgressManagement>().OnStart += () =>
         {
+            Debug.LogError("óøóùÇæÇ∑ÇÊ");
             OnStart();
         };
         FindObjectOfType<ActivityProgressManagement>().OnFinish += () =>
@@ -70,11 +71,9 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
 
     }
 
-    public void OnStart()
+    public async void OnStart()
     {
-        GateOfFusion.Instance.OnActivityConnected += async () =>
-        {
-            if (GateOfFusion.Instance.IsLeader)
+            if (true)
             {
                 displayFoods = new List<GameObject>();
 
@@ -88,7 +87,6 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
                     displayFoods.Add(foodItem.gameObject);
                 }
             }
-        };
     }
     public void UntiHuzakenna(NetworkObject networkObject,int index)
     {
@@ -106,7 +104,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
         {
             foreach (var foodObj in displayFoods)
             {
-                GateOfFusion.Instance.Despawn<NetworkObject>(foodObj.GetComponent<NetworkObject>());
+                //GateOfFusion.Instance.Despawn<NetworkObject>(foodObj.GetComponent<NetworkObject>());
             }
         }
     }
