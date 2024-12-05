@@ -27,7 +27,6 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     {
         FindObjectOfType<ActivityProgressManagement>().OnStart += () =>
         {
-            Debug.LogError("óøóùÇæÇ∑ÇÊ");
             OnStart();
         };
         FindObjectOfType<ActivityProgressManagement>().OnFinish += () =>
@@ -73,7 +72,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
 
     public async void OnStart()
     {
-            if (true)
+            if (await GateOfFusion.Instance.GetIsLeader())
             {
                 displayFoods = new List<GameObject>();
 
