@@ -2,7 +2,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
-public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityNotification
+public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
 {
     [System.Serializable]
     private class FoodInfo
@@ -23,9 +23,16 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
     [SerializeField]
     private FoodSpawnManagerRPC selectedNotification;
 
-    private void Awake()
+    private void Start()
     {
-        OnStart();
+        FindObjectOfType<ActivityProgressManagement>().OnStart += () =>
+        {
+            OnStart();
+        };
+        FindObjectOfType<ActivityProgressManagement>().OnFinish += () =>
+        {
+            OnFinish();
+        };
     }
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
@@ -93,11 +100,14 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification, IActivityN
         displayItem.Inject_ItemSelectArgsAndSelectedNotification(itemSelectArgs,this);
     }
 
-    void IActivityNotification.OnFinish()
+    void OnFinish()
     {
-        foreach (var foodObj in displayFoods)
+        if (GateOfFusion.Instance.IsLeader)
         {
-            Destroy(foodObj);
+            foreach (var foodObj in displayFoods)
+            {
+                GateOfFusion.Instance.Despawn<NetworkObject>(foodObj.GetComponent<NetworkObject>());
+            }
         }
     }
 }
