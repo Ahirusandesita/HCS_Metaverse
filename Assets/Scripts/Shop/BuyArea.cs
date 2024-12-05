@@ -7,6 +7,7 @@ public class BuyArea : MonoBehaviour
 {
     [SerializeField] private BoxCollider myCollider = default;
     [SerializeField] private MeshRenderer meshRenderer = default;
+    [SerializeField] private Vector3 offsetPosition = default;
 
     private Transform myTransform = default;
     private OutlineManager outlineManager = default;
@@ -56,7 +57,7 @@ public class BuyArea : MonoBehaviour
     /// <param name="playerPosition"></param>
     public void Display(Vector3 playerPosition)
     {
-        myTransform.position = playerPosition + Vector3.right;// Debug
+        myTransform.position = playerPosition + Vector3.right + offsetPosition;// Debug
         myTransform.localScale = Vector3.zero;
         meshRenderer.enabled = true;
         UpdateAction += OverlapCheck;

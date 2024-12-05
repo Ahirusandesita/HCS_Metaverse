@@ -1,27 +1,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using KumaDebug;
 
 public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjector<PlayerBodyDependencyInformation>
 {
-	[ContextMenu("test")]
-	private void Test()
-	{	
-		shopCart.AddCart(_id);
-	}
-
-	private void Update()
-	{
-		//dev
-		if (Input.GetKeyDown(KeyCode.RightShift)) { shopCart.AddCart(_id); }
-	}
-	[SerializeField] private int _id = 000;
 	//カートクラスを作る
 	[SerializeField] private ItemBundleAsset allItemAsset = default;
 	[SerializeField] private BuyArea buyArea = default;
-	[SerializeField] private List<Transform> viewPoints = default;
+	[SerializeField] private List<Transform> smallViewPoints = default;
+	[SerializeField] private List<Transform> largeViewPoints = default;
 	[SerializeField] private List<ItemIDView> itemLineup = default;
 	[SerializeField] private ShopCart shopCart = default;
+	[SerializeField] private ShopCartUIManager uiManager = default;
 	private List<GameObject> displayedItems = default;
 	private IReadonlyPositionAdapter positionAdapter = default;
 
@@ -61,25 +52,53 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		//お金を減らす
 		//店の収益にプラス？
 		//所有権を移動
-		foreach(KeyValuePair<int,int> pair in shopCart.InCarts)
+		foreach (KeyValuePair<int, int> pair in shopCart.InCarts)
 		{
 			XDebug.Log($"id:{pair.Key} count:{pair.Value}");
 		}
 	}
 
-	private void InstanceShop()
+	private async void InstanceShop()
 	{
 		//生成
 		displayedItems = new List<GameObject>();
-
-		for (int i = 0; i < itemLineup.Count; i++)
+		WebAPIRequester webAPIRequester = FindObjectOfType<WebAPIRequester>();
+		var data = await webAPIRequester.PostEntry(0);
+		int smallItemCounter = 0;
+		int largeItemCounter = 0;
+		for (int i = 0; i < data.ItemLineup.Count; i++)
 		{
-			var asset = allItemAsset.GetItemAssetByID(itemLineup[i].ID);
-			var position = viewPoints[i].position;
+			var asset = allItemAsset.GetItemAssetByID(data.ItemLineup[i].ItemID);
+
+			float discountedPrice = data.ItemLineup[i].Price 
+				- (data.ItemLineup[i].Price * data.ItemLineup[i].Discount);
+
+			int stock = data.ItemLineup[i].Stock;
+			Vector3 position = default;
+			if (data.ItemLineup[i].Size == 0)
+			{
+				position = smallViewPoints[smallItemCounter].position;
+				smallItemCounter++;
+			}
+			//ほかのサイズが追加される可能性があるためelse ifにしてる
+			else if (data.ItemLineup[i].Size == 1)
+			{
+				position = largeViewPoints[largeItemCounter].position;
+				largeItemCounter++;
+			}
 			var item = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
 			displayedItems.Add(item.gameObject);
+			uiManager.AddProductUI(
+				data.ItemLineup[i].ItemID,
+				data.ItemLineup[i].Price,
+				Mathf.FloorToInt(discountedPrice),
+				stock,
+				data.ItemLineup[i].Discount,
+				position);
 		}
 	}
+
+
 
 	private void DestroyShop()
 	{

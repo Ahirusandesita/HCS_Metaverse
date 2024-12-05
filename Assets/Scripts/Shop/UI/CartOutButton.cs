@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class CartOutButton : MonoBehaviour
 {
     [SerializeField]
-    private UIIcon uiIconController = default;
+    private InCartItemUI uiIconController = default;
     [SerializeField]
     private EventTrigger eventTrigger;
     private void Awake()
