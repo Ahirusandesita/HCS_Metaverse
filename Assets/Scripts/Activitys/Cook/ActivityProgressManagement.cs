@@ -26,7 +26,8 @@ public class ActivityProgressManagement : MonoBehaviour
     /// <summary>
     /// ActivityÇèIóπÇ∑ÇÈÇ∆Ç´Ç…î≠çsÇ≥ÇÍÇÈ
     /// </summary>
-    public event WaitWithHandler OnFinish;
+    public event WaitWithHandler OnWaitFinish;
+    public event Action OnFinish;
     public delegate UniTask WaitWithHandler();
 
     private ITimeManager timeManager_ready;
@@ -54,8 +55,9 @@ public class ActivityProgressManagement : MonoBehaviour
 
     private async UniTaskVoid ActivityFinish()
     {
+        OnFinish?.Invoke();
         await UniTask.WhenAll(
-            OnFinish?.GetInvocationList()
+            OnWaitFinish?.GetInvocationList()
                .OfType<WaitWithHandler>()
                .Select(async (OnAysncEvent) => await OnAysncEvent.Invoke()));
 
