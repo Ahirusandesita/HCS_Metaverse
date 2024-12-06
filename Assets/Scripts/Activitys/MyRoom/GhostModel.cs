@@ -21,6 +21,15 @@ public class GhostModel : IEditOnlyGhost
         Center,
     }
 
+    /// <summary>
+    /// ”z’uŒ`Ž®
+    /// </summary>
+    public enum PlacingStyle
+    {
+        Ground,
+        Wall,
+    }
+
     private const string MATERIAL_NAME = "Ghost";
     private const string TEXTURE_NAME = "_Texture";
     private const string COLOR_NAME = "_Ghost_Color";
@@ -161,7 +170,17 @@ public class GhostModel : IEditOnlyGhost
     public GhostModel CreateModel(PlaceableObject placeableObject, Transform player, Color? defaultColor = null)
     {
         CreateModelSimple(placeableObject.GhostOrigin, defaultColor);
-        instance.AddComponent<PlacingTarget>().Initialize(this, placeableObject, player);
+        switch (placeableObject.PlacingStyle)
+        {
+            case PlacingStyle.Ground:
+                instance.AddComponent<PlacingTarget>().Initialize(this, placeableObject, player);
+                break;
+
+            case PlacingStyle.Wall:
+                instance.AddComponent<PlacingTarget_Wall>().Initialize(this, placeableObject, player);
+                break;
+        }
+
         enablePlacingFunction = true;
         return this;
     }
