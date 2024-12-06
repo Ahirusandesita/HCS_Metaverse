@@ -81,5 +81,6 @@ public class LeaderOrMember : MonoBehaviour
     public void ProcessComplete()
     {
         canProsess = true;
+        OnStart();
     }
 }
