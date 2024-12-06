@@ -35,7 +35,7 @@ public class LeaderOrMember : MonoBehaviour
     }
     private async void OnStart()
     {
-        bool isLeader = true/*await GateOfFusion.Instance.GetIsLeader()*/;
+        bool isLeader = await GateOfFusion.Instance.GetIsLeader();
         Debug.LogError(isLeader);
         for (int i = 0; i < LOMInformations.Count; i++)
         {
