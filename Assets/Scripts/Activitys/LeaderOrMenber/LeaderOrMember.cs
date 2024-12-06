@@ -35,7 +35,7 @@ public class LeaderOrMember : MonoBehaviour
     }
     private async void OnStart()
     {
-        bool isLeader = await GateOfFusion.Instance.GetIsLeader();
+        bool isLeader = true/*await GateOfFusion.Instance.GetIsLeader()*/;
         Debug.LogError(isLeader);
         for (int i = 0; i < LOMInformations.Count; i++)
         {
@@ -63,7 +63,7 @@ public class LeaderOrMember : MonoBehaviour
                     if (item.InstanceCode == lOMInformation.InterfaceRPCComponent.InstanceCode)
                     {
                         MonoBehaviour member = Instantiate(lOMInformation.Member);
-                        ILeader memberInterface = member.GetComponent<ILeader>();
+                        IMember memberInterface = member.GetComponent<IMember>();
 
                         memberInterface.Inject(item.NetworkBehaviour);
                         item.MemberInject(member);
