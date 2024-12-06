@@ -1,31 +1,31 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UniRx;
+using UnityEngine.InputSystem;
 
 public class PlacingTarget : MonoBehaviour
 {
     private const float GROUND_OFFSET = 0.01f;
-    private const float ROTATE_DURATION = 30f;  // 1秒間に回転する角度（度数法）
+    protected const float ROTATE_DURATION = 30f;  // 1秒間に回転する角度（度数法）
 
-    private BoxCollider boxCollider = default;
-    private IEditOnlyGhost ghostModel = default;
-    private PlaceableObject placeableObject = default;
-    private Transform player = default;
-    private Transform playerHead = default;
-    private bool isCollision = default;
-    private float yPosition = default;
-    private Vector3 boxHalfSize = default;
-    private float slopeLimit = default;
-    private float playerHeight = default;
-    private float rotateAngle = default;
-    private float cacheAngle = default;
+    protected BoxCollider boxCollider = default;
+    protected IEditOnlyGhost ghostModel = default;
+    protected PlaceableObject placeableObject = default;
+    protected Transform player = default;
+    protected Transform playerHead = default;
+    protected bool isCollision = default;
+    protected float xPosition = default;
+    protected float yPosition = default;
+    protected float zPosition = default;
+    protected Vector3 boxHalfSize = default;
+    protected float slopeLimit = default;
+    protected float playerHeight = default;
+    protected float rotateAngle = default;
 
-    private float forwardOffset = 1.2f;
-    private Action UpdateAction = default; 
+    protected float forwardOffset = default;
+    protected Action UpdateAction = default;
 
 
-    public PlacingTarget Initialize(IEditOnlyGhost ghostModel, PlaceableObject placeableObject, Transform player)
+    public virtual PlacingTarget Initialize(IEditOnlyGhost ghostModel, PlaceableObject placeableObject, Transform player)
     {
         this.ghostModel = ghostModel;
         this.placeableObject = placeableObject;
@@ -37,6 +37,7 @@ public class PlacingTarget : MonoBehaviour
         playerHeight = cc.height;
         boxCollider = transform.GetComponent<BoxCollider>();
         boxHalfSize = boxCollider.size / 2;
+
         // xとzで大きい方
         forwardOffset = boxCollider.size.x > boxCollider.size.z
             ? boxCollider.size.x
@@ -45,39 +46,31 @@ public class PlacingTarget : MonoBehaviour
         // Tmporary（Inputの変更はどこか別の場所で行う）--------------
         Inputter.PlacingMode.Rotate.Enable();
         // -------------------------------------------------------
-        Inputter.PlacingMode.Rotate.performed += angle =>
-        {
-            // オブジェクト（ゴースト）自身の転回処理
-            // ボタンを押している間回る
-            UpdateAction += () => rotateAngle += Time.deltaTime * angle.ReadValue<float>() * ROTATE_DURATION;
-        };
-        Inputter.PlacingMode.Rotate.canceled += angle =>
-        {
-            UpdateAction = null;
-        };
+        Inputter.PlacingMode.Rotate.performed += OnRotate;
+        Inputter.PlacingMode.Rotate.canceled += OnRotateCancel;
 
         return this;
     }
 
-    private void LateUpdate()
+    protected virtual void LateUpdate()
     {
         ghostModel.SetPlaceableState(PreviewPlacing());
 
         UpdateAction?.Invoke();
 
-        transform.position = new Vector3(player.position.x, yPosition, player.position.z) + player.forward * forwardOffset;
+        transform.position = new Vector3(xPosition, yPosition, zPosition) + player.forward * forwardOffset;
         // プレイヤーの転回に合わせたrotationと、オブジェクト自身の転回をマージ
         transform.rotation = Quaternion.Euler(new Vector3(player.rotation.x, player.rotation.eulerAngles.y + rotateAngle, player.rotation.z));
     }
 
-    private void OnDestroy()
+    protected virtual void OnDestroy()
     {
         // Tmporary
         Inputter.PlacingMode.Rotate.Disable();
         UpdateAction = null;
     }
 
-    private bool PreviewPlacing()
+    protected virtual bool PreviewPlacing()
     {
         // 計算誤差用の定数
         const float CALC_ERROR_OFFSET = 0.01f;
@@ -129,11 +122,14 @@ public class PlacingTarget : MonoBehaviour
             return false;
         }
 
+        xPosition = player.position.x;
+        zPosition = player.position.z;
+
         // Rayが当たった位置をy軸の座標とする
         // もしRayが当たらない = 高すぎる位置にいるときは「設置できない」と表現するため、プレイヤーと同じ高さでキープする（浮かせる）
-        yPosition = isHitGroundBox ?
-            groundHitInfo.point.y + GROUND_OFFSET :
-            playerUnderOriginY;
+        yPosition = isHitGroundBox
+            ? groundHitInfo.point.y + GROUND_OFFSET
+            : playerUnderOriginY;
 
         // 原点が足元にない場合は埋まってしまうので、その場合は補正する
         if (placeableObject.PivotType == GhostModel.PivotType.Center)
@@ -190,6 +186,18 @@ public class PlacingTarget : MonoBehaviour
         return true;
     }
 
+    protected virtual void OnRotate(InputAction.CallbackContext context)
+    {
+        // オブジェクト（ゴースト）自身の転回処理
+        // ボタンを押している間回る
+        UpdateAction += () => rotateAngle += Time.deltaTime * context.ReadValue<float>() * ROTATE_DURATION;
+    }
+
+    protected virtual void OnRotateCancel(InputAction.CallbackContext context)
+    {
+        UpdateAction = null;
+    }
+
     private void OnPlacing()
     {
 
@@ -206,7 +214,7 @@ public class PlacingTarget : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-    private void OnDrawGizmos()
+    protected virtual void OnDrawGizmos()
     {
         var center = boxCollider.bounds.center;
         var underOrigin = new Vector3(center.x, center.y - boxHalfSize.y, center.z);
