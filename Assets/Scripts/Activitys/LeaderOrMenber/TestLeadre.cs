@@ -5,6 +5,7 @@ using UnityEngine;
 using Fusion;
 public class TestLeadre : MonoBehaviour,ILeader
 {
+    [SerializeField]
     private NetworkBehaviour networkBehaviour;
     public void Inject(NetworkBehaviour networkBehaviour)
     {
