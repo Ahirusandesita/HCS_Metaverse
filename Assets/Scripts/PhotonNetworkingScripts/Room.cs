@@ -115,6 +115,11 @@ public class Room
 		return result;
 	}
 
+	public bool IsLeader(PlayerRef playerRef)
+	{
+		return _leader == playerRef;
+	}
+
 	public void ChangeLeader(PlayerRef nextLeaderPlayer)
 	{
 		XKumaDebugSystem.LogWarning($"Leader{nextLeaderPlayer}", KumaDebugColor.ErrorColor);

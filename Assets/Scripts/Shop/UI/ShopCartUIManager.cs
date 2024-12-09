@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using TMPro;
 
 public class ShopCartUIManager : MonoBehaviour
 {
@@ -21,6 +22,8 @@ public class ShopCartUIManager : MonoBehaviour
 	[SerializeField]
 	private Transform _productParent;
 	[SerializeField]
+	private TextMeshProUGUI _totalPriceText;
+	[SerializeField]
 	private Vector3 _priceCardPositionOffset = default;
 	private Dictionary<int, ProductUI> _productUIs = new();
 	private Dictionary<int, InCartItemUI> _itemIcons = new();
@@ -32,7 +35,7 @@ public class ShopCartUIManager : MonoBehaviour
 	private void Start()
 	{
 		RectTransform iconTransform = _itemIconPrefab.transform as RectTransform;
-
+		TatalPriceDisplay();
 		_offsetX = iconTransform.sizeDelta.x;
 		_offsetY = iconTransform.sizeDelta.y;
 		_horizontalLimit = Mathf.FloatToHalf((_shopUIParent.transform as RectTransform).sizeDelta.x / _offsetX);
@@ -70,7 +73,12 @@ public class ShopCartUIManager : MonoBehaviour
 			uiIconTemp = _itemIcons[id];
 		}
 		uiIconTemp.UpdateCount(_shopCart.InCarts[id]);
+		TatalPriceDisplay();
+	}
 
+	private void TatalPriceDisplay()
+	{
+		_totalPriceText.text = _shopCart.ClacTotalPrice().ToString("c");
 	}
 
 	public void BuyButtonPush()
