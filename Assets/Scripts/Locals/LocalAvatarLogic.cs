@@ -47,7 +47,7 @@ public class LocalAvatarLogic : MonoBehaviour
         _avatarHandTracker.LeftHandTracking(_leftControllerTransform);
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         action?.Invoke();
 

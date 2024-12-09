@@ -1934,12 +1934,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f99f54e3c7c37c42ab23f126855a450, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rightShoulderTransform: {fileID: 1733910118}
-  _leftShoulderTransform: {fileID: 0}
-  _rightControllerTransform: {fileID: 1787218221}
-  _leftControllerTransform: {fileID: 0}
-  _rightHandTransform: {fileID: 633873304}
-  _leftHandTransform: {fileID: 0}
 --- !u!65 &1733910115
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7282,7 +7276,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9142103114959020874}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b953624d1bd0714fa1ff8ff00a70ac2, type: 3}
   m_Name: 
@@ -35460,6 +35454,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ece4941ea7e4d145b6f2a5d886c5fe8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rightControllerTransform: {fileID: 6508186075823756718}
+  _leftControllerTransform: {fileID: 6508186075823759786}
 --- !u!4 &6641224958494904478
 Transform:
   m_ObjectHideFlags: 0
@@ -46640,7 +46636,6 @@ GameObject:
   - component: {fileID: 7011571691261209499}
   - component: {fileID: 6632934823780333935}
   - component: {fileID: 1008322925267567464}
-  - component: {fileID: 9142103114959020875}
   m_Layer: 6
   m_Name: PlayerAvatar
   m_TagString: Untagged
@@ -46648,24 +46643,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &9142103114959020875
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9142103114959020874}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f99f54e3c7c37c42ab23f126855a450, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _rightShoulderTransform: {fileID: 6294867605797205760}
-  _leftShoulderTransform: {fileID: 7844672170165182292}
-  _rightControllerTransform: {fileID: 6508186075823756718}
-  _leftControllerTransform: {fileID: 6508186075823759786}
-  _rightHandTransform: {fileID: 7836242855934427962}
-  _leftHandTransform: {fileID: 4329906576306700882}
 --- !u!137 &9146807694794307751
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
