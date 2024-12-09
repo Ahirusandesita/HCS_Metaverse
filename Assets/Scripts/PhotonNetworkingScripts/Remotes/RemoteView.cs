@@ -3,20 +3,34 @@ using Fusion;
 
 public class RemoteView : NetworkBehaviour,IDependencyInjector<PlayerBodyDependencyInformation>
 {
+	[SerializeField]
+	private Transform _rightShoulder;
+
+    [SerializeField]
+    private Transform _rightHand;
+
+	[SerializeField]
+	private Transform _leftShoulder;
+
+    [SerializeField]
+	private Transform _leftHand;
+
 	private Transform _playerTransform;
 	private Transform _viewTransform;
-	private PlayerBodyDependencyInformation information;
+	private PlayerBodyDependencyInformation _information;
+
 	public override void Spawned()
 	{
+		Debug.Log($"Spawnd:RemoteView");
 		base.Spawned();
 		_playerTransform = FindObjectOfType<VRPlayerController>().transform;
 		_viewTransform = transform;
 
-		PlayerInitialize.ConsignmentInject_static(this);
-	}
+		AvatarHandTracker avatarHandTracker = new AvatarHandTracker(_rightShoulder, _rightHand, _leftShoulder, _leftHand);
 
-	public void SetVector3(Vector3 vector)
-	{
+		_playerTransform.GetComponent<LocalAvatarLogic>().setAvatarHandTracker = avatarHandTracker;
+
+		PlayerInitialize.ConsignmentInject_static(this);
 	}
 
 	public override void FixedUpdateNetwork()
@@ -25,13 +39,12 @@ public class RemoteView : NetworkBehaviour,IDependencyInjector<PlayerBodyDepende
 		_viewTransform.position = _playerTransform.position;
 
         Quaternion rotation = _viewTransform.rotation;
-        rotation.y = information.Head.Rotation.y;
+        rotation.y = _information.Head.Rotation.y;
         _viewTransform.rotation = rotation;
-
     }
 
     public void Inject(PlayerBodyDependencyInformation information)
     {
-		this.information = information;
+		this._information = information;
     }
 }

@@ -4,9 +4,19 @@ using VContainer;
 
 public class LocalAvatarLogic : MonoBehaviour
 {
-    private RemoteView remoteView;
+    [SerializeField]
+    private Transform _rightControllerTransform = default;
 
-    private Action action;
+    [SerializeField]
+    private Transform _leftControllerTransform = default;
+
+    private RemoteView remoteView = default;
+
+    private Action action = default;
+
+    private AvatarHandTracker _avatarHandTracker = null;
+
+    public AvatarHandTracker setAvatarHandTracker { set => _avatarHandTracker = value; }
     [Inject]
     public void Inject(RemoteView remoteView)
     {
@@ -17,11 +27,30 @@ public class LocalAvatarLogic : MonoBehaviour
 
         remoteView.GetComponent<MeshRenderer>().enabled = false;
 
-        action += () => remoteView.SetVector3(this.transform.position);
+        Debug.Log($"<color=green>LAL:Inject</color>");
+
+        //action += () => remoteView.SetController(_rightControllerTransform, _leftControllerTransform);
+    }
+
+    private void HandTracking()
+    {
+        // 
+        if (_avatarHandTracker == null)
+        {
+            return;
+        }
+        Debug.Log($"<color=red>HandTracking:{_avatarHandTracker == null}</color>");
+        // 
+        _avatarHandTracker.RightHandTracking(_rightControllerTransform);
+
+        // 
+        _avatarHandTracker.LeftHandTracking(_leftControllerTransform);
     }
 
     private void Update()
     {
         action?.Invoke();
+
+        HandTracking();
     }
 }
