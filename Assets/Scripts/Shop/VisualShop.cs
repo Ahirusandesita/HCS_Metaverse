@@ -12,8 +12,30 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 	[SerializeField] private List<Transform> largeViewPoints = default;
 	[SerializeField] private ShopCart shopCart = default;
 	[SerializeField] private ShopCartUIManager uiManager = default;
+	[SerializeField]
+	private int _id = 20003;
+	private Dictionary<int, int> prices = new();
 	private List<GameObject> displayedItems = default;
 	private IReadonlyPositionAdapter positionAdapter = default;
+	private void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.Space))
+		{
+
+			shopCart.AddCart(_id);
+		}
+	}
+	public int GetPrice(int id)
+	{
+
+		if (prices.Keys.Contains(id))
+		{
+			return prices[id];
+		}
+
+		XKumaDebugSystem.LogWarning($"{id}:ÇªÇÃidÇÕå©Ç¬Ç©ÇËÇ‹ÇπÇÒÇ≈ÇµÇΩ");
+		return -1;
+	}
 
 	[System.Diagnostics.Conditional("UNITY_EDITOR")]
 	private void Reset()
@@ -60,9 +82,10 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		//ê∂ê¨
 		displayedItems = new List<GameObject>();
 		WebAPIRequester webAPIRequester = FindObjectOfType<WebAPIRequester>();
-		if(webAPIRequester == null) {
-			XKumaDebugSystem.LogWarning("webApiRequesterÇ™å©Ç¬Ç©ÇËÇ‹ÇπÇÒÇ≈ÇµÇΩÅB",KumaDebugColor.WarningColor);
-			return; 
+		if (webAPIRequester == null)
+		{
+			XKumaDebugSystem.LogWarning("webApiRequesterÇ™å©Ç¬Ç©ÇËÇ‹ÇπÇÒÇ≈ÇµÇΩÅB", KumaDebugColor.WarningColor);
+			return;
 		}
 		var data = await webAPIRequester.PostEntry(0);
 		int smallItemCounter = 0;
@@ -71,8 +94,8 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		{
 			var asset = allItemAsset.GetItemAssetByID(data.ItemLineup[i].ItemID);
 
-			float discountedPrice = data.ItemLineup[i].Price 
-				- (data.ItemLineup[i].Price * data.ItemLineup[i].Discount);
+			int discountedPrice = Mathf.FloorToInt(data.ItemLineup[i].Price
+				- (data.ItemLineup[i].Price * data.ItemLineup[i].Discount));
 
 			int stock = data.ItemLineup[i].Stock;
 			Vector3 position = default;
@@ -92,10 +115,11 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 			uiManager.AddProductUI(
 				data.ItemLineup[i].ItemID,
 				data.ItemLineup[i].Price,
-				Mathf.FloorToInt(discountedPrice),
+				discountedPrice,
 				stock,
 				data.ItemLineup[i].Discount,
 				position);
+			prices.Add(data.ItemLineup[i].ItemID,discountedPrice);
 		}
 	}
 

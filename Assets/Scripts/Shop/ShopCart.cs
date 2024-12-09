@@ -25,7 +25,15 @@ public class ShopCart : MonoBehaviour
 		}
 		_shopCartUIManager.AddCartUI(id);
 	}
-
+	public int ClacTotalPrice()
+	{
+		int ans = 0;
+		foreach (KeyValuePair<int, int> pair in _inCarts)
+		{
+			ans += _visualShop.GetPrice(pair.Key) * pair.Value;
+		}
+		return ans;
+	}
 	public void RemoveCart(int id)
 	{
 		if (_inCarts[id] <= 1)
@@ -44,7 +52,7 @@ public class ShopCart : MonoBehaviour
 		_visualShop.Buy();
 		foreach (KeyValuePair<int, int> pair in _inCarts)
 		{
-			for (int i = 0;i < pair.Value ; i++)
+			for (int i = 0; i < pair.Value; i++)
 			{
 				FindObjectOfType<InventoryManager>().SendItem(pair.Key);
 			}

@@ -3,25 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using KumaDebug;
 
-public class ShopCanvasPositionController : MonoBehaviour,IDependencyInjector<PlayerBodyDependencyInformation>
+public class ShopCanvasPositionController : MonoBehaviour
 {
 	[SerializeField]
-	private Vector3 _offset = Vector3.forward;
+	private Vector3 _positionOffset = Vector3.forward;
 	private Transform _myTransform = default;
-	private IReadonlyPositionAdapter _playerPosition = default;
+	private Transform _playerTransform = default;
 
-	public void Inject(PlayerBodyDependencyInformation information)
-	{
-		_playerPosition = information.PlayerBody;
-	}
 
 	private void OnEnable()
 	{
-		PlayerInitialize.ConsignmentInject_static(this);
+		_playerTransform = FindObjectOfType<VRPlayerController>().transform;
 		_myTransform = transform;
 	}
 	private void Update()
 	{
-		_myTransform.position = _playerPosition.Position + _offset;
+		_myTransform.rotation = _playerTransform.rotation;
+		_myTransform.position = _playerTransform.position 
+			+ (_myTransform.forward * _positionOffset.x) 
+			+ (_myTransform.forward * _positionOffset.y) 
+			+ (_myTransform.forward * _positionOffset.z);
 	}
 }

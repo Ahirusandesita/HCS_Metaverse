@@ -134,7 +134,7 @@ public class RoomManager : MonoBehaviour
 		{
 			InstantiateActivityStartUI();
 		}
-		XKumaDebugSystem.LogWarning($"参加:{sceneNameType}," +
+		XKumaDebugSystem.LogWarning($"ルームに参加:{sceneNameType}," +
 			$"Result:{result}\n," +
 			$"Player:{joinPlayer}",
 			KumaDebugColor.InformationColor);
@@ -145,14 +145,19 @@ public class RoomManager : MonoBehaviour
 	public void InstantiateLeaderObject()
 	{
 		XKumaDebugSystem.LogWarning($"InstanceLeaderObject:{MasterServerConect.Runner.LocalPlayer}", KumaDebugColor.SuccessColor);
-
+		Leader leaderTemp = FindObjectOfType<Leader>();
+		if (leaderTemp != null)
+		{
+			XKumaDebugSystem.LogWarning($"エラー：リーダー多すぎ");
+			Destroy(leaderTemp.gameObject);
+		}
 		_leaderObject = Instantiate(_leaderObjectPrefab);
 	}
 	public void InstantiateActivityStartUI(bool isLeader = false)
 	{
 		_activityStartUI = Instantiate(_activityStartUIPrefab);
 		Room room = GetCurrentRoom(GateOfFusion.Instance.NetworkRunner.LocalPlayer);
-		XKumaDebugSystem.LogWarning($"{room}:{_activityStartUIPrefab}", KumaDebugColor.RpcColor);
+		XKumaDebugSystem.LogWarning($"{room}:{_activityStartUI},Player:{GateOfFusion.Instance.NetworkRunner.LocalPlayer}", KumaDebugColor.RpcColor);
 		if (room.LeaderPlayerRef != GateOfFusion.Instance.NetworkRunner.LocalPlayer || isLeader)
 		{
 			Destroy(FindObjectOfType<ActivityStartButton>().gameObject);
@@ -195,6 +200,10 @@ public class RoomManager : MonoBehaviour
 	{
 		Room joinedRoom = GetCurrentRoom(playerRef);
 		if (joinedRoom is null) { return; }
+		if (joinedRoom.IsLeader(playerRef))
+		{
+			DestroyLeaderObject();
+		}
 		XKumaDebugSystem.LogWarning(
 			$"退出:{joinedRoom.SceneNameType}" +
 			$"\nRoom:{joinedRoom.NextSessionName}" +
@@ -248,6 +257,7 @@ public class RoomManager : MonoBehaviour
 		if (isLeader)
 		{
 			DestroyActivityStartUI();
+			DestroyLeaderObject();
 			InstantiateLeaderObject();
 			InstantiateActivityStartUI(true);
 		}
@@ -267,7 +277,9 @@ public class RoomManager : MonoBehaviour
 		XKumaDebugSystem.LogWarning($"{myRoom}:{myPlayerRef}:", KumaDebugColor.MessageColor);
 		bool isLeader = myRoom.LeaderPlayerRef == myPlayerRef;
 		_rooms.Clear();
+		XKumaDebugSystem.LogWarning($"クリア");
 		_rooms.Add(myRoomKey, myRoom);
+		XKumaDebugSystem.LogWarning($"add");
 		if (myRoom.IsNonLeader) { return; }
 		if (isLeader) { myRoom.ChangeLeader(myPlayerRef); }
 	}
