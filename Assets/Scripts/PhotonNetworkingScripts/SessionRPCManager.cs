@@ -122,14 +122,6 @@ public class SessionRPCManager : NetworkBehaviour
 		}
 	}
 
-	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
-	public void Rpc_DestroyLeaderObject([RpcTarget] PlayerRef rpcTarget)
-	{
-		XKumaDebugSystem.LogWarning("Rpc_DestroyLeaderObject:" + rpcTarget, KumaDebugColor.RpcColor);
-		RoomManager.Instance.DestroyLeaderObject();
-		RoomManager.Instance.DestroyActivityStartUI();
-	}
-
 	public void Rpc_ChangeLeader(PlayerRef nextLeader)
 	{
 		RoomManager.Instance.LeaderChange(nextLeader);

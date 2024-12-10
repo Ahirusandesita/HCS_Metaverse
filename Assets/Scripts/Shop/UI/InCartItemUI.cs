@@ -14,14 +14,6 @@ public class InCartItemUI : MonoBehaviour
 	private ShopCartUIManager _shopCartUIManager = default;
 	private int _id;
 
-	private void Update()
-	{
-		if(_id == 10001 && Input.GetKeyDown(KeyCode.Return))
-		{
-			Delete();
-		}
-	}
-
 	public void Init(Sprite itemSprite,ShopCartUIManager shopCartUIManager,Vector2 popAnchoredPosition,int id)
 	{
 		_id = id;
