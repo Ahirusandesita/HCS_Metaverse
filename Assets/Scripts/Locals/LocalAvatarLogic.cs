@@ -39,8 +39,6 @@ public class LocalAvatarLogic : MonoBehaviour
         {
             return;
         }
-        // 
-
 
         // 
         _avatarHandTracker.RightHandTracking(_rightControllerTransform);

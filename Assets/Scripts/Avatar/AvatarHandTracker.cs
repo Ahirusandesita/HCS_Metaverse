@@ -5,14 +5,13 @@ using Fusion;
 
 public class AvatarHandTracker
 {
-    public AvatarHandTracker(NetworkObject rightShoulder, NetworkObject rightHand, NetworkObject leftShoulder, NetworkObject leftHand, Transform remoteAvatarTransform)
+    public AvatarHandTracker(NetworkObject rightShoulder, NetworkObject rightHand, NetworkObject leftShoulder, NetworkObject leftHand)
     {
         // 
         _rightShoulder = rightShoulder;
         _rightHand = rightHand;
         _leftShoulder = leftShoulder;
         _leftHand = leftHand;
-        _remoteAvatarTransform = remoteAvatarTransform;
 
         // 
         _rightShoulderOriginRotatioin = _rightShoulder.transform.localRotation;
@@ -30,9 +29,6 @@ public class AvatarHandTracker
 
     // 
     private NetworkObject _leftHand = default;
-
-    // 
-    private Transform _remoteAvatarTransform = default;
 
     // 
     private Quaternion _rightShoulderOriginRotatioin = default;
