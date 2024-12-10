@@ -47,6 +47,8 @@ public class AvatarHandTracker
         // 
         _rightShoulder.transform.localRotation = _rightShoulderOriginRotatioin;
 
+        Debug.Log($"beforeRotation:{_rightShoulder.transform.localRotation.eulerAngles}");
+
         // 
         Vector3 shoulderForword = _rightShoulder.transform.right;
 
@@ -69,6 +71,13 @@ public class AvatarHandTracker
         // 
         _rightShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis);
 
+        Debug.Log($"afterRotation:{_rightShoulder.transform.localRotation.eulerAngles}");
+
+        // 
+        _rightShoulder.transform.rotation = Quaternion.AngleAxis(180, _rightShoulder.transform.right) * _rightShoulder.transform.rotation;
+
+        Debug.Log($"rastRotation:{_rightShoulder.transform.localRotation.eulerAngles}");
+
         // 
         Vector3 controllerTwist = new Vector3(conrtoller.localEulerAngles.z, 0, 0);
 
@@ -87,8 +96,6 @@ public class AvatarHandTracker
         // 
         _leftShoulder.transform.localRotation = _leftShoulderOriginRotatioin;
 
-        Debug.Log($"beforeRotation:{_leftShoulder.transform.localRotation.eulerAngles}");
-
         // 
         Vector3 shoulderForword = -_leftShoulder.transform.right;
 
@@ -99,7 +106,7 @@ public class AvatarHandTracker
         Vector3 shoulderAxis = Vector3.Cross(shoulderForword, shoulderToHandVector).normalized;
 
         // 
-        if (Vector3.Dot(shoulderAxis, Vector3.up) < 0)
+        if (Vector3.Dot(shoulderAxis, Vector3.up) > 0)
         {
             // 
             shoulderAxis *= -1;
@@ -110,8 +117,6 @@ public class AvatarHandTracker
 
         // 
         _leftShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis);
-
-        Debug.Log($"afterRotation:{_leftShoulder.transform.localRotation.eulerAngles}");
 
         // 
         Vector3 controllerTwist = new Vector3(-conrtoller.localEulerAngles.z, 0, 0);
