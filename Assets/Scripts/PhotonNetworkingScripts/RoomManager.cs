@@ -148,11 +148,11 @@ public class RoomManager : MonoBehaviour
 		Leader leaderTemp = FindObjectOfType<Leader>();
 		if (leaderTemp != null)
 		{
-			XKumaDebugSystem.LogWarning($"エラー：リーダー多すぎ");
-			Destroy(leaderTemp.gameObject);
+			XKumaDebugSystem.LogWarning($"エラー：リーダーオブジェクトが多すぎる～");
 		}
 		_leaderObject = Instantiate(_leaderObjectPrefab);
 	}
+
 	public void InstantiateActivityStartUI(bool isLeader = false)
 	{
 		_activityStartUI = Instantiate(_activityStartUIPrefab);
@@ -246,11 +246,9 @@ public class RoomManager : MonoBehaviour
 
 		await UniTask.WaitUntil(() => MasterServerConect.Runner.ActivePlayers.Contains(nextLeaderPlayer));
 
-
 		if (MasterServerConect.Runner.ActivePlayers.Count() > 1)
 		{
 			await UniTask.WaitUntil(() => MasterServerConect.Runner.ActivePlayers.Contains(roomTemp.LeaderPlayerRef));
-			MasterServerConect.SessionRPCManager.Rpc_DestroyLeaderObject(roomTemp.LeaderPlayerRef);
 		}
 		//前のリーダーのリーダーオブジェクトを破棄する
 		bool isLeader = nextLeaderPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer;

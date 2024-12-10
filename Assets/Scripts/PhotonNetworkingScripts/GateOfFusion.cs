@@ -53,7 +53,7 @@ public class GateOfFusion
 		{
 			return false;
 		}
-		await UniTask.WaitUntil(() => NetworkRunner == null);
+		await UniTask.WaitUntil(() => NetworkRunner != null);
 		if (NetworkRunner == null)
 		{
 			XKumaDebugSystem.LogWarning("ƒ‰ƒ“ƒi[‚ª‚ ‚è‚Ü‚¹‚ñ");

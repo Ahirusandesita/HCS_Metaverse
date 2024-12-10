@@ -12,19 +12,10 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 	[SerializeField] private List<Transform> largeViewPoints = default;
 	[SerializeField] private ShopCart shopCart = default;
 	[SerializeField] private ShopCartUIManager uiManager = default;
-	[SerializeField]
-	private int _id = 20003;
 	private Dictionary<int, int> prices = new();
 	private List<GameObject> displayedItems = default;
 	private IReadonlyPositionAdapter positionAdapter = default;
-	private void Update()
-	{
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
 
-			shopCart.AddCart(_id);
-		}
-	}
 	public int GetPrice(int id)
 	{
 
