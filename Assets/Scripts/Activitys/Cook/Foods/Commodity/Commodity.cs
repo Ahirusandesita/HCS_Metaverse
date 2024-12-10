@@ -44,7 +44,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
             {
                 switchableGrabbableActive.Active(this);
             }
-            else if (data.Authrity)
+            else if (!data.Authrity)
             {
                 switchableGrabbableActive.Inactive(this);
             }
