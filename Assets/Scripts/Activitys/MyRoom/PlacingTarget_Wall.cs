@@ -7,6 +7,7 @@ public class PlacingTarget_Wall : PlacingTarget
     private float cacheForwardOffset = default;
     private float yPositionOffset = default;
 
+
     private void Start()
     {
         cacheForwardOffset = forwardOffset;
@@ -20,7 +21,7 @@ public class PlacingTarget_Wall : PlacingTarget
 
         UpdateAction?.Invoke();
 
-        transform.position = new Vector3(xPosition, yPosition, zPosition) + player.forward * forwardOffset;
+        transform.position = new Vector3(xPosition, yPosition, zPosition) + transform.forward * forwardOffset;
         // プレイヤーの転回に合わせたrotationと、オブジェクト自身の転回をマージ
         transform.rotation = Quaternion.Euler(new Vector3(player.rotation.x, player.rotation.eulerAngles.y + rotateAngle, player.rotation.z));
     }
@@ -29,27 +30,28 @@ public class PlacingTarget_Wall : PlacingTarget
     {
         // 計算誤差用の定数
         const float CALC_ERROR_OFFSET = 0.01f;
+        const float ANGLE_OFFSET_LIMIT = 30f;
 
         // 自分の身長の4分の1は床判定
         // GameObject.transformはモデルによって違うので、y軸補正の際はすべて足し算で行う
-
         // Ghost（自分）の中心および足元の座標を取得
         // モデルによって、原点の位置が違う問題を、boundsによって一応解決した
         Vector3 center = boxCollider.bounds.center;
         // 埋まりこみ対策で厚みを考慮した中心点を求める
-        Vector3 forwardOrigin = new Vector3(center.x + boxHalfSize.z * player.forward.x, center.y, center.z + boxHalfSize.z * player.forward.z);
-        Vector3 rayCenter = new Vector3(player.position.x, center.y, player.position.z) + player.forward * cacheForwardOffset;
+        Vector3 forwardOrigin = new Vector3(center.x + boxHalfSize.z * transform.forward.x, center.y, center.z + boxHalfSize.z * transform.forward.z);
+        Vector3 rayCenter = new Vector3(player.position.x, center.y, player.position.z);
 
         // 壁の当たり判定
         bool isHitWallBox = Physics.BoxCast(
             center: rayCenter,
             halfExtents: boxHalfSize,
-            direction: player.forward,
+            direction: transform.forward,
             hitInfo: out RaycastHit wallHitInfo,
             orientation: transform.rotation,
             maxDistance: PLACEABLE_DISTANCE,
             layerMask: Layer.GROUNDWALL
             );
+
 
         // 原点が足元にない場合は埋まってしまうので、その場合は補正する
         yPosition = placeableObject.PivotType == GhostModel.PivotType.Under
@@ -61,25 +63,55 @@ public class PlacingTarget_Wall : PlacingTarget
             xPosition = player.position.x;
             zPosition = player.position.z;
             forwardOffset = cacheForwardOffset;
+            rotateAngle = 0f;
+            return false;
+        }
+
+
+
+        //Ray toHitCenterRay = new Ray(rayCenter, player.forward);
+        //bool isHitCenter = Physics.Raycast(toHitCenterRay, out RaycastHit toHitCenterInfo, PLACEABLE_DISTANCE, Layer.GROUNDWALL);
+        Vector3 hitPoint = rayCenter + Vector3.Project(wallHitInfo.point - rayCenter, -wallHitInfo.normal);
+        float distance = Vector3.Distance(hitPoint, rayCenter);
+        Debug.DrawRay(hitPoint, rayCenter - hitPoint, Color.blue);
+        //Debug.DrawRay(wallHitInfo.point, Vector3.up * 5f, Color.cyan);
+        //Debug.DrawRay(rayCenter, Vector3.up * 5f, Color.gray);
+
+        if (distance - boxHalfSize.z < PLACEABLE_DISTANCE)
+        {
+            xPosition = hitPoint.x - transform.forward.x * CALC_ERROR_OFFSET;
+            zPosition = hitPoint.z - transform.forward.z * CALC_ERROR_OFFSET;
+            forwardOffset = -boxHalfSize.z;
+            rotateAngle = Vector3.SignedAngle(wallHitInfo.normal, -player.forward, Vector3.down);
+
+            if (Mathf.Abs(rotateAngle) - CALC_ERROR_OFFSET > ANGLE_OFFSET_LIMIT)
+            {
+                xPosition = player.position.x;
+                zPosition = player.position.z;
+                forwardOffset = cacheForwardOffset;
+                rotateAngle = 0f;
+                return false;
+            }
+        }
+        else
+        {
+            xPosition = player.position.x;
+            zPosition = player.position.z;
+            forwardOffset = cacheForwardOffset;
+            rotateAngle = 0f;
             return false;
         }
 
         // -----------------------------------------
-        // boxcastは当たってるけど、centerrayが当たっていない場合の例外処理
+        // distanceまわりの整理。CCCが呼ばれてない
         // -----------------------------------------
-        Ray toHitCenterRay = new Ray(rayCenter, player.forward);
-        bool isHitCenter = Physics.Raycast(toHitCenterRay, out RaycastHit toHitCenterInfo, PLACEABLE_DISTANCE, Layer.GROUNDWALL);
-        Debug.DrawRay(toHitCenterRay.origin, toHitCenterRay.direction * PLACEABLE_DISTANCE, Color.blue);
 
-        xPosition = toHitCenterInfo.point.x;
-        zPosition = toHitCenterInfo.point.z;
-        forwardOffset = 0f;
 
-        float rayDistance = Vector3.Distance(toHitCenterInfo.point, forwardOrigin) + CALC_ERROR_OFFSET;
-        Ray checkWallRay_ru = new Ray(forwardOrigin + boxHalfSize.x * player.right + boxHalfSize.y * player.up, player.forward);
-        Ray checkWallRay_lu = new Ray(forwardOrigin + -boxHalfSize.x * player.right + boxHalfSize.y * player.up, player.forward);
-        Ray checkWallRay_rd = new Ray(forwardOrigin + boxHalfSize.x * player.right + -boxHalfSize.y * player.up, player.forward);
-        Ray checkWallRay_ld = new Ray(forwardOrigin + -boxHalfSize.x * player.right + -boxHalfSize.y * player.up, player.forward);
+        float rayDistance = Vector3.Distance(hitPoint, forwardOrigin) + CALC_ERROR_OFFSET;
+        Ray checkWallRay_ru = new Ray(forwardOrigin + boxHalfSize.x * transform.right + boxHalfSize.y * transform.up, transform.forward);
+        Ray checkWallRay_lu = new Ray(forwardOrigin + -boxHalfSize.x * transform.right + boxHalfSize.y * transform.up, transform.forward);
+        Ray checkWallRay_rd = new Ray(forwardOrigin + boxHalfSize.x * transform.right + -boxHalfSize.y * transform.up, transform.forward);
+        Ray checkWallRay_ld = new Ray(forwardOrigin + -boxHalfSize.x * transform.right + -boxHalfSize.y * transform.up, transform.forward);
         bool isHitWall_ru = Physics.Raycast(checkWallRay_ru, out RaycastHit _, rayDistance, Layer.GROUNDWALL);
         bool isHitWall_lu = Physics.Raycast(checkWallRay_lu, out RaycastHit _, rayDistance, Layer.GROUNDWALL);
         bool isHitWall_rd = Physics.Raycast(checkWallRay_rd, out RaycastHit _, rayDistance, Layer.GROUNDWALL);
@@ -104,8 +136,10 @@ public class PlacingTarget_Wall : PlacingTarget
 
 
 
-        if (Vector3.Angle(player.forward, wallHitInfo.normal) != 180f)
+        if (Vector3.Angle(transform.forward, wallHitInfo.normal) != 180f)
         {
+            XDebug.Log("BBB");
+
             return false;
         }
 
@@ -133,6 +167,8 @@ public class PlacingTarget_Wall : PlacingTarget
         bool isPerfectlyGrounded = isHitWall_ru && isHitWall_lu && isHitWall_rd && isHitWall_ld;
         if (!isPerfectlyGrounded)
         {
+            XDebug.Log("CCC");
+
             return false;
         }
         // 1にすると誤差が出るのでちょっと引いてる
@@ -142,6 +178,8 @@ public class PlacingTarget_Wall : PlacingTarget
         //}
         if (isCollision)
         {
+            XDebug.Log("DDD");
+
             return false;
         }
 
@@ -157,7 +195,6 @@ public class PlacingTarget_Wall : PlacingTarget
         // あまりにもその壁が高かったら柱と判断し、return
 
         return true;
-
     }
 
     protected override void OnRotate(InputAction.CallbackContext context)
@@ -170,9 +207,9 @@ public class PlacingTarget_Wall : PlacingTarget
 #if UNITY_EDITOR
     protected override void OnDrawGizmos()
     {
-        var center = player.position + player.forward * cacheForwardOffset;
+        var center = player.position + transform.forward * cacheForwardOffset;
         center.y = boxCollider.bounds.center.y;
-        var checkGroundCenter = center + player.forward * PLACEABLE_DISTANCE;
+        var checkGroundCenter = center + transform.forward * PLACEABLE_DISTANCE;
 
         Gizmos.DrawWireCube(checkGroundCenter, boxCollider.size);
         Gizmos.DrawRay(center, transform.forward * PLACEABLE_DISTANCE);
