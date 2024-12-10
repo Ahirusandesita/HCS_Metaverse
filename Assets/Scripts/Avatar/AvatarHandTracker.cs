@@ -5,13 +5,14 @@ using Fusion;
 
 public class AvatarHandTracker
 {
-    public AvatarHandTracker(NetworkObject rightShoulder, NetworkObject rightHand, NetworkObject leftShoulder, NetworkObject leftHand)
+    public AvatarHandTracker(NetworkObject rightShoulder, NetworkObject rightHand, NetworkObject leftShoulder, NetworkObject leftHand, Transform remoteAvatarTransform)
     {
         // 
         _rightShoulder = rightShoulder;
         _rightHand = rightHand;
         _leftShoulder = leftShoulder;
         _leftHand = leftHand;
+        _remoteAvatarTransform = remoteAvatarTransform;
 
         // 
         _rightShoulderOriginRotatioin = _rightShoulder.transform.localRotation;
@@ -29,6 +30,9 @@ public class AvatarHandTracker
 
     // 
     private NetworkObject _leftHand = default;
+
+    // 
+    private Transform _remoteAvatarTransform = default;
 
     // 
     private Quaternion _rightShoulderOriginRotatioin = default;
@@ -69,14 +73,9 @@ public class AvatarHandTracker
         float shoulderAngle = Vector3.SignedAngle(shoulderForword, shoulderToHandVector, shoulderAxis);
 
         // 
-        _rightShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis);
+        _rightShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _rightShoulder.transform.rotation;
 
         Debug.Log($"afterRotation:{_rightShoulder.transform.localRotation.eulerAngles}");
-
-        // 
-        _rightShoulder.transform.rotation = Quaternion.AngleAxis(180, _rightShoulder.transform.right) * _rightShoulder.transform.rotation;
-
-        Debug.Log($"rastRotation:{_rightShoulder.transform.localRotation.eulerAngles}");
 
         // 
         Vector3 controllerTwist = new Vector3(conrtoller.localEulerAngles.z, 0, 0);
@@ -116,7 +115,7 @@ public class AvatarHandTracker
         float shoulderAngle = Vector3.SignedAngle(shoulderForword, shoulderToHandVector, shoulderAxis);
 
         // 
-        _leftShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis);
+        _leftShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _leftShoulder.transform.rotation;
 
         // 
         Vector3 controllerTwist = new Vector3(-conrtoller.localEulerAngles.z, 0, 0);

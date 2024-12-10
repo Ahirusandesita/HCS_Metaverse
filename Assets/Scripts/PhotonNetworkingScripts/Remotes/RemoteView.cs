@@ -46,6 +46,6 @@ public class RemoteView : NetworkBehaviour,IDependencyInjector<PlayerBodyDepende
 
 	public AvatarHandTracker GetNewAvatarHandTracker()
     {
-		return new AvatarHandTracker(_rightShoulder, _rightHand, _leftShoulder, _leftHand);
+		return new AvatarHandTracker(_rightShoulder, _rightHand, _leftShoulder, _leftHand, _viewTransform);
 	}
 }
