@@ -8498,6 +8498,7 @@ GameObject:
   - component: {fileID: 2036008216938055722}
   - component: {fileID: 2746813565632266896}
   - component: {fileID: 853367535363838641}
+  - component: {fileID: 1052649165538217793}
   m_Layer: 7
   m_Name: QuickRigCharacter2_LeftArm
   m_TagString: Untagged
@@ -8540,6 +8541,7 @@ MonoBehaviour:
   - {fileID: 4651640519967465853}
   NetworkedBehaviours:
   - {fileID: 853367535363838641}
+  - {fileID: 1052649165538217793}
 --- !u!114 &853367535363838641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8556,6 +8558,19 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 0
+--- !u!114 &1052649165538217793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2235364103118733925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 826b17ef5a16c854bb99e8c9b1835040, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _IsNotReleaseStateAuthority: 0
 --- !u!1 &2241512738289887452
 GameObject:
   m_ObjectHideFlags: 0
@@ -11910,6 +11925,7 @@ GameObject:
   - component: {fileID: 2866358460817072254}
   - component: {fileID: 2558434126277623512}
   - component: {fileID: 3883496489312933429}
+  - component: {fileID: 1971151147447652694}
   m_Layer: 7
   m_Name: QuickRigCharacter2_RightArm
   m_TagString: Untagged
@@ -11952,6 +11968,7 @@ MonoBehaviour:
   - {fileID: 3811584019518556360}
   NetworkedBehaviours:
   - {fileID: 3883496489312933429}
+  - {fileID: 1971151147447652694}
 --- !u!114 &3883496489312933429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11968,6 +11985,19 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 0
+--- !u!114 &1971151147447652694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2916995646451995306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 826b17ef5a16c854bb99e8c9b1835040, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _IsNotReleaseStateAuthority: 0
 --- !u!1 &2948619628332014454
 GameObject:
   m_ObjectHideFlags: 0
