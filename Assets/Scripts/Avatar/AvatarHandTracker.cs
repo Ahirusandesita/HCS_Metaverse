@@ -36,6 +36,9 @@ public class AvatarHandTracker
     // 
     private Quaternion _leftShoulderOriginRotatioin = default;
 
+    // 
+    private float _handComplementAngle = -90;
+
     public void RightHandTracking(Transform conrtoller)
     {
         // 
@@ -74,7 +77,7 @@ public class AvatarHandTracker
         Debug.Log($"afterRotation:{_rightShoulder.transform.localRotation.eulerAngles}");
 
         // 
-        Vector3 controllerTwist = new Vector3(conrtoller.localEulerAngles.z, 0, 0);
+        Vector3 controllerTwist = new Vector3(conrtoller.localEulerAngles.z + _handComplementAngle, 0, 0);
 
         // 
         _rightHand.transform.localRotation = Quaternion.Euler(controllerTwist);
@@ -114,7 +117,7 @@ public class AvatarHandTracker
         _leftShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _leftShoulder.transform.rotation;
 
         // 
-        Vector3 controllerTwist = new Vector3(-conrtoller.localEulerAngles.z, 0, 0);
+        Vector3 controllerTwist = new Vector3(-conrtoller.localEulerAngles.z + _handComplementAngle, 0, 0);
 
         // 
         _leftHand.transform.localRotation = Quaternion.Euler(controllerTwist);
