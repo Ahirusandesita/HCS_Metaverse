@@ -26,10 +26,6 @@ public class RemoteView : NetworkBehaviour,IDependencyInjector<PlayerBodyDepende
 		_playerTransform = FindObjectOfType<VRPlayerController>().transform;
 		_viewTransform = transform;
 
-		AvatarHandTracker avatarHandTracker = new AvatarHandTracker(_rightShoulder, _rightHand, _leftShoulder, _leftHand);
-
-		_playerTransform.GetComponent<LocalAvatarLogic>().setAvatarHandTracker = avatarHandTracker;
-
 		PlayerInitialize.ConsignmentInject_static(this);
 	}
 
@@ -47,4 +43,9 @@ public class RemoteView : NetworkBehaviour,IDependencyInjector<PlayerBodyDepende
     {
 		this._information = information;
     }
+
+	public AvatarHandTracker GetNewAvatarHandTracker()
+    {
+		return new AvatarHandTracker(_rightShoulder, _rightHand, _leftShoulder, _leftHand);
+	}
 }
