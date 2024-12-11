@@ -34,6 +34,10 @@ public class TimeNetwork : NetworkBehaviour
         Time = (int)countDownTime_s;
         lastTime_s = countDownTime_s;
     }
+    public void SetStartTime(float time)
+    {
+        StartTime = time;
+    }
     private void Count()
     {
         OnTime?.Invoke(Time);
@@ -41,9 +45,8 @@ public class TimeNetwork : NetworkBehaviour
     private void Update()
     {
         Debug.LogError($"{Time}  {canInvoke}  {canProsess}");
-        if (Time <= 0 && canInvoke && canProsess)
+        if (Time < 0 && canInvoke && canProsess)
         {
-            Debug.LogError("Finish");
             OnFinish?.Invoke();
             OnTime = null;
             canInvoke = false;
@@ -60,7 +63,6 @@ public class TimeNetwork : NetworkBehaviour
         {
             lastTime_s = countDownTime_s;
             Time = (int)countDownTime_s;
-            Debug.LogError("CountDown");
         }
 
     }

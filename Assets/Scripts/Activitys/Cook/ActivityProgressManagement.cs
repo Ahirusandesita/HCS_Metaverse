@@ -70,7 +70,7 @@ public class ActivityProgressManagement : MonoBehaviour
             {
                 ActivityStart();
             };
-            readyTimeInstance.StartTime = 3;
+            readyTimeInstance.SetStartTime(3);
 
             rpcInstance.RPC_ReadyTimeInject(readyTimeInstance.GetComponent<NetworkObject>());
             await UniTask.Delay(1000);
@@ -82,8 +82,12 @@ public class ActivityProgressManagement : MonoBehaviour
     {
         OnStart?.Invoke();
         mainTimeInstance = await GateOfFusion.Instance.SpawnAsync(timeNetwork);
-        mainTimeInstance.StartTime = 10f;
+        mainTimeInstance.SetStartTime(10f);
 
+        mainTimeInstance.OnFinish += () =>
+        {
+            ActivityFinish().Forget();
+        };
         foreach (INetworkTimeInjectable networkTimeInjectable in mainTimeInjectable)
         {
             networkTimeInjectable.Inject(mainTimeInstance);
@@ -105,10 +109,12 @@ public class ActivityProgressManagement : MonoBehaviour
     public void RPC_ReadyInjectable(TimeNetwork timeNetwork)
     {
         OnReady?.Invoke();
+        Debug.LogError("OnReady");
         readyTimeInstance = timeNetwork;
         readyTimeInstance.OnFinish += () =>
         {
             OnStart?.Invoke();
+            Debug.LogError("OnStart");
         };
 
         foreach(INetworkTimeInjectable networkTimeInjectable in readyTimeInjectable)
@@ -118,11 +124,11 @@ public class ActivityProgressManagement : MonoBehaviour
     }
     public void RPC_MainInjectable(TimeNetwork timeNetwork)
     {
-        Debug.LogError("Inject¬Œ÷");
         mainTimeInstance = timeNetwork;
         mainTimeInstance.OnFinish += () =>
         {
             ActivityFinish().Forget();
+            Debug.LogError("OnFinish");
         };
 
         foreach (INetworkTimeInjectable networkTimeInjectable in mainTimeInjectable)
