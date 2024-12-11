@@ -109,10 +109,10 @@ public class ActivityProgressManagement : MonoBehaviour
     public void RPC_ReadyInjectable(TimeNetwork timeNetwork)
     {
         OnReady?.Invoke();
-        Debug.LogError(timeNetwork);
         readyTimeInstance = timeNetwork;
         readyTimeInstance.OnFinish += () =>
         {
+            Debug.LogError("Start");
             OnStart?.Invoke();
         };
 
@@ -123,10 +123,10 @@ public class ActivityProgressManagement : MonoBehaviour
     }
     public void RPC_MainInjectable(TimeNetwork timeNetwork)
     {
-        Debug.LogError(timeNetwork);
         mainTimeInstance = timeNetwork;
         mainTimeInstance.OnFinish += () =>
         {
+            Debug.LogError("OnFinish");
             ActivityFinish().Forget();
         };
 

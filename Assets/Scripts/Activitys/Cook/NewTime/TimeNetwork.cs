@@ -45,6 +45,7 @@ public class TimeNetwork : NetworkBehaviour
     }
     private void Update()
     {
+        Debug.LogError(canProsess);
         if (Time <= 0 && canInvoke && canProsess)
         {
             OnFinish?.Invoke();
