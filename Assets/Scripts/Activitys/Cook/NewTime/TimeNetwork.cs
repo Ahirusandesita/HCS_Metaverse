@@ -10,7 +10,7 @@ public enum ActivitiState
     Start,
     End
 }
-public class TimeNetwork : NetworkBehaviour,IAfterSpawned
+public class TimeNetwork : NetworkBehaviour
 {
     public bool IsSpawned = false;
     [Networked, OnChangedRender(nameof(Count))]
@@ -26,13 +26,11 @@ public class TimeNetwork : NetworkBehaviour,IAfterSpawned
     public float countDownTime_s;
     private float lastTime_s;
 
+    private bool isCountStart = false;
     private bool canInvoke = false;
-    [Networked]
-    private bool CanProsess { get; set; }
     private void SetTime()
     {
         countDownTime_s = StartTime;
-        CanProsess = true;
         Time = (int)countDownTime_s;
         lastTime_s = countDownTime_s;
         canInvoke = true;
@@ -40,15 +38,16 @@ public class TimeNetwork : NetworkBehaviour,IAfterSpawned
     private void Count()
     {
         OnTime?.Invoke(Time);
+        isCountStart = true;
     }
     private void Update()
     {
-        Debug.LogError(CanProsess);
-        if (Time <= 0 && canInvoke && CanProsess)
+        if (Time <= 0 && isCountStart)
         {
             OnFinish?.Invoke();
             OnTime = null;
             canInvoke = false;
+            isCountStart = false;
         }
 
         if (!this.GetComponent<NetworkObject>().HasStateAuthority)
@@ -64,13 +63,5 @@ public class TimeNetwork : NetworkBehaviour,IAfterSpawned
             Time = (int)countDownTime_s;
         }
 
-    }
-
-    public void AfterSpawned()
-    {
-        if (CanProsess)
-        {
-            SetTime();
-        }
     }
 }

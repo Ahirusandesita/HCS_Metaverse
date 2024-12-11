@@ -62,6 +62,7 @@ public class ActivityProgressManagement : MonoBehaviour
             {
                 return;
             }
+            Debug.LogError("AAAAAAAAAAAAAA");
             rpcInstance = await GateOfFusion.Instance.SpawnAsync(activityManagementRPC);
             readyTimeInstance = await GateOfFusion.Instance.SpawnAsync(timeNetwork);
             AllSpawn allSpawn = await GateOfFusion.Instance.SpawnAsync(test);
@@ -75,6 +76,7 @@ public class ActivityProgressManagement : MonoBehaviour
                 ActivityStart();
             };
 
+            rpcInstance.isStart = true;
             await allSpawn.Async();
             readyTimeInstance.StartTime = 3;
             rpcInstance.RPC_ReadyTimeInject(readyTimeInstance.GetComponent<NetworkObject>());
@@ -82,6 +84,8 @@ public class ActivityProgressManagement : MonoBehaviour
             OnReady?.Invoke();
         };
     }
+
+    
 
     public async void ActivityStart()
     {
@@ -114,6 +118,10 @@ public class ActivityProgressManagement : MonoBehaviour
 
     public void RPC_ReadyInjectable(TimeNetwork timeNetwork)
     {
+        if(readyTimeInstance != null)
+        {
+            return;
+        }
         Debug.LogError("ReadyInject");
         OnReady += () =>
         {
@@ -133,6 +141,10 @@ public class ActivityProgressManagement : MonoBehaviour
     }
     public void RPC_MainInjectable(TimeNetwork timeNetwork)
     {
+        if(mainTimeInstance != null)
+        {
+            return;
+        }
         mainTimeInstance = timeNetwork;
         mainTimeInstance.OnFinish += () =>
         {
@@ -144,5 +156,10 @@ public class ActivityProgressManagement : MonoBehaviour
         {
             networkTimeInjectable.Inject(timeNetwork);
         }
+    }
+
+    public void RPC_Anpanman(PlayerRef playerRef)
+    {
+        rpcInstance.RPC_Inject(playerRef, readyTimeInstance.GetComponent<NetworkObject>(), mainTimeInstance.GetComponent<NetworkObject>());
     }
 }
