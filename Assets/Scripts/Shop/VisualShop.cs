@@ -78,7 +78,7 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 			XKumaDebugSystem.LogWarning("webApiRequesterÇ™å©Ç¬Ç©ÇËÇ‹ÇπÇÒÇ≈ÇµÇΩÅB", KumaDebugColor.WarningColor);
 			return;
 		}
-		var data = await webAPIRequester.PostEntry(0);
+		var data = await webAPIRequester.PostShopEntry(0);
 		int smallItemCounter = 0;
 		int largeItemCounter = 0;
 		for (int i = 0; i < data.ItemLineup.Count; i++)
