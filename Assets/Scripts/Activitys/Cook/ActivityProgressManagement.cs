@@ -62,6 +62,7 @@ public class ActivityProgressManagement : MonoBehaviour
             {
                 return;
             }
+            Debug.LogError("AAAAAAAAAAAAAA");
             rpcInstance = await GateOfFusion.Instance.SpawnAsync(activityManagementRPC);
             readyTimeInstance = await GateOfFusion.Instance.SpawnAsync(timeNetwork);
             AllSpawn allSpawn = await GateOfFusion.Instance.SpawnAsync(test);
@@ -117,6 +118,10 @@ public class ActivityProgressManagement : MonoBehaviour
 
     public void RPC_ReadyInjectable(TimeNetwork timeNetwork)
     {
+        if(readyTimeInstance != null)
+        {
+            return;
+        }
         Debug.LogError("ReadyInject");
         OnReady += () =>
         {
@@ -136,6 +141,10 @@ public class ActivityProgressManagement : MonoBehaviour
     }
     public void RPC_MainInjectable(TimeNetwork timeNetwork)
     {
+        if(mainTimeInstance != null)
+        {
+            return;
+        }
         mainTimeInstance = timeNetwork;
         mainTimeInstance.OnFinish += () =>
         {

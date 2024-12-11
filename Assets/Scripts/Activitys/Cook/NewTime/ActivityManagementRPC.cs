@@ -25,10 +25,10 @@ public class ActivityManagementRPC : NetworkBehaviour,IPlayerJoined
     }
     public async void PlayerJoined(PlayerRef player)
     {
-        if (!isStart)
-        {
-            return;
-        }
+        //if (!isStart)
+        //{
+        //    return;
+        //}
         if(await GateOfFusion.Instance.GetIsLeader())
         {
             FindObjectOfType<ActivityProgressManagement>().RPC_Anpanman(player);
