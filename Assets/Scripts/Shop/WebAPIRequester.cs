@@ -1,6 +1,5 @@
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using Result = UnityEngine.Networking.UnityWebRequest.Result;
@@ -8,24 +7,8 @@ using Result = UnityEngine.Networking.UnityWebRequest.Result;
 /// <summary>
 /// Shopとデータベースの送受信を行う。現時点では各Shopごとにインスタンスを所持する設計。
 /// </summary>
-public class WebAPIRequester : MonoBehaviour
+public class WebAPIRequester
 {
-    private static WebAPIRequester _apiRequester = default;
-
-    private void Awake()
-    {
-        if (_apiRequester == null)
-        {
-            _apiRequester = this;
-            DontDestroyOnLoad(this.gameObject);
-        }
-        else
-        {
-            Destroy(this.gameObject);
-            return;
-        }
-    }
-
     private const string DETABASE_PATH_BASE = "http://10.11.33.228:8080/api/";
     private const string DETABASE_PATH_JOIN_WORLD = DETABASE_PATH_BASE + "world";
     private const string DETABASE_PATH_SHOP_ENTRY = DETABASE_PATH_BASE + "shop/entry";
