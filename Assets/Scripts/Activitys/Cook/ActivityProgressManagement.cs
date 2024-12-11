@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using Cysharp.Threading.Tasks;
 using System.Linq;
+using Fusion;
 
 public interface ITimeManager
 {
@@ -11,6 +12,11 @@ public interface ITimeManager
     bool IsCountdownEnds();
 
     void Dispose();
+}
+
+public interface INetworkTimeInjectable
+{
+    void Inject(TimeNetwork timeNetwork);
 }
 
 public class ActivityProgressManagement : MonoBehaviour
@@ -29,31 +35,59 @@ public class ActivityProgressManagement : MonoBehaviour
     public event WaitWithHandler OnWaitFinish;
     public event Action OnFinish;
     public delegate UniTask WaitWithHandler();
+    [SerializeField]
+    private TimeNetwork timeNetwork;
+    [SerializeField]
+    private ActivityManagementRPC activityManagementRPC;
+    [SerializeField,InterfaceType(typeof(INetworkTimeInjectable))]
+    private List<UnityEngine.Object> ReadyTimeInjectable = new List<UnityEngine.Object>();
+    [SerializeField, InterfaceType(typeof(INetworkTimeInjectable))]
+    private List<UnityEngine.Object> MainTimeInjectable = new List<UnityEngine.Object>();
+    private List<INetworkTimeInjectable> readyTimeInjectable => ReadyTimeInjectable.OfType<INetworkTimeInjectable>().ToList();
+    private List<INetworkTimeInjectable> mainTimeInjectable => MainTimeInjectable.OfType<INetworkTimeInjectable>().ToList();
 
-    private ITimeManager timeManager_ready;
-    private ITimeManager timeManager_main;
+    TimeNetwork readyTimeInstance;
+    TimeNetwork mainTimeInstance;
+    private ActivityManagementRPC rpcInstance;
     private void Awake()
     {
+        //leader‚Ì‚Ý
         GateOfFusion.Instance.OnActivityConnected += async () =>
         {
+            rpcInstance = await GateOfFusion.Instance.SpawnAsync(activityManagementRPC);
+            readyTimeInstance = await GateOfFusion.Instance.SpawnAsync(timeNetwork);
+
+            foreach (INetworkTimeInjectable networkTimeInjectable in readyTimeInjectable)
+            {
+                networkTimeInjectable.Inject(readyTimeInstance);
+            }
+
+            readyTimeInstance.OnFinish += () =>
+            {
+                ActivityStart();
+            };
+            readyTimeInstance.StartTime = 3;
+
+            rpcInstance.RPC_ReadyTimeInject(readyTimeInstance.GetComponent<NetworkObject>());
             await UniTask.Delay(1000);
             OnReady?.Invoke();
-            timeManager_ready.CountDownBegins();
-            await UniTask.WaitUntil(() => timeManager_ready.IsCountdownEnds());
-            OnStart?.Invoke();
-            timeManager_ready.Dispose();
-        };
-
-        OnStart += async () =>
-        {
-            timeManager_main.CountDownBegins();
-            await UniTask.WaitUntil(() => timeManager_main.IsCountdownEnds());
-            timeManager_main.Dispose();
-            ActivityFinish().Forget();
         };
     }
 
-    private async UniTaskVoid ActivityFinish()
+    public async void ActivityStart()
+    {
+        OnStart?.Invoke();
+        mainTimeInstance = await GateOfFusion.Instance.SpawnAsync(timeNetwork);
+        mainTimeInstance.StartTime = 180f;
+
+        foreach (INetworkTimeInjectable networkTimeInjectable in mainTimeInjectable)
+        {
+            networkTimeInjectable.Inject(mainTimeInstance);
+        }
+        rpcInstance.RPC_MainTimeInject(mainTimeInstance.GetComponent<NetworkObject>());      
+    }
+
+    public async UniTaskVoid ActivityFinish()
     {
         OnFinish?.Invoke();
         await UniTask.WhenAll(
@@ -64,12 +98,30 @@ public class ActivityProgressManagement : MonoBehaviour
         GateOfFusion.Instance.ReturnMainRoom();
     }
 
-    public void InjectTimeManager_Ready(ITimeManager timeManager)
+    public void RPC_ReadyInjectable(TimeNetwork timeNetwork)
     {
-        this.timeManager_ready = timeManager;
+        readyTimeInstance = timeNetwork;
+        readyTimeInstance.OnFinish += () =>
+        {
+            OnStart?.Invoke();
+        };
+
+        foreach(INetworkTimeInjectable networkTimeInjectable in readyTimeInjectable)
+        {
+            networkTimeInjectable.Inject(timeNetwork);
+        }
     }
-    public void InjectTimeManager_Activity(ITimeManager timeManager)
+    public void RPC_MainInjectable(TimeNetwork timeNetwork)
     {
-        this.timeManager_main = timeManager;
+        mainTimeInstance = timeNetwork;
+        mainTimeInstance.OnFinish += () =>
+        {
+            ActivityFinish().Forget();
+        };
+
+        foreach (INetworkTimeInjectable networkTimeInjectable in mainTimeInjectable)
+        {
+            networkTimeInjectable.Inject(timeNetwork);
+        }
     }
 }

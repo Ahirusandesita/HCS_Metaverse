@@ -19,10 +19,10 @@ public class CookTimeInject : MonoBehaviour
         switch (timeType)
         {
             case TimeType.Ready:
-                activityProgressManagement.InjectTimeManager_Ready(this.GetComponent<ITimeManager>());
+               // activityProgressManagement.InjectTimeManager_Ready(this.GetComponent<ITimeManager>());
                 break;
             case TimeType.Main:
-                activityProgressManagement.InjectTimeManager_Activity(this.GetComponent<ITimeManager>());
+               // activityProgressManagement.InjectTimeManager_Activity(this.GetComponent<ITimeManager>());
                 break;
         }
     }

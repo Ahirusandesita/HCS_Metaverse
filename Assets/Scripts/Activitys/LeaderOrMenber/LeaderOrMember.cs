@@ -26,14 +26,8 @@ public class LeaderOrMember : MonoBehaviour
     private bool canProsess = false;
     [SerializeField]
     private LeaderOrMemberRPC rpc;
-    private void Awake()
-    {
-        GateOfFusion.Instance.OnActivityConnected += () =>
-       {
-           OnStart();
-       };
-    }
-    private async void OnStart()
+
+    private async void Start()
     {
         bool isLeader = await GateOfFusion.Instance.GetIsLeader();
         Debug.LogError(isLeader);
@@ -81,6 +75,6 @@ public class LeaderOrMember : MonoBehaviour
     public void ProcessComplete()
     {
         canProsess = true;
-        OnStart();
+        //OnStart();
     }
 }
