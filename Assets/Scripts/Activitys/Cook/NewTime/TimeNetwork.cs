@@ -27,18 +27,14 @@ public class TimeNetwork : NetworkBehaviour,IAfterSpawned
     private float lastTime_s;
 
     private bool canInvoke = true;
-    private bool canProsess = false;
+    [Networked]
+    private bool CanProsess { get; set; }
     private void SetTime()
     {
         countDownTime_s = StartTime;
-        canProsess = true;
+        CanProsess = true;
         Time = (int)countDownTime_s;
         lastTime_s = countDownTime_s;
-    }
-    public void SetStartTime(float time)
-    {
-        StartTime = time;
-        RPC_SetTime();
     }
     private void Count()
     {
@@ -46,8 +42,8 @@ public class TimeNetwork : NetworkBehaviour,IAfterSpawned
     }
     private void Update()
     {
-        Debug.LogError(canProsess);
-        if (Time <= 0 && canInvoke && canProsess)
+        Debug.LogError(CanProsess);
+        if (Time <= 0 && canInvoke && CanProsess)
         {
             OnFinish?.Invoke();
             OnTime = null;
@@ -68,15 +64,12 @@ public class TimeNetwork : NetworkBehaviour,IAfterSpawned
         }
 
     }
-    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
-    private void RPC_SetTime()
-    {
-        Debug.LogError("RPC");
-        SetTime();
-    }
 
     public void AfterSpawned()
     {
-        IsSpawned = true;
+        if (CanProsess)
+        {
+            SetTime();
+        }
     }
 }
