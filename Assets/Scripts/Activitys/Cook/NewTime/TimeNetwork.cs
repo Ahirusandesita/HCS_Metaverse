@@ -47,6 +47,7 @@ public class TimeNetwork : NetworkBehaviour
             OnFinish?.Invoke();
             OnTime = null;
             canInvoke = false;
+            isCountStart = false;
         }
 
         if (!this.GetComponent<NetworkObject>().HasStateAuthority)
