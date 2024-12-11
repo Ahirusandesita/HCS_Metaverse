@@ -9,133 +9,149 @@ using Result = UnityEngine.Networking.UnityWebRequest.Result;
 /// </summary>
 public class WebAPIRequester
 {
-    private const string DETABASE_PATH_BASE = "http://10.11.33.228:8080/api/";
-    private const string DETABASE_PATH_JOIN_WORLD = DETABASE_PATH_BASE + "world";
-    private const string DETABASE_PATH_SHOP_ENTRY = DETABASE_PATH_BASE + "shop/entry";
-    private const string DETABASE_PATH_SHOP_BUY = DETABASE_PATH_BASE + "shop/buy";
-    private const string DETABASE_PATH_MYROOM_ENTRY = DETABASE_PATH_BASE + "myroom/entry";
-    private const string DETABASE_PATH_USER_LOCATION = DETABASE_PATH_BASE + "user/location";
-    private const string DETABASE_PATH_VENDINGMACHINE_BUY = DETABASE_PATH_BASE + "user/shop";
+	private const string DETABASE_PATH_BASE = "http://10.11.33.228:8080/api/";
+	private const string DETABASE_PATH_JOIN_WORLD = DETABASE_PATH_BASE + "world";
+	private const string DETABASE_PATH_SHOP_ENTRY = DETABASE_PATH_BASE + "shop/entry";
+	private const string DETABASE_PATH_SHOP_BUY = DETABASE_PATH_BASE + "shop/buy";
+	private const string DETABASE_PATH_MYROOM_ENTRY = DETABASE_PATH_BASE + "myroom/entry";
+	private const string DETABASE_PATH_USER_LOCATION = DETABASE_PATH_BASE + "user/location";
+	private const string DETABASE_PATH_VENDINGMACHINE_BUY = DETABASE_PATH_BASE + "user/shop";
 
 
-    public async UniTask<OnShopEntryData> PostShopEntry(int shopId)
-    {
-        WWWForm form = new WWWForm();
-        form.AddField("shopId", shopId);
-        using var request = UnityWebRequest.Post(DETABASE_PATH_SHOP_ENTRY, form);
-        await request.SendWebRequest();
+	public async UniTask<OnShopEntryData> PostShopEntry(int shopId)
+	{
+		WWWForm form = new WWWForm();
+		form.AddField("shopId", shopId);
+		using var request = UnityWebRequest.Post(DETABASE_PATH_SHOP_ENTRY, form);
+		await request.SendWebRequest();
 
-        switch (request.result)
-        {
-            case Result.InProgress:
-                throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
 
-            case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
-                throw new System.InvalidOperationException(request.error);
-        }
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				throw new System.InvalidOperationException(request.error);
+		}
 
-        var onEntryData = JsonUtility.FromJson<OnShopEntryData>($"{request.downloadHandler.text}");
-        return onEntryData;
-    }
+		var onEntryData = JsonUtility.FromJson<OnShopEntryData>($"{request.downloadHandler.text}");
+		return onEntryData;
+	}
 
-    public async UniTask<OnPaymentData> PostShopPayment(List<OnPaymentData.Inventory> inventory, int shopId, int userId)
-    {
-        WWWForm form = new WWWForm();
-        form.AddField("inventory", JsonUtility.ToJson(inventory));
-        form.AddField("shopId", shopId);
-        form.AddField("userId", userId);
-        using var request = UnityWebRequest.Post(DETABASE_PATH_SHOP_BUY, form);
-        await request.SendWebRequest();
+	public async UniTask<OnPaymentData> PostShopPayment(List<OnPaymentData.Inventory> inventory, int shopId, int userId)
+	{
+		WWWForm form = new WWWForm();
+		form.AddField("inventory", JsonUtility.ToJson(inventory));
+		form.AddField("shopId", shopId);
+		form.AddField("userId", userId);
+		using var request = UnityWebRequest.Post(DETABASE_PATH_SHOP_BUY, form);
+		await request.SendWebRequest();
 
-        switch (request.result)
-        {
-            case Result.InProgress:
-                throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
 
-            case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
-                throw new System.InvalidOperationException(request.error);
-        }
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				throw new System.InvalidOperationException(request.error);
+		}
 
-        var onPaymentData = JsonUtility.FromJson<OnPaymentData>($"{request.downloadHandler.text}");
-        return onPaymentData;
-    }
+		var onPaymentData = JsonUtility.FromJson<OnPaymentData>($"{request.downloadHandler.text}");
+		return onPaymentData;
+	}
 
-    [System.Serializable]
-    public class OnShopEntryData
-    {
-        public OnShopEntryData(List<Lineup> itemList)
-        {
-            this.itemList = itemList;
-        }
+	[System.Serializable]
+	public class OnShopEntryData
+	{
+		public OnShopEntryData(Body body)
+		{
+			this.body = body;
+		}
 
-        [SerializeField] private List<Lineup> itemList = default;
+		[SerializeField] private string responseCode = default;
+		[SerializeField] private string message = default;
+		[SerializeField] private Body body = default;
 
-        public IReadOnlyList<Lineup> ItemLineup => itemList;
+		public string ResponseCode => responseCode;
+		public string Message => message;
+		public Body GetBody => body;
 
-        [System.Serializable]
-        public class Lineup
-        {
-            public Lineup(int itemId, int salesPrice, float discount, int stock, int size)
-            {
-                this.itemId = itemId;
-                this.salesPrice = salesPrice;
-                this.discount = discount;
-                this.stock = stock;
-                this.size = size;
-            }
+		[System.Serializable]
+		public class Body
+		{
+			public Body(List<Lineup> itemList)
+			{
+				this.itemList = itemList;
+			}
 
-            [SerializeField] private int itemId = default;
-            [SerializeField] private int salesPrice = default;
-            [SerializeField] private float discount = default;
-            [SerializeField] private int stock = default;
-            [SerializeField] private int size = default;
+			[SerializeField] private List<Lineup> itemList = default;
+			public IReadOnlyList<Lineup> ItemLineup => itemList;
 
-            public int ItemID => itemId;
-            public int Price => salesPrice;
-            public float Discount => discount;
-            public int Stock => stock;
-            /// <summary>
-            /// 0: large, 1: small
-            /// </summary>
-            public int Size => size;
-        }
-    }
+			[System.Serializable]
+			public class Lineup
+			{
+				public Lineup(int itemId, int salesPrice, float discount, int stock, int size)
+				{
+					this.itemId = itemId;
+					this.salesPrice = salesPrice;
+					this.discount = discount;
+					this.stock = stock;
+					this.size = size;
+				}
 
-    [System.Serializable]
-    public class OnPaymentData
-    {
-        public OnPaymentData(List<Inventory> inventory, int money, int stock, int userId)
-        {
-            this.inventory = inventory;
-            this.money = money;
-            this.stock = stock;
-            this.userId = userId;
-        }
+				[SerializeField] private int itemId = default;
+				[SerializeField] private int salesPrice = default;
+				[SerializeField] private float discount = default;
+				[SerializeField] private int stock = default;
+				[SerializeField] private int size = default;
 
-        [SerializeField] private List<Inventory> inventory = default;
-        [SerializeField] private int money = default;
-        [SerializeField] private int stock = default;
-        [SerializeField] private int userId = default;
+				public int ItemID => itemId;
+				public int Price => salesPrice;
+				public float Discount => discount;
+				public int Stock => stock;
+				/// <summary>
+				/// 0: large, 1: small
+				/// </summary>
+				public int Size => size;
+			}
+		}
+	}
 
-        public IReadOnlyList<Inventory> InventoryList => inventory;
-        public int Money => money;
-        public int Stock => stock;
-        public int UserID => userId;
+	[System.Serializable]
+	public class OnPaymentData
+	{
+		public OnPaymentData(List<Inventory> inventory, int money, int stock, int userId)
+		{
+			this.inventory = inventory;
+			this.money = money;
+			this.stock = stock;
+			this.userId = userId;
+		}
 
-        [System.Serializable]
-        public class Inventory
-        {
-            public Inventory(int itemId, int count)
-            {
-                this.itemId = itemId;
-                this.count = count;
-            }
+		[SerializeField] private List<Inventory> inventory = default;
+		[SerializeField] private int money = default;
+		[SerializeField] private int stock = default;
+		[SerializeField] private int userId = default;
 
-            [SerializeField] private int itemId = default;
-            [SerializeField] private int count = default;
+		public IReadOnlyList<Inventory> InventoryList => inventory;
+		public int Money => money;
+		public int Stock => stock;
+		public int UserID => userId;
 
-            public int ItemID => itemId;
-            public int Count => count;
-        }
-    }
+		[System.Serializable]
+		public class Inventory
+		{
+			public Inventory(int itemId, int count)
+			{
+				this.itemId = itemId;
+				this.count = count;
+			}
+
+			[SerializeField] private int itemId = default;
+			[SerializeField] private int count = default;
+
+			public int ItemID => itemId;
+			public int Count => count;
+		}
+	}
 }
