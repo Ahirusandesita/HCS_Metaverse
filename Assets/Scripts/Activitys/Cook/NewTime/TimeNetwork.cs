@@ -67,9 +67,10 @@ public class TimeNetwork : NetworkBehaviour
         }
 
     }
-    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     private void RPC_SetTime()
     {
+        Debug.LogError("RPC");
         SetTime();
     }
 }
