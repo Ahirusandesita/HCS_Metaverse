@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlacingTarget : MonoBehaviour
+public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDependencyInformation>
 {
     private const float GROUND_OFFSET = 0.01f;
     protected const float ROTATE_DURATION = 30f;  // 1秒間に回転する角度（度数法）
@@ -11,7 +11,7 @@ public class PlacingTarget : MonoBehaviour
     protected IEditOnlyGhost ghostModel = default;
     protected PlaceableObject placeableObject = default;
     protected Transform player = default;
-    protected Transform playerHead = default;
+    protected IReadonlyTransformAdapter playerHead = default;
     protected bool isCollision = default;
     protected float xPosition = default;
     protected float yPosition = default;
@@ -27,11 +27,11 @@ public class PlacingTarget : MonoBehaviour
 
     public virtual PlacingTarget Initialize(IEditOnlyGhost ghostModel, PlaceableObject placeableObject, Transform player)
     {
+        PlayerInitialize.ConsignmentInject_static(this);
+
         this.ghostModel = ghostModel;
         this.placeableObject = placeableObject;
         this.player = player;
-        // Tmporary
-        playerHead = player.Find("OVRCameraRig (1)").Find("TrackingSpace").Find("CenterEyeAnchor");
         var cc = player.GetComponent<CharacterController>();
         slopeLimit = cc.slopeLimit;
         playerHeight = cc.height;
@@ -42,6 +42,10 @@ public class PlacingTarget : MonoBehaviour
         forwardOffset = boxCollider.size.x > boxCollider.size.z
             ? boxCollider.size.x
             : boxCollider.size.z;
+        // プレイヤーの身長程度の距離は保証する
+        forwardOffset = forwardOffset < playerHeight
+            ? playerHeight
+            : forwardOffset;
 
         // Tmporary（Inputの変更はどこか別の場所で行う）--------------
         Inputter.PlacingMode.Rotate.Enable();
@@ -50,6 +54,11 @@ public class PlacingTarget : MonoBehaviour
         Inputter.PlacingMode.Rotate.canceled += OnRotateCancel;
 
         return this;
+    }
+
+    public void Inject(PlayerBodyDependencyInformation information)
+    {
+        playerHead = information.Head;
     }
 
     protected virtual void LateUpdate()
@@ -70,6 +79,10 @@ public class PlacingTarget : MonoBehaviour
         UpdateAction = null;
     }
 
+    /// <summary>
+    /// オブジェクトを設置する際のプレビューを出現させる
+    /// </summary>
+    /// <returns>設置可能かどうか</returns>
     protected virtual bool PreviewPlacing()
     {
         // 計算誤差用の定数
@@ -198,7 +211,7 @@ public class PlacingTarget : MonoBehaviour
         UpdateAction = null;
     }
 
-    private void OnPlacing()
+    protected virtual void OnPlacing()
     {
 
     }

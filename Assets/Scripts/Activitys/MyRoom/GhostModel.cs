@@ -3,7 +3,15 @@ using UnityEngine;
 
 public interface IEditOnlyGhost
 {
+    /// <summary>
+    /// 設置可能ステートに応じて見た目を連動させる
+    /// </summary>
+    /// <param name="canPlace">設置可能かどうか</param>
     void SetPlaceableState(bool canPlace);
+    /// <summary>
+    /// Ghostの色を変更する
+    /// </summary>
+    /// <param name="color">色</param>
     void ChangeColor(Color color);
 }
 
@@ -71,7 +79,6 @@ public class GhostModel : IEditOnlyGhost
 
         instance.SetActive(false);
         boxCollider.isTrigger = true;
-        boxCollider.excludeLayers = Layer.PLAYER;
         rigidbody.isKinematic = true;
     }
 

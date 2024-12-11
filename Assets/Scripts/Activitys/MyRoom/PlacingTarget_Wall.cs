@@ -19,8 +19,6 @@ public class PlacingTarget_Wall : PlacingTarget
     {
         ghostModel.SetPlaceableState(PreviewPlacing());
 
-        UpdateAction?.Invoke();
-
         transform.position = new Vector3(xPosition, yPosition, zPosition) + transform.forward * forwardOffset;
         // プレイヤーの転回に合わせたrotationと、オブジェクト自身の転回をマージ
         transform.rotation = Quaternion.Euler(new Vector3(player.rotation.x, player.rotation.eulerAngles.y + rotateAngle, player.rotation.z));
@@ -30,15 +28,14 @@ public class PlacingTarget_Wall : PlacingTarget
     {
         // 計算誤差用の定数
         const float CALC_ERROR_OFFSET = 0.01f;
+        // 補正可能な最大角度（壁にぴったりオブジェクトを沿わせられるよう、ある程度の角度は補正する）
         const float ANGLE_OFFSET_LIMIT = 30f;
 
-        // 自分の身長の4分の1は床判定
-        // GameObject.transformはモデルによって違うので、y軸補正の際はすべて足し算で行う
-        // Ghost（自分）の中心および足元の座標を取得
-        // モデルによって、原点の位置が違う問題を、boundsによって一応解決した
+        // Ghost（自分）の中心座標を取得
         Vector3 center = boxCollider.bounds.center;
         // 埋まりこみ対策で厚みを考慮した中心点を求める
         Vector3 forwardOrigin = new Vector3(center.x + boxHalfSize.z * transform.forward.x, center.y, center.z + boxHalfSize.z * transform.forward.z);
+        // Rayの中心点（プレイヤーの位置）
         Vector3 rayCenter = new Vector3(player.position.x, center.y, player.position.z);
 
         // 壁の当たり判定
@@ -52,61 +49,59 @@ public class PlacingTarget_Wall : PlacingTarget
             layerMask: Layer.GROUNDWALL
             );
 
-
-        // 原点が足元にない場合は埋まってしまうので、その場合は補正する
+        // 原点の位置に応じてy軸のPositionを調整
         yPosition = placeableObject.PivotType == GhostModel.PivotType.Under
             ? player.position.y - yPositionOffset
             : player.position.y + boxHalfSize.y;
+
+        // もし壁にBoxcastが当たっていなければ、初期値に戻しreturn
         if (!isHitWallBox)
         {
-            XDebug.Log("AAA");
-            xPosition = player.position.x;
-            zPosition = player.position.z;
-            forwardOffset = cacheForwardOffset;
-            rotateAngle = 0f;
+            ResetTransform();
             return false;
         }
 
-
-
-        //Ray toHitCenterRay = new Ray(rayCenter, player.forward);
-        //bool isHitCenter = Physics.Raycast(toHitCenterRay, out RaycastHit toHitCenterInfo, PLACEABLE_DISTANCE, Layer.GROUNDWALL);
+        // 壁に触れている面の中心点を取得（RaycastHit.pointではランダムな点が返るため、投影を使い求める）
         Vector3 hitPoint = rayCenter + Vector3.Project(wallHitInfo.point - rayCenter, -wallHitInfo.normal);
-        float distance = Vector3.Distance(hitPoint, rayCenter);
-        Debug.DrawRay(hitPoint, rayCenter - hitPoint, Color.blue);
-        //Debug.DrawRay(wallHitInfo.point, Vector3.up * 5f, Color.cyan);
-        //Debug.DrawRay(rayCenter, Vector3.up * 5f, Color.gray);
+        float hitPointDistance = Vector3.Distance(hitPoint, rayCenter);
 
-        if (distance - boxHalfSize.z < PLACEABLE_DISTANCE)
+        // オブジェクトを回転したままBoxcastが当たったとき、そのときのhitPointは設置可能な距離を超えていないか
+        // （オブジェクトが斜めのまま壁に侵入した際に角度補正が働くが、補正後に距離が足りない現象を防ぐための仕様）
+        // （補正後に距離が足りてるの？をチェック）
+        bool isHitPointIntoPlaceableDistance = hitPointDistance - boxHalfSize.z < PLACEABLE_DISTANCE;
+        if (isHitPointIntoPlaceableDistance)
         {
+            // hitPointに座標を更新（埋まりこみ防止で誤差値を引く）
             xPosition = hitPoint.x - transform.forward.x * CALC_ERROR_OFFSET;
             zPosition = hitPoint.z - transform.forward.z * CALC_ERROR_OFFSET;
+            // 厚みを考慮しOffsetを設定
             forwardOffset = -boxHalfSize.z;
+            // 角度の補正のため、SignedAngleを取得
             rotateAngle = Vector3.SignedAngle(wallHitInfo.normal, -player.forward, Vector3.down);
 
+            // 30°以上であれば角度補正は行わない（壁に沿わせない）
             if (Mathf.Abs(rotateAngle) - CALC_ERROR_OFFSET > ANGLE_OFFSET_LIMIT)
             {
-                xPosition = player.position.x;
-                zPosition = player.position.z;
-                forwardOffset = cacheForwardOffset;
-                rotateAngle = 0f;
+                ResetTransform();
                 return false;
             }
         }
         else
         {
+            ResetTransform();
+            return false;
+        }
+
+        void ResetTransform()
+        {
             xPosition = player.position.x;
             zPosition = player.position.z;
             forwardOffset = cacheForwardOffset;
             rotateAngle = 0f;
-            return false;
         }
 
-        // -----------------------------------------
-        // distanceまわりの整理。CCCが呼ばれてない
-        // -----------------------------------------
-
-
+        // 設置可能かどうかを判定する4つのRay
+        // それぞれ四つ角からRayを飛ばし、どれかひとつでも当たっていなければそこは壁が途切れている＝設置できないと判定
         float rayDistance = Vector3.Distance(hitPoint, forwardOrigin) + CALC_ERROR_OFFSET;
         Ray checkWallRay_ru = new Ray(forwardOrigin + boxHalfSize.x * transform.right + boxHalfSize.y * transform.up, transform.forward);
         Ray checkWallRay_lu = new Ray(forwardOrigin + -boxHalfSize.x * transform.right + boxHalfSize.y * transform.up, transform.forward);
@@ -123,84 +118,30 @@ public class PlacingTarget_Wall : PlacingTarget
         Debug.DrawRay(checkWallRay_ld.origin, checkWallRay_ld.direction * rayDistance, Color.yellow);
 #endif
 
-
-
-
-        // Rayが当たった位置をy軸の座標とする
-        // もしRayが当たらない = 高すぎる位置にいるときは「設置できない」と表現するため、プレイヤーと同じ高さでキープする（浮かせる）
-        //xPosition = player.position.x;
-
-        //zPosition = isHitWallBox
-        //    ? wallHitInfo.point.z - boxHalfSize.z - CALC_ERROR_OFFSET
-        //    : player.position.z;
-
-
-
-        if (Vector3.Angle(transform.forward, wallHitInfo.normal) != 180f)
-        {
-            XDebug.Log("BBB");
-
-            return false;
-        }
-
-
-
-        //if (isHitFront && wallHitInfo.normal.y == 0f && wallHitInfo.collider.bounds.extents.y < 2f)
-        //{
-        //    // top half
-        //    if (wallHitInfo.point.y > wallHitInfo.transform.position.y)
-        //    {
-
-        //    }
-        //    // bottom half
-        //    else
-        //    {
-
-        //    }
-        //}
-        //else
-        //{
-
-        //}
-
         // Rayがすべて当たっている = 坂や崖に面さず、完璧に設置可能な状態であるか
         bool isPerfectlyGrounded = isHitWall_ru && isHitWall_lu && isHitWall_rd && isHitWall_ld;
         if (!isPerfectlyGrounded)
         {
-            XDebug.Log("CCC");
-
             return false;
         }
-        // 1にすると誤差が出るのでちょっと引いてる
-        //if (wallHitInfo.normal.y < 1 - CALC_ERROR_OFFSET)
-        //{
-        //    return false;
-        //}
+
+        // そもそも今設置しようとしている場所は壁か（地面に対し垂直か）
+        if (Vector3.Angle(transform.forward, wallHitInfo.normal) != 180f)
+        {
+            return false;
+        }
+
+        // なにか他のオブジェクトにぶつかっていないか
         if (isCollision)
         {
-            XDebug.Log("DDD");
-
             return false;
         }
 
-        //Vector3 toPlayer = player.position - transform.position;
-        //Ray toPlayerRay = new Ray(transform.position, toPlayer.normalized);
-        //bool isHitBack = Physics.Raycast(toPlayerRay, out RaycastHit _, toPlayer.magnitude, Layer.GROUNDWALL);
-        //if (isHitBack)
-        //{
-        //    return false;
-        //}
-        // プレイヤーの頭の向きにRayを飛ばし、WarpPointerの要領で地面か机の上かを判定する。
-        // 机のコライダーの上半分にあたったら机の上だし、下半分に当たったら地面。
-        // あまりにもその壁が高かったら柱と判断し、return
-
+        // すべての条件をクリアしたとき、設置可能
         return true;
     }
 
-    protected override void OnRotate(InputAction.CallbackContext context)
-    {
-        // 反転処理
-    }
+    protected override void OnRotate(InputAction.CallbackContext context) { }
 
     protected override void OnRotateCancel(InputAction.CallbackContext context) { }
 
