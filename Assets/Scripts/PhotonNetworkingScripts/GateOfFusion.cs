@@ -48,8 +48,8 @@ public class GateOfFusion
 	public async UniTask<bool> GetIsLeader()
 	{
 		await UniTask.WaitUntil(() => _masterServer.IsConnected);
+		await UniTask.WaitUntil(() => _masterServer.IsRoomStandBy);
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer);
-		RoomManager.Instance.Test();
 		if (currentRoom == null)
 		{
 			return false;
@@ -224,7 +224,7 @@ public class GateOfFusion
 		await UniTask.WaitUntil(() => 
 			RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer).IsLeader(NetworkRunner.LocalPlayer
 		));
-		XKumaDebugSystem.LogError("adadad",KumaDebugColor.InformationColor);
+		MasterServer.SessionRPCManager.Rpc_RoomStandbyOn();
 		if (currentRoom.SceneNameType is not SceneNameType.KumaKumaTest or SceneNameType.TestPhotonScene)
 		{
 			OnActivityConnected?.Invoke();

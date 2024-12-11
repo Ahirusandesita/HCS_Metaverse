@@ -129,7 +129,7 @@ public class RoomManager : MonoBehaviour
 		}
 
 		roomTemp.Join(joinPlayer);
-
+		
 		if (!roomTemp.IsNonLeader && joinPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer)
 		{
 			InstantiateActivityStartUI();
