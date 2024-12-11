@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using Result = UnityEngine.Networking.UnityWebRequest.Result;
@@ -25,65 +26,42 @@ public class WebAPIRequester : MonoBehaviour
         }
     }
 
-    // this path is for debug.
-    private const string DETABASE_PATH = "http://10.11.39.210:8080/shop/buy";
+    private const string DETABASE_PATH_BASE = "http://10.11.33.228:8080/api/";
+    private const string DETABASE_PATH_JOIN_WORLD = DETABASE_PATH_BASE + "world";
+    private const string DETABASE_PATH_SHOP_ENTRY = DETABASE_PATH_BASE + "shop/entry";
+    private const string DETABASE_PATH_SHOP_BUY = DETABASE_PATH_BASE + "shop/buy";
+    private const string DETABASE_PATH_MYROOM_ENTRY = DETABASE_PATH_BASE + "myroom/entry";
+    private const string DETABASE_PATH_USER_LOCATION = DETABASE_PATH_BASE + "user/location";
+    private const string DETABASE_PATH_VENDINGMACHINE_BUY = DETABASE_PATH_BASE + "user/shop";
 
 
-    private async void Start()
+    public async UniTask<OnShopEntryData> PostShopEntry(int shopId)
     {
-        //var a = new List<OnPaymentData.Inventory>();
-        //a.Add(new OnPaymentData.Inventory(30001, 5));
-        //a.Add(new OnPaymentData.Inventory(30002, 1));
-        //var b = await PostPayment(a, 10001, 20001);
-        //XDebug.Log(b.InventoryList[0].ItemID);
-        //XDebug.Log(b.InventoryList[0].Count);
-        //XDebug.Log(b.Money);
-        //XDebug.Log(b.Stock);
-        //XDebug.Log(b.UserID);
-    }
-
-    public async UniTask<OnEntryData> PostEntry(int shopId)
-    {
-        //WWWForm form = new WWWForm();
-        //form.AddField("shopId", shopId);
-        //using var request = UnityWebRequest.Post(DETABASE_PATH, form);
-        //await request.SendWebRequest();
-
-        //switch (request.result)
-        //{
-        //    case Result.InProgress:
-        //        throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
-
-        //    case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
-                var itemList = new List<OnEntryData.Lineup>();
-                itemList.Add(new OnEntryData.Lineup(20004, 15000, 0, 3, 1));
-                itemList.Add(new OnEntryData.Lineup(10001, 10000, 0, 5, 0));
-                itemList.Add(new OnEntryData.Lineup(10002, 8000, 0.1f, 1, 0));
-                itemList.Add(new OnEntryData.Lineup(20001, 500, 0, 15, 1));
-                itemList.Add(new OnEntryData.Lineup(20002, 24000, 0.9f, 6, 0));
-                itemList.Add(new OnEntryData.Lineup(20003, 16000, 1f, 1, 1));
-                return new OnEntryData(itemList);
-                //throw new System.InvalidOperationException(request.error);
-        //}
-
-        //var onEntryData = JsonUtility.FromJson<OnEntryData>($"{request.downloadHandler.text}");
-        //return onEntryData;
-    }
-
-    public async UniTask<Dictionary<int, int>> UpdateStock(int shopID)
-    {
-        using var request = UnityWebRequest.Post(DETABASE_PATH, new WWWForm());
+        WWWForm form = new WWWForm();
+        form.AddField("shopId", shopId);
+        using var request = UnityWebRequest.Post(DETABASE_PATH_SHOP_ENTRY, form);
         await request.SendWebRequest();
-        return default;
+
+        switch (request.result)
+        {
+            case Result.InProgress:
+                throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+            case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+                throw new System.InvalidOperationException(request.error);
+        }
+
+        var onEntryData = JsonUtility.FromJson<OnShopEntryData>($"{request.downloadHandler.text}");
+        return onEntryData;
     }
 
-    public async UniTask<OnPaymentData> PostPayment(List<OnPaymentData.Inventory> inventory, int shopId, int userId)
+    public async UniTask<OnPaymentData> PostShopPayment(List<OnPaymentData.Inventory> inventory, int shopId, int userId)
     {
         WWWForm form = new WWWForm();
         form.AddField("inventory", JsonUtility.ToJson(inventory));
         form.AddField("shopId", shopId);
         form.AddField("userId", userId);
-        using var request = UnityWebRequest.Post(DETABASE_PATH, form);
+        using var request = UnityWebRequest.Post(DETABASE_PATH_SHOP_BUY, form);
         await request.SendWebRequest();
 
         switch (request.result)
@@ -100,9 +78,9 @@ public class WebAPIRequester : MonoBehaviour
     }
 
     [System.Serializable]
-    public class OnEntryData
+    public class OnShopEntryData
     {
-        public OnEntryData(List<Lineup> itemList)
+        public OnShopEntryData(List<Lineup> itemList)
         {
             this.itemList = itemList;
         }
