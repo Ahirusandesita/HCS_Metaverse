@@ -49,6 +49,7 @@ public class GateOfFusion
 	{
 		await UniTask.WaitUntil(() => _masterServer.IsConnected);
 		Room currentRoom = RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer);
+		RoomManager.Instance.Test();
 		if (currentRoom == null)
 		{
 			return false;
@@ -219,6 +220,11 @@ public class GateOfFusion
 		{
 			await UniTask.WaitUntil(() => NetworkRunner.ActivePlayers.Contains(roomPlayer));
 		}
+
+		await UniTask.WaitUntil(() => 
+			RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer).IsLeader(NetworkRunner.LocalPlayer
+		));
+		XKumaDebugSystem.LogError("adadad",KumaDebugColor.InformationColor);
 		if (currentRoom.SceneNameType is not SceneNameType.KumaKumaTest or SceneNameType.TestPhotonScene)
 		{
 			OnActivityConnected?.Invoke();
