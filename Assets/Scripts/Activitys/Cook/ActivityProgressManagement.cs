@@ -89,7 +89,7 @@ public class ActivityProgressManagement : MonoBehaviour
         mainTimeInstance = await GateOfFusion.Instance.SpawnAsync(timeNetwork);
         AllSpawn allSpawn = await GateOfFusion.Instance.SpawnAsync(test);
         await allSpawn.Async();
-        mainTimeInstance.SetStartTime(10f);
+        mainTimeInstance.SetStartTime(180f);
         mainTimeInstance.OnFinish += () =>
         {
             ActivityFinish().Forget();
