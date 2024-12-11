@@ -75,6 +75,7 @@ public class ActivityProgressManagement : MonoBehaviour
                 ActivityStart();
             };
 
+            rpcInstance.isStart = true;
             await allSpawn.Async();
             readyTimeInstance.StartTime = 3;
             rpcInstance.RPC_ReadyTimeInject(readyTimeInstance.GetComponent<NetworkObject>());

@@ -4,6 +4,7 @@ using UnityEngine;
 using Fusion;
 public class ActivityManagementRPC : NetworkBehaviour,IPlayerJoined
 {
+    public bool isStart = false;
 
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     public void RPC_ReadyTimeInject(NetworkObject networkObject)
@@ -24,6 +25,10 @@ public class ActivityManagementRPC : NetworkBehaviour,IPlayerJoined
     }
     public async void PlayerJoined(PlayerRef player)
     {
+        if (!isStart)
+        {
+            return;
+        }
         if(await GateOfFusion.Instance.GetIsLeader())
         {
             FindObjectOfType<ActivityProgressManagement>().RPC_Anpanman(player);
