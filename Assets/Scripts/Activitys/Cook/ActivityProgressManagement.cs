@@ -49,6 +49,10 @@ public class ActivityProgressManagement : MonoBehaviour
     TimeNetwork readyTimeInstance;
     TimeNetwork mainTimeInstance;
     private ActivityManagementRPC rpcInstance;
+
+    [SerializeField]
+    private AllSpawn test;
+
     private void Awake()
     {
         //leader‚Ì‚Ý
@@ -60,7 +64,7 @@ public class ActivityProgressManagement : MonoBehaviour
             //}
             rpcInstance = await GateOfFusion.Instance.SpawnAsync(activityManagementRPC);
             readyTimeInstance = await GateOfFusion.Instance.SpawnAsync(timeNetwork);
-
+            AllSpawn allSpawn = await GateOfFusion.Instance.SpawnAsync(test);
             foreach (INetworkTimeInjectable networkTimeInjectable in readyTimeInjectable)
             {
                 networkTimeInjectable.Inject(readyTimeInstance);
@@ -70,8 +74,8 @@ public class ActivityProgressManagement : MonoBehaviour
             {
                 ActivityStart();
             };
-            await UniTask.WaitUntil(() => rpcInstance.isSpawned);
-            await UniTask.WaitUntil(() => readyTimeInstance.IsSpawned);
+
+            await allSpawn.Async();
             readyTimeInstance.SetStartTime(3);
             rpcInstance.RPC_ReadyTimeInject(readyTimeInstance.GetComponent<NetworkObject>());
             await UniTask.Delay(1000);
@@ -83,7 +87,8 @@ public class ActivityProgressManagement : MonoBehaviour
     {
         OnStart?.Invoke();
         mainTimeInstance = await GateOfFusion.Instance.SpawnAsync(timeNetwork);
-        await UniTask.WaitUntil(() => mainTimeInstance.IsSpawned);
+        AllSpawn allSpawn = await GateOfFusion.Instance.SpawnAsync(test);
+        await allSpawn.Async();
         mainTimeInstance.SetStartTime(10f);
         mainTimeInstance.OnFinish += () =>
         {
