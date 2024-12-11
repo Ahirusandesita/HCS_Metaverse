@@ -118,7 +118,7 @@ public class PlacingTarget_Wall : PlacingTarget
         Debug.DrawRay(checkWallRay_ld.origin, checkWallRay_ld.direction * rayDistance, Color.yellow);
 #endif
 
-        // Rayがすべて当たっている = 坂や崖に面さず、完璧に設置可能な状態であるか
+        // Rayがすべて当たっている = 壁が途切れず、完璧に設置可能な状態であるか
         bool isPerfectlyGrounded = isHitWall_ru && isHitWall_lu && isHitWall_rd && isHitWall_ld;
         if (!isPerfectlyGrounded)
         {

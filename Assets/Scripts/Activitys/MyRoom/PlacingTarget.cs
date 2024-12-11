@@ -216,12 +216,12 @@ public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDepend
 
     }
 
-    private void OnTriggerEnter(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
         isCollision = true;
     }
 
-    private void OnTriggerExit(Collider other)
+    protected virtual void OnTriggerExit(Collider other)
     {
         isCollision = false;
     }
