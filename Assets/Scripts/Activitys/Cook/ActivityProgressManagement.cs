@@ -54,10 +54,10 @@ public class ActivityProgressManagement : MonoBehaviour
         //leader‚Ì‚Ý
         GateOfFusion.Instance.OnActivityConnected += async () =>
         {
-            if(!await GateOfFusion.Instance.GetIsLeader())
-            {
-                return;
-            }
+            //if(!await GateOfFusion.Instance.GetIsLeader())
+            //{
+            //    return;
+            //}
             rpcInstance = await GateOfFusion.Instance.SpawnAsync(activityManagementRPC);
             readyTimeInstance = await GateOfFusion.Instance.SpawnAsync(timeNetwork);
 
@@ -82,7 +82,7 @@ public class ActivityProgressManagement : MonoBehaviour
     {
         OnStart?.Invoke();
         mainTimeInstance = await GateOfFusion.Instance.SpawnAsync(timeNetwork);
-        mainTimeInstance.StartTime = 180f;
+        mainTimeInstance.StartTime = 10f;
 
         foreach (INetworkTimeInjectable networkTimeInjectable in mainTimeInjectable)
         {
@@ -117,6 +117,7 @@ public class ActivityProgressManagement : MonoBehaviour
     }
     public void RPC_MainInjectable(TimeNetwork timeNetwork)
     {
+        Debug.LogError("Inject¬Œ÷");
         mainTimeInstance = timeNetwork;
         mainTimeInstance.OnFinish += () =>
         {
