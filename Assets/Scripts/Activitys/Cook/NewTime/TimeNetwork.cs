@@ -54,7 +54,7 @@ public class TimeNetwork : NetworkBehaviour
 
         countDownTime_s -= UnityEngine.Time.deltaTime;
 
-        if (lastTime_s - countDownTime_s >= 1f)
+        if (lastTime_s - countDownTime_s >= 0f)
         {
             lastTime_s = countDownTime_s;
             Time = (int)countDownTime_s;
