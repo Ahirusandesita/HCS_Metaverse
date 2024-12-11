@@ -34,9 +34,9 @@ public class RemoteView : NetworkBehaviour,IDependencyInjector<PlayerBodyDepende
 		base.FixedUpdateNetwork();
 		_viewTransform.position = _playerTransform.position;
 
-        Quaternion rotation = _viewTransform.rotation;
-        rotation.y = _information.Head.Rotation.y;
-        _viewTransform.rotation = rotation;
+        Vector3 rotation = _viewTransform.rotation.eulerAngles;
+        rotation.y = _information.Head.Rotation.eulerAngles.y;
+        _viewTransform.rotation = Quaternion.Euler(rotation);
     }
 
     public void Inject(PlayerBodyDependencyInformation information)

@@ -42,15 +42,13 @@ public class AvatarHandTracker
     public void RightHandTracking(Transform conrtoller)
     {
         // 
-        //if (!_rightShoulder.HasStateAuthority)
-        //{
-        //    return;
-        //}
+        if (_rightShoulder == null)
+        {
+            return;
+        }
 
         // 
         _rightShoulder.transform.localRotation = _rightShoulderOriginRotatioin;
-
-        Debug.Log($"beforeRotation:{_rightShoulder.transform.localRotation.eulerAngles}");
 
         // 
         Vector3 shoulderForword = _rightShoulder.transform.right;
@@ -62,21 +60,13 @@ public class AvatarHandTracker
         Vector3 shoulderAxis = Vector3.Cross(shoulderForword, shoulderToHandVector).normalized;
 
         // 
-        if (Vector3.Dot(shoulderAxis, Vector3.up) < 0)
-        {
-            // 
-            shoulderAxis *= -1;
-        }
+        shoulderAxis = (Vector3.Dot(shoulderAxis, Vector3.up) > 0) ? shoulderAxis : shoulderAxis * -1;
 
         // 
         float shoulderAngle = Vector3.SignedAngle(shoulderForword, shoulderToHandVector, shoulderAxis);
 
         // 
-        //_rightShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _rightShoulder.transform.rotation;
-
         _rightShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _rightShoulder.transform.rotation;
-
-        Debug.Log($"afterRotation:{_rightShoulder.transform.localRotation.eulerAngles}");
 
         // 
         Vector3 controllerTwist = new Vector3(conrtoller.localEulerAngles.z + _handComplementAngle, 0, 0);
@@ -87,13 +77,11 @@ public class AvatarHandTracker
 
     public void LeftHandTracking(Transform conrtoller)
     {
-        Debug.Log("LocalAvatar:" + _leftShoulder.StateAuthority.PlayerId + "èÛãµÅ@ÅF " + _leftShoulder.HasStateAuthority);
         // 
-        //if (!_leftShoulder.HasStateAuthority)
-        //{
-        //    Debug.Log($"<color=green>ìÆÇ©ÇµÇƒÇ»Ç¢ÇÊÇÒ</color>");
-        //    return;
-        //}
+        if (_leftShoulder == null)
+        {
+            return;
+        }
 
         // 
         _leftShoulder.transform.localRotation = _leftShoulderOriginRotatioin;
@@ -108,18 +96,12 @@ public class AvatarHandTracker
         Vector3 shoulderAxis = Vector3.Cross(shoulderForword, shoulderToHandVector).normalized;
 
         // 
-        if (Vector3.Dot(shoulderAxis, Vector3.up) > 0)
-        {
-            // 
-            shoulderAxis *= -1;
-        }
+        shoulderAxis = (Vector3.Dot(shoulderAxis, Vector3.up) > 0) ? shoulderAxis * -1 : shoulderAxis;
 
         // 
         float shoulderAngle = Vector3.SignedAngle(shoulderForword, shoulderToHandVector, shoulderAxis);
 
         // 
-        //_leftShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _leftShoulder.transform.rotation;
-
         _leftShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _leftShoulder.transform.rotation;
 
         // 
