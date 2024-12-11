@@ -24,6 +24,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	private NetworkRunner _networkRunner;
 	private SessionRPCManager _sessionRPCManager;
 	private bool _isConnected = default;
+	private bool _isRoomStandby = false;
 	public event Action OnConnect;
 	public bool IsUsePhoton => _isUsePhoton;
 	public bool IsConnected => _isConnected;
@@ -38,6 +39,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 			return _networkRunner;
 		}
 	}
+	public bool IsRoomStandBy => _isRoomStandby;
 	public SessionRPCManager SessionRPCManager => _sessionRPCManager ??= FindObjectOfType<SessionRPCManager>();
 	#region EditorOnly
 #if UNITY_EDITOR
@@ -46,6 +48,22 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	public bool IsKumaDebug => _isKumaDebug;
 #endif
 	#endregion
+
+	[ContextMenu("teste")]
+	private async void test()
+	{
+	}
+	[ContextMenu("start")]
+	private void ActivityS()
+	{
+		GateOfFusion.Instance.ActivityStart();
+	}
+
+	public void IsRoomStandbyOn()
+	{
+		_isRoomStandby = true;
+	}
+
 	/// <summary>
 	/// SessionRPCManager‚ğæ“¾‚·‚éæ“¾‚Å‚«‚È‚¢ê‡‚Í‚Å‚«‚é‚Ü‚Å‚Ü‚Â
 	/// </summary>
@@ -65,7 +83,6 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	public async UniTask<SessionRPCManager> InstanceSessionRPCManagerAsync()
 	{
 		XKumaDebugSystem.LogWarning($"InstanceRpcManager{_networkRunner.IsShutdown}", KumaDebugColor.ErrorColor);
-		//GateOfFusion.Instance.SpawnAsync(_sessionRPCManagerPrefab);
 		NetworkObject networkObjectTemp = await _networkRunner.SpawnAsync(_sessionRPCManagerPrefab);
 		_sessionRPCManager = networkObjectTemp.GetComponent<SessionRPCManager>();
 		return _sessionRPCManager;
@@ -96,11 +113,13 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 			await RoomManager.Instance.JoinOrCreate(firstScene, Runner.LocalPlayer);
 			return;
 		}
-		await Connect(firstScene.ToString());	
+		await Connect(firstScene.ToString());
+		_isRoomStandby = true;
 	}
 
 	public async UniTask Disconnect()
 	{
+		_isRoomStandby = false;
 		XKumaDebugSystem.LogWarning($"Disconnect", KumaDebugColor.SuccessColor);
 		if (!_isUsePhoton) { return; }
 		if (_networkRunner == null)

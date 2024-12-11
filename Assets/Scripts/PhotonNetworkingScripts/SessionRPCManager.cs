@@ -96,6 +96,12 @@ public class SessionRPCManager : NetworkBehaviour
 		await RoomManager.Instance.LeftOrClose(leftPlayer);
 	}
 
+	[Rpc(RpcSources.All, RpcTargets.All)]
+	public void Rpc_RoomStandbyOn()
+	{
+		FindObjectOfType<MasterServerConect>().IsRoomStandbyOn();
+	}
+
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 	public void Rpc_RequestRoomData(PlayerRef requestPlayer)
 	{
