@@ -70,7 +70,8 @@ public class ActivityProgressManagement : MonoBehaviour
             {
                 ActivityStart();
             };
-            await UniTask.Delay(2000);
+            await UniTask.WaitUntil(() => rpcInstance.isSpawned);
+            await UniTask.WaitUntil(() => readyTimeInstance.IsSpawned);
             readyTimeInstance.SetStartTime(3);
             rpcInstance.RPC_ReadyTimeInject(readyTimeInstance.GetComponent<NetworkObject>());
             await UniTask.Delay(1000);
@@ -82,9 +83,8 @@ public class ActivityProgressManagement : MonoBehaviour
     {
         OnStart?.Invoke();
         mainTimeInstance = await GateOfFusion.Instance.SpawnAsync(timeNetwork);
-        await UniTask.Delay(2000);
+        await UniTask.WaitUntil(() => mainTimeInstance.IsSpawned);
         mainTimeInstance.SetStartTime(10f);
-
         mainTimeInstance.OnFinish += () =>
         {
             ActivityFinish().Forget();

@@ -10,8 +10,9 @@ public enum ActivitiState
     Start,
     End
 }
-public class TimeNetwork : NetworkBehaviour
+public class TimeNetwork : NetworkBehaviour,IAfterSpawned
 {
+    public bool IsSpawned = false;
     [Networked, OnChangedRender(nameof(Count))]
     public int Time { get; set; }
     [Networked]
@@ -72,5 +73,10 @@ public class TimeNetwork : NetworkBehaviour
     {
         Debug.LogError("RPC");
         SetTime();
+    }
+
+    public void AfterSpawned()
+    {
+        IsSpawned = true;
     }
 }

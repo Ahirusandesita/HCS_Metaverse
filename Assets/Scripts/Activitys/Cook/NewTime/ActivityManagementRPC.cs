@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
-public class ActivityManagementRPC : NetworkBehaviour
+public class ActivityManagementRPC : NetworkBehaviour,IAfterSpawned
 {
+    public bool isSpawned = false;
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     public void RPC_ReadyTimeInject(NetworkObject networkObject)
     {
@@ -13,5 +14,10 @@ public class ActivityManagementRPC : NetworkBehaviour
     public void RPC_MainTimeInject(NetworkObject networkObject)
     {
         FindObjectOfType<ActivityProgressManagement>().RPC_MainInjectable(networkObject.GetComponent<TimeNetwork>());
+    }
+
+    void IAfterSpawned.AfterSpawned()
+    {
+        isSpawned = true;
     }
 }
