@@ -72,7 +72,7 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 	{
 		//ê∂ê¨
 		displayedItems = new List<GameObject>();
-		WebAPIRequester webAPIRequester = FindObjectOfType<WebAPIRequester>();
+		WebAPIRequester webAPIRequester = new WebAPIRequester();
 		if (webAPIRequester == null)
 		{
 			XKumaDebugSystem.LogWarning("webApiRequesterÇ™å©Ç¬Ç©ÇËÇ‹ÇπÇÒÇ≈ÇµÇΩÅB", KumaDebugColor.WarningColor);
