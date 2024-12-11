@@ -54,6 +54,10 @@ public class ActivityProgressManagement : MonoBehaviour
         //leader‚Ì‚Ý
         GateOfFusion.Instance.OnActivityConnected += async () =>
         {
+            if(!await GateOfFusion.Instance.GetIsLeader())
+            {
+                return;
+            }
             rpcInstance = await GateOfFusion.Instance.SpawnAsync(activityManagementRPC);
             readyTimeInstance = await GateOfFusion.Instance.SpawnAsync(timeNetwork);
 
