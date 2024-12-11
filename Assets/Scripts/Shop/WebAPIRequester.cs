@@ -17,19 +17,12 @@ public class WebAPIRequester
     private const string DETABASE_PATH_USER_LOCATION = DETABASE_PATH_BASE + "user/location";
     private const string DETABASE_PATH_VENDINGMACHINE_BUY = DETABASE_PATH_BASE + "user/shop";
 
-    [System.Serializable]
-    public class AAA
-    {
-        public int shopId;
-    }
 
     public async UniTask<OnShopEntryData> PostShopEntry(int shopId)
     {
         WWWForm form = new WWWForm();
         form.AddField("shopId", shopId);
-        AAA aaa = new AAA { shopId = shopId };
-        string bbb = JsonUtility.ToJson(aaa);
-        using var request = UnityWebRequest.Post(DETABASE_PATH_SHOP_ENTRY, bbb);
+        using var request = UnityWebRequest.Post(DETABASE_PATH_SHOP_ENTRY, form);
         await request.SendWebRequest();
 
         switch (request.result)
