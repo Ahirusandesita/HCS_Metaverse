@@ -42,10 +42,10 @@ public class AvatarHandTracker
     public void RightHandTracking(Transform conrtoller)
     {
         // 
-        if (!_rightShoulder.HasStateAuthority)
-        {
-            return;
-        }
+        //if (!_rightShoulder.HasStateAuthority)
+        //{
+        //    return;
+        //}
 
         // 
         _rightShoulder.transform.localRotation = _rightShoulderOriginRotatioin;
@@ -72,7 +72,9 @@ public class AvatarHandTracker
         float shoulderAngle = Vector3.SignedAngle(shoulderForword, shoulderToHandVector, shoulderAxis);
 
         // 
-        _rightShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _rightShoulder.transform.rotation;
+        //_rightShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _rightShoulder.transform.rotation;
+
+        _rightShoulder.GetComponent<NetworkTransform>().Teleport(_rightShoulder.transform.position, Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _rightShoulder.transform.rotation);
 
         Debug.Log($"afterRotation:{_rightShoulder.transform.localRotation.eulerAngles}");
 
@@ -85,11 +87,13 @@ public class AvatarHandTracker
 
     public void LeftHandTracking(Transform conrtoller)
     {
+        Debug.Log("LocalAvatar:" + _leftShoulder.StateAuthority.PlayerId + "èÛãµÅ@ÅF " + _leftShoulder.HasStateAuthority);
         // 
-        if (!_leftShoulder.HasStateAuthority)
-        {
-            return;
-        }
+        //if (!_leftShoulder.HasStateAuthority)
+        //{
+        //    Debug.Log($"<color=green>ìÆÇ©ÇµÇƒÇ»Ç¢ÇÊÇÒ</color>");
+        //    return;
+        //}
 
         // 
         _leftShoulder.transform.localRotation = _leftShoulderOriginRotatioin;
@@ -114,7 +118,9 @@ public class AvatarHandTracker
         float shoulderAngle = Vector3.SignedAngle(shoulderForword, shoulderToHandVector, shoulderAxis);
 
         // 
-        _leftShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _leftShoulder.transform.rotation;
+        //_leftShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _leftShoulder.transform.rotation;
+
+        _leftShoulder.GetComponent<NetworkTransform>().Teleport(_leftShoulder.transform.position, Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _leftShoulder.transform.rotation);
 
         // 
         Vector3 controllerTwist = new Vector3(-conrtoller.localEulerAngles.z + _handComplementAngle, 0, 0);
