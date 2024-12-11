@@ -27,11 +27,13 @@ public class TimeNetwork : NetworkBehaviour
     private float lastTime_s;
 
     private bool isCountStart = false;
+    private bool canInvoke = false;
     private void SetTime()
     {
         countDownTime_s = StartTime;
         Time = (int)countDownTime_s;
         lastTime_s = countDownTime_s;
+        canInvoke = true;
     }
     private void Count()
     {
@@ -44,6 +46,7 @@ public class TimeNetwork : NetworkBehaviour
         {
             OnFinish?.Invoke();
             OnTime = null;
+            canInvoke = false;
         }
 
         if (!this.GetComponent<NetworkObject>().HasStateAuthority)
@@ -53,7 +56,7 @@ public class TimeNetwork : NetworkBehaviour
 
         countDownTime_s -= UnityEngine.Time.deltaTime;
 
-        if (lastTime_s - countDownTime_s >= 1f && isCountStart)
+        if (lastTime_s - countDownTime_s >= 1f && canInvoke)
         {
             lastTime_s = countDownTime_s;
             Time = (int)countDownTime_s;
