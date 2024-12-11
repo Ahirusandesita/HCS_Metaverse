@@ -21,7 +21,7 @@ public interface IEditOnlyGhost
 public class GhostModel : IEditOnlyGhost
 {
     /// <summary>
-    /// ゴースト元モデルの原点の位置
+    /// ゴーストモデルの原点の位置
     /// </summary>
     public enum PivotType
     {
