@@ -74,7 +74,7 @@ public class AvatarHandTracker
         // 
         //_rightShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _rightShoulder.transform.rotation;
 
-        _rightShoulder.GetComponent<NetworkTransform>().Teleport(_rightShoulder.transform.position, Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _rightShoulder.transform.rotation);
+        _rightShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _rightShoulder.transform.rotation;
 
         Debug.Log($"afterRotation:{_rightShoulder.transform.localRotation.eulerAngles}");
 
@@ -120,7 +120,7 @@ public class AvatarHandTracker
         // 
         //_leftShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _leftShoulder.transform.rotation;
 
-        _leftShoulder.GetComponent<NetworkTransform>().Teleport(_leftShoulder.transform.position, Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _leftShoulder.transform.rotation);
+        _leftShoulder.transform.rotation = Quaternion.AngleAxis(shoulderAngle, shoulderAxis) * _leftShoulder.transform.rotation;
 
         // 
         Vector3 controllerTwist = new Vector3(-conrtoller.localEulerAngles.z + _handComplementAngle, 0, 0);
