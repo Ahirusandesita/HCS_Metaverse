@@ -40,8 +40,10 @@ public class TimeNetwork : NetworkBehaviour
     }
     private void Update()
     {
+        Debug.LogError($"{Time}  {canInvoke}  {canProsess}");
         if (Time <= 0 && canInvoke && canProsess)
         {
+            Debug.LogError("Finish");
             OnFinish?.Invoke();
             OnTime = null;
             canInvoke = false;
@@ -54,7 +56,7 @@ public class TimeNetwork : NetworkBehaviour
 
         countDownTime_s -= UnityEngine.Time.deltaTime;
 
-        if (lastTime_s - countDownTime_s >= -1f)
+        if (lastTime_s - countDownTime_s >= 1f && Time > 0)
         {
             lastTime_s = countDownTime_s;
             Time = (int)countDownTime_s;

@@ -104,6 +104,7 @@ public class ActivityProgressManagement : MonoBehaviour
 
     public void RPC_ReadyInjectable(TimeNetwork timeNetwork)
     {
+        OnReady?.Invoke();
         readyTimeInstance = timeNetwork;
         readyTimeInstance.OnFinish += () =>
         {
