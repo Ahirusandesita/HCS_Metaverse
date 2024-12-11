@@ -83,6 +83,8 @@ public class ActivityProgressManagement : MonoBehaviour
         };
     }
 
+    
+
     public async void ActivityStart()
     {
         OnStart?.Invoke();
@@ -144,5 +146,10 @@ public class ActivityProgressManagement : MonoBehaviour
         {
             networkTimeInjectable.Inject(timeNetwork);
         }
+    }
+
+    public void RPC_Anpanman(PlayerRef playerRef)
+    {
+        rpcInstance.RPC_Inject(playerRef, readyTimeInstance.GetComponent<NetworkObject>(), mainTimeInstance.GetComponent<NetworkObject>());
     }
 }
