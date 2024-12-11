@@ -126,6 +126,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
         }
         return false;
     }
+
     public void Submission(Commodity commodity)
     {
         for (int i = 0; i < commodityAssets.Length; i++)
