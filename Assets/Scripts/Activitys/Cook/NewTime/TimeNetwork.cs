@@ -26,7 +26,7 @@ public class TimeNetwork : NetworkBehaviour,IAfterSpawned
     public float countDownTime_s;
     private float lastTime_s;
 
-    private bool canInvoke = true;
+    private bool canInvoke = false;
     [Networked]
     private bool CanProsess { get; set; }
     private void SetTime()
@@ -35,6 +35,7 @@ public class TimeNetwork : NetworkBehaviour,IAfterSpawned
         CanProsess = true;
         Time = (int)countDownTime_s;
         lastTime_s = countDownTime_s;
+        canInvoke = true;
     }
     private void Count()
     {
