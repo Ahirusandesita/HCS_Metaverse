@@ -37,6 +37,7 @@ public class TimeNetwork : NetworkBehaviour
     public void SetStartTime(float time)
     {
         StartTime = time;
+        RPC_SetTime();
     }
     private void Count()
     {
@@ -44,8 +45,7 @@ public class TimeNetwork : NetworkBehaviour
     }
     private void Update()
     {
-        Debug.LogError($"{Time}  {canInvoke}  {canProsess}");
-        if (Time < 0 && canInvoke && canProsess)
+        if (Time <= 0 && canInvoke && canProsess)
         {
             OnFinish?.Invoke();
             OnTime = null;
@@ -65,5 +65,10 @@ public class TimeNetwork : NetworkBehaviour
             Time = (int)countDownTime_s;
         }
 
+    }
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
+    private void RPC_SetTime()
+    {
+        SetTime();
     }
 }
