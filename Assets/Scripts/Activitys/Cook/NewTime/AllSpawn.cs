@@ -14,7 +14,7 @@ public class AllSpawn : NetworkBehaviour, IAfterSpawned
         RPC_Spawned();
     }
 
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority, InvokeLocal = false)]
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     private void RPC_Spawned()
     {
         Debug.LogError("Spawn");
