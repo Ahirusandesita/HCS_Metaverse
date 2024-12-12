@@ -32,9 +32,11 @@ public class RemoteView : NetworkBehaviour,IDependencyInjector<PlayerBodyDepende
 	public override void FixedUpdateNetwork()
 	{
 		base.FixedUpdateNetwork();
-		_viewTransform.position = _playerTransform.position;
+		Vector3 viewPosition = _information.Head.Position;
+		viewPosition.y = _playerTransform.position.y;
+		_viewTransform.position = viewPosition;
 
-        Vector3 rotation = _viewTransform.rotation.eulerAngles;
+		Vector3 rotation = _viewTransform.rotation.eulerAngles;
         rotation.y = _information.Head.Rotation.eulerAngles.y;
         _viewTransform.rotation = Quaternion.Euler(rotation);
     }
