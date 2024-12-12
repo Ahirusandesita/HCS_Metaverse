@@ -5,6 +5,7 @@ public class SessionRPCManager : NetworkBehaviour
 {
 	public override void Spawned()
 	{
+		PlayerRef.MasterClient.PrintError();
 		XKumaDebugSystem.LogWarning($"RPCManager_Spawned", KumaDebugColor.SuccessColor);
 		DontDestroyOnLoad(this.gameObject);
 		if (!Runner.IsSharedModeMasterClient)
@@ -128,8 +129,22 @@ public class SessionRPCManager : NetworkBehaviour
 		}
 	}
 
+	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 	public void Rpc_ChangeLeader(PlayerRef nextLeader)
 	{
 		RoomManager.Instance.LeaderChange(nextLeader);
+	}
+
+	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
+	public void Rpc_ReleaseStateAuthority([RpcTarget]PlayerRef nextLeader,NetworkObject networkObject)
+	{
+		XKumaDebugSystem.LogWarning($"{nextLeader}:{networkObject}");
+		networkObject.ReleaseStateAuthority();
+
+	}
+
+	public void Rpc_ExecuteOnActivityConnedted()
+	{
+		GateOfFusion.Instance.ExecuteOnActivityConnected();
 	}
 }
