@@ -19,8 +19,11 @@ public class FoodSpawnManagerRPC : NetworkBehaviour
     }
 
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
-    public void RPC_MasterSelect([RpcTarget]PlayerRef playerRef,int id,Vector3 position)
+    public void RPC_MasterSelect(int id,Vector3 position)
     {
-        foodSpawnManager.MasterSelect(id, position);
+        if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        {
+            foodSpawnManager.MasterSelect(id, position);
+        }
     }
 }

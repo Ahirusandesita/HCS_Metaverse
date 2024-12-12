@@ -50,7 +50,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     public void Select(SelectArgs selectArgs)
     {
         var itemSelectArgs = selectArgs as ItemSelectArgs;
-        selectedNotification.RPC_MasterSelect(PlayerRef.MasterClient, itemSelectArgs.id, itemSelectArgs.position);
+        selectedNotification.RPC_MasterSelect(itemSelectArgs.id, itemSelectArgs.position);
     }
     public async void MasterSelect(int id,Vector3 position)
     {
