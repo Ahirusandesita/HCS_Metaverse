@@ -18,7 +18,7 @@ public class FoodSpawnManagerRPC : NetworkBehaviour
         foodSpawnManager.UntiHuzakennaSelect(networkObject, id, position);
     }
 
-    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     public void RPC_MasterSelect(int id,Vector3 position)
     {
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
