@@ -18,7 +18,7 @@ public class ActivityManagementRPC : NetworkBehaviour,IPlayerJoined
     }
 
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
-    public void RPC_Inject([RpcTarget]PlayerRef playerRef, NetworkObject readyTime,NetworkObject mainTime)
+    public void RPC_NetworkTimeInject([RpcTarget]PlayerRef playerRef, NetworkObject readyTime,NetworkObject mainTime)
     {
         FindObjectOfType<ActivityProgressManagement>().RPC_ReadyInjectable(readyTime.GetComponent<TimeNetwork>());
         FindObjectOfType<ActivityProgressManagement>().RPC_MainInjectable(mainTime.GetComponent<TimeNetwork>());
@@ -31,7 +31,12 @@ public class ActivityManagementRPC : NetworkBehaviour,IPlayerJoined
         //}
         if(GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
-            FindObjectOfType<ActivityProgressManagement>().RPC_Anpanman(player);
+            RPC_Joined(player);
         }
+    }
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
+    public void RPC_Joined([RpcTarget]PlayerRef player)
+    {
+        FindObjectOfType<ActivityProgressManagement>().RPC_Joined(player);
     }
 }
