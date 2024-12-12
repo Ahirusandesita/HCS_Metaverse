@@ -10,12 +10,12 @@ public class FoodSpawnManagerRPC : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     public void RPC_FoodSpawn(NetworkObject networkObject,int index)
     {
-        foodSpawnManager.UntiHuzakenna(networkObject, index);
+        foodSpawnManager.SelectedNotificationInjection(networkObject, index);
     }
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     public void RPC_NotificationInjection(NetworkObject networkObject,int id,Vector3 position)
     {
-        foodSpawnManager.UntiHuzakennaSelect(networkObject, id, position);
+        foodSpawnManager.SelectedNotificationInjection(networkObject, id, position);
     }
 
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]

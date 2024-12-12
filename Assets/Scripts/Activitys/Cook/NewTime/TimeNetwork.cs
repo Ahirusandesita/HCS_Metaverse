@@ -48,7 +48,6 @@ public class TimeNetwork : NetworkBehaviour,IStateAuthorityChanged
             OnTime = null;
             canInvoke = false;
             isCountStart = false;
-            Debug.LogError("èIóπ");
         }
 
         if (!this.GetComponent<NetworkObject>().HasStateAuthority)
@@ -68,8 +67,8 @@ public class TimeNetwork : NetworkBehaviour,IStateAuthorityChanged
 
     public void StateAuthorityChanged()
     {
-        Debug.LogError($"StateChange  { canInvoke} ");
         countDownTime_s = Time;
         lastTime_s = countDownTime_s;
+        canInvoke = true;
     }
 }
