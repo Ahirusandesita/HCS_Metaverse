@@ -31,12 +31,8 @@ public class ActivityManagementRPC : NetworkBehaviour,IPlayerJoined
         //}
         if(GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
-            RPC_Joined(player);
+            Debug.LogError("Joined");
+            FindObjectOfType<ActivityProgressManagement>().RPC_Joined(player);
         }
-    }
-    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
-    public void RPC_Joined([RpcTarget]PlayerRef player)
-    {
-        FindObjectOfType<ActivityProgressManagement>().RPC_Joined(player);
     }
 }

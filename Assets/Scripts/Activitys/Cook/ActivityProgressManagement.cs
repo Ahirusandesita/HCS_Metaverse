@@ -49,7 +49,8 @@ public class ActivityProgressManagement : MonoBehaviour
     TimeNetwork readyTimeInstance;
     TimeNetwork mainTimeInstance;
     private ActivityManagementRPC rpcInstance;
-
+    public TimeNetwork ReadyTimeInstance => readyTimeInstance;
+    public TimeNetwork MainTimeInstance => mainTimeInstance;
     [SerializeField]
     private AllSpawn test;
 
@@ -89,7 +90,6 @@ public class ActivityProgressManagement : MonoBehaviour
 
     public async void ActivityStart()
     {
-        Debug.LogError("ActivityStart");
         OnStart?.Invoke();
         mainTimeInstance = await GateOfFusion.Instance.SpawnAsync(timeNetwork);
         AllSpawn allSpawn = await GateOfFusion.Instance.SpawnAsync(test);
@@ -124,11 +124,6 @@ public class ActivityProgressManagement : MonoBehaviour
         {
             return;
         }
-        Debug.LogError("ReadyInject");
-        OnReady += () =>
-        {
-            Debug.LogError("OnReady");
-        };
         OnReady?.Invoke();
         readyTimeInstance = timeNetwork;
         readyTimeInstance.OnFinish += () =>
@@ -150,7 +145,6 @@ public class ActivityProgressManagement : MonoBehaviour
         mainTimeInstance = timeNetwork;
         mainTimeInstance.OnFinish += () =>
         {
-            Debug.LogError("OnFinish");
             ActivityFinish().Forget();
         };
 
