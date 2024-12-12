@@ -111,4 +111,15 @@ public class SwitchableGrabbableActive : MonoBehaviour, ISwitchableGrabbableActi
 
         return null; //!!!!!!!!!!!!!!!!!!!
     }
+
+    void Update()
+    {
+        foreach (RequesterInformation requesterInformation in grabbableActiveChangeRequesters)
+        {
+            if (!requesterInformation.IsActive)
+            {
+                Debug.Log("’Í‚ß‚È‚¢" + gameObject.name);
+            }
+        }
+    }
 }
