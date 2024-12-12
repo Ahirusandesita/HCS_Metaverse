@@ -78,8 +78,10 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     {
         GateOfFusion.Instance.OnActivityConnected += async () =>
         {
+            Debug.LogError("ActivityConnected");
             if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
             {
+                Debug.LogError("i'm MasterClient");
                 displayFoods = new List<GameObject>();
 
                 for (int i = 0; i < foodLineup.Count; i++)
