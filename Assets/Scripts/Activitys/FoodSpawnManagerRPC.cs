@@ -13,8 +13,14 @@ public class FoodSpawnManagerRPC : NetworkBehaviour
         foodSpawnManager.UntiHuzakenna(networkObject, index);
     }
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
-    public void RPC_Unti(NetworkObject networkObject,int id,Vector3 position)
+    public void RPC_NotificationInjection(NetworkObject networkObject,int id,Vector3 position)
     {
         foodSpawnManager.UntiHuzakennaSelect(networkObject, id, position);
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
+    public void RPC_MasterSelect([RpcTarget]PlayerRef playerRef,int id,Vector3 position)
+    {
+        foodSpawnManager.MasterSelect(id, position);
     }
 }
