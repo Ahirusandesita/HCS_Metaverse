@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Inventory = WebAPIRequester.OnPaymentData.Inventory;
+using Inventory = WebAPIRequester.OnPaymentData.Body.Inventory;
 using Cysharp.Threading.Tasks;
 
 public class ShopCart : MonoBehaviour
@@ -52,7 +52,7 @@ public class ShopCart : MonoBehaviour
 	{
 		foreach (var item in _inCarts)
 		{
-			Inventory inventoryTemp = new Inventory(item.Key,item.Value);
+			Inventory inventoryTemp = new Inventory(item.Key, item.Value);
 			inventories.Add(inventoryTemp);
 		}
 
@@ -73,10 +73,11 @@ public class ShopCart : MonoBehaviour
 			}
 		}
 		//データベースにリクエストをとばす
-			var data = await requester.PostShopPayment(inventories,0,0);
+		var data = await requester.PostShopPayment(inventories, 0, 0);
+
 		try
 		{
-		XDebug.LogError(inventories.Count);
+			XDebug.LogError(inventories.Count);
 		}
 		catch
 		{
