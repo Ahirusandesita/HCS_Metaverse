@@ -16,6 +16,7 @@ public class WebAPIRequester
 	private const string DETABASE_PATH_MYROOM_ENTRY = DETABASE_PATH_BASE + "myroom/entry";
 	private const string DETABASE_PATH_USER_LOCATION = DETABASE_PATH_BASE + "user/location";
 	private const string DETABASE_PATH_VENDINGMACHINE_BUY = DETABASE_PATH_BASE + "user/shop";
+	private const string CONTENT_TYPE = "application/json";
 
 
 	public async UniTask<OnShopEntryData> PostShopEntry(int shopId)
@@ -34,19 +35,17 @@ public class WebAPIRequester
 				throw new System.InvalidOperationException(request.error);
 		}
 
-		var onEntryData = JsonUtility.FromJson<OnShopEntryData>($"{request.downloadHandler.text}");
+		var onEntryData = JsonUtility.FromJson<OnShopEntryData>(request.downloadHandler.text);
 		return onEntryData;
 	}
 
-	public async UniTask<OnPaymentData> PostShopPayment(List<OnPaymentData.Inventory> inventory, int shopId, int userId)
+	public async UniTask<OnPaymentData> PostShopPayment(List<OnPaymentData.Body.Inventory> inventory, int shopId, int userId)
 	{
-		WWWForm form = new WWWForm();
-		form.AddField("inventory", JsonUtility.ToJson(inventory));
-		form.AddField("shopId", shopId);
-		form.AddField("userId", userId);
-		using var request = UnityWebRequest.Post(DETABASE_PATH_SHOP_BUY, form);
-		await request.SendWebRequest();
+		var sendPaymentData = new SendPaymentData(inventory, shopId, userId);
+		string jsonData = JsonUtility.ToJson(sendPaymentData);
 
+		using var request = UnityWebRequest.Post(DETABASE_PATH_SHOP_BUY, jsonData, CONTENT_TYPE);
+		await request.SendWebRequest();
 		switch (request.result)
 		{
 			case Result.InProgress:
@@ -56,7 +55,7 @@ public class WebAPIRequester
 				throw new System.InvalidOperationException(request.error);
 		}
 
-		var onPaymentData = JsonUtility.FromJson<OnPaymentData>($"{request.downloadHandler.text}");
+		var onPaymentData = JsonUtility.FromJson<OnPaymentData>(request.downloadHandler.text);
 		return onPaymentData;
 	}
 
@@ -120,38 +119,74 @@ public class WebAPIRequester
 	[System.Serializable]
 	public class OnPaymentData
 	{
-		public OnPaymentData(List<Inventory> inventory, int money, int stock, int userId)
+		public OnPaymentData(Body body)
 		{
-			this.inventory = inventory;
-			this.money = money;
-			this.stock = stock;
+			this.body = body;
+		}
+
+		[SerializeField] private string responseCode = default;
+		[SerializeField] private string message = default;
+		[SerializeField] private Body body = default;
+
+		public string ResponseCode => responseCode;
+		public string Message => message;
+		public Body GetBody => body;
+
+		[System.Serializable]
+		public class Body
+		{
+			public Body(List<Inventory> inventory, int money, int stock, int userId)
+			{
+				this.inventory = inventory;
+				this.money = money;
+				this.stock = stock;
+				this.userId = userId;
+			}
+
+			[SerializeField] private List<Inventory> inventory = default;
+			[SerializeField] private int money = default;
+			[SerializeField] private int stock = default;
+			[SerializeField] private int userId = default;
+
+			public IReadOnlyList<Inventory> InventoryList => inventory;
+			public int Money => money;
+			public int Stock => stock;
+			public int UserID => userId;
+
+			[System.Serializable]
+			public class Inventory
+			{
+				public Inventory(int itemId, int count)
+				{
+					this.itemId = itemId;
+					this.count = count;
+				}
+
+				[SerializeField] private int itemId = default;
+				[SerializeField] private int count = default;
+
+				public int ItemID => itemId;
+				public int Count => count;
+			}
+		}
+	}
+
+	[System.Serializable]
+	private class SendPaymentData
+	{
+		public SendPaymentData(List<OnPaymentData.Body.Inventory> itemList, int shopId, int userId)
+		{
+			this.itemList = itemList;
+			this.shopId = shopId;
 			this.userId = userId;
 		}
 
-		[SerializeField] private List<Inventory> inventory = default;
-		[SerializeField] private int money = default;
-		[SerializeField] private int stock = default;
-		[SerializeField] private int userId = default;
+		[SerializeField] private List<OnPaymentData.Body.Inventory> itemList = default;
+		[SerializeField] private int shopId = default;
+		[SerializeField] public int userId = default;
 
-		public IReadOnlyList<Inventory> InventoryList => inventory;
-		public int Money => money;
-		public int Stock => stock;
+		public IReadOnlyList<OnPaymentData.Body.Inventory> ItemList => itemList;
+		public int ShopID => shopId;
 		public int UserID => userId;
-
-		[System.Serializable]
-		public class Inventory
-		{
-			public Inventory(int itemId, int count)
-			{
-				this.itemId = itemId;
-				this.count = count;
-			}
-
-			[SerializeField] private int itemId = default;
-			[SerializeField] private int count = default;
-
-			public int ItemID => itemId;
-			public int Count => count;
-		}
 	}
 }
