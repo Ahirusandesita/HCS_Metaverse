@@ -48,10 +48,10 @@ public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDepend
             : forwardOffset;
 
         // Tmporary（Inputの変更はどこか別の場所で行う）--------------
-        Inputter.PlacingMode.Rotate.Enable();
+        Inputter.PlacingMode.Signed.Enable();
         // -------------------------------------------------------
-        Inputter.PlacingMode.Rotate.performed += OnRotate;
-        Inputter.PlacingMode.Rotate.canceled += OnRotateCancel;
+        Inputter.PlacingMode.Signed.performed += OnSigned;
+        Inputter.PlacingMode.Signed.canceled += OnSignedCancel;
 
         return this;
     }
@@ -75,7 +75,7 @@ public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDepend
     protected virtual void OnDestroy()
     {
         // Tmporary
-        Inputter.PlacingMode.Rotate.Disable();
+        Inputter.PlacingMode.Signed.Disable();
         UpdateAction = null;
     }
 
@@ -199,14 +199,14 @@ public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDepend
         return true;
     }
 
-    protected virtual void OnRotate(InputAction.CallbackContext context)
+    protected virtual void OnSigned(InputAction.CallbackContext context)
     {
         // オブジェクト（ゴースト）自身の転回処理
         // ボタンを押している間回る
         UpdateAction += () => rotateAngle += Time.deltaTime * context.ReadValue<float>() * ROTATE_DURATION;
     }
 
-    protected virtual void OnRotateCancel(InputAction.CallbackContext context)
+    protected virtual void OnSignedCancel(InputAction.CallbackContext context)
     {
         UpdateAction = null;
     }
