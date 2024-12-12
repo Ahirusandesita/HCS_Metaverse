@@ -15,7 +15,16 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 	private Dictionary<int, int> prices = new();
 	private List<GameObject> displayedItems = default;
 	private IReadonlyPositionAdapter positionAdapter = default;
+	[SerializeField]
+	private int id = 20004;
+	private void Update()
+	{
 
+		if (Input.GetKeyDown(KeyCode.N))
+		{
+			shopCart.AddCart(id);
+		}
+	}
 	public int GetPrice(int id)
 	{
 
@@ -73,30 +82,26 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		//生成
 		displayedItems = new List<GameObject>();
 		WebAPIRequester webAPIRequester = new WebAPIRequester();
-		if (webAPIRequester == null)
-		{
-			XKumaDebugSystem.LogWarning("webApiRequesterが見つかりませんでした。", KumaDebugColor.WarningColor);
-			return;
-		}
+		
 		var data = await webAPIRequester.PostShopEntry(0);
 		int smallItemCounter = 0;
 		int largeItemCounter = 0;
-		for (int i = 0; i < data.ItemLineup.Count; i++)
+		for (int i = 0; i < data.GetBody.ItemLineup.Count; i++)
 		{
-			var asset = allItemAsset.GetItemAssetByID(data.ItemLineup[i].ItemID);
+			var asset = allItemAsset.GetItemAssetByID(data.GetBody.ItemLineup[i].ItemID);
 
-			int discountedPrice = Mathf.FloorToInt(data.ItemLineup[i].Price
-				- (data.ItemLineup[i].Price * data.ItemLineup[i].Discount));
+			int discountedPrice = Mathf.FloorToInt(data.GetBody.ItemLineup[i].Price
+				- (data.GetBody.ItemLineup[i].Price * data.GetBody.ItemLineup[i].Discount));
 
-			int stock = data.ItemLineup[i].Stock;
+			int stock = data.GetBody.ItemLineup[i].Stock;
 			Vector3 position = default;
-			if (data.ItemLineup[i].Size == 0)
+			if (data.GetBody.ItemLineup[i].Size == 0)
 			{
 				position = smallViewPoints[smallItemCounter].position;
 				smallItemCounter++;
 			}
 			//ほかのサイズが追加される可能性があるためelse ifにしてる
-			else if (data.ItemLineup[i].Size == 1)
+			else if (data.GetBody.ItemLineup[i].Size == 1)
 			{
 				position = largeViewPoints[largeItemCounter].position;
 				largeItemCounter++;
@@ -104,13 +109,13 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 			var item = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
 			displayedItems.Add(item.gameObject);
 			uiManager.AddProductUI(
-				data.ItemLineup[i].ItemID,
-				data.ItemLineup[i].Price,
+				data.GetBody.ItemLineup[i].ItemID,
+				data.GetBody.ItemLineup[i].Price,
 				discountedPrice,
 				stock,
-				data.ItemLineup[i].Discount,
+				data.GetBody.ItemLineup[i].Discount,
 				position);
-			prices.Add(data.ItemLineup[i].ItemID,discountedPrice);
+			prices.Add(data.GetBody.ItemLineup[i].ItemID,discountedPrice);
 		}
 	}
 
