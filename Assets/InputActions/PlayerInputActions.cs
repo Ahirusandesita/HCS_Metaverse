@@ -487,7 +487,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Rotate"",
+                    ""name"": ""Signed"",
                     ""type"": ""Button"",
                     ""id"": ""416669fb-7161-4d42-98cf-3d6906f0fa85"",
                     ""expectedControlType"": ""Button"",
@@ -529,13 +529,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""MouseButton"",
+                    ""name"": ""Arrow"",
                     ""id"": ""5a1b0e39-e37e-4edf-ab60-82251e2b28dd"",
                     ""path"": ""1DAxis"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Rotate"",
+                    ""action"": ""Signed"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
@@ -546,7 +546,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""KeyboardMouse"",
-                    ""action"": ""Rotate"",
+                    ""action"": ""Signed"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -557,7 +557,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""KeyboardMouse"",
-                    ""action"": ""Rotate"",
+                    ""action"": ""Signed"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -568,7 +568,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Rotate"",
+                    ""action"": ""Signed"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
@@ -579,7 +579,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Rotate"",
+                    ""action"": ""Signed"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -590,7 +590,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Rotate"",
+                    ""action"": ""Signed"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -702,7 +702,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         // PlacingMode
         m_PlacingMode = asset.FindActionMap("PlacingMode", throwIfNotFound: true);
         m_PlacingMode_Place = m_PlacingMode.FindAction("Place", throwIfNotFound: true);
-        m_PlacingMode_Rotate = m_PlacingMode.FindAction("Rotate", throwIfNotFound: true);
+        m_PlacingMode_Signed = m_PlacingMode.FindAction("Signed", throwIfNotFound: true);
         m_PlacingMode_Look = m_PlacingMode.FindAction("Look", throwIfNotFound: true);
     }
 
@@ -1006,14 +1006,14 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_PlacingMode;
     private List<IPlacingModeActions> m_PlacingModeActionsCallbackInterfaces = new List<IPlacingModeActions>();
     private readonly InputAction m_PlacingMode_Place;
-    private readonly InputAction m_PlacingMode_Rotate;
+    private readonly InputAction m_PlacingMode_Signed;
     private readonly InputAction m_PlacingMode_Look;
     public struct PlacingModeActions
     {
         private @PlayerInputActions m_Wrapper;
         public PlacingModeActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Place => m_Wrapper.m_PlacingMode_Place;
-        public InputAction @Rotate => m_Wrapper.m_PlacingMode_Rotate;
+        public InputAction @Signed => m_Wrapper.m_PlacingMode_Signed;
         public InputAction @Look => m_Wrapper.m_PlacingMode_Look;
         public InputActionMap Get() { return m_Wrapper.m_PlacingMode; }
         public void Enable() { Get().Enable(); }
@@ -1027,9 +1027,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Place.started += instance.OnPlace;
             @Place.performed += instance.OnPlace;
             @Place.canceled += instance.OnPlace;
-            @Rotate.started += instance.OnRotate;
-            @Rotate.performed += instance.OnRotate;
-            @Rotate.canceled += instance.OnRotate;
+            @Signed.started += instance.OnSigned;
+            @Signed.performed += instance.OnSigned;
+            @Signed.canceled += instance.OnSigned;
             @Look.started += instance.OnLook;
             @Look.performed += instance.OnLook;
             @Look.canceled += instance.OnLook;
@@ -1040,9 +1040,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Place.started -= instance.OnPlace;
             @Place.performed -= instance.OnPlace;
             @Place.canceled -= instance.OnPlace;
-            @Rotate.started -= instance.OnRotate;
-            @Rotate.performed -= instance.OnRotate;
-            @Rotate.canceled -= instance.OnRotate;
+            @Signed.started -= instance.OnSigned;
+            @Signed.performed -= instance.OnSigned;
+            @Signed.canceled -= instance.OnSigned;
             @Look.started -= instance.OnLook;
             @Look.performed -= instance.OnLook;
             @Look.canceled -= instance.OnLook;
@@ -1125,7 +1125,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     public interface IPlacingModeActions
     {
         void OnPlace(InputAction.CallbackContext context);
-        void OnRotate(InputAction.CallbackContext context);
+        void OnSigned(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
     }
 }

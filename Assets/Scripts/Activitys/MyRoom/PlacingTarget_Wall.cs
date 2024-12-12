@@ -4,8 +4,11 @@ using UnityEngine.InputSystem;
 public class PlacingTarget_Wall : PlacingTarget
 {
     private const float PLACEABLE_DISTANCE = 3f;
+    private const float RISING_SPEED = 2.25f;
+
     private float cacheForwardOffset = default;
     private float yPositionOffset = default;
+    private float yPositionRising = default;
 
 
     private void Start()
@@ -18,6 +21,8 @@ public class PlacingTarget_Wall : PlacingTarget
     protected override void LateUpdate()
     {
         ghostModel.SetPlaceableState(PreviewPlacing());
+
+        UpdateAction?.Invoke();
 
         transform.position = new Vector3(xPosition, yPosition, zPosition) + transform.forward * forwardOffset;
         // プレイヤーの転回に合わせたrotationと、オブジェクト自身の転回をマージ
@@ -53,6 +58,8 @@ public class PlacingTarget_Wall : PlacingTarget
         yPosition = placeableObject.PivotType == GhostModel.PivotType.Under
             ? player.position.y - yPositionOffset
             : player.position.y + boxHalfSize.y;
+        // 入力によって上昇/下降させる
+        yPosition += yPositionRising;
 
         // もし壁にBoxcastが当たっていなければ、初期値に戻しreturn
         if (!isHitWallBox)
@@ -141,9 +148,12 @@ public class PlacingTarget_Wall : PlacingTarget
         return true;
     }
 
-    protected override void OnRotate(InputAction.CallbackContext context) { }
-
-    protected override void OnRotateCancel(InputAction.CallbackContext context) { }
+    protected override void OnSigned(InputAction.CallbackContext context)
+    {   
+        // オブジェクト（ゴースト）自身の転回処理
+        // ボタンを押している間回る
+        UpdateAction += () => yPositionRising += Time.deltaTime * context.ReadValue<float>() * RISING_SPEED;
+    }
 
 #if UNITY_EDITOR
     protected override void OnDrawGizmos()
