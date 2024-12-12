@@ -56,7 +56,7 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
 
         pointableUnityEventWrapper.WhenSelect.AddListener((data) => GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()).Forget());
         pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
-
+        pointableUnityEventWrapper.WhenSelect.AddListener((data) => Debug.LogError("’Í‚ñ‚¾"));
         networkRunner = GateOfFusion.Instance.NetworkRunner;
 
         this.stateAuthority = this.GetComponent<StateAuthorityData>();
