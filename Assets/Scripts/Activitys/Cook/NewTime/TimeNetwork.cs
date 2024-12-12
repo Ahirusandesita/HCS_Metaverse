@@ -10,7 +10,7 @@ public enum ActivitiState
     Start,
     End
 }
-public class TimeNetwork : NetworkBehaviour
+public class TimeNetwork : NetworkBehaviour,IStateAuthorityChanged
 {
     public bool IsSpawned = false;
     [Networked, OnChangedRender(nameof(Count))]
@@ -44,7 +44,6 @@ public class TimeNetwork : NetworkBehaviour
     {
         if (Time <= 0 && isCountStart && canInvoke)
         {
-            Debug.LogError("ŒÄ‚Î‚ê‚Ä‚Í‚¢‚¯‚È‚¢");
             OnFinish?.Invoke();
             OnTime = null;
             canInvoke = false;
@@ -64,5 +63,11 @@ public class TimeNetwork : NetworkBehaviour
             Time = (int)countDownTime_s;
         }
 
+    }
+
+    public void StateAuthorityChanged()
+    {
+        countDownTime_s = Time;
+        lastTime_s = countDownTime_s;
     }
 }
