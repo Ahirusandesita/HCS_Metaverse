@@ -42,8 +42,9 @@ public class TimeNetwork : NetworkBehaviour
     }
     private void Update()
     {
-        if (Time <= 0 && isCountStart)
+        if (Time <= 0 && isCountStart && canInvoke)
         {
+            Debug.LogError("Finish");
             OnFinish?.Invoke();
             OnTime = null;
             canInvoke = false;
