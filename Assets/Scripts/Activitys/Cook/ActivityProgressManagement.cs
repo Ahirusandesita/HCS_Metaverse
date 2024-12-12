@@ -153,9 +153,13 @@ public class ActivityProgressManagement : MonoBehaviour
             networkTimeInjectable.Inject(timeNetwork);
         }
     }
+    public void RPC_RPCInstance(ActivityManagementRPC rpcInstance)
+    {
+        this.rpcInstance = rpcInstance;
+    }
 
     public void RPC_Joined(PlayerRef playerRef)
     {
-        rpcInstance.RPC_NetworkTimeInject(playerRef, readyTimeInstance.GetComponent<NetworkObject>(), mainTimeInstance.GetComponent<NetworkObject>());
+        rpcInstance.RPC_NetworkTimeInject(playerRef, readyTimeInstance.GetComponent<NetworkObject>(), mainTimeInstance.GetComponent<NetworkObject>(),rpcInstance.GetComponent<NetworkObject>());
     }
 }
