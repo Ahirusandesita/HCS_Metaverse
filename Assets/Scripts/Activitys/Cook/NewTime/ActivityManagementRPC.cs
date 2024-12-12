@@ -23,13 +23,13 @@ public class ActivityManagementRPC : NetworkBehaviour,IPlayerJoined
         FindObjectOfType<ActivityProgressManagement>().RPC_ReadyInjectable(readyTime.GetComponent<TimeNetwork>());
         FindObjectOfType<ActivityProgressManagement>().RPC_MainInjectable(mainTime.GetComponent<TimeNetwork>());
     }
-    public async void PlayerJoined(PlayerRef player)
+    public void PlayerJoined(PlayerRef player)
     {
         //if (!isStart)
         //{
         //    return;
         //}
-        if(await GateOfFusion.Instance.GetIsLeader())
+        if(GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
             FindObjectOfType<ActivityProgressManagement>().RPC_Anpanman(player);
         }

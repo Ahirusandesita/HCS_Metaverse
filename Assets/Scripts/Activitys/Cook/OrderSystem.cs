@@ -55,7 +55,7 @@ public class OrderSystem : MonoBehaviour
 
     private async void On()
     {
-        if (await GateOfFusion.Instance.GetIsLeader())
+        if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
             StartCoroutine(Co());
         }
