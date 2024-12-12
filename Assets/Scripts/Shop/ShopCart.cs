@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Inventory = WebAPIRequester.OnPaymentData.Inventory;
 using Cysharp.Threading.Tasks;
 
 public class ShopCart : MonoBehaviour
@@ -47,9 +48,23 @@ public class ShopCart : MonoBehaviour
 		}
 	}
 
+	private void InventoryNiTumeru(List<Inventory> inventories)
+	{
+		foreach (var item in _inCarts)
+		{
+			Inventory inventoryTemp = new Inventory(item.Key,item.Value);
+			inventories.Add(inventoryTemp);
+		}
+
+	}
+
 	public async void Buy()
 	{
+		WebAPIRequester requester = new WebAPIRequester();
+		List<Inventory> inventories = new List<Inventory>();
+		InventoryNiTumeru(inventories);
 		_visualShop.Buy();
+
 		foreach (KeyValuePair<int, int> pair in _inCarts)
 		{
 			for (int i = 0; i < pair.Value; i++)
@@ -58,9 +73,10 @@ public class ShopCart : MonoBehaviour
 			}
 		}
 		//データベースにリクエストをとばす
+			var data = await requester.PostShopPayment(inventories,0,0);
 		try
 		{
-
+		XDebug.LogError(inventories.Count);
 		}
 		catch
 		{
