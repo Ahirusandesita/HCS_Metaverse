@@ -131,9 +131,9 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
                 var asset = foodItemAsset.GetItemAssetByID(foodLineup[i].FoodID);
                 var position = foodLineup[i].FoodBox.position + Vector3.up;
 
-                foodSpawnRPC.RPC_StartSpawnNetworkView(asset.ID, position);
+                foodSpawnRPC.RPC_StartSpawnNetworkView(i, position);
                 //var foodItem = await IDisplayItem.InstantiateSync(asset, position, Quaternion.identity, this);
-                //selectedNotification.RPC_FoodSpawn(foodItem.gameObject.GetComponent<NetworkObject>(), i);
+                //foodSpawnRPC.RPC_FoodSpawn(foodItem.gameObject.GetComponent<NetworkObject>(), i);
                 //displayFoods.Add(foodItem.gameObject);
             }
         }
