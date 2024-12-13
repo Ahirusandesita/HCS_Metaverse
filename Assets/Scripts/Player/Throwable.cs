@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using Oculus.Interaction;
+using Fusion;
 
 public class Throwable : MonoBehaviour
 {
@@ -63,17 +64,25 @@ public class Throwable : MonoBehaviour
     /// </summary>
     public void UnSelect()
     {
-        // Kinematicを無効にする
-        _thisRigidbody.isKinematic = false;
-
         // 投擲ベクトルを取得する
         Vector3 throwVector = _throwData.GetThrowVector() * _velocityCoefficient;
 
-        // 1フレーム後にベクトルを上書きする
-        StartCoroutine(OverwriteVelocity(throwVector));
+        // 投擲のRpcを実行する
+        RPC_Throw(throwVector);
 
         // 離している状態にする
         _isSelected = false;
+    }
+
+    /// <summary>
+    /// ローカルで投擲挙動を行うためのRpcメソッド
+    /// </summary>
+    /// <param name="throwVector">投擲ベクトル</param>
+    [Rpc(RpcSources.All, RpcTargets.All,InvokeLocal = true)]
+    public void RPC_Throw(Vector3 throwVector)
+    {
+        // 1フレーム後にベクトルを上書きする
+        StartCoroutine(OverwriteVelocity(throwVector));
     }
 
     /// <summary>
@@ -85,6 +94,9 @@ public class Throwable : MonoBehaviour
     {
         // 1フレーム待機する　1フレーム待機しないとOVRに消される
         yield return new WaitForEndOfFrame();
+
+        // Kinematicを無効にする
+        _thisRigidbody.isKinematic = false;
 
         // 投擲ベクトルを速度に上書きする
         _thisRigidbody.velocity = throwVector;
