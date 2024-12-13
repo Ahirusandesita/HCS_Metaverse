@@ -50,6 +50,7 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
     private PointableUnityEventWrapper pointableUnityEventWrapper;
     private StateAuthorityData stateAuthority;
 
+    private bool isGrab = false;
     private void Awake()
     {
         this.commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
@@ -67,6 +68,9 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
 
         pointableUnityEventWrapper.WhenSelect.AddListener((data) => GetComponent<LocalView>().NetworkView.RPC_ExcludeOthersInactive());
         pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GetComponent<LocalView>().NetworkView.RPC_ExcludeOthersActive());
+
+        pointableUnityEventWrapper.WhenSelect.AddListener((data) => isGrab = true);
+        pointableUnityEventWrapper.WhenUnhover.AddListener((data) => isGrab = false);
         //this.stateAuthority = this.GetComponent<StateAuthorityData>();
         //stateAuthority.OnAuthrity += (data) =>
         //{
@@ -130,6 +134,14 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
 
         GetComponent<DisplayItem>().WhenUnselect(new PointerEvent());
         GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>());
+    }
+
+    private void FixedUpdate()
+    {
+        if (isGrab)
+        {
+            GetComponent<LocalView>().NetworkView.RPC_Position(this.transform.position, this.transform.rotation.eulerAngles);
+        }
     }
 }
 
