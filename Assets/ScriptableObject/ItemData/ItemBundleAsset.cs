@@ -29,8 +29,6 @@ public class ItemBundleAsset : ScriptableObject, IEditorItemBundleAsset
         {
             if(items[i].ID == id)
             {
-                Debug.LogError(items[i]);
-                Debug.LogError(networkViews[i]);
                 return new NetworkItemAsset(items[i], networkViews[i]);
             }
         }

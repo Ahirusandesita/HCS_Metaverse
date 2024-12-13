@@ -17,9 +17,7 @@ public class AllSpawn : NetworkBehaviour, IAfterSpawned
     [Rpc(RpcSources.All, RpcTargets.StateAuthority, InvokeLocal = true)]
     private void RPC_Spawned()
     {
-        Debug.LogError("Spawn");
         playerCount++;
-        Debug.LogError($"{GateOfFusion.Instance.NetworkRunner.SessionInfo.PlayerCount}   {playerCount}");
         if (GateOfFusion.Instance.NetworkRunner.SessionInfo.PlayerCount - playerCount <= 0)
         {
             isAllSpawned = true;

@@ -36,11 +36,11 @@ public class FoodSpawnManagerRPC : NetworkBehaviour
     }
 
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
-    public void RPC_StartSpawnNetworkView(int id, Vector3 position)
+    public void RPC_StartSpawnNetworkView(int id, Vector3 position, int index)
     {
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
-            foodSpawnManager.StartSpawnNetworkView(id, position);
+            foodSpawnManager.StartSpawnNetworkView(id, position, index);
         }
     }
 
@@ -52,8 +52,8 @@ public class FoodSpawnManagerRPC : NetworkBehaviour
         foodSpawnManager.SpawnLocalView(id, position, networkObject.GetComponent<NetworkView>());
     }
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
-    public void RPC_StartSpawnLocalView(int id, NetworkObject networkObject)
+    public void RPC_StartSpawnLocalView(int id, NetworkObject networkObject, int index)
     {
-        foodSpawnManager.StartSpawnLocalView(id, networkObject.GetComponent<NetworkView>());
+        foodSpawnManager.StartSpawnLocalView(id, networkObject.GetComponent<NetworkView>(), index);
     }
 }
