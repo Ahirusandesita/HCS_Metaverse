@@ -43,6 +43,7 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
 
     private PointableUnityEventWrapper pointableUnityEventWrapper;
     private StateAuthorityData stateAuthority;
+
     private void Awake()
     {
         this.commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
@@ -56,7 +57,6 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
 
         pointableUnityEventWrapper.WhenSelect.AddListener((data) => GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()).Forget());
         pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
-        pointableUnityEventWrapper.WhenSelect.AddListener((data) => Debug.LogError("’Í‚ñ‚¾"));
         networkRunner = GateOfFusion.Instance.NetworkRunner;
 
         this.stateAuthority = this.GetComponent<StateAuthorityData>();
@@ -109,4 +109,15 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
         this.switchableGrabbableActive = t;
         this.switchableGrabbableActive.Regist(this);
     }
+
+    public async void NonVRTest_GrabAndRelease()
+    {
+        GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()).Forget();
+
+        await UniTask.Delay(2000);
+
+        GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>());
+    }
 }
+
+
