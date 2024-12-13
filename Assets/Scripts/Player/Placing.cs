@@ -1,43 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
 
 /// <summary>
 /// プレイヤーの配置モード（ハウジング）
 /// </summary>
-public class Placing : MonoBehaviour
+public class Placing : MonoBehaviour, IInputControllable
 {
-    [Tooltip("設置（ハウジング）モード")]
-    [SerializeField] private bool placingMode = default;
-    [SerializeField, HideAtPlaying] private PlaceableObject testOrigin;
-    private GhostModel ghostModel = default;
+	[SerializeField] private PlayerState playerState = default;
+	[Tooltip("設置（ハウジング）モード")]
+	[SerializeField, HideAtPlaying] private PlaceableObject testOrigin;
+	private GhostModel ghostModel = default;
 
 
-    private void Start()
-    {
-        //Inputter.PlacingMode.Place.performed += 
-        AAA();
-    }
+	[System.Diagnostics.Conditional("UNITY_EDITOR")]
+	private void Reset()
+	{
+		try
+		{
+			playerState = GetComponent<PlayerState>();
+		}
+		catch (System.NullReferenceException) { }
+	}
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            placingMode = !placingMode;
-        }
+	private void Awake()
+	{
+		AAA();
 
-        if (placingMode)
-        {
-            ghostModel.Spawn();
-        }
-        else
-        {
-            ghostModel.Despawn();
-        }
-    }
+		playerState.PlacingMode.Subscribe(isPlacingMode =>
+		{
+			if (isPlacingMode)
+			{
+				ghostModel.Spawn();
+			}
+			else
+			{
+				ghostModel.Despawn();
+			}
+		});
+	}
 
-    public void AAA()
-    {
-        ghostModel = new GhostModel().CreateModel(testOrigin, transform);
-    }
+	public void AAA()
+	{
+		ghostModel = new GhostModel().CreateModel(testOrigin, transform);
+	}
 }

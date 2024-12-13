@@ -6,60 +6,54 @@ using UnityEngine;
 /// </summary>
 public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISelectedNotification
 {
-    ISelectedNotification IInteraction.SelectedNotification => this;
-    private PlayerInputActions.InteractionActions Interaction => Inputter.Interaction;
-    private PlayerInputActions.PlayerActions Player => Inputter.Player;
+	protected bool canInteract = false;
 
-    protected virtual void Awake()
-    {
-        // Interact入力の購読
-        Interaction.Interact.performed += _ =>
-        {
-            SafetyOpen();
-            Interaction.Interact.Disable();
-            Interaction.Disengage.Enable();
-            // プレイヤーの基本操作を停止（移動、ジャンプ、転回）
-            Player.Disable();
-        };
-        // Disengage入力の購読
-        Interaction.Disengage.performed += _ =>
-        {
-            SafetyClose();
-            Interaction.Interact.Enable();
-            Interaction.Disengage.Disable();
-            // プレイヤーの基本操作を再開（移動、ジャンプ、転回）
-            Player.Enable();
-        };
-    }
+	ISelectedNotification IInteraction.SelectedNotification => this;
+	private PlayerInputActions.PlayerActions Player => Inputter.Player;
 
-    void IInteraction.Open()
-    {
-        // UIを表示
-        NotificationUIManager.Instance.DisplayInteraction();
-        Interaction.Interact.Enable();
-    }
 
-    void IInteraction.Close()
-    {
-        // UIを非表示
-        NotificationUIManager.Instance.HideInteraction();
-        Interaction.Disable();
-    }
+	protected virtual void Awake()
+	{
+		// Interact入力の購読
+		Player.Interact.performed += _ =>
+		{
+			XDebug.Log(canInteract, "magenta");
+			if (canInteract)
+			{
+				SafetyOpen();
+			}
+		};
+	}
 
-    /// <summary>
-    /// オブジェクトがインタラクトされたときに呼ばれる処理
-    /// <br>プレイヤーがオブジェクトの範囲上で入力をしたときに呼ばれる</br>
-    /// </summary>
-    protected abstract void SafetyOpen();
-    /// <summary>
-    /// オブジェクトのインタラクト状態から離れるときに呼ばれる処理
-    /// <br>プレイヤーがオブジェクトの範囲上で入力をしたときに呼ばれる</br>
-    /// </summary>
-    protected abstract void SafetyClose();
+	void IInteraction.Open()
+	{
+		canInteract = true;
+		// UIを表示
+		NotificationUIManager.Instance.DisplayInteraction();
+	}
 
-    public abstract void Select(SelectArgs selectArgs);
-    public abstract void Unselect(SelectArgs selectArgs);
+	void IInteraction.Close()
+	{
+		canInteract = false;
+		// UIを非表示
+		NotificationUIManager.Instance.HideInteraction();
+	}
 
-    public virtual void Hover(SelectArgs selectArgs) { }
-    public virtual void Unhover(SelectArgs selectArgs) { }
+	/// <summary>
+	/// オブジェクトがインタラクトされたときに呼ばれる処理
+	/// <br>プレイヤーがオブジェクトの範囲上で入力をしたときに呼ばれる</br>
+	/// </summary>
+	protected abstract void SafetyOpen();
+	/// <summary>
+	/// オブジェクトのインタラクト状態から離れるときに呼ばれる処理
+	/// <br>プレイヤーがオブジェクトの範囲上で入力をしたときに呼ばれる</br>
+	/// <br>※各自継承先で呼び出すこと</br>
+	/// </summary>
+	protected abstract void SafetyClose();
+
+	public abstract void Select(SelectArgs selectArgs);
+	public abstract void Unselect(SelectArgs selectArgs);
+
+	public virtual void Hover(SelectArgs selectArgs) { }
+	public virtual void Unhover(SelectArgs selectArgs) { }
 }

@@ -34,8 +34,18 @@ public class GhostModel : IEditOnlyGhost
     /// </summary>
     public enum PlacingStyle
     {
+        /// <summary>
+        /// è∞
+        /// </summary>
         Ground,
+        /// <summary>
+        /// ï«ä|ÇØ
+        /// </summary>
         Wall,
+        /// <summary>
+        /// íIî¬
+        /// </summary>
+        Shelf,
     }
 
     private const string MATERIAL_NAME = "Ghost";
@@ -185,6 +195,10 @@ public class GhostModel : IEditOnlyGhost
 
             case PlacingStyle.Wall:
                 instance.AddComponent<PlacingTarget_Wall>().Initialize(this, placeableObject, player);
+                break;
+
+            case PlacingStyle.Shelf:
+                instance.AddComponent<PlacingTarget_Shelf>().Initialize(this, placeableObject, player);
                 break;
         }
 

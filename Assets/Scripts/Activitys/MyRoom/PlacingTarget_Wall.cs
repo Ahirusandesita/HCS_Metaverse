@@ -3,8 +3,8 @@ using UnityEngine.InputSystem;
 
 public class PlacingTarget_Wall : PlacingTarget
 {
-    private const float PLACEABLE_DISTANCE = 3f;
-    private const float RISING_SPEED = 2.25f;
+    private const float PLACEABLE_DISTANCE = 8f;
+    private const float RISING_SPEED = 3f;
 
     private float cacheForwardOffset = default;
     private float yPositionOffset = default;

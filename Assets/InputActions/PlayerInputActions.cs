@@ -55,7 +55,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Sprint"",
+                    ""name"": ""SprintOrWarp"",
                     ""type"": ""Button"",
                     ""id"": ""980e881e-182c-404c-8cbf-3d09fdb48fef"",
                     ""expectedControlType"": ""Button"",
@@ -64,9 +64,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Warp"",
+                    ""name"": ""Interact"",
                     ""type"": ""Button"",
-                    ""id"": ""1918d55a-218a-4151-a7c4-db5d8c694fe3"",
+                    ""id"": ""5de9837f-7a80-4034-8c46-9318849ff99b"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -224,7 +224,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""KeyboardMouse"",
-                    ""action"": ""Sprint"",
+                    ""action"": ""SprintOrWarp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -235,7 +235,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Sprint"",
+                    ""action"": ""SprintOrWarp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -246,18 +246,29 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Sprint"",
+                    ""action"": ""SprintOrWarp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""4dd29818-7479-4f38-8595-880e74284f64"",
-                    ""path"": ""<XRController>{LeftHand}/triggerPressed"",
+                    ""id"": ""a5cd5f9d-0ba7-4a0c-acd2-2c33d79eeb79"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""40b24c53-74dc-4739-ab8c-595d0f2ab7ef"",
+                    ""path"": ""<XRController>{RightHand}/triggerPressed"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Warp"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -297,87 +308,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Chat"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                }
-            ]
-        },
-        {
-            ""name"": ""Interaction"",
-            ""id"": ""d8e81069-110a-4d2d-bfab-935a0229ec90"",
-            ""actions"": [
-                {
-                    ""name"": ""Interact"",
-                    ""type"": ""Button"",
-                    ""id"": ""358a2b52-e1d9-4aae-914a-9522963fbb89"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Disengage"",
-                    ""type"": ""Button"",
-                    ""id"": ""ee35ae0c-3fc8-4ea7-b352-8a5442067e28"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""aaccad2e-9abf-4e9a-bc5b-840ed9eeb3c2"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""KeyboardMouse"",
-                    ""action"": ""Interact"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""f1af2b2e-2124-424a-b260-9670af275be1"",
-                    ""path"": ""<XRController>{RightHand}/triggerPressed"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Interact"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""e484f864-a608-498f-a0e4-5fa74ba0cc73"",
-                    ""path"": ""<Keyboard>/escape"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""KeyboardMouse"",
-                    ""action"": ""Disengage"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""78aff35d-92b9-44f4-98e0-32342a3f65ae"",
-                    ""path"": ""<Mouse>/backButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""KeyboardMouse"",
-                    ""action"": ""Disengage"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""2b14987c-0188-4d95-b2df-f631e3749f34"",
-                    ""path"": ""<XRController>{RightHand}/secondaryButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Disengage"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -494,15 +424,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Look"",
-                    ""type"": ""Value"",
-                    ""id"": ""56ebc5dc-3840-44a8-aab9-14f7be903cb3"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -593,39 +514,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Signed"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""4bff1f1f-defb-432e-83ed-515f78b51f7b"",
-                    ""path"": ""<Pointer>/delta"",
-                    ""interactions"": """",
-                    ""processors"": ""InvertVector2(invertX=false),ScaleVector2(x=0.05,y=0.05)"",
-                    ""groups"": ""KeyboardMouse"",
-                    ""action"": ""Look"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""12a5c469-0bca-4ca2-b021-cd21812d5632"",
-                    ""path"": ""<Gamepad>/rightStick"",
-                    ""interactions"": """",
-                    ""processors"": ""InvertVector2(invertX=false),StickDeadzone,ScaleVector2(x=300,y=300)"",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""Look"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""9f4f676b-ea80-471a-9c28-69e0d4ac9c70"",
-                    ""path"": ""<XRController>{RightHand}/thumbstick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Look"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -685,15 +573,11 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
-        m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
-        m_Player_Warp = m_Player.FindAction("Warp", throwIfNotFound: true);
+        m_Player_SprintOrWarp = m_Player.FindAction("SprintOrWarp", throwIfNotFound: true);
+        m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Chat = m_UI.FindAction("Chat", throwIfNotFound: true);
-        // Interaction
-        m_Interaction = asset.FindActionMap("Interaction", throwIfNotFound: true);
-        m_Interaction_Interact = m_Interaction.FindAction("Interact", throwIfNotFound: true);
-        m_Interaction_Disengage = m_Interaction.FindAction("Disengage", throwIfNotFound: true);
         // VRHead
         m_VRHead = asset.FindActionMap("VRHead", throwIfNotFound: true);
         m_VRHead_Position = m_VRHead.FindAction("Position", throwIfNotFound: true);
@@ -703,7 +587,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_PlacingMode = asset.FindActionMap("PlacingMode", throwIfNotFound: true);
         m_PlacingMode_Place = m_PlacingMode.FindAction("Place", throwIfNotFound: true);
         m_PlacingMode_Signed = m_PlacingMode.FindAction("Signed", throwIfNotFound: true);
-        m_PlacingMode_Look = m_PlacingMode.FindAction("Look", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -768,8 +651,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_Jump;
-    private readonly InputAction m_Player_Sprint;
-    private readonly InputAction m_Player_Warp;
+    private readonly InputAction m_Player_SprintOrWarp;
+    private readonly InputAction m_Player_Interact;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -777,8 +660,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
-        public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
-        public InputAction @Warp => m_Wrapper.m_Player_Warp;
+        public InputAction @SprintOrWarp => m_Wrapper.m_Player_SprintOrWarp;
+        public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -797,12 +680,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
-            @Sprint.started += instance.OnSprint;
-            @Sprint.performed += instance.OnSprint;
-            @Sprint.canceled += instance.OnSprint;
-            @Warp.started += instance.OnWarp;
-            @Warp.performed += instance.OnWarp;
-            @Warp.canceled += instance.OnWarp;
+            @SprintOrWarp.started += instance.OnSprintOrWarp;
+            @SprintOrWarp.performed += instance.OnSprintOrWarp;
+            @SprintOrWarp.canceled += instance.OnSprintOrWarp;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -816,12 +699,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
-            @Sprint.started -= instance.OnSprint;
-            @Sprint.performed -= instance.OnSprint;
-            @Sprint.canceled -= instance.OnSprint;
-            @Warp.started -= instance.OnWarp;
-            @Warp.performed -= instance.OnWarp;
-            @Warp.canceled -= instance.OnWarp;
+            @SprintOrWarp.started -= instance.OnSprintOrWarp;
+            @SprintOrWarp.performed -= instance.OnSprintOrWarp;
+            @SprintOrWarp.canceled -= instance.OnSprintOrWarp;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -885,60 +768,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         }
     }
     public UIActions @UI => new UIActions(this);
-
-    // Interaction
-    private readonly InputActionMap m_Interaction;
-    private List<IInteractionActions> m_InteractionActionsCallbackInterfaces = new List<IInteractionActions>();
-    private readonly InputAction m_Interaction_Interact;
-    private readonly InputAction m_Interaction_Disengage;
-    public struct InteractionActions
-    {
-        private @PlayerInputActions m_Wrapper;
-        public InteractionActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Interact => m_Wrapper.m_Interaction_Interact;
-        public InputAction @Disengage => m_Wrapper.m_Interaction_Disengage;
-        public InputActionMap Get() { return m_Wrapper.m_Interaction; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
-        public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(InteractionActions set) { return set.Get(); }
-        public void AddCallbacks(IInteractionActions instance)
-        {
-            if (instance == null || m_Wrapper.m_InteractionActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_InteractionActionsCallbackInterfaces.Add(instance);
-            @Interact.started += instance.OnInteract;
-            @Interact.performed += instance.OnInteract;
-            @Interact.canceled += instance.OnInteract;
-            @Disengage.started += instance.OnDisengage;
-            @Disengage.performed += instance.OnDisengage;
-            @Disengage.canceled += instance.OnDisengage;
-        }
-
-        private void UnregisterCallbacks(IInteractionActions instance)
-        {
-            @Interact.started -= instance.OnInteract;
-            @Interact.performed -= instance.OnInteract;
-            @Interact.canceled -= instance.OnInteract;
-            @Disengage.started -= instance.OnDisengage;
-            @Disengage.performed -= instance.OnDisengage;
-            @Disengage.canceled -= instance.OnDisengage;
-        }
-
-        public void RemoveCallbacks(IInteractionActions instance)
-        {
-            if (m_Wrapper.m_InteractionActionsCallbackInterfaces.Remove(instance))
-                UnregisterCallbacks(instance);
-        }
-
-        public void SetCallbacks(IInteractionActions instance)
-        {
-            foreach (var item in m_Wrapper.m_InteractionActionsCallbackInterfaces)
-                UnregisterCallbacks(item);
-            m_Wrapper.m_InteractionActionsCallbackInterfaces.Clear();
-            AddCallbacks(instance);
-        }
-    }
-    public InteractionActions @Interaction => new InteractionActions(this);
 
     // VRHead
     private readonly InputActionMap m_VRHead;
@@ -1007,14 +836,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private List<IPlacingModeActions> m_PlacingModeActionsCallbackInterfaces = new List<IPlacingModeActions>();
     private readonly InputAction m_PlacingMode_Place;
     private readonly InputAction m_PlacingMode_Signed;
-    private readonly InputAction m_PlacingMode_Look;
     public struct PlacingModeActions
     {
         private @PlayerInputActions m_Wrapper;
         public PlacingModeActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Place => m_Wrapper.m_PlacingMode_Place;
         public InputAction @Signed => m_Wrapper.m_PlacingMode_Signed;
-        public InputAction @Look => m_Wrapper.m_PlacingMode_Look;
         public InputActionMap Get() { return m_Wrapper.m_PlacingMode; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1030,9 +857,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Signed.started += instance.OnSigned;
             @Signed.performed += instance.OnSigned;
             @Signed.canceled += instance.OnSigned;
-            @Look.started += instance.OnLook;
-            @Look.performed += instance.OnLook;
-            @Look.canceled += instance.OnLook;
         }
 
         private void UnregisterCallbacks(IPlacingModeActions instance)
@@ -1043,9 +867,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Signed.started -= instance.OnSigned;
             @Signed.performed -= instance.OnSigned;
             @Signed.canceled -= instance.OnSigned;
-            @Look.started -= instance.OnLook;
-            @Look.performed -= instance.OnLook;
-            @Look.canceled -= instance.OnLook;
         }
 
         public void RemoveCallbacks(IPlacingModeActions instance)
@@ -1104,17 +925,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
-        void OnSprint(InputAction.CallbackContext context);
-        void OnWarp(InputAction.CallbackContext context);
+        void OnSprintOrWarp(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
         void OnChat(InputAction.CallbackContext context);
-    }
-    public interface IInteractionActions
-    {
-        void OnInteract(InputAction.CallbackContext context);
-        void OnDisengage(InputAction.CallbackContext context);
     }
     public interface IVRHeadActions
     {
@@ -1126,6 +942,5 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     {
         void OnPlace(InputAction.CallbackContext context);
         void OnSigned(InputAction.CallbackContext context);
-        void OnLook(InputAction.CallbackContext context);
     }
 }
