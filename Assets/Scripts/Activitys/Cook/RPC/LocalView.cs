@@ -10,7 +10,7 @@ public class LocalView : MonoBehaviour, IGrabbableActiveChangeRequester
     private List<MeshRenderer> meshRenderers = new List<MeshRenderer>();
     void Start()
     {
-        switchableGrabbable = this.GetComponentInChildren<ISwitchableGrabbableActive>();
+        switchableGrabbable = this.GetComponent<ISwitchableGrabbableActive>();
     }
     public void Grab()
     {
