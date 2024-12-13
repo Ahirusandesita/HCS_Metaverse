@@ -75,7 +75,7 @@ public class GateOfFusion
 		await UniTask.WaitUntil(() => stateAuthorityData.IsEnable);
 		if (stateAuthorityData.IsNotReleaseStateAuthority)
 		{
-			XKumaDebugSystem.LogWarning($"å†å¿Ç™Ç†ÇËÇ‹ÇπÇÒÇ≈ÇµÇΩ", KumaDebugColor.WarningColor);
+			XKumaDebugSystem.LogWarning($"å†å¿ÇÇ∆ÇÈÇ±Ç∆Ç™Ç≈Ç´Ç‹ÇπÇÒ", KumaDebugColor.WarningColor);
 			return;
 		}
 		if (networkObject.HasStateAuthority)
@@ -83,8 +83,11 @@ public class GateOfFusion
 			XKumaDebugSystem.LogWarning($"é©ï™Ç™å†å¿ÇéùÇ¡ÇƒÇ¢Ç‹Ç∑", KumaDebugColor.WarningColor);
 			return;
 		}
+		PlayerRef stateAuthorityPlayerRef = networkObject.StateAuthority;
 		MasterServer.SessionRPCManager.Rpc_GrabStateAuthorityChanged(networkObject);
-		stateAuthorityData.IsNotReleaseStateAuthority = true;
+		MasterServer.SessionRPCManager.Rpc_ReleaseStateAuthority(stateAuthorityPlayerRef,networkObject);
+		await UniTask.WaitUntil(() => networkObject.StateAuthority == PlayerRef.None);
+		//XKumaDebugSystem.LogWarning("grabë“ã@èIóπ", KumaDebugColor.WarningColor);
 		networkObject.RequestStateAuthority();
 	}
 

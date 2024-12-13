@@ -5,7 +5,6 @@ public class SessionRPCManager : NetworkBehaviour
 {
 	public override void Spawned()
 	{
-		PlayerRef.MasterClient.PrintError();
 		XKumaDebugSystem.LogWarning($"RPCManager_Spawned", KumaDebugColor.SuccessColor);
 		DontDestroyOnLoad(this.gameObject);
 		if (!Runner.IsSharedModeMasterClient)
@@ -61,6 +60,10 @@ public class SessionRPCManager : NetworkBehaviour
 		await masterServer.JoinOrCreateSession(sessionName, rpcTarget);
 	}
 
+	/// <summary>
+	/// ÇŸÇ©ÇÃÇ–Ç∆Ç™éùÇƒÇ»Ç≠Ç»ÇÈÇÊÇ§Ç…Ç∑ÇÈ
+	/// </summary>
+	/// <param name="networkObject"></param>
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 	public void Rpc_GrabStateAuthorityChanged(NetworkObject networkObject)
 	{
@@ -135,10 +138,15 @@ public class SessionRPCManager : NetworkBehaviour
 		RoomManager.Instance.LeaderChange(nextLeader);
 	}
 
+	/// <summary>
+	/// StateAuthorityÇó£Ç≥ÇπÇÈ
+	/// </summary>
+	/// <param name="rpcTarget"></param>
+	/// <param name="networkObject"></param>
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
-	public void Rpc_ReleaseStateAuthority([RpcTarget]PlayerRef nextLeader,NetworkObject networkObject)
+	public void Rpc_ReleaseStateAuthority([RpcTarget]PlayerRef rpcTarget,NetworkObject networkObject)
 	{
-		XKumaDebugSystem.LogWarning($"{nextLeader}:{networkObject}");
+		XKumaDebugSystem.LogWarning($"{rpcTarget}:{networkObject}");
 		networkObject.ReleaseStateAuthority();
 
 	}
