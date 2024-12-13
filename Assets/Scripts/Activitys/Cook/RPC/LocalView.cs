@@ -11,6 +11,7 @@ public class LocalView : MonoBehaviour, IGrabbableActiveChangeRequester
     void Start()
     {
         switchableGrabbable = this.GetComponent<ISwitchableGrabbableActive>();
+        switchableGrabbable.Regist(this);
     }
     public void Grab()
     {
@@ -45,5 +46,9 @@ public class LocalView : MonoBehaviour, IGrabbableActiveChangeRequester
         this.networkView = networkView;
 
         this.networkView.LocalViewInject(this);
+    }
+    private void OnDestroy()
+    {
+        switchableGrabbable.Cancellation(this);
     }
 }
