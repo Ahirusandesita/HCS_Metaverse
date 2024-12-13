@@ -114,6 +114,8 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
     {
         GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()).Forget();
 
+        this.transform.position = Vector3.zero;
+
         await UniTask.Delay(2000);
 
         GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>());
