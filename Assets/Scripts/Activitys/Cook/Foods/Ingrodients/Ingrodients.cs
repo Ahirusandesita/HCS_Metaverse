@@ -6,11 +6,17 @@ using Oculus.Interaction;
 using Fusion;
 using Cysharp.Threading.Tasks;
 
+
+using UnityEditor;
+using UnityEngine.UI;
 /// <summary>
 /// ãÔçﬁ
 /// </summary>
 public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitchableGrabbableActive>,IGrabbableActiveChangeRequester
 {
+    public bool IsGrabed = false;
+
+
     [SerializeField]
     private IngrodientsAsset ingrodientsAsset;
     private List<IngrodientsDetailInformation> ingrodientsDetailInformations = new List<IngrodientsDetailInformation>();
@@ -64,10 +70,12 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
         {
             if (data.Authrity)
             {
+                IsGrabed = true;
                 switchableGrabbableActive.Active(this);
             }
             else if (!data.Authrity)
             {
+                IsGrabed = true;
                 switchableGrabbableActive.Inactive(this);
             }
         };
@@ -113,7 +121,6 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
     public async void NonVRTest_GrabAndRelease()
     {
         GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()).Forget();
-
         this.transform.position = Vector3.zero;
 
         await UniTask.Delay(2000);
@@ -122,4 +129,37 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
     }
 }
 
+
+#if UNITY_EDITOR
+[InitializeOnLoad]
+public class HierarchyColor
+{
+    static HierarchyColor()
+    {
+        EditorApplication.hierarchyWindowItemOnGUI += HierarchyWindowItemOnGUI;
+    }
+
+    private static void HierarchyWindowItemOnGUI(int instanceID, Rect selectionRect)
+    {
+        var gameObject = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+        if (gameObject != null && gameObject.GetComponent<Ingrodients>() != null)
+        {
+            if (!gameObject.GetComponent<Ingrodients>().IsGrabed)
+            {
+                EditorGUI.DrawRect(selectionRect, Color.red);
+            }
+            else
+            {
+                EditorGUI.DrawRect(selectionRect, Color.blue);
+            }
+            GUI.color = Color.black;
+            EditorGUI.LabelField(selectionRect, gameObject.name, new GUIStyle()
+            {
+                fontStyle = FontStyle.Bold
+            });
+            GUI.color = Color.white;
+        }
+    }
+}
+#endif
 
