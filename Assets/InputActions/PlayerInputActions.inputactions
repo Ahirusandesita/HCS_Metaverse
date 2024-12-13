@@ -33,7 +33,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Sprint",
+                    "name": "SprintOrWarp",
                     "type": "Button",
                     "id": "980e881e-182c-404c-8cbf-3d09fdb48fef",
                     "expectedControlType": "Button",
@@ -42,9 +42,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Warp",
+                    "name": "Interact",
                     "type": "Button",
-                    "id": "1918d55a-218a-4151-a7c4-db5d8c694fe3",
+                    "id": "5de9837f-7a80-4034-8c46-9318849ff99b",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -202,7 +202,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",
-                    "action": "Sprint",
+                    "action": "SprintOrWarp",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -213,7 +213,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Sprint",
+                    "action": "SprintOrWarp",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -224,18 +224,29 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Sprint",
+                    "action": "SprintOrWarp",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "4dd29818-7479-4f38-8595-880e74284f64",
-                    "path": "<XRController>{LeftHand}/triggerPressed",
+                    "id": "a5cd5f9d-0ba7-4a0c-acd2-2c33d79eeb79",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "40b24c53-74dc-4739-ab8c-595d0f2ab7ef",
+                    "path": "<XRController>{RightHand}/triggerPressed",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Warp",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -275,87 +286,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Chat",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
-        },
-        {
-            "name": "Interaction",
-            "id": "d8e81069-110a-4d2d-bfab-935a0229ec90",
-            "actions": [
-                {
-                    "name": "Interact",
-                    "type": "Button",
-                    "id": "358a2b52-e1d9-4aae-914a-9522963fbb89",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Disengage",
-                    "type": "Button",
-                    "id": "ee35ae0c-3fc8-4ea7-b352-8a5442067e28",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "aaccad2e-9abf-4e9a-bc5b-840ed9eeb3c2",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "KeyboardMouse",
-                    "action": "Interact",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "f1af2b2e-2124-424a-b260-9670af275be1",
-                    "path": "<XRController>{RightHand}/triggerPressed",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Interact",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "e484f864-a608-498f-a0e4-5fa74ba0cc73",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "KeyboardMouse",
-                    "action": "Disengage",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "78aff35d-92b9-44f4-98e0-32342a3f65ae",
-                    "path": "<Mouse>/backButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "KeyboardMouse",
-                    "action": "Disengage",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "2b14987c-0188-4d95-b2df-f631e3749f34",
-                    "path": "<XRController>{RightHand}/secondaryButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Disengage",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -472,15 +402,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "Look",
-                    "type": "Value",
-                    "id": "56ebc5dc-3840-44a8-aab9-14f7be903cb3",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -571,39 +492,6 @@
                     "action": "Signed",
                     "isComposite": false,
                     "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "4bff1f1f-defb-432e-83ed-515f78b51f7b",
-                    "path": "<Pointer>/delta",
-                    "interactions": "",
-                    "processors": "InvertVector2(invertX=false),ScaleVector2(x=0.05,y=0.05)",
-                    "groups": "KeyboardMouse",
-                    "action": "Look",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "12a5c469-0bca-4ca2-b021-cd21812d5632",
-                    "path": "<Gamepad>/rightStick",
-                    "interactions": "",
-                    "processors": "InvertVector2(invertX=false),StickDeadzone,ScaleVector2(x=300,y=300)",
-                    "groups": "Gamepad",
-                    "action": "Look",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "9f4f676b-ea80-471a-9c28-69e0d4ac9c70",
-                    "path": "<XRController>{RightHand}/thumbstick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Look",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         }

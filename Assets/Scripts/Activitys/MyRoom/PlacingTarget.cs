@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDependencyInformation>
+public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDependencyInformation>, IInputControllable
 {
     private const float GROUND_OFFSET = 0.01f;
     protected const float ROTATE_DURATION = 30f;  // 1秒間に回転する角度（度数法）
@@ -47,9 +47,6 @@ public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDepend
             ? playerHeight
             : forwardOffset;
 
-        // Tmporary（Inputの変更はどこか別の場所で行う）--------------
-        Inputter.PlacingMode.Signed.Enable();
-        // -------------------------------------------------------
         Inputter.PlacingMode.Signed.performed += OnSigned;
         Inputter.PlacingMode.Signed.canceled += OnSignedCancel;
 
@@ -74,8 +71,6 @@ public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDepend
 
     protected virtual void OnDestroy()
     {
-        // Tmporary
-        Inputter.PlacingMode.Signed.Disable();
         UpdateAction = null;
     }
 
