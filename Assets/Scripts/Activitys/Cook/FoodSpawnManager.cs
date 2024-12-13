@@ -54,6 +54,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     }
     public async void MasterSelect(int id, Vector3 position)
     {
+        Debug.LogError("MasterÇ∆ÇµÇƒê∂ê¨");
         var asset = foodItemAsset.GetItemAssetByID(id);
         var foodItem = await IDisplayItem.InstantiateSync(asset, position, Quaternion.identity, this);
         selectedNotification.RPC_NotificationInjection(foodItem.gameObject.GetComponent<NetworkObject>(), id, position);
@@ -61,8 +62,9 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
         //displayFoods.Remove(itemSelectArgs.gameObject);
     }
 
-    public void UntiHuzakennaSelect(NetworkObject networkObject, int id, Vector3 position)
+    public void SelectedNotificationInjection(NetworkObject networkObject, int id, Vector3 position)
     {
+        Debug.LogError("MasterÇ©ÇÁInjectionÇ≥ÇÍÇΩ");
         IDisplayItem displayItem = networkObject.GetComponent<IDisplayItem>();
         var asset = foodItemAsset.GetItemAssetByID(id);
         var itemSelectArgs = new ItemSelectArgs(asset.ID, asset.Name, position, displayItem.gameObject);
@@ -76,10 +78,8 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
 
     public async void OnStart()
     {
-        Debug.LogError("ActivityConnected");
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
-            Debug.LogError("i'm MasterClient");
             displayFoods = new List<GameObject>();
 
             for (int i = 0; i < foodLineup.Count; i++)
@@ -93,7 +93,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
             }
         }
     }
-    public void UntiHuzakenna(NetworkObject networkObject, int index)
+    public void SelectedNotificationInjection(NetworkObject networkObject, int index)
     {
         IDisplayItem displayItem = networkObject.GetComponent<IDisplayItem>();
         var asset = foodItemAsset.GetItemAssetByID(foodLineup[index].FoodID);
