@@ -65,20 +65,22 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
         pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
         networkRunner = GateOfFusion.Instance.NetworkRunner;
 
-        this.stateAuthority = this.GetComponent<StateAuthorityData>();
-        stateAuthority.OnAuthrity += (data) =>
-        {
-            if (data.Authrity)
-            {
-                IsGrabed = true;
-                switchableGrabbableActive.Active(this);
-            }
-            else if (!data.Authrity)
-            {
-                IsGrabed = true;
-                switchableGrabbableActive.Inactive(this);
-            }
-        };
+        pointableUnityEventWrapper.WhenSelect.AddListener((data) => GetComponent<LocalView>().NetworkView.RPC_ExcludeOthersInactive());
+        pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GetComponent<LocalView>().NetworkView.RPC_ExcludeOthersActive());
+        //this.stateAuthority = this.GetComponent<StateAuthorityData>();
+        //stateAuthority.OnAuthrity += (data) =>
+        //{
+        //    if (data.Authrity)
+        //    {
+        //        IsGrabed = true;
+        //        switchableGrabbableActive.Active(this);
+        //    }
+        //    else if (!data.Authrity)
+        //    {
+        //        IsGrabed = true;
+        //        switchableGrabbableActive.Inactive(this);
+        //    }
+        //};
     }
 
 
