@@ -14,6 +14,9 @@ public class Throwable : MonoBehaviour
     [SerializeField, Tooltip("速度係数")]
     private float _velocityCoefficient = 1f;
 
+    // 
+    private LocalView _localView = default;
+
     // 使用中のThrowDataを格納するための変数
     public ThrowData _throwData = default;
 
@@ -23,8 +26,11 @@ public class Throwable : MonoBehaviour
     // 掴んだ時や離した時にイベントを実行するクラス
     private PointableUnityEventWrapper pointableUnityEventWrapper;
 
-    private void Awake()
+    private void Start()
     {
+        // 自身のLocalViewを取得する
+        _localView = GetComponent<LocalView>();
+
         // ThrowDataを生成する
         _throwData = new ThrowData(_thisTransform.position);
 
@@ -67,8 +73,8 @@ public class Throwable : MonoBehaviour
         // 投擲ベクトルを取得する
         Vector3 throwVector = _throwData.GetThrowVector() * _velocityCoefficient;
 
-        // 投擲のRpcを実行する
-        RPC_Throw(throwVector);
+        // NetworkViewに処理の実行を依頼する
+        _localView.NetworkView.GetComponent<LocalThrow>().ThrowAllLocalView(throwVector);
 
         // 離している状態にする
         _isSelected = false;
@@ -78,7 +84,7 @@ public class Throwable : MonoBehaviour
     /// ローカルで投擲挙動を行うためのRpcメソッド
     /// </summary>
     /// <param name="throwVector">投擲ベクトル</param>
-    [Rpc(RpcSources.All, RpcTargets.All,InvokeLocal = true)]
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     public void RPC_Throw(Vector3 throwVector)
     {
         // 1フレーム後にベクトルを上書きする
