@@ -29,7 +29,7 @@ public class Throwable : MonoBehaviour
     private void Start()
     {
         // ©g‚ÌLocalView‚ğæ“¾‚·‚é
-        _localView = GetComponent<LocalView>();
+        _localView = transform.root.GetComponent<LocalView>();
 
         // ThrowData‚ğ¶¬‚·‚é
         _throwData = new ThrowData(_thisTransform.position);
