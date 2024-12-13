@@ -84,8 +84,7 @@ public class Throwable : MonoBehaviour
     /// ローカルで投擲挙動を行うためのRpcメソッド
     /// </summary>
     /// <param name="throwVector">投擲ベクトル</param>
-    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
-    public void RPC_Throw(Vector3 throwVector)
+    public void Throw(Vector3 throwVector)
     {
         // 1フレーム後にベクトルを上書きする
         StartCoroutine(OverwriteVelocity(throwVector));

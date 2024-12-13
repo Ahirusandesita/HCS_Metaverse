@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 
-public class LocalThrow : MonoBehaviour
+public class LocalThrow : NetworkBehaviour
 {
     // 
     private NetworkView _networkView = default;
@@ -14,9 +14,10 @@ public class LocalThrow : MonoBehaviour
         _networkView = GetComponent<NetworkView>();
     }
 
-    public void ThrowAllLocalView(Vector3 throwVector)
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
+    public void RPC_ThrowAllLocalView(Vector3 throwVector)
     {
         // 
-        _networkView.LocalView.GetComponent<Throwable>().RPC_Throw(throwVector);
+        _networkView.LocalView.GetComponent<Throwable>().Throw(throwVector);
     }
 }
