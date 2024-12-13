@@ -24,6 +24,7 @@ public class LocalView : MonoBehaviour, IGrabbableActiveChangeRequester
 
     public void Active(Vector3 position,Vector3 rotation)
     {
+        Debug.LogError("’Í‚ñ‚¾l‚ª‚±‚êŒÄ‚Î‚ê‚Ä‚½‚ç•s³‰ğ");
         switchableGrabbable.Active(this);
         foreach(MeshRenderer item in meshRenderers)
         {
