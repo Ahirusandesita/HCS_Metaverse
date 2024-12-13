@@ -107,10 +107,10 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     {
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
-            foreach (var foodObj in displayFoods)
-            {
-                //GateOfFusion.Instance.Despawn<NetworkObject>(foodObj.GetComponent<NetworkObject>());
-            }
+            //foreach (var foodObj in displayFoods)
+            //{
+            //    //GateOfFusion.Instance.Despawn<NetworkObject>(foodObj.GetComponent<NetworkObject>());
+            //}
         }
     }
 }
