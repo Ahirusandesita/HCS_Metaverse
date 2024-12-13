@@ -14,17 +14,38 @@ public interface IEditorItemBundleAsset
 public class ItemBundleAsset : ScriptableObject, IEditorItemBundleAsset
 {
     [SerializeField] private List<ItemAsset> items = default;
-
+    [SerializeField] private List<NetworkView> networkViews;
     public IReadOnlyList<ItemAsset> Items => items;
-
+    public IReadOnlyList<NetworkView> NetworkViews => networkViews;
     List<ItemAsset> IEditorItemBundleAsset.EditorItems { set => items = value; }
 
     public ItemAsset GetItemAssetByID(int id)
     {
         return items.Where(item => item.ID == id).First();
     }
-}
+    public NetworkItemAsset GetNetworkItemAssetById(int id)
+    {
+        for(int i = 0; i < items.Count; i++)
+        {
+            if(items[i].ID == id)
+            {
+                return new NetworkItemAsset(items[i], networkViews[i]);
+            }
+        }
+        return null;
+    }
 
+}
+public class NetworkItemAsset
+{
+    public readonly ItemAsset ItemAsset;
+    public readonly NetworkView NetworkView;
+    public NetworkItemAsset(ItemAsset itemAsset,NetworkView networkView)
+    {
+        this.ItemAsset = itemAsset;
+        this.NetworkView = networkView;
+    }
+}
 #if UNITY_EDITOR
 namespace UnityEditor.HCSMeta
 {

@@ -76,7 +76,6 @@ public class ActivityProgressManagement : MonoBehaviour
                 ActivityStart();
             };
 
-            rpcInstance.isStart = true;
             await allSpawn.Async();
             GateOfFusion.Instance.Despawn(allSpawn);
             readyTimeInstance.StartTime = 3;

@@ -6,11 +6,17 @@ using Oculus.Interaction;
 using Fusion;
 using Cysharp.Threading.Tasks;
 
+
+using UnityEditor;
+using UnityEngine.UI;
 /// <summary>
 /// ãÔçﬁ
 /// </summary>
 public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitchableGrabbableActive>,IGrabbableActiveChangeRequester
 {
+    public bool IsGrabed = false;
+
+
     [SerializeField]
     private IngrodientsAsset ingrodientsAsset;
     private List<IngrodientsDetailInformation> ingrodientsDetailInformations = new List<IngrodientsDetailInformation>();
@@ -43,6 +49,8 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
 
     private PointableUnityEventWrapper pointableUnityEventWrapper;
     private StateAuthorityData stateAuthority;
+
+    private bool isGrab = false;
     private void Awake()
     {
         this.commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
@@ -54,23 +62,29 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
 
         pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
 
-        pointableUnityEventWrapper.WhenSelect.AddListener((data) => GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()).Forget());
-        pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
-        pointableUnityEventWrapper.WhenSelect.AddListener((data) => Debug.LogError("íÕÇÒÇæ"));
+        //pointableUnityEventWrapper.WhenSelect.AddListener((data) => GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()).Forget());
+        //pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
         networkRunner = GateOfFusion.Instance.NetworkRunner;
 
-        this.stateAuthority = this.GetComponent<StateAuthorityData>();
-        stateAuthority.OnAuthrity += (data) =>
-        {
-            if (data.Authrity)
-            {
-                switchableGrabbableActive.Active(this);
-            }
-            else if (!data.Authrity)
-            {
-                switchableGrabbableActive.Inactive(this);
-            }
-        };
+        pointableUnityEventWrapper.WhenSelect.AddListener((data) => GetComponent<LocalView>().NetworkView.RPC_ExcludeOthersInactive());
+        pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GetComponent<LocalView>().NetworkView.RPC_ExcludeOthersActive());
+
+        pointableUnityEventWrapper.WhenSelect.AddListener((data) => isGrab = true);
+        pointableUnityEventWrapper.WhenUnhover.AddListener((data) => isGrab = false);
+        //this.stateAuthority = this.GetComponent<StateAuthorityData>();
+        //stateAuthority.OnAuthrity += (data) =>
+        //{
+        //    if (data.Authrity)
+        //    {
+        //        IsGrabed = true;
+        //        switchableGrabbableActive.Active(this);
+        //    }
+        //    else if (!data.Authrity)
+        //    {
+        //        IsGrabed = true;
+        //        switchableGrabbableActive.Inactive(this);
+        //    }
+        //};
     }
 
 
@@ -109,4 +123,59 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
         this.switchableGrabbableActive = t;
         this.switchableGrabbableActive.Regist(this);
     }
+
+    public async void NonVRTest_GrabAndRelease()
+    {
+        GetComponent<DisplayItem>().WhenSelect(new PointerEvent());
+        GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()).Forget();
+        this.transform.position = Vector3.zero;
+
+        await UniTask.Delay(2000);
+
+        GetComponent<DisplayItem>().WhenUnselect(new PointerEvent());
+        GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>());
+    }
+
+    private void FixedUpdate()
+    {
+        if (isGrab)
+        {
+            GetComponent<LocalView>().NetworkView.RPC_Position(this.transform.position, this.transform.rotation.eulerAngles);
+        }
+    }
 }
+
+
+#if UNITY_EDITOR
+[InitializeOnLoad]
+public class HierarchyColor
+{
+    static HierarchyColor()
+    {
+        EditorApplication.hierarchyWindowItemOnGUI += HierarchyWindowItemOnGUI;
+    }
+
+    private static void HierarchyWindowItemOnGUI(int instanceID, Rect selectionRect)
+    {
+        var gameObject = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+        if (gameObject != null && gameObject.GetComponent<Ingrodients>() != null)
+        {
+            if (!gameObject.GetComponent<Ingrodients>().IsGrabed)
+            {
+                EditorGUI.DrawRect(selectionRect, Color.red);
+            }
+            else
+            {
+                EditorGUI.DrawRect(selectionRect, Color.blue);
+            }
+            GUI.color = Color.black;
+            EditorGUI.LabelField(selectionRect, gameObject.name, new GUIStyle()
+            {
+                fontStyle = FontStyle.Bold
+            });
+            GUI.color = Color.white;
+        }
+    }
+}
+#endif
+

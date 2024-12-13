@@ -34,21 +34,22 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
         pointableUnityEventWrapper.WhenSelect.AddListener((data) => GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()).Forget());
         pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
 
+
         grabObjectScale = new GrabObjectScale();
         grabObjectScale.StartSize = this.transform.lossyScale;
 
-        this.stateAuthority = this.GetComponent<StateAuthorityData>();
-        stateAuthority.OnAuthrity += (data) =>
-        {
-            if (data.Authrity)
-            {
-                switchableGrabbableActive.Active(this);
-            }
-            else if (!data.Authrity)
-            {
-                switchableGrabbableActive.Inactive(this);
-            }
-        };
+        //this.stateAuthority = this.GetComponent<StateAuthorityData>();
+        //stateAuthority.OnAuthrity += (data) =>
+        //{
+        //    if (data.Authrity)
+        //    {
+        //        switchableGrabbableActive.Active(this);
+        //    }
+        //    else if (!data.Authrity)
+        //    {
+        //        switchableGrabbableActive.Inactive(this);
+        //    }
+        //};
 
         networkRunner = GateOfFusion.Instance.NetworkRunner;
     }
