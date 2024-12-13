@@ -92,20 +92,20 @@ public class WebAPIRequester
 				public Lineup(int itemId, int salesPrice, float discount, int stock, int size)
 				{
 					this.itemId = itemId;
-					this.salesPrice = salesPrice;
+					this.price = salesPrice;
 					this.discount = discount;
 					this.stock = stock;
 					this.size = size;
 				}
 
 				[SerializeField] private int itemId = default;
-				[SerializeField] private int salesPrice = default;
+				[SerializeField] private int price = default;
 				[SerializeField] private float discount = default;
 				[SerializeField] private int stock = default;
 				[SerializeField] private int size = default;
 
 				public int ItemID => itemId;
-				public int Price => salesPrice;
+				public int Price => price;
 				public float Discount => discount;
 				public int Stock => stock;
 				/// <summary>
