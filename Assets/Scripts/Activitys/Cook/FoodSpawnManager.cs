@@ -21,8 +21,9 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     public ItemBundleAsset FoodItemAsset => foodItemAsset;
 
     [SerializeField]
-    private FoodSpawnManagerRPC selectedNotification;
-
+    private FoodSpawnManagerRPC foodSpawnRPC;
+    [SerializeField]
+    private AllSpawn allSpawn;
     private void Start()
     {
         FindObjectOfType<ActivityProgressManagement>().OnStart += () =>
@@ -47,17 +48,60 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
 #endif
     }
 
+    public async void StartSpawnNetworkView(int id,Vector3 position)
+    {
+        NetworkItemAsset networkItemAsset = foodItemAsset.GetNetworkItemAssetById(id);
+        NetworkView networkView = await GateOfFusion.Instance.SpawnAsync(networkItemAsset.NetworkView, position, Quaternion.identity);
+        AllSpawn allSpawnInstance = await GateOfFusion.Instance.SpawnAsync(allSpawn);
+        await allSpawnInstance.Async();
+        foodSpawnRPC.RPC_StartSpawnLocalView(id, networkView.GetComponent<NetworkObject>());
+    }
+    public async void SpawnNetworkView(int id, Vector3 position)
+    {
+        NetworkItemAsset networkItemAsset = foodItemAsset.GetNetworkItemAssetById(id);
+        NetworkView networkView = await GateOfFusion.Instance.SpawnAsync(networkItemAsset.NetworkView, position, Quaternion.identity);
+        AllSpawn allSpawnInstance = await GateOfFusion.Instance.SpawnAsync(allSpawn);
+        await allSpawnInstance.Async();
+        foodSpawnRPC.RPC_SpawnLocalView(id, position, networkView.GetComponent<NetworkObject>());
+    }
+    public void StartSpawnLocalView(int index, NetworkView networkView)
+    {
+
+        GameObject itemObject;
+        var position = foodLineup[index].FoodBox.position + Vector3.up;
+        var asset = foodItemAsset.GetItemAssetByID(foodLineup[index].FoodID);
+        itemObject = Object.Instantiate(asset.DisplayItem.gameObject, position, Quaternion.identity);
+        var displayItem = itemObject.GetComponent<IDisplayItem>();
+        var itemSelectArgs = new ItemSelectArgs(asset.ID, asset.Name, position, displayItem.gameObject);
+        displayItem.Inject_ItemSelectArgsAndSelectedNotification(itemSelectArgs, this);
+        itemObject.GetComponent<LocalView>().NetworkViewInject(networkView);
+    }
+    public void SpawnLocalView(int id,Vector3 position,NetworkView networkView)
+    {
+        GameObject itemObject;
+        var asset = foodItemAsset.GetItemAssetByID(id);
+        itemObject = Object.Instantiate(asset.DisplayItem.gameObject, position, Quaternion.identity);
+        var displayItem = itemObject.GetComponent<IDisplayItem>();
+        var itemSelectArgs = new ItemSelectArgs(asset.ID, asset.Name, position, displayItem.gameObject);
+        displayItem.Inject_ItemSelectArgsAndSelectedNotification(itemSelectArgs, this);
+
+        itemObject.GetComponent<LocalView>().NetworkViewInject(networkView);
+    }
+
+
+
     public void Select(SelectArgs selectArgs)
     {
         var itemSelectArgs = selectArgs as ItemSelectArgs;
-        selectedNotification.RPC_MasterSelect(itemSelectArgs.id, itemSelectArgs.position);
+        foodSpawnRPC.RPC_SpawnNetworkView(itemSelectArgs.id, itemSelectArgs.position);
+        //selectedNotification.RPC_MasterSelect(itemSelectArgs.id, itemSelectArgs.position);
     }
     public async void MasterSelect(int id, Vector3 position)
     {
         Debug.LogError("MasterÇ∆ÇµÇƒê∂ê¨");
         var asset = foodItemAsset.GetItemAssetByID(id);
         var foodItem = await IDisplayItem.InstantiateSync(asset, position, Quaternion.identity, this);
-        selectedNotification.RPC_NotificationInjection(foodItem.gameObject.GetComponent<NetworkObject>(), id, position);
+        foodSpawnRPC.RPC_NotificationInjection(foodItem.gameObject.GetComponent<NetworkObject>(), id, position);
         //displayFoods.Add(foodItem.gameObject);
         //displayFoods.Remove(itemSelectArgs.gameObject);
     }
@@ -76,7 +120,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
 
     }
 
-    public async void OnStart()
+    public void OnStart()
     {
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
@@ -87,9 +131,10 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
                 var asset = foodItemAsset.GetItemAssetByID(foodLineup[i].FoodID);
                 var position = foodLineup[i].FoodBox.position + Vector3.up;
 
-                var foodItem = await IDisplayItem.InstantiateSync(asset, position, Quaternion.identity, this);
-                selectedNotification.RPC_FoodSpawn(foodItem.gameObject.GetComponent<NetworkObject>(), i);
-                displayFoods.Add(foodItem.gameObject);
+                foodSpawnRPC.RPC_StartSpawnNetworkView(asset.ID, position);
+                //var foodItem = await IDisplayItem.InstantiateSync(asset, position, Quaternion.identity, this);
+                //selectedNotification.RPC_FoodSpawn(foodItem.gameObject.GetComponent<NetworkObject>(), i);
+                //displayFoods.Add(foodItem.gameObject);
             }
         }
     }
