@@ -18,6 +18,6 @@ public class LocalThrow : NetworkBehaviour
     public void RPC_ThrowAllLocalView(Vector3 throwVector)
     {
         // 
-        _networkView.LocalView.GetComponent<Throwable>().Throw(throwVector);
+        _networkView.LocalView.GetComponentInChildren<Throwable>().Throw(throwVector);
     }
 }
