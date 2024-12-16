@@ -22,4 +22,9 @@ public class AllCommodityAsset : ScriptableObject, IAllCommodityAsset
             commodities = value;
         }
     }
+
+    [SerializeField]
+    private List<NetworkView> networkViews = new List<NetworkView>();
+    public IReadOnlyList<NetworkView> NetworkViews => networkViews;
+
 }

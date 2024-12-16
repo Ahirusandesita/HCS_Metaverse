@@ -209,6 +209,11 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
             //}
         }
     }
+
+    public void Despawn(NetworkView networkView)
+    {
+        networkInformations.Remove(networkInformations.Where((information) => information.NetworkView == networkView).First());
+    }
 }
 
 #if UNITY_EDITOR
