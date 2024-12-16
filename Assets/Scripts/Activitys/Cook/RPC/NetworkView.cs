@@ -4,6 +4,9 @@ using UnityEngine;
 using Fusion;
 public class NetworkView : NetworkBehaviour, IAfterSpawned
 {
+    [Networked]
+    public bool OneGrab { get; set; } = false;
+
     private LocalView localView;
     public LocalView LocalView => localView;
     private MeshRenderer[] meshRenderers;
@@ -34,6 +37,16 @@ public class NetworkView : NetworkBehaviour, IAfterSpawned
             meshRenderers[i].enabled = true;
         }
     }
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
+    public void RPC_OneGrab()
+    {
+        if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        {
+            OneGrab = true;
+        }
+    }
+
+
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     public void RPC_ExcludeOthersActive()
     {

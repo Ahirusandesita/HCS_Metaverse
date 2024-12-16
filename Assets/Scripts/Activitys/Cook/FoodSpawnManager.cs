@@ -85,7 +85,14 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     {
         foreach (NetworkInformation networkInformation in networkInformations)
         {
-            foodSpawnRPC.RPC_Joined(player, networkInformation.ID, networkInformation.NetworkView.GetComponent<NetworkObject>());
+            if (!networkInformation.NetworkView.OneGrab)
+            {
+                foodSpawnRPC.RPC_Joined(player, networkInformation.ID, networkInformation.NetworkView.GetComponent<NetworkObject>());
+            }
+            else
+            {
+                foodSpawnRPC.RPC_JoinedOneGrab(player, networkInformation.ID, networkInformation.NetworkView.GetComponent<NetworkObject>());
+            }
         }
     }
     public void StartSpawnLocalView(int id, NetworkView networkView, int index)
@@ -110,6 +117,15 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
         var itemSelectArgs = new ItemSelectArgs(asset.ID, asset.Name, position, displayItem.gameObject);
         displayItem.Inject_ItemSelectArgsAndSelectedNotification(itemSelectArgs, this);
 
+        itemObject.GetComponent<LocalView>().NetworkViewInject(networkView);
+        networkInformations.Add(new NetworkInformation(networkView, id));
+    }
+    public void LateJoinSpawnLocalView(int id, Vector3 position, NetworkView networkView)
+    {
+        GameObject itemObject;
+        var asset = foodItemAsset.GetItemAssetByID(id);
+        itemObject = Object.Instantiate(asset.DisplayItem.gameObject, position, Quaternion.identity);
+        itemObject.GetComponent<Rigidbody>().isKinematic = false;
         itemObject.GetComponent<LocalView>().NetworkViewInject(networkView);
         networkInformations.Add(new NetworkInformation(networkView, id));
     }

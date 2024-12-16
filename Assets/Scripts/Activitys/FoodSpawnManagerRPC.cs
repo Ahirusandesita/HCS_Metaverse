@@ -69,4 +69,9 @@ public class FoodSpawnManagerRPC : NetworkBehaviour, IPlayerJoined
     {
         foodSpawnManager.SpawnLocalView(id, networkObject.GetComponent<NetworkView>().transform.position, networkObject.GetComponent<NetworkView>());
     }
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
+    public void RPC_JoinedOneGrab([RpcTarget] PlayerRef newPlayer, int id, NetworkObject networkObject)
+    {
+        foodSpawnManager.LateJoinSpawnLocalView(id, networkObject.GetComponent<NetworkView>().transform.position, networkObject.GetComponent<NetworkView>());
+    }
 }
