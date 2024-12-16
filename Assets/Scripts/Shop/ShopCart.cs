@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Inventory = WebAPIRequester.OnPaymentData.Body.Inventory;
 using Cysharp.Threading.Tasks;
 
 public class ShopCart : MonoBehaviour
@@ -48,12 +47,13 @@ public class ShopCart : MonoBehaviour
 		}
 	}
 
-	private void InventoryNiTumeru(List<Inventory> inventories)
+	private void InventoryNiTumeru(List<WebAPIRequester.ItemStock> itemStocks)
 	{
 		foreach (var item in _inCarts)
 		{
-			Inventory inventoryTemp = new Inventory(item.Key, item.Value);
-			inventories.Add(inventoryTemp);
+			WebAPIRequester.ItemStock stockTemp 
+				= new WebAPIRequester.ItemStock(item.Key, item.Value);
+			itemStocks.Add(stockTemp);
 		}
 
 	}
@@ -61,8 +61,8 @@ public class ShopCart : MonoBehaviour
 	public async void Buy()
 	{
 		WebAPIRequester requester = new WebAPIRequester();
-		List<Inventory> inventories = new List<Inventory>();
-		InventoryNiTumeru(inventories);
+		List<WebAPIRequester.ItemStock> buyItemStocks = new List<WebAPIRequester.ItemStock>();
+		InventoryNiTumeru(buyItemStocks);
 		_visualShop.Buy();
 
 		foreach (KeyValuePair<int, int> pair in _inCarts)
@@ -73,11 +73,11 @@ public class ShopCart : MonoBehaviour
 			}
 		}
 		//データベースにリクエストをとばす
-		var data = await requester.PostShopPayment(inventories, 0, 0);
+		var data = await requester.PostShopPayment(buyItemStocks, 0, 0);
 
 		try
 		{
-			XDebug.LogError(inventories.Count);
+			XDebug.LogError(buyItemStocks.Count);
 		}
 		catch
 		{
