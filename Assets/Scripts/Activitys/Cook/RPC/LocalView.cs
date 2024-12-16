@@ -16,6 +16,7 @@ public class LocalView : MonoBehaviour, IGrabbableActiveChangeRequester
     public void Grab()
     {
         networkView.RPC_ExcludeOthersInactive();
+        networkView.RPC_OneGrab();
     }
     public void Release()
     {

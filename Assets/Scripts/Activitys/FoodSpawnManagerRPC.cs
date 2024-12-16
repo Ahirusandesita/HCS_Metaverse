@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
-public class FoodSpawnManagerRPC : NetworkBehaviour
+public class FoodSpawnManagerRPC : NetworkBehaviour, IPlayerJoined
 {
     [SerializeField]
     private FoodSpawnManager foodSpawnManager;
+
+    [SerializeField]
+    private CommoditySpawnManager commoditySpawnManager;
 
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     public void RPC_FoodSpawn(NetworkObject networkObject, int index)
@@ -56,4 +59,47 @@ public class FoodSpawnManagerRPC : NetworkBehaviour
     {
         foodSpawnManager.StartSpawnLocalView(id, networkObject.GetComponent<NetworkView>(), index);
     }
+
+    public void PlayerJoined(PlayerRef player)
+    {
+        if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        {
+            foodSpawnManager.NewMember(player);
+            commoditySpawnManager.NewMember(player);
+        }
+    }
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
+    public void RPC_Joined([RpcTarget] PlayerRef newPlayer, int id, NetworkObject networkObject)
+    {
+        foodSpawnManager.SpawnLocalView(id, networkObject.GetComponent<NetworkView>().transform.position, networkObject.GetComponent<NetworkView>());
+    }
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
+    public void RPC_JoinedOneGrab([RpcTarget] PlayerRef newPlayer, int id, NetworkObject networkObject)
+    {
+        foodSpawnManager.LateJoinSpawnLocalView(id, networkObject.GetComponent<NetworkView>().transform.position, networkObject.GetComponent<NetworkView>());
+    }
+
+
+
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
+    public void RPC_CommoditySpawn(int index, Vector3 rotation, Vector3 position)
+    {
+        if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        {
+            commoditySpawnManager.SpawnNetworkView(index, rotation, position);
+        }
+    }
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
+    public void RPC_CommodityLocalSpawn(int index,Vector3 rotation,Vector3 position,NetworkObject networkObject)
+    {
+        commoditySpawnManager.SpawnLocalView(index, rotation, position, networkObject.GetComponent<NetworkView>());
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
+    public void RPC_Despawn(NetworkObject networkObject)
+    {
+        foodSpawnManager.Despawn(networkObject.GetComponent<NetworkView>());
+        commoditySpawnManager.Despawn(networkObject.GetComponent<NetworkView>());
+    }
+
 }

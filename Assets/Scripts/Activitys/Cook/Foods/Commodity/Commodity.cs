@@ -4,7 +4,7 @@ using Oculus.Interaction;
 using Fusion;
 using Cysharp.Threading.Tasks;
 
-public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchableGrabbableActive>,IGrabbableActiveChangeRequester
+public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchableGrabbableActive>, IGrabbableActiveChangeRequester
 {
     [SerializeField]
     private CommodityAsset commodityAsset;
@@ -24,6 +24,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
     private StateAuthorityData stateAuthority;
     private NetworkRunner networkRunner;
 
+    private bool isGrab = false;
     private void Awake()
     {
         pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
@@ -31,8 +32,14 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
         pointableUnityEventWrapper.WhenSelect.AddListener((data) => OnPointable?.Invoke(new GrabEventArgs(GrabType.Grab)));
         pointableUnityEventWrapper.WhenUnselect.AddListener((data) => OnPointable?.Invoke(new GrabEventArgs(GrabType.UnGrab)));
 
-        pointableUnityEventWrapper.WhenSelect.AddListener((data) => GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()).Forget());
-        pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
+        if (!GetComponent<Ingrodients>())
+        {
+            pointableUnityEventWrapper.WhenSelect.AddListener((data) => GetComponent<LocalView>().Grab());
+            pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GetComponent<LocalView>().Release());
+
+            pointableUnityEventWrapper.WhenSelect.AddListener((data) => isGrab = true);
+            pointableUnityEventWrapper.WhenUnhover.AddListener((data) => isGrab = false);
+        }
 
 
         grabObjectScale = new GrabObjectScale();
@@ -59,7 +66,13 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
         this.transform.parent = null;
         this.transform.localScale = grabObjectScale.StartSize;
     }
-
+    private void FixedUpdate()
+    {
+        if (isGrab)
+        {
+            GetComponent<LocalView>().NetworkView.RPC_Position(this.transform.position, this.transform.rotation.eulerAngles);
+        }
+    }
     public void InjectPutableOnDish(IPutableOnDish putableOnDish)
     {
         isOnDish = false;

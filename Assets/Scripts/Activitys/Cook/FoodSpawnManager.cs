@@ -2,6 +2,17 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+public class NetworkInformation
+{
+    public readonly NetworkView NetworkView;
+    public readonly int ID;
+
+    public NetworkInformation(NetworkView networkView, int id)
+    {
+        this.NetworkView = networkView;
+        this.ID = id;
+    }
+}
 public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
 {
     [System.Serializable]
@@ -24,6 +35,9 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     private FoodSpawnManagerRPC foodSpawnRPC;
     [SerializeField]
     private AllSpawn allSpawn;
+
+    private List<NetworkInformation> networkInformations = new List<NetworkInformation>();
+
     private void Start()
     {
         FindObjectOfType<ActivityProgressManagement>().OnStart += () =>
@@ -52,6 +66,8 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     {
         NetworkItemAsset networkItemAsset = foodItemAsset.GetNetworkItemAssetById(id);
         NetworkView networkView = await GateOfFusion.Instance.SpawnAsync(networkItemAsset.NetworkView, position, Quaternion.identity);
+        networkInformations.Add(new NetworkInformation(networkView, id));
+
         AllSpawn allSpawnInstance = await GateOfFusion.Instance.SpawnAsync(allSpawn);
         await allSpawnInstance.Async();
         foodSpawnRPC.RPC_StartSpawnLocalView(id, networkView.GetComponent<NetworkObject>(), index);
@@ -60,9 +76,25 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     {
         NetworkItemAsset networkItemAsset = foodItemAsset.GetNetworkItemAssetById(id);
         NetworkView networkView = await GateOfFusion.Instance.SpawnAsync(networkItemAsset.NetworkView, position, Quaternion.identity);
+        networkInformations.Add(new NetworkInformation(networkView, id));
         AllSpawn allSpawnInstance = await GateOfFusion.Instance.SpawnAsync(allSpawn);
         await allSpawnInstance.Async();
         foodSpawnRPC.RPC_SpawnLocalView(id, position, networkView.GetComponent<NetworkObject>());
+    }
+    public void NewMember(PlayerRef player)
+    {
+        foreach (NetworkInformation networkInformation in networkInformations)
+        {
+            Debug.LogError(networkInformation.NetworkView.OneGrab);
+            if (!networkInformation.NetworkView.OneGrab)
+            {
+                foodSpawnRPC.RPC_Joined(player, networkInformation.ID, networkInformation.NetworkView.GetComponent<NetworkObject>());
+            }
+            else
+            {
+                foodSpawnRPC.RPC_JoinedOneGrab(player, networkInformation.ID, networkInformation.NetworkView.GetComponent<NetworkObject>());
+            }
+        }
     }
     public void StartSpawnLocalView(int id, NetworkView networkView, int index)
     {
@@ -75,6 +107,11 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
         var itemSelectArgs = new ItemSelectArgs(asset.ID, asset.Name, position, displayItem.gameObject);
         displayItem.Inject_ItemSelectArgsAndSelectedNotification(itemSelectArgs, this);
         itemObject.GetComponent<LocalView>().NetworkViewInject(networkView);
+
+        if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        {
+            networkInformations.Add(new NetworkInformation(networkView, foodLineup[index].FoodID));
+        }
     }
     public void SpawnLocalView(int id, Vector3 position, NetworkView networkView)
     {
@@ -86,6 +123,20 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
         displayItem.Inject_ItemSelectArgsAndSelectedNotification(itemSelectArgs, this);
 
         itemObject.GetComponent<LocalView>().NetworkViewInject(networkView);
+
+        if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        {
+            networkInformations.Add(new NetworkInformation(networkView, id));
+        }
+    }
+    public void LateJoinSpawnLocalView(int id, Vector3 position, NetworkView networkView)
+    {
+        GameObject itemObject;
+        var asset = foodItemAsset.GetItemAssetByID(id);
+        itemObject = Object.Instantiate(asset.DisplayItem.gameObject, position, Quaternion.identity);
+        itemObject.GetComponent<Rigidbody>().isKinematic = false;
+        itemObject.GetComponent<LocalView>().NetworkViewInject(networkView);
+        networkInformations.Add(new NetworkInformation(networkView, id));
     }
 
 
@@ -157,6 +208,11 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
             //    //GateOfFusion.Instance.Despawn<NetworkObject>(foodObj.GetComponent<NetworkObject>());
             //}
         }
+    }
+
+    public void Despawn(NetworkView networkView)
+    {
+        networkInformations.Remove(networkInformations.Where((information) => information.NetworkView == networkView).First());
     }
 }
 
