@@ -66,11 +66,9 @@ GameObject:
   - component: {fileID: 5961400282698467207}
   - component: {fileID: 6077402614559394399}
   - component: {fileID: -2684237547625597780}
-  - component: {fileID: 2938523740343983687}
-  - component: {fileID: 2317295252069589833}
-  - component: {fileID: 2223922523349407298}
   - component: {fileID: 3779929753209049247}
   - component: {fileID: -5298391889702122497}
+  - component: {fileID: -5264822563928926970}
   m_Layer: 7
   m_Name: Tomato_Salad
   m_TagString: Untagged
@@ -173,54 +171,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1676082f09d57134fb7c3c978b371b71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2938523740343983687
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 714584066099676930}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 826b17ef5a16c854bb99e8c9b1835040, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _IsNotReleaseStateAuthority: 0
---- !u!114 &2317295252069589833
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 714584066099676930}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SortKey: 2580883556
-  ObjectInterest: 1
-  Flags: 786433
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 2938523740343983687}
-  - {fileID: 2223922523349407298}
---- !u!114 &2223922523349407298
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 714584066099676930}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  DisableSharedModeInterpolation: 1
 --- !u!114 &3779929753209049247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -246,6 +196,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aa19703ac9ff464784a6b79a7b4c12c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-5264822563928926970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 714584066099676930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 567f9eacd55ffb34ea6a54a0571c70c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshRenderers:
+  - {fileID: 3962153000427851694}
+  - {fileID: 2661135124570112591}
 --- !u!1 &1284005424269174316
 GameObject:
   m_ObjectHideFlags: 0
@@ -1250,6 +1215,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 75a3875ca6edb4a4d903d8f0e8a2fa65, type: 3}
+--- !u!23 &2661135124570112591 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 75a3875ca6edb4a4d903d8f0e8a2fa65, type: 3}
+  m_PrefabInstance: {fileID: 3688401821743947467}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3793557658188839200 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 75a3875ca6edb4a4d903d8f0e8a2fa65, type: 3}

@@ -549,11 +549,9 @@ GameObject:
   - component: {fileID: 7533545359203102389}
   - component: {fileID: 8670190172222789121}
   - component: {fileID: 9089123435767219556}
-  - component: {fileID: 5523559382060686228}
-  - component: {fileID: 5312789918648521757}
-  - component: {fileID: 7196264025257678434}
   - component: {fileID: -5247038549720308551}
   - component: {fileID: -283857863520942828}
+  - component: {fileID: 6804254197475695833}
   m_Layer: 7
   m_Name: CuttedSalad
   m_TagString: Untagged
@@ -655,54 +653,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1676082f09d57134fb7c3c978b371b71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5523559382060686228
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6232795639646853607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 826b17ef5a16c854bb99e8c9b1835040, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _IsNotReleaseStateAuthority: 0
---- !u!114 &5312789918648521757
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6232795639646853607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SortKey: 2878111125
-  ObjectInterest: 1
-  Flags: 786433
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 5523559382060686228}
-  - {fileID: 7196264025257678434}
---- !u!114 &7196264025257678434
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6232795639646853607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  DisableSharedModeInterpolation: 1
 --- !u!114 &-5247038549720308551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -728,6 +678,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aa19703ac9ff464784a6b79a7b4c12c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6804254197475695833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6232795639646853607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 567f9eacd55ffb34ea6a54a0571c70c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meshRenderers:
+  - {fileID: 5824583289120231984}
 --- !u!1 &7859801155355870210
 GameObject:
   m_ObjectHideFlags: 0
