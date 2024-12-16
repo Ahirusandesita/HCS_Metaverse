@@ -66,8 +66,8 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
         //pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
         networkRunner = GateOfFusion.Instance.NetworkRunner;
 
-        pointableUnityEventWrapper.WhenSelect.AddListener((data) => GetComponent<LocalView>().NetworkView.RPC_ExcludeOthersInactive());
-        pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GetComponent<LocalView>().NetworkView.RPC_ExcludeOthersActive());
+        pointableUnityEventWrapper.WhenSelect.AddListener((data) => GetComponent<LocalView>().Grab());
+        pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GetComponent<LocalView>().Release());
 
         pointableUnityEventWrapper.WhenSelect.AddListener((data) => isGrab = true);
         pointableUnityEventWrapper.WhenUnhover.AddListener((data) => isGrab = false);
