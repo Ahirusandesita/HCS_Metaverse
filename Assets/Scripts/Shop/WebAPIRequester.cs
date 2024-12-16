@@ -39,7 +39,7 @@ public class WebAPIRequester
 		return onEntryData;
 	}
 
-	public async UniTask<OnPaymentData> PostShopPayment(List<OnPaymentData.Body.Inventory> inventory, int shopId, int userId)
+	public async UniTask<OnShopPaymentData> PostShopPayment(List<ItemStock> inventory, int shopId, int userId)
 	{
 		var sendPaymentData = new SendPaymentData(inventory, shopId, userId);
 		string jsonData = JsonUtility.ToJson(sendPaymentData);
@@ -55,9 +55,21 @@ public class WebAPIRequester
 				throw new System.InvalidOperationException(request.error);
 		}
 
-		var onPaymentData = JsonUtility.FromJson<OnPaymentData>(request.downloadHandler.text);
+		var onPaymentData = JsonUtility.FromJson<OnShopPaymentData>(request.downloadHandler.text);
 		return onPaymentData;
 	}
+
+	public async UniTask<OnVMEntryData> PostVMEntry(int shopId)
+	{
+		return default;
+	}
+
+	public async UniTask<OnVMPaymentData> PostVMPayment(int itemId, int shopId, int userId)
+	{
+		return default;
+	}
+
+
 
 	[System.Serializable]
 	public class OnShopEntryData
@@ -78,48 +90,20 @@ public class WebAPIRequester
 		[System.Serializable]
 		public class Body
 		{
-			public Body(List<Lineup> itemList)
+			public Body(List<ItemLineup> itemList)
 			{
 				this.itemList = itemList;
 			}
 
-			[SerializeField] private List<Lineup> itemList = default;
-			public IReadOnlyList<Lineup> ItemLineup => itemList;
-
-			[System.Serializable]
-			public class Lineup
-			{
-				public Lineup(int itemId, int salesPrice, float discount, int stock, int size)
-				{
-					this.itemId = itemId;
-					this.price = salesPrice;
-					this.discount = discount;
-					this.stock = stock;
-					this.size = size;
-				}
-
-				[SerializeField] private int itemId = default;
-				[SerializeField] private int price = default;
-				[SerializeField] private float discount = default;
-				[SerializeField] private int stock = default;
-				[SerializeField] private int size = default;
-
-				public int ItemID => itemId;
-				public int Price => price;
-				public float Discount => discount;
-				public int Stock => stock;
-				/// <summary>
-				/// 0: large, 1: small
-				/// </summary>
-				public int Size => size;
-			}
+			[SerializeField] private List<ItemLineup> itemList = default;
+			public IReadOnlyList<ItemLineup> ItemList => itemList;
 		}
 	}
 
 	[System.Serializable]
-	public class OnPaymentData
+	public class OnShopPaymentData
 	{
-		public OnPaymentData(Body body)
+		public OnShopPaymentData(Body body)
 		{
 			this.body = body;
 		}
@@ -135,58 +119,98 @@ public class WebAPIRequester
 		[System.Serializable]
 		public class Body
 		{
-			public Body(List<Inventory> inventory, int money, int stock, int userId)
+			public Body(List<ItemStock> inventory, int money, List<ItemStock> stockData, int userId)
 			{
 				this.inventory = inventory;
 				this.money = money;
-				this.stock = stock;
+				this.stockData = stockData;
 				this.userId = userId;
 			}
 
-			[SerializeField] private List<Inventory> inventory = default;
+			[SerializeField] private List<ItemStock> inventory = default;
 			[SerializeField] private int money = default;
-			[SerializeField] private int stock = default;
+			[SerializeField] private List<ItemStock> stockData = default;
 			[SerializeField] private int userId = default;
 
-			public IReadOnlyList<Inventory> InventoryList => inventory;
+			public IReadOnlyList<ItemStock> Inventory => inventory;
 			public int Money => money;
-			public int Stock => stock;
+			public IReadOnlyList<ItemStock> StockData => stockData;
 			public int UserID => userId;
-
-			[System.Serializable]
-			public class Inventory
-			{
-				public Inventory(int itemId, int count)
-				{
-					this.itemId = itemId;
-					this.count = count;
-				}
-
-				[SerializeField] private int itemId = default;
-				[SerializeField] private int count = default;
-
-				public int ItemID => itemId;
-				public int Count => count;
-			}
 		}
+	}
+
+	[System.Serializable]
+	public class OnVMEntryData
+	{
+
+	}
+
+	[System.Serializable]
+	public class OnVMPaymentData
+	{
+
 	}
 
 	[System.Serializable]
 	private class SendPaymentData
 	{
-		public SendPaymentData(List<OnPaymentData.Body.Inventory> itemList, int shopId, int userId)
+		public SendPaymentData(List<ItemStock> itemList, int shopId, int userId)
 		{
 			this.itemList = itemList;
 			this.shopId = shopId;
 			this.userId = userId;
 		}
 
-		[SerializeField] private List<OnPaymentData.Body.Inventory> itemList = default;
+		[SerializeField] private List<ItemStock> itemList = default;
 		[SerializeField] private int shopId = default;
 		[SerializeField] public int userId = default;
 
-		public IReadOnlyList<OnPaymentData.Body.Inventory> ItemList => itemList;
+		public IReadOnlyList<ItemStock> ItemList => itemList;
 		public int ShopID => shopId;
 		public int UserID => userId;
+	}
+
+	[System.Serializable]
+	public struct ItemLineup
+	{
+		public ItemLineup(int itemId, int salesPrice, float discount, int stock, int size)
+		{
+			this.itemId = itemId;
+			this.price = salesPrice;
+			this.discount = discount;
+			this.stock = stock;
+			this.size = size;
+		}
+
+		[SerializeField] private int itemId;
+		[SerializeField] private int price;
+		[SerializeField] private float discount;
+		[SerializeField] private int stock;
+		[SerializeField] private int size;
+
+		public int ItemID => itemId;
+		public int Price => price;
+		public float Discount => discount;
+		public int Stock => stock;
+		/// <summary>
+		/// 0: large, 1: small
+		/// </summary>
+		public int Size => size;
+	}
+
+	[SerializeField]
+	public struct ItemStock
+	{
+		public ItemStock(int itemId, int amount)
+		{
+			this.itemId = itemId;
+			this.amount = amount;
+		}
+
+		[SerializeField] private int itemId;
+		[SerializeField] private int amount;
+
+		public int ItemID => itemId;
+		public int Amount => amount;
 	}
 }
