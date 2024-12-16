@@ -85,6 +85,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     {
         foreach (NetworkInformation networkInformation in networkInformations)
         {
+            Debug.LogError(networkInformation.NetworkView.OneGrab);
             if (!networkInformation.NetworkView.OneGrab)
             {
                 foodSpawnRPC.RPC_Joined(player, networkInformation.ID, networkInformation.NetworkView.GetComponent<NetworkObject>());
