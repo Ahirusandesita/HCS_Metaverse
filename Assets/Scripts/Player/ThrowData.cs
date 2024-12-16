@@ -92,6 +92,13 @@ public class ThrowData
         // 軌道ベクトルの生成に使用可能な情報の最後の番地
         int usableIndex = GetUsableIndex();
 
+        // 
+        if (usableIndex == 0)
+        {
+            // 
+            return Vector3.zero;
+        }
+
         // 軌道ベクトル 軌道座標の差から求められる
         Vector3 orbitVector = default;
 
@@ -134,6 +141,13 @@ public class ThrowData
         // 軌道ベクトルの生成に使用可能な情報をまとめる　ベクトルが生成できないといけないからorbitIndexは２から加算していく
         for (int orbitIndex = 2; orbitIndex < _orbitDatas.Length; orbitIndex++)
         {
+            // 
+            if (_orbitDatas[orbitIndex]._storeTime == rastStoreTime)
+            {
+                // 
+                return 0;
+            }
+
             // 失効時刻を超えていた場合
             if (REVOCATION_TIME < rastStoreTime - _orbitDatas[orbitIndex]._storeTime)
             {
