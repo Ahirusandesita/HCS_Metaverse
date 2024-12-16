@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
-public class FoodSpawnManagerRPC : NetworkBehaviour
+public class FoodSpawnManagerRPC : NetworkBehaviour, IPlayerJoined
 {
     [SerializeField]
     private FoodSpawnManager foodSpawnManager;
@@ -55,5 +55,18 @@ public class FoodSpawnManagerRPC : NetworkBehaviour
     public void RPC_StartSpawnLocalView(int id, NetworkObject networkObject, int index)
     {
         foodSpawnManager.StartSpawnLocalView(id, networkObject.GetComponent<NetworkView>(), index);
+    }
+
+    public void PlayerJoined(PlayerRef player)
+    {
+        if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        {
+            foodSpawnManager.NewMember(player);
+        }
+    }
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
+    public void RPC_Joined([RpcTarget] PlayerRef newPlayer, int id, NetworkObject networkObject)
+    {
+        foodSpawnManager.SpawnLocalView(id, networkObject.GetComponent<NetworkView>().transform.position, networkObject.GetComponent<NetworkView>());
     }
 }
