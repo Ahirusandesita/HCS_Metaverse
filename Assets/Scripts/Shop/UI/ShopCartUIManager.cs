@@ -24,6 +24,8 @@ public class ShopCartUIManager : MonoBehaviour
 	[SerializeField]
 	private TextMeshProUGUI _totalPriceText;
 	[SerializeField]
+	private RectTransform _startPositionTransform;
+	[SerializeField]
 	private Vector3 _priceCardPositionOffset = default;
 	private Dictionary<int, ProductUI> _productUIs = new();
 	private Dictionary<int, InCartItemUI> _itemIcons = new();

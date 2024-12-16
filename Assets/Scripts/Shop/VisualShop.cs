@@ -82,26 +82,26 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		//生成
 		displayedItems = new List<GameObject>();
 		WebAPIRequester webAPIRequester = new WebAPIRequester();
-		
+
 		var data = await webAPIRequester.PostShopEntry(0);
 		int smallItemCounter = 0;
 		int largeItemCounter = 0;
-		for (int i = 0; i < data.GetBody.ItemLineup.Count; i++)
+		for (int i = 0; i < data.GetBody.ItemList.Count; i++)
 		{
-			var asset = allItemAsset.GetItemAssetByID(data.GetBody.ItemLineup[i].ItemID);
+			var asset = allItemAsset.GetItemAssetByID(data.GetBody.ItemList[i].ItemID);
 
-			int discountedPrice = Mathf.FloorToInt(data.GetBody.ItemLineup[i].Price
-				- (data.GetBody.ItemLineup[i].Price * data.GetBody.ItemLineup[i].Discount));
+			int discountedPrice = Mathf.FloorToInt(data.GetBody.ItemList[i].Price
+				- (data.GetBody.ItemList[i].Price * data.GetBody.ItemList[i].Discount));
 
-			int stock = data.GetBody.ItemLineup[i].Stock;
+			int stock = data.GetBody.ItemList[i].Stock;
 			Vector3 position = default;
-			if (data.GetBody.ItemLineup[i].Size == 0)
+			if (data.GetBody.ItemList[i].Size == 0)
 			{
 				position = smallViewPoints[smallItemCounter].position;
 				smallItemCounter++;
 			}
 			//ほかのサイズが追加される可能性があるためelse ifにしてる
-			else if (data.GetBody.ItemLineup[i].Size == 1)
+			else if (data.GetBody.ItemList[i].Size == 1)
 			{
 				position = largeViewPoints[largeItemCounter].position;
 				largeItemCounter++;
@@ -109,13 +109,13 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 			var item = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
 			displayedItems.Add(item.gameObject);
 			uiManager.AddProductUI(
-				data.GetBody.ItemLineup[i].ItemID,
-				data.GetBody.ItemLineup[i].Price,
+				data.GetBody.ItemList[i].ItemID,
+				data.GetBody.ItemList[i].Price,
 				discountedPrice,
 				stock,
-				data.GetBody.ItemLineup[i].Discount,
+				data.GetBody.ItemList[i].Discount,
 				position);
-			prices.Add(data.GetBody.ItemLineup[i].ItemID,discountedPrice);
+			prices.Add(data.GetBody.ItemList[i].ItemID, discountedPrice);
 		}
 	}
 
