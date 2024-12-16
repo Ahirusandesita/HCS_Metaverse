@@ -15,7 +15,8 @@ public class WebAPIRequester
 	private const string DETABASE_PATH_SHOP_BUY = DETABASE_PATH_BASE + "shop/buy";
 	private const string DETABASE_PATH_MYROOM_ENTRY = DETABASE_PATH_BASE + "myroom/entry";
 	private const string DETABASE_PATH_USER_LOCATION = DETABASE_PATH_BASE + "user/location";
-	private const string DETABASE_PATH_VENDINGMACHINE_BUY = DETABASE_PATH_BASE + "user/shop";
+	private const string DETABASE_PATH_VENDINGMACHINE_ENTRY = DETABASE_PATH_BASE + "salesmachine";
+	private const string DETABASE_PATH_VENDINGMACHINE_BUY = DETABASE_PATH_BASE + "salesmachine/buy";
 	private const string CONTENT_TYPE = "application/json";
 
 
@@ -32,16 +33,58 @@ public class WebAPIRequester
 				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
 
 			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
-				throw new System.InvalidOperationException(request.error);
+				throw new APIConnectException(request.error);
 		}
 
-		var onEntryData = JsonUtility.FromJson<OnShopEntryData>(request.downloadHandler.text);
-		return onEntryData;
+		var onShopEntryData = JsonUtility.FromJson<OnShopEntryData>(request.downloadHandler.text);
+		return onShopEntryData;
 	}
 
 	public async UniTask<OnShopPaymentData> PostShopPayment(List<ItemStock> inventory, int shopId, int userId)
 	{
-		var sendPaymentData = new SendPaymentData(inventory, shopId, userId);
+		var sendShopPaymentData = new SendPaymentData(inventory, shopId, userId);
+		string jsonData = JsonUtility.ToJson(sendShopPaymentData);
+
+		using var request = UnityWebRequest.Post(DETABASE_PATH_SHOP_BUY, jsonData, CONTENT_TYPE);
+		await request.SendWebRequest();
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				throw new APIConnectException(request.error);
+		}
+
+		var onShopPaymentData = JsonUtility.FromJson<OnShopPaymentData>(request.downloadHandler.text);
+		return onShopPaymentData;
+	}
+
+	public async UniTask<OnVMEntryData> PostVMEntry(int shopId)
+	{
+		WWWForm form = new WWWForm();
+		form.AddField("shopId", shopId);
+		using var request = UnityWebRequest.Post(DETABASE_PATH_VENDINGMACHINE_ENTRY, form);
+		await request.SendWebRequest();
+
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				throw new APIConnectException(request.error);
+		}
+
+		var onVMEntryData = JsonUtility.FromJson<OnVMEntryData>(request.downloadHandler.text);
+		return onVMEntryData;
+	}
+
+	public async UniTask<OnVMPaymentData> PostVMPayment(int itemId, int shopId, int userId)
+	{
+		var itemList = new List<ItemStock>();
+		itemList.Add(new ItemStock(itemId, 1));
+		var sendPaymentData = new SendPaymentData(itemList, shopId, userId);
 		string jsonData = JsonUtility.ToJson(sendPaymentData);
 
 		using var request = UnityWebRequest.Post(DETABASE_PATH_SHOP_BUY, jsonData, CONTENT_TYPE);
@@ -52,21 +95,12 @@ public class WebAPIRequester
 				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
 
 			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
-				throw new System.InvalidOperationException(request.error);
+				XDebug.LogError(request.result, "red");
+				throw new APIConnectException(request.error);
 		}
 
-		var onPaymentData = JsonUtility.FromJson<OnShopPaymentData>(request.downloadHandler.text);
-		return onPaymentData;
-	}
-
-	public async UniTask<OnVMEntryData> PostVMEntry(int shopId)
-	{
-		return default;
-	}
-
-	public async UniTask<OnVMPaymentData> PostVMPayment(int itemId, int shopId, int userId)
-	{
-		return default;
+		var onVMPaymentData = JsonUtility.FromJson<OnVMPaymentData>(request.downloadHandler.text);
+		return onVMPaymentData;
 	}
 
 	[System.Serializable]
@@ -267,5 +301,12 @@ public class WebAPIRequester
 
 		public int ItemID => itemId;
 		public int Amount => amount;
+	}
+
+	public class APIConnectException : System.Exception
+	{
+		public APIConnectException() : base() { }
+		public APIConnectException(string message) : base(message) { }
+		public APIConnectException(string message, System.Exception innerException) : base(message, innerException) { }
 	}
 }
