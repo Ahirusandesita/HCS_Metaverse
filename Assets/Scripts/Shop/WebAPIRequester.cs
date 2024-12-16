@@ -69,22 +69,27 @@ public class WebAPIRequester
 		return default;
 	}
 
+	[System.Serializable]
+	public class ResponseData
+	{
+		[SerializeField] private string responseCode = default;
+		[SerializeField] private string message = default;
+
+		public string ResponseCode => responseCode;
+		public string Message => message;
+	}
 
 
 	[System.Serializable]
-	public class OnShopEntryData
+	public class OnShopEntryData : ResponseData
 	{
 		public OnShopEntryData(Body body)
 		{
 			this.body = body;
 		}
 
-		[SerializeField] private string responseCode = default;
-		[SerializeField] private string message = default;
 		[SerializeField] private Body body = default;
 
-		public string ResponseCode => responseCode;
-		public string Message => message;
 		public Body GetBody => body;
 
 		[System.Serializable]
@@ -101,19 +106,15 @@ public class WebAPIRequester
 	}
 
 	[System.Serializable]
-	public class OnShopPaymentData
+	public class OnShopPaymentData : ResponseData
 	{
 		public OnShopPaymentData(Body body)
 		{
 			this.body = body;
 		}
 
-		[SerializeField] private string responseCode = default;
-		[SerializeField] private string message = default;
 		[SerializeField] private Body body = default;
 
-		public string ResponseCode => responseCode;
-		public string Message => message;
 		public Body GetBody => body;
 
 		[System.Serializable]
@@ -140,15 +141,69 @@ public class WebAPIRequester
 	}
 
 	[System.Serializable]
-	public class OnVMEntryData
+	public class OnVMEntryData : ResponseData
 	{
+		public OnVMEntryData(Body body)
+		{
+			this.body = body;
+		}
 
+		[SerializeField] private Body body = default;
+
+		public Body GetBody => body;
+
+		public class Body
+		{
+			public Body(List<ItemLineup> itemList, bool active)
+			{
+				this.itemList = itemList;
+				this.active = active;
+			}
+
+			[SerializeField] private List<ItemLineup> itemList = default;
+			[SerializeField] private bool active = default;
+
+			public IReadOnlyList<ItemLineup> ItemList => itemList;
+			public bool Active => active;
+		}
 	}
 
 	[System.Serializable]
-	public class OnVMPaymentData
+	public class OnVMPaymentData : ResponseData
 	{
+		public OnVMPaymentData(Body body)
+		{
+			this.body = body;
+		}
 
+		[SerializeField] private Body body = default;
+
+		public Body GetBody => body;
+
+		[System.Serializable]
+		public class Body
+		{
+			public Body(List<ItemStock> inventory, int money, List<ItemStock> stockData, int userId, bool updateFlg)
+			{
+				this.inventory = inventory;
+				this.money = money;
+				this.stockData = stockData;
+				this.userId = userId;
+				this.updateFlg = updateFlg;
+			}
+
+			[SerializeField] private List<ItemStock> inventory = default;
+			[SerializeField] private int money = default;
+			[SerializeField] private List<ItemStock> stockData = default;
+			[SerializeField] private int userId = default;
+			[SerializeField] private bool updateFlg = default;
+
+			public IReadOnlyList<ItemStock> Inventory => inventory;
+			public int Money => money;
+			public IReadOnlyList<ItemStock> StockData => stockData;
+			public int UserID => userId;
+			public bool UpdateFlg => updateFlg;
+		}
 	}
 
 	[System.Serializable]
@@ -198,7 +253,7 @@ public class WebAPIRequester
 		public int Size => size;
 	}
 
-	[SerializeField]
+	[System.Serializable]
 	public struct ItemStock
 	{
 		public ItemStock(int itemId, int amount)
