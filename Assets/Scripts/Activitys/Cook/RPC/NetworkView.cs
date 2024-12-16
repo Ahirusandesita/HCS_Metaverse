@@ -43,6 +43,7 @@ public class NetworkView : NetworkBehaviour, IAfterSpawned
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
             OneGrab = true;
+            Debug.LogError($"OneGrab True");
         }
     }
 

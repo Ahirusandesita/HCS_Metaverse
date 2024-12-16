@@ -107,7 +107,11 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
         var itemSelectArgs = new ItemSelectArgs(asset.ID, asset.Name, position, displayItem.gameObject);
         displayItem.Inject_ItemSelectArgsAndSelectedNotification(itemSelectArgs, this);
         itemObject.GetComponent<LocalView>().NetworkViewInject(networkView);
-        networkInformations.Add(new NetworkInformation(networkView, foodLineup[index].FoodID));
+
+        if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        {
+            networkInformations.Add(new NetworkInformation(networkView, foodLineup[index].FoodID));
+        }
     }
     public void SpawnLocalView(int id, Vector3 position, NetworkView networkView)
     {
@@ -119,7 +123,11 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
         displayItem.Inject_ItemSelectArgsAndSelectedNotification(itemSelectArgs, this);
 
         itemObject.GetComponent<LocalView>().NetworkViewInject(networkView);
-        networkInformations.Add(new NetworkInformation(networkView, id));
+
+        if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        {
+            networkInformations.Add(new NetworkInformation(networkView, id));
+        }
     }
     public void LateJoinSpawnLocalView(int id, Vector3 position, NetworkView networkView)
     {
