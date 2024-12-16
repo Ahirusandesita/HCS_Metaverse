@@ -113,8 +113,18 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
     public Commodity ProcessingStart(ProcessingType processingType, Transform machineTransform)
     {
         Commodity commodity = commodityFactory.Generate(this, processingType);
-        Commodity instanceCommodity = networkRunner.Spawn(commodity.gameObject, this.transform.position, this.transform.rotation).GetComponent<Commodity>();//NetworkRunnnerSpawn /*.transform.parent = machineTransform*/;
-        networkRunner.Despawn(this.gameObject.GetComponent<NetworkObject>());
+        FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
+
+        if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        {
+        /* ------------------------------- CommodityÇÃIDì¸ÇÍÇÈÅI ------------------------------------------------------------------------------- */
+            foodSpawnManagerRPC.RPC_CommoditySpawn( 0 /* Å©Å@ID */, transform.rotation.eulerAngles, transform.position);
+        /* ------------------------------------------------------------------------------------------------------------------------------------ */
+            foodSpawnManagerRPC.RPC_Despawn(GetComponent<LocalView>().NetworkView.GetComponent<NetworkObject>());
+            networkRunner.Despawn(this.gameObject.GetComponent<NetworkObject>());
+        }
+
+        Commodity instanceCommodity = Instantiate(commodity.gameObject, this.transform.position, this.transform.rotation).GetComponent<Commodity>();//NetworkRunnnerSpawn /*.transform.parent = machineTransform*/;
         return instanceCommodity;
     }
 
