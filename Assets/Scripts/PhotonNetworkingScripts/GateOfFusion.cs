@@ -12,8 +12,10 @@ public class GateOfFusion
 	private static GateOfFusion _instance = default;
 	private SyncResult _syncResult = SyncResult.Complete;
 	public static GateOfFusion Instance => _instance ??= new GateOfFusion();
+	public bool IsActivityConnected => MasterServer.IsActivityConnected;
 	public event System.Action OnConnect;
 	public event System.Action OnActivityConnected;
+	
 
 	public GateOfFusion()
 	{
@@ -217,6 +219,7 @@ public class GateOfFusion
 	public void ExecuteOnActivityConnected()
 	{
 		OnActivityConnected?.Invoke();
+		MasterServer.IsActivityConnectedON();
 	}
 
 	public async void ReturnMainRoom()

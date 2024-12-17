@@ -23,9 +23,11 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	private bool _isUsePhoton = true;
 	private NetworkRunner _networkRunner;
 	private SessionRPCManager _sessionRPCManager;
-	private bool _isConnected = default;
+	private bool _isConnected = default;	
 	private bool _isRoomStandby = false;
+	private bool _isActivityConnected = false;
 	public event Action OnConnect;
+	public bool IsActivityConnected => _isActivityConnected;
 	public bool IsUsePhoton => _isUsePhoton;
 	public bool IsConnected => _isConnected;
 	public bool IsSolo => Runner.SessionInfo.PlayerCount <= 1;
@@ -49,19 +51,29 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 #endif
 	#endregion
 
+	[SerializeField]
+	private NetworkObject testObj;
+
 	[ContextMenu("teste")]
-	private async void test()
+	private void test()
 	{
+		GateOfFusion.Instance.Grab(testObj);
 	}
 	[ContextMenu("start")]
 	private void ActivityS()
 	{
+		//testObj.ReleaseStateAuthority();
 		GateOfFusion.Instance.ActivityStart();
 	}
 
 	public void IsRoomStandbyOn()
 	{
+		XKumaDebugSystem.LogError("roomOn");
 		_isRoomStandby = true;
+	}
+	public void IsActivityConnectedON()
+	{
+		_isActivityConnected = true;
 	}
 
 	/// <summary>
@@ -119,6 +131,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 
 	public async UniTask Disconnect()
 	{
+		XKumaDebugSystem.LogError("room:disc");
 		_isRoomStandby = false;
 		XKumaDebugSystem.LogWarning($"Disconnect", KumaDebugColor.SuccessColor);
 		if (!_isUsePhoton) { return; }
@@ -128,6 +141,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 			return;
 		}
 		await _networkRunner.Shutdown(true, ShutdownReason.Ok);
+		_isActivityConnected = false;
 		await UniTask.WaitUntil(() => _networkRunner == null);
 	}
 
