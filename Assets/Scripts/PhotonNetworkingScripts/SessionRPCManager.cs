@@ -25,8 +25,6 @@ public class SessionRPCManager : NetworkBehaviour
 				Rpc_JoinOrCreateRoom(firstScene, Runner.LocalPlayer);
 			}
 		}
-		
-		
 	}
 
 	private void OnDisable()
