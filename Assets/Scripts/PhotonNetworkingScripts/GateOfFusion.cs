@@ -45,24 +45,6 @@ public class GateOfFusion
 		}
 	}
 
-	public async UniTask<bool> GetIsLeader()
-	{
-		await UniTask.WaitUntil(() => _masterServer.IsConnected);
-		await UniTask.WaitUntil(() => _masterServer.IsRoomStandBy);
-		Room currentRoom = RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer);
-		if (currentRoom == null)
-		{
-			return false;
-		}
-		await UniTask.WaitUntil(() => NetworkRunner != null);
-		if (NetworkRunner == null)
-		{
-			XKumaDebugSystem.LogWarning("ƒ‰ƒ“ƒi[‚ª‚ ‚è‚Ü‚¹‚ñ");
-			return false;
-		}
-		return currentRoom.LeaderPlayerRef == NetworkRunner.LocalPlayer;
-	}
-
 	/// <summary>
 	/// ’Í‚Ş‚Æ‚«‚ÉŒÄ‚Ô
 	/// </summary>
@@ -224,9 +206,7 @@ public class GateOfFusion
 			await UniTask.WaitUntil(() => NetworkRunner.ActivePlayers.Contains(roomPlayer));
 		}
 		XKumaDebugSystem.LogError("‘Sˆõ“’…‚µ‚½");
-		//await UniTask.WaitUntil(() => 
-		//	RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer).IsLeader(NetworkRunner.LocalPlayer
-		//));
+		
 		XKumaDebugSystem.LogError("roomStandbyOn");
 		MasterServer.SessionRPCManager.Rpc_RoomStandbyOn();
 		if (currentRoom.SceneNameType is not SceneNameType.KumaKumaTest or SceneNameType.TestPhotonScene)
@@ -236,7 +216,6 @@ public class GateOfFusion
 	}
 	public void ExecuteOnActivityConnected()
 	{
-		XKumaDebugSystem.LogError("execute");
 		OnActivityConnected?.Invoke();
 	}
 

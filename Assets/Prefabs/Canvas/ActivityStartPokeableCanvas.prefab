@@ -333,9 +333,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _text: {fileID: 6251901641445141822}
-  _offsetZ: 1
-  _offsetY: 1
-  _displayPosition: {fileID: 0}
 --- !u!1 &2179840901114780466
 GameObject:
   m_ObjectHideFlags: 0
@@ -465,7 +462,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2598907661866626427}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &7706309730566276136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -875,6 +872,7 @@ GameObject:
   - component: {fileID: 3690849892260666947}
   - component: {fileID: 2598761352981994124}
   - component: {fileID: 8326550533387718636}
+  - component: {fileID: 510188537597580497}
   m_Layer: 0
   m_Name: ActivityStartPokeableCanvas
   m_TagString: Untagged
@@ -1114,3 +1112,16 @@ MonoBehaviour:
   _selectSurface: {fileID: 0}
   _movementProvider: {fileID: 0}
   _tiebreakerScore: 0
+--- !u!114 &510188537597580497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7534129053322900686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 559aba65210c4044aa71bbb391f50e70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _offset: {x: 0, y: 0, z: 0.5}
