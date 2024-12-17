@@ -94,6 +94,39 @@ public class DragSystem : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
         LastPointerPosition = data.position;
     }
 
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            foreach (IScrollable scrollable in scrollables)
+            {
+                scrollable.Scroll(Vector2.left, sensitivity);
+            }
+        }
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            foreach (IScrollable scrollable in scrollables)
+            {
+                scrollable.Scroll(Vector2.right, sensitivity);
+            }
+        }
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            foreach (IScrollable scrollable in scrollables)
+            {
+                scrollable.Scroll(Vector2.up, sensitivity);
+            }
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            foreach (IScrollable scrollable in scrollables)
+            {
+                scrollable.Scroll(Vector2.down, sensitivity);
+            }
+        }
+    }
+
+
     void IDragHandler.OnDrag(PointerEventData eventData)
     {
         OnDrag((PointerEventData)eventData);
