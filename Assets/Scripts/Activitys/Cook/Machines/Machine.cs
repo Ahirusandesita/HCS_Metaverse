@@ -13,7 +13,11 @@ public abstract class Machine : NetworkBehaviour
     [SerializeField]
     private int _machineID = 1;
 
+    private ProcessingType _processingType = ProcessingType.Bake;
+
     public int MachineID => _machineID;
+
+    public ProcessingType ProcessType => _processingType;
     
     protected virtual void Start()
     {

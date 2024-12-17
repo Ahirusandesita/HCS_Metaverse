@@ -110,7 +110,7 @@ public class Ingrodients : NetworkBehaviour, IIngrodientsModerator, IInject<ISwi
     }
 
 
-    public Commodity ProcessingStart(ProcessingType processingType, Transform machineTransform)
+    public void ProcessingStart(ProcessingType processingType, Transform machineTransform)
     {
         Commodity commodity = commodityFactory.Generate(this, processingType);
         FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
@@ -123,9 +123,6 @@ public class Ingrodients : NetworkBehaviour, IIngrodientsModerator, IInject<ISwi
             foodSpawnManagerRPC.RPC_Despawn(GetComponent<LocalView>().NetworkView.GetComponent<NetworkObject>());
             networkRunner.Despawn(this.gameObject.GetComponent<NetworkObject>());
         }
-
-        Commodity instanceCommodity = Instantiate(commodity.gameObject, this.transform.position, this.transform.rotation).GetComponent<Commodity>();//NetworkRunnnerSpawn /*.transform.parent = machineTransform*/;
-        return instanceCommodity;
     }
 
     void IInject<ISwitchableGrabbableActive>.Inject(ISwitchableGrabbableActive t)

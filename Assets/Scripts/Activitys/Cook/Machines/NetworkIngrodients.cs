@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 
-public class NetworkIngrodients : NetworkBehaviour
+public class NetworkIngrodients : Ingrodients
 {
     private NetworkView _networkView = default;
 
@@ -32,11 +32,11 @@ public class NetworkIngrodients : NetworkBehaviour
     }
 
     [Rpc]
-    public void RPC_ManualProcess()
+    public void RPC_ManualProcess(float processValue)
     {
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
-            
+            SubToIngrodientsDetailInformationsTimeItTakes(_hitMachine.ProcessType, processValue);
         }
     }
 }
