@@ -22,15 +22,8 @@ public class IngrodientCatcher
         // 範囲内のオブジェクトをすべて探索する
         foreach (Collider hitCollider in hitColliders)
         {
-            // NetworkObjectを持たない場合 または 移動権限を持たない場合
-            if (!hitCollider.transform.root.TryGetComponent<NetworkObject>(out var network) || !network.HasStateAuthority)
-            {
-                // 次のオブジェクトに移る
-                continue;
-            }
-
             // Ingrodientsがついていた場合
-            if (hitCollider.transform.root.TryGetComponent<Ingrodients>(out var _))
+            if (hitCollider.transform.root.TryGetComponent<Ingrodients>(out var igrodient))
             {
                 // RigidbodyのKinematicがついている場合
                 if (hitCollider.transform.root.GetComponent<Rigidbody>().isKinematic)
@@ -40,7 +33,7 @@ public class IngrodientCatcher
                 }
 
                 // 固定するオブジェクトを取得する
-                processingObject = network;
+                processingObject = igrodient.GetComponent<NetworkObject>();
 
                 // Ingrodientと当たったからTrueを返して終了する
                 return true;
@@ -50,4 +43,6 @@ public class IngrodientCatcher
         // Ingrodientと当たらなかったからfalseを返して終了する
         return false;
     }
+
+
 }

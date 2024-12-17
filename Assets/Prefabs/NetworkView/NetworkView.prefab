@@ -9,10 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5874794852817724675}
-  - component: {fileID: 2579390769952685514}
   - component: {fileID: 4487550254133557489}
   - component: {fileID: 2896036394294955063}
-  - component: {fileID: 8123969058292932421}
   m_Layer: 0
   m_Name: NetworkView
   m_TagString: Untagged
@@ -36,18 +34,6 @@ Transform:
   - {fileID: 8037288014456429708}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2579390769952685514
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1665663529392589167}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87177cf45c3bfdc45aaf9f456015bf12, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4487550254133557489
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,9 +51,7 @@ MonoBehaviour:
   Flags: 131073
   NestedObjects: []
   NetworkedBehaviours:
-  - {fileID: 2579390769952685514}
   - {fileID: 2896036394294955063}
-  - {fileID: 8123969058292932421}
 --- !u!114 &2896036394294955063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,18 +68,6 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 0
---- !u!114 &8123969058292932421
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1665663529392589167}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a1e6736fb273e24d9c9ed3456664858, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4387222082653232660
 GameObject:
   m_ObjectHideFlags: 0

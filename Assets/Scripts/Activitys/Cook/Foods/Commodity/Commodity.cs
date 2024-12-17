@@ -4,7 +4,7 @@ using Oculus.Interaction;
 using Fusion;
 using Cysharp.Threading.Tasks;
 
-public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchableGrabbableActive>, IGrabbableActiveChangeRequester
+public class Commodity : NetworkBehaviour, ICommodityModerator, IInject<ISwitchableGrabbableActive>, IGrabbableActiveChangeRequester
 {
     [SerializeField]
     private CommodityAsset commodityAsset;

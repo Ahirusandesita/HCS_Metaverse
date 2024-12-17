@@ -12,10 +12,9 @@ using UnityEngine.UI;
 /// <summary>
 /// ãÔçﬁ
 /// </summary>
-public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitchableGrabbableActive>,IGrabbableActiveChangeRequester
+public class Ingrodients : NetworkBehaviour, IIngrodientsModerator, IInject<ISwitchableGrabbableActive>,IGrabbableActiveChangeRequester
 {
     public bool IsGrabed = false;
-
 
     [SerializeField]
     private IngrodientsAsset ingrodientsAsset;
@@ -32,7 +31,8 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
             this.NowTimeItTakes = now;
         }
     }
-    private ReactiveProperty<TimeItTakesData> timeItTakesProperty = new ReactiveProperty<TimeItTakesData>();
+
+    private ReactiveProperty<TimeItTakesData> timeItTakesProperty { get; set; }
     public IReadOnlyReactiveProperty<TimeItTakesData> TimeItTakesProperty => timeItTakesProperty;
 
     IngrodientsAsset IIngrodientsModerator.IngrodientsAsset
