@@ -79,31 +79,31 @@ public class AutoMachine : Machine, IObjectLocker
         }
     }
 
-    /// <summary>
-    /// 食材に当たったときの処理
-    /// </summary>
-    /// <param name="hitObject">当たった食材のNetworkObject</param>
-    [Rpc]
-    private void RPC_HitIngrodients(GameObject hitObject) // RPC
-    {
-        // 
+    ///// <summary>
+    ///// 食材に当たったときの処理
+    ///// </summary>
+    ///// <param name="hitObject">当たった食材のNetworkObject</param>
+    //[Rpc]
+    //private void RPC_HitIngrodients(GameObject hitObject) // RPC
+    //{
+    //    // 
         
 
-        // 当たったオブジェクトのIngrodientを取得する
-        //_processingIngrodient = hitObject.GetComponent<Ingrodients>();
+    //    // 当たったオブジェクトのIngrodientを取得する
+    //    //_processingIngrodient = hitObject.GetComponent<Ingrodients>();
 
-        // 当たったオブジェクトにPuttableを追加して取得する
-        _processingPuttable = hitObject.gameObject.AddComponent<Puttable>();
+    //    // 当たったオブジェクトにPuttableを追加して取得する
+    //    _processingPuttable = hitObject.gameObject.AddComponent<Puttable>();
 
-        // Puttableに自身を渡す
-        _processingPuttable.SetLockedCuttingObject(this);
+    //    // Puttableに自身を渡す
+    //    _processingPuttable.SetLockedCuttingObject(this);
 
-        // 
-        _pointableUnityEventWrapper = hitObject.GetComponentInChildren<PointableUnityEventWrapper>();
-        _pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
+    //    // 
+    //    _pointableUnityEventWrapper = hitObject.GetComponentInChildren<PointableUnityEventWrapper>();
+    //    _pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
 
-        Debug.Log($"<color=green>{gameObject.name}</color>　が　<color=blue>{hitObject.name}</color>　を固定");
-    }
+    //    Debug.Log($"<color=green>{gameObject.name}</color>　が　<color=blue>{hitObject.name}</color>　を固定");
+    //}
 
     public void CanselLock()
     {
