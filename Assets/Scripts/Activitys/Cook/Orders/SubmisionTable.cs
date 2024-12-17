@@ -44,7 +44,10 @@ public class SubmisionTable : MonoBehaviour
 
     public void Submit(Commodity commodity)
     {
-        orderManager.Submission(commodity);
+        if (orderManager.CanSubmit(commodity))
+        {
+            orderManager.Submission(commodity);
+        }
     }
 
 }

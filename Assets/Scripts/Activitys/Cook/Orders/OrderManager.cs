@@ -40,7 +40,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     public event OrderInitializeHandler OnOrderInitialize;
     public event ResetOrderArrayHandler OnResetOrder;
 
-    public event Action OnSubmission;
+    public event Action<CustomerInformation> OnSubmission;
 
     private int orderCode = 0;
     [SerializeField]
@@ -129,6 +129,11 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
 
     public void Submission(Commodity commodity)
     {
+        CustomerInformation customerInformation = null;
+        if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        {
+            return;
+        }
         for (int i = 0; i < commodityAssets.Length; i++)
         {
             if (commodityAssets[i] == null)
@@ -137,6 +142,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
             }
             if (commodity.IsMatchCommodity(commodityAssets[i]))
             {
+                customerInformation = customers[i];
                 commodityAssets[i] = null;
                 customers[i] = null;
                 PackOrders();
@@ -148,7 +154,8 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
             }
         }
 
-        GateOfFusion.Instance.NetworkRunner.Despawn(commodity.GetComponent<Fusion.NetworkObject>());
+        Debug.LogError("Despawn Commodity");
+        //GateOfFusion.Instance.NetworkRunner.Despawn(commodity.GetComponent<Fusion.NetworkObject>());
 
 
         for (int i = 0; i < commodityAssets.Length; i++)
@@ -162,7 +169,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
         }
 
         OnResetOrder?.Invoke(new ResetOrderArrayEventArgs(commodityInformations));
-        OnSubmission?.Invoke();
+        OnSubmission?.Invoke(customerInformation);
     }
 
     public void RemoteSubmision(int index)
@@ -183,7 +190,6 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
         }
 
         OnResetOrder?.Invoke(new ResetOrderArrayEventArgs(commodityInformations));
-        OnSubmission?.Invoke();
     }
 
     public void Cancel(CustomerInformation customer)
