@@ -1,8 +1,18 @@
+using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+public class OrderInformation
+{
+    public readonly OrderTicket OrderTicket;
+    public readonly int AssetIndex;
+    public OrderInformation(OrderTicket orderTicket, int assetIndex)
+    {
+        this.OrderTicket = orderTicket;
+        this.AssetIndex = assetIndex;
+    }
+}
 public class OrderSystem : MonoBehaviour
 {
     private OrderAsset orderAsset;
@@ -14,8 +24,8 @@ public class OrderSystem : MonoBehaviour
     [SerializeField]
     private ActivityProgressManagement activityProgressManagement;
 
-    private List<OrderTicket> orderTickets = new List<OrderTicket>();
-    private List<OrderTicket> removeOrderTickets = new List<OrderTicket>();
+    private List<OrderInformation> orderTickets = new List<OrderInformation>();
+    private List<OrderInformation> removeOrderTickets = new List<OrderInformation>();
 
     private void Start()
     {
@@ -32,8 +42,15 @@ public class OrderSystem : MonoBehaviour
         remoteOrder.RPC_Order(index, orderWaitingTime, (int)orderWaitingType);
         OrderTicket orderTicket = orderManager.Inquiry(orderWaitingTime, orderWaitingType);
         orderTicket.Orderable.Order(orderAsset.OrderDetailInformations[index].CommodityAsset, orderTicket.CustomerInformation);
-        orderTickets.Add(orderTicket);
+        orderTickets.Add(new OrderInformation(orderTicket, index));
         return orderTicket;
+    }
+    public void NewMember(PlayerRef player)
+    {
+        foreach (OrderInformation item in orderTickets)
+        {
+            remoteOrder.RPC_Order(player, item.AssetIndex, item.OrderTicket.CustomerInformation.RemainingTime, (int)item.OrderTicket.CustomerInformation.OrderWaitingType);
+        }
     }
 
     public void InjectRemoteOrder(RemoteOrder remoteOrder)
@@ -47,7 +64,7 @@ public class OrderSystem : MonoBehaviour
         orderManager.OnSubmission += On;
         orderManager.OnSubmission += (info) =>
         {
-            orderTickets.Remove(orderTickets.Where(ticket => ticket.CustomerInformation.OrderCode == info.OrderCode).First());
+            orderTickets.Remove(orderTickets.Where(ticket => ticket.OrderTicket.CustomerInformation.OrderCode == info.OrderCode).First());
         };
     }
 
@@ -63,19 +80,20 @@ public class OrderSystem : MonoBehaviour
             return;
         }
 
-        
+
         for (int i = 0; i < orderTickets.Count; i++)
         {
 
-            OrderTicket ticket = orderTickets[i];
-            if (ticket.CustomerInformation.RemainingTime <= 0f)
+            OrderInformation orderInformation = orderTickets[i];
+            if (orderInformation.OrderTicket.CustomerInformation.RemainingTime <= 0f)
             {
-                ticket.Orderable.Cancel(ticket.CustomerInformation);
+                orderInformation.OrderTicket.Orderable.Cancel(orderInformation.OrderTicket.CustomerInformation);
                 StartCoroutine(Co());
-                removeOrderTickets.Add(ticket);
+                removeOrderTickets.Add(orderInformation);
+
             }
         }
-        if(removeOrderTickets.Count > 0)
+        if (removeOrderTickets.Count > 0)
         {
             orderTickets = orderTickets.Except(removeOrderTickets).ToList();
             removeOrderTickets.Clear();
@@ -86,7 +104,7 @@ public class OrderSystem : MonoBehaviour
     {
         OrderTicket orderTicket = orderManager.Inquiry(orderWaitingTime, (OrderWaitingType)orderWaitingType);
         orderTicket.Orderable.Order(orderAsset.OrderDetailInformations[index].CommodityAsset, orderTicket.CustomerInformation);
-        orderTickets.Add(orderTicket);
+        orderTickets.Add(new OrderInformation(orderTicket, index));
     }
 
     private async void On(CustomerInformation customerInformation)
