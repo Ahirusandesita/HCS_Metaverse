@@ -10,7 +10,7 @@ public enum ActivitiState
     Start,
     End
 }
-public class TimeNetwork : NetworkBehaviour,IStateAuthorityChanged
+public class TimeNetwork : NetworkBehaviour/*,IStateAuthorityChanged*/
 {
     public bool IsSpawned = false;
     [Networked, OnChangedRender(nameof(Count))]

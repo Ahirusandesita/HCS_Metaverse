@@ -102,7 +102,6 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     /// <param name="commodityAsset"></param>
     void IOrderable.Order(CommodityAsset commodityAsset, CustomerInformation customer)
     {
-        Debug.LogError("BBBBBBBBBBBBBBBBBBB");
         int vacantSeatOrder = SearchVacantSeatOrder();
 
         commodityAssets[vacantSeatOrder] = commodityAsset;
