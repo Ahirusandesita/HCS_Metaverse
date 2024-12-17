@@ -31,8 +31,7 @@ public class LocalIngrodients : MonoBehaviour
         }
     }
 
-    [Rpc]
-    public void RPC_PutMachine(int machineID)
+    public void PutMachine(int machineID)
     {
         _hitMachine = _machineIDManager.GetMachine(machineID);
 
@@ -41,13 +40,19 @@ public class LocalIngrodients : MonoBehaviour
         // ã≠êßÇ≈íÕÇ›âèú Å´
     }
 
+    [Rpc]
+    public void RPC_PutMachine(int machineID)
+    {
+        PutMachine(machineID);
+    }
+
     private void Select()
     {
         if (_hitMachine == null)
         {
             return;
         }
-        
+
         _localView.NetworkView.GetComponent<NetworkIngrodients>().RPC_IngrodientsSelect();
     }
 
