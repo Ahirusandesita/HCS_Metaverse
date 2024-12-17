@@ -39,7 +39,6 @@ public class OrderSystem : MonoBehaviour
     }
     public OrderTicket Order(int index, float orderWaitingTime, OrderWaitingType orderWaitingType)
     {
-        Debug.LogError("AAAAAAAAAAAAAAAAAA");
         remoteOrder.RPC_Order(index, orderWaitingTime, (int)orderWaitingType);
         OrderTicket orderTicket = orderManager.Inquiry(orderWaitingTime, orderWaitingType);
         orderTicket.Orderable.Order(orderAsset.OrderDetailInformations[index].CommodityAsset, orderTicket.CustomerInformation);
