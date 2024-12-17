@@ -15,6 +15,7 @@ public class OrderSystem : MonoBehaviour
     private ActivityProgressManagement activityProgressManagement;
 
     private List<OrderTicket> orderTickets = new List<OrderTicket>();
+    private List<OrderTicket> removeOrderTickets = new List<OrderTicket>();
 
     private void Start()
     {
@@ -62,15 +63,22 @@ public class OrderSystem : MonoBehaviour
             return;
         }
 
-        for(int i = 0; i < orderTickets.Count; i++)
+        
+        for (int i = 0; i < orderTickets.Count; i++)
         {
-            OrderTicket ticket = orderTickets[i];
 
-            if(ticket.CustomerInformation.RemainingTime <= 0f)
+            OrderTicket ticket = orderTickets[i];
+            if (ticket.CustomerInformation.RemainingTime <= 0f)
             {
                 ticket.Orderable.Cancel(ticket.CustomerInformation);
                 StartCoroutine(Co());
+                removeOrderTickets.Add(ticket);
             }
+        }
+        if(removeOrderTickets.Count > 0)
+        {
+            orderTickets = orderTickets.Except(removeOrderTickets).ToList();
+            removeOrderTickets.Clear();
         }
     }
 
