@@ -38,6 +38,7 @@ public class RemoteOrder : NetworkBehaviour, IPlayerJoined
     {
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
+            customer = GameObject.FindObjectOfType<OrderSystem>();
             customer.NewMember(player);
         }
     }
