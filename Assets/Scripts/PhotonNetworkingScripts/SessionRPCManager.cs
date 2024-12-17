@@ -146,11 +146,11 @@ public class SessionRPCManager : NetworkBehaviour
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 	public void Rpc_ReleaseStateAuthority([RpcTarget]PlayerRef rpcTarget,NetworkObject networkObject)
 	{
-		XKumaDebugSystem.LogWarning($"{rpcTarget}:{networkObject}");
+		XKumaDebugSystem.LogWarning($"{rpcTarget}:{networkObject.name}");
 		networkObject.ReleaseStateAuthority();
 
 	}
-
+	[Rpc(RpcSources.All,RpcTargets.All)]
 	public void Rpc_ExecuteOnActivityConnedted()
 	{
 		GateOfFusion.Instance.ExecuteOnActivityConnected();
