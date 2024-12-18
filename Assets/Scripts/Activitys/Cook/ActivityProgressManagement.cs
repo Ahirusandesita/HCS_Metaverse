@@ -75,7 +75,7 @@ public class ActivityProgressManagement : MonoBehaviour
             {
                 ActivityStart();
             };
-
+            Debug.LogError("AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             await allSpawn.Async();
             GateOfFusion.Instance.Despawn(allSpawn);
             rpcInstance.RPC_RPCInstanceInject();
