@@ -5,19 +5,19 @@ using Fusion;
 public abstract class Machine : NetworkBehaviour, IManualProcess
 {
     // 
-    private LocalView _processingIngrodientsView = default;
+    protected LocalView _processingIngrodientsView = default;
 
     [SerializeField]
-    private int _machineID = 1;
+    protected int _machineID = 1;
 
     [SerializeField]
-    private float _processingValue = 1f;
+    protected float _processingValue = 1f;
 
     [SerializeField]
-    private Transform _processerTransform = default;
+    protected Transform _processerTransform = default;
 
     [SerializeField]
-    private ProcessingType _processingType = ProcessingType.Bake;
+    protected ProcessingType _processingType = ProcessingType.Bake;
 
     public int MachineID => _machineID;
 

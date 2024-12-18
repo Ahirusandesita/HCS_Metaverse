@@ -114,12 +114,11 @@ public class Ingrodients : NetworkBehaviour, IIngrodientsModerator, IInject<ISwi
 
     public void ProcessingStart(ProcessingType processingType, Transform machineTransform)
     {
-        Commodity commodity = commodityFactory.Generate(this, processingType);
-        FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
-
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
-            foodSpawnManagerRPC.RPC_CommoditySpawn( commodity.CommodityAsset.CommodityID, transform.rotation.eulerAngles, transform.position, _hitMachine.MachineID);
+            Commodity commodity = commodityFactory.Generate(this, processingType);
+            FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
+            foodSpawnManagerRPC.RPC_CommoditySpawn( commodity.CommodityAsset.CommodityID, machineTransform.rotation.eulerAngles, machineTransform.position, _hitMachine.MachineID);
             foodSpawnManagerRPC.RPC_Despawn(GetComponent<LocalView>().NetworkView.GetComponent<NetworkObject>());
             networkRunner.Despawn(this.gameObject.GetComponent<NetworkObject>());
         }
