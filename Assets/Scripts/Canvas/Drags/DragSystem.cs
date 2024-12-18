@@ -49,6 +49,7 @@ public class DragSystem : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
         scrollables = new List<IScrollable>(this.transform.GetComponentsInChildren<IScrollable>(true));
         foreach(IScrollable scrollable in IScrollableList)
         {
+            scrollable.UnSubscribe(() => scrollables.Remove(scrollable));
             scrollables.Add(scrollable);
         }
     }
@@ -56,11 +57,13 @@ public class DragSystem : MonoBehaviour,IBeginDragHandler,IEndDragHandler,IDragH
     {
         foreach(IScrollable scrollable in scrollables)
         {
+            scrollable.UnSubscribe(() => scrollables.Remove(scrollable));
             this.scrollables.Add(scrollable);
         }
     }
     public void ScrollableInject(IScrollable scrollable)
     {
+        scrollable.UnSubscribe(() => scrollables.Remove(scrollable));
         scrollables.Add(scrollable);
     }
 

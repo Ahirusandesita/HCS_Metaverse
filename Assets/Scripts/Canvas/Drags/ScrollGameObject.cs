@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,11 @@ public class ScrollGameObject : MonoBehaviour, IScrollable, ITransformInjectable
         this.transform.position -= canvasTransform.right * moveValue.x / (1500f / sensitivity);
         this.transform.position -= canvasTransform.forward * moveValue.y
             / (1500f / sensitivity);
+    }
+
+    public void UnSubscribe(Action action)
+    {
+        throw new NotImplementedException();
     }
 
     void ITransformInjectable.TransformInject(Transform transform)

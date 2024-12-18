@@ -18,28 +18,35 @@ public class InCartItemUI : MonoBehaviour
 	private int _id;
 	private int test;
 
+	public bool CanDestory = false;
+	private float testDownLimit;
 	public void Init(Sprite itemSprite, ShopCartUIManager shopCartUIManager, 
 		Vector2 popAnchoredPosition, int id,DragSystem dragSystem,
-		ScrollTransformInject scrollTransformInject,int test)
+		ScrollTransformInject scrollTransformInject,int test,Vector2 nowPosition)
 	{
 		_id = id;
 		RectTransform myRectTransform = this.transform as RectTransform;
 		_shopCartUIManager = shopCartUIManager;
 		_image.sprite = itemSprite;
-		myRectTransform.anchoredPosition = popAnchoredPosition;
+		myRectTransform.anchoredPosition = nowPosition;
 		dragSystem.ScrollableInject(_yScrollObject);
 		scrollTransformInject.Inject(_yScrollObject);
-		_currentColLimit -= myRectTransform.localPosition.y;
-		_yScrollObject.InjectDownLimit(myRectTransform.localPosition.y);
+		//_currentColLimit -= myRectTransform.localPosition.y;
+		testDownLimit = popAnchoredPosition.y;
+		_yScrollObject.InjectDownLimit(popAnchoredPosition.y);
 		XKumaDebugSystem.LogError("down:"+myRectTransform.localPosition.y);
 		this.test = test + 1;
 	}
 	public void UpdateLimit(float colLimitGap)
 	{
 		_currentColLimit += colLimitGap;
-		XKumaDebugSystem.LogError("up:"+_currentColLimit+":"+_id + colLimitGap);
 		_yScrollObject.InjectUpLimit(_currentColLimit);
 	}
+	public void UpdateDownLimit(float limit)
+    {
+		testDownLimit += limit;
+		_yScrollObject.InjectDownLimit(testDownLimit);
+    }
 
 	public void UpdateCount(int count)
 	{
@@ -55,4 +62,12 @@ public class InCartItemUI : MonoBehaviour
 	{
 		_shopCartUIManager.DestoryCartUI(_id);
 	}
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.M) && CanDestory)
+        {
+			Delete();
+        }
+    }
 }

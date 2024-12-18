@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class ScrollObject : MonoBehaviour, IScrollable,ITransformInjectable
@@ -18,5 +19,10 @@ public class ScrollObject : MonoBehaviour, IScrollable,ITransformInjectable
     void ITransformInjectable.TransformInject(Transform transform)
     {
         canvasTransform = transform;
+    }
+
+    public void UnSubscribe(Action action)
+    {
+        throw new NotImplementedException();
     }
 }

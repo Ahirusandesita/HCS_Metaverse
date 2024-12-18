@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class YScrollObject : MonoBehaviour, IVerticalOnlyScrollable, ITransformInjectable
@@ -6,7 +7,7 @@ public class YScrollObject : MonoBehaviour, IVerticalOnlyScrollable, ITransformI
     private ScrollLimitData upLimit = new ScrollLimitData(0f, false);
     private ScrollLimitData downLimit = new ScrollLimitData(0f, false);
     private RectTransform rectTransform;
-
+    private Action callback;
     private void Awake()
     {
         rectTransform = this.GetComponent<RectTransform>();
@@ -56,5 +57,14 @@ public class YScrollObject : MonoBehaviour, IVerticalOnlyScrollable, ITransformI
     public void DownLimitCancellation()
     {
         downLimit = new ScrollLimitData(0f, false);
+    }
+
+    public void UnSubscribe(Action action)
+    {
+        callback += action;
+    }
+    private void OnDestroy()
+    {
+        callback?.Invoke();
     }
 }
