@@ -95,7 +95,7 @@ public class ActivityProgressManagement : MonoBehaviour
         await allSpawn.Async();
         GateOfFusion.Instance.Despawn(allSpawn);
         mainTimeInstance.StartTime = 180f;
-        mainTimeInstance.OnFinish += () =>
+        mainTimeInstance.OnMasterFinish += () =>
         {
             ActivityFinish().Forget();
         };
@@ -125,7 +125,7 @@ public class ActivityProgressManagement : MonoBehaviour
         }
         OnReady?.Invoke();
         readyTimeInstance = timeNetwork;
-        readyTimeInstance.OnFinish += () =>
+        readyTimeInstance.OnMasterFinish += () =>
         {
             OnStart?.Invoke();
         };
@@ -142,7 +142,7 @@ public class ActivityProgressManagement : MonoBehaviour
             return;
         }
         mainTimeInstance = timeNetwork;
-        mainTimeInstance.OnFinish += () =>
+        mainTimeInstance.OnMasterFinish += () =>
         {
             ActivityFinish().Forget();
         };
@@ -159,9 +159,6 @@ public class ActivityProgressManagement : MonoBehaviour
 
     public void RPC_Joined(PlayerRef playerRef)
     {
-        Debug.LogError(rpcInstance);
-        Debug.LogError(readyTimeInstance);
-        Debug.LogError(MainTimeInstance);
         rpcInstance.RPC_NetworkTimeInject(playerRef, readyTimeInstance.GetComponent<NetworkObject>(), mainTimeInstance.GetComponent<NetworkObject>(),rpcInstance.GetComponent<NetworkObject>());
     }
 }
