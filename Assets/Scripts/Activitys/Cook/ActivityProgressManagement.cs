@@ -71,6 +71,7 @@ public class ActivityProgressManagement : MonoBehaviour
                 networkTimeInjectable.Inject(readyTimeInstance);
             }
 
+            Debug.LogError("‚­‚Ü‚Æ‚¯‚Á‚±‚ñ");
             readyTimeInstance.OnFinish += () =>
             {
                 ActivityStart();
