@@ -13,9 +13,14 @@ public abstract class Machine : NetworkBehaviour
     [SerializeField]
     private int _machineID = 1;
 
+    [SerializeField]
+    private float _processingValue = 1f;
+
     private ProcessingType _processingType = ProcessingType.Bake;
 
     public int MachineID => _machineID;
+
+    public float ProcessingValue => _processingValue;
 
     public ProcessingType ProcessType => _processingType;
     

@@ -32,11 +32,11 @@ public class NetworkIngrodients : Ingrodients
     }
 
     [Rpc]
-    public void RPC_ManualProcess(float processValue)
+    public void RPC_ManualProcess()
     {
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
-            SubToIngrodientsDetailInformationsTimeItTakes(_hitMachine.ProcessType, processValue);
+            SubToIngrodientsDetailInformationsTimeItTakes(_hitMachine.ProcessType, _hitMachine.ProcessingValue);
         }
     }
 }
