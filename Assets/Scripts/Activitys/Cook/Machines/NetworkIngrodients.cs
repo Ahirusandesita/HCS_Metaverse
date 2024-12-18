@@ -7,8 +7,6 @@ public class NetworkIngrodients : Ingrodients
 {
     private NetworkView _networkView = default;
 
-    private Machine _hitMachine = default;
-
     private void Start()
     {
         _networkView = GetComponent<NetworkView>();

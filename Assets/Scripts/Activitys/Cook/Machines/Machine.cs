@@ -34,7 +34,7 @@ public abstract class Machine : NetworkBehaviour
 
     }
 
-    public void ProcessEvent()
+    public void ManualProcessEvent()
     {
         if (_processingIngrodientsView == null)
         {
