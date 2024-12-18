@@ -142,7 +142,7 @@ MonoBehaviour:
   - {fileID: 5029445918733743647}
   shopCart: {fileID: 8193003864273062663}
   uiManager: {fileID: 5954294512950122465}
-  _id: 20004
+  id: 10001
 --- !u!1 &2220975658258607896
 GameObject:
   m_ObjectHideFlags: 0
@@ -238,7 +238,6 @@ GameObject:
   - component: {fileID: 4211348819860617434}
   - component: {fileID: 5441139585945079074}
   - component: {fileID: 3922477320445498856}
-  - component: {fileID: 3805907354637829196}
   m_Layer: 0
   m_Name: BuyButton
   m_TagString: Untagged
@@ -317,20 +316,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _shopCartUIManager: {fileID: 5954294512950122465}
-  eventTrigger: {fileID: 3805907354637829196}
---- !u!114 &3805907354637829196
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2786539043332794267}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates: []
 --- !u!1 &3709005221522745936
 GameObject:
   m_ObjectHideFlags: 0
@@ -598,12 +583,13 @@ MonoBehaviour:
   _allItemAsset: {fileID: 11400000, guid: 4b0a8552cd5992449aab6ed722f30dde, type: 2}
   _itemIconPrefab: {fileID: 7304815664490633925, guid: abcc06a159769a2468081f57d2fa692c, type: 3}
   _shopCart: {fileID: 8193003864273062663}
-  _shopUIParent: {fileID: 1916540449568865231}
+  _shopUIParent: {fileID: 8519556902688962071}
   _startPosition: {fileID: 6136296327773532696}
   _shopCanvasObject: {fileID: 7474700477425182553}
   _productUIPrefab: {fileID: 2601286247830737497, guid: 45d7699a06c0dda42a7ba070a7284a07, type: 3}
-  _productParent: {fileID: 9222298592507558460}
+  _productParent: {fileID: 1916540449568865231}
   _totalPriceText: {fileID: 5127470033640460807}
+  _startPositionTransform: {fileID: 0}
   _priceCardPositionOffset: {x: 0, y: -0.5, z: 0}
 --- !u!1 &4182613528688559333
 GameObject:
@@ -713,6 +699,7 @@ GameObject:
   - component: {fileID: 8519556902688962071}
   - component: {fileID: 3135258294411256867}
   - component: {fileID: 2248972088122333645}
+  - component: {fileID: 1287339816351930108}
   m_Layer: 0
   m_Name: Panel
   m_TagString: Untagged
@@ -777,6 +764,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1287339816351930108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4833644702429060022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9168dd22185b94a42aae6b19ac49afa3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sensitivity: 1
+  IScrollables: []
 --- !u!1 &5216645010865597738
 GameObject:
   m_ObjectHideFlags: 0
@@ -1148,7 +1149,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1916540449568865231
 RectTransform:
   m_ObjectHideFlags: 0

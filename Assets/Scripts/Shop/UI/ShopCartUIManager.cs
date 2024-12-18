@@ -29,6 +29,7 @@ public class ShopCartUIManager : MonoBehaviour
 	private Vector3 _priceCardPositionOffset = default;
 	private Dictionary<int, ProductUI> _productUIs = new();
 	private Dictionary<int, InCartItemUI> _itemIcons = new();
+	private int _yPosition = 0;
 	private float _offsetX = 100;
 	private float _offsetY = 100;
 	private int _horizontalLimit = 3;
@@ -43,10 +44,10 @@ public class ShopCartUIManager : MonoBehaviour
 		_horizontalLimit = Mathf.FloatToHalf((_shopUIParent.transform as RectTransform).sizeDelta.x / _offsetX);
 	}
 
-	public void AddProductUI(int id, int price,int discountedPrice, int stock,float discount, Vector3 position)
+	public void AddProductUI(int id, int price, int discountedPrice, int stock, float discount, Vector3 position)
 	{
-		ProductUI productUITemp = Instantiate(_productUIPrefab,_productParent);
-		productUITemp.Init(price,discountedPrice,discount,stock);
+		ProductUI productUITemp = Instantiate(_productUIPrefab, _productParent);
+		productUITemp.Init(price, discountedPrice, discount, stock);
 		_productUIs.Add(id, productUITemp);
 
 		productUITemp.transform.position = position + _priceCardPositionOffset;
@@ -62,13 +63,22 @@ public class ShopCartUIManager : MonoBehaviour
 		if (!_itemIcons.Keys.Contains(id))
 		{
 			ItemAsset itemAsset = _allItemAsset.GetItemAssetByID(id);
+			int currentYPosition = (_itemIcons.Count / _horizontalLimit);
 			Vector2 popAnchoredPosition =
 				_startPosition.anchoredPosition
 				+ Vector2.right * (_itemIcons.Count % _horizontalLimit) * _offsetX
-				+ Vector2.up * (_itemIcons.Count / _horizontalLimit) * -_offsetY;
+				+ Vector2.up * currentYPosition * _offsetY;
 			uiIconTemp = Instantiate(_itemIconPrefab, _shopUIParent);
 			uiIconTemp.Init(itemAsset.ItemIcon, this, popAnchoredPosition, id);
 			_itemIcons.Add(id, uiIconTemp);
+			if (_yPosition != currentYPosition)
+			{
+				foreach (InCartItemUI item in _itemIcons.Values)
+				{
+					item.UpdateLimit(_offsetY);
+				}
+				_yPosition = currentYPosition;
+			}
 		}
 		else
 		{
