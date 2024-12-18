@@ -32,6 +32,7 @@ public interface IInteractionInfoReceiver
 {
     /// <summary>
     /// InteractionInfoがSetされる
+    /// <br><b>注意：事前にシーン上のPlayerInteractionインスタンスへのAddが必要。</b></br>
     /// </summary>
     void SetInfo(IInteraction.InteractionInfo interactionInfo);
 }
