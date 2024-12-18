@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 public struct ScrollLimitData
 {
@@ -60,5 +61,10 @@ public class XScrollObject : MonoBehaviour, IHorizontalOnlyScrollable, ITransfor
     public void InjectRightLimit(float limitRightPos)
     {
         rightLimit = new ScrollLimitData(limitRightPos, true);
+    }
+
+    public void UnSubscribe(Action action)
+    {
+        throw new NotImplementedException();
     }
 }

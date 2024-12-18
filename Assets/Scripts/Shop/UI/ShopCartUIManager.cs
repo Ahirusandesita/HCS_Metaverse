@@ -5,127 +5,165 @@ using TMPro;
 
 public class ShopCartUIManager : MonoBehaviour
 {
-	[SerializeField]
-	private ItemBundleAsset _allItemAsset;
-	[SerializeField]
-	private InCartItemUI _itemIconPrefab;
-	[SerializeField]
-	private ShopCart _shopCart;
-	[SerializeField]
-	private Transform _shopUIParent;
-	[SerializeField]
-	private GameObject _shopCanvasObject;
-	[SerializeField]
-	private ProductUI _productUIPrefab;
-	[SerializeField]
-	private Transform _productParent;
-	[SerializeField]
-	private TextMeshProUGUI _totalPriceText;
-	[SerializeField]
-	private RectTransform _startPositionTransform;
-	[SerializeField]
-	private DragSystem _dragSystem = default;
-	[SerializeField]
-	private ScrollTransformInject _scrollTransformInject = default;
-	[SerializeField]
-	private Vector3 _priceCardPositionOffset = default;
-	private Dictionary<int, ProductUI> _productUIs = new();
-	private Dictionary<int, InCartItemUI> _itemIcons = new();
-	private int _yPosition = -1;
-	private float _offsetX = 100;
-	private float _offsetY = 100;
-	private int _horizontalLimit = 1;
+    [SerializeField]
+    private ItemBundleAsset _allItemAsset;
+    [SerializeField]
+    private InCartItemUI _itemIconPrefab;
+    [SerializeField]
+    private ShopCart _shopCart;
+    [SerializeField]
+    private Transform _shopUIParent;
+    [SerializeField]
+    private GameObject _shopCanvasObject;
+    [SerializeField]
+    private ProductUI _productUIPrefab;
+    [SerializeField]
+    private Transform _productParent;
+    [SerializeField]
+    private TextMeshProUGUI _totalPriceText;
+    [SerializeField]
+    private RectTransform _startPositionTransform;
+    [SerializeField]
+    private DragSystem _dragSystem = default;
+    [SerializeField]
+    private ScrollTransformInject _scrollTransformInject = default;
+    [SerializeField]
+    private Vector3 _priceCardPositionOffset = default;
+    private Dictionary<int, ProductUI> _productUIs = new();
+    private Dictionary<int, InCartItemUI> _itemIcons = new();
+    private List<InCartItemUI> test_inCartItemUIs = new List<InCartItemUI>();
+    private int _yPosition = -1;
+    private float _offsetX = 100;
+    private float _offsetY = 100;
+    private int _horizontalLimit = 1;
 
 
-	private void Start()
-	{
-		RectTransform iconTransform = _itemIconPrefab.transform as RectTransform;
-		TatalPriceDisplay();
-		_offsetX = iconTransform.sizeDelta.x;
-		_offsetY = iconTransform.sizeDelta.y;
-		//_horizontalLimit = Mathf.FloatToHalf((_shopUIParent.transform as RectTransform).sizeDelta.x / _offsetX);
-	}
+    private void Start()
+    {
+        RectTransform iconTransform = _itemIconPrefab.transform as RectTransform;
+        TatalPriceDisplay();
+        _offsetX = iconTransform.sizeDelta.x;
+        _offsetY = iconTransform.sizeDelta.y;
+        //_horizontalLimit = Mathf.FloatToHalf((_shopUIParent.transform as RectTransform).sizeDelta.x / _offsetX);
+    }
 
-	public void AddProductUI(int id, int price, int discountedPrice, int stock, float discount, Vector3 position)
-	{
-		ProductUI productUITemp = Instantiate(_productUIPrefab, _productParent);
-		productUITemp.Init(price, discountedPrice, discount, stock);
-		_productUIs.Add(id, productUITemp);
+    public void AddProductUI(int id, int price, int discountedPrice, int stock, float discount, Vector3 position)
+    {
+        ProductUI productUITemp = Instantiate(_productUIPrefab, _productParent);
+        productUITemp.Init(price, discountedPrice, discount, stock);
+        _productUIs.Add(id, productUITemp);
 
-		productUITemp.transform.position = position + _priceCardPositionOffset;
-	}
+        productUITemp.transform.position = position + _priceCardPositionOffset;
+    }
 
-	public void AddCartUI(int id)
-	{
-		if (!_shopCanvasObject.activeSelf)
-		{
-			_shopCanvasObject.SetActive(true);
-		}
-		InCartItemUI uiIconTemp;
-		if (!_itemIcons.Keys.Contains(id))
-		{
-			ItemAsset itemAsset = _allItemAsset.GetItemAssetByID(id);
-			int currentYPosition = (_itemIcons.Count / _horizontalLimit);
-			Vector2 popAnchoredPosition =
-				_startPositionTransform.anchoredPosition
-				+ Vector2.right * (_itemIcons.Count % _horizontalLimit) * _offsetX
-				+ Vector2.up * currentYPosition * - _offsetY;
-			uiIconTemp = Instantiate(_itemIconPrefab, _shopUIParent);
-			uiIconTemp.Init(itemAsset.ItemIcon, this, popAnchoredPosition, id,_dragSystem,_scrollTransformInject,currentYPosition);
-			_itemIcons.Add(id, uiIconTemp);
+    public void AddCartUI(int id)
+    {
+        if (!_shopCanvasObject.activeSelf)
+        {
+            _shopCanvasObject.SetActive(true);
+        }
+        InCartItemUI uiIconTemp;
+        if (!_itemIcons.Keys.Contains(id))
+        {
+            ItemAsset itemAsset = _allItemAsset.GetItemAssetByID(id);
+            int currentYPosition = (_itemIcons.Count / _horizontalLimit);
+            Vector2 popAnchoredPosition =
+                _startPositionTransform.anchoredPosition
+                + Vector2.right * (_itemIcons.Count % _horizontalLimit) * _offsetX
+                + Vector2.up * currentYPosition * -_offsetY;
+            uiIconTemp = Instantiate(_itemIconPrefab, _shopUIParent);
 
-			if (_itemIcons.Count % _horizontalLimit == 0)
-			{
-				foreach (InCartItemUI item in _itemIcons.Values)
-				{
-					item.UpdateLimit(_offsetY);
-				}
-				//_yPosition = currentYPosition;
-			}
-		}
-		else
-		{
-			uiIconTemp = _itemIcons[id];
-		}
-		uiIconTemp.UpdateCount(_shopCart.InCarts[id]);
-		TatalPriceDisplay();
-	}
+            ///Ž„///
+            Vector2 nowPosition = default;
+            if (test_inCartItemUIs.Count != 0)
+            {
+                nowPosition = test_inCartItemUIs[test_inCartItemUIs.Count - 1].GetComponent<RectTransform>().anchoredPosition;
+                nowPosition.y -= _offsetY;
+            }
+            else
+            {
+                nowPosition = popAnchoredPosition;
+            }
+            uiIconTemp.Init(itemAsset.ItemIcon, this, popAnchoredPosition, id, _dragSystem, _scrollTransformInject, currentYPosition, nowPosition);
+            //////
 
-	private void TatalPriceDisplay()
-	{
-		_totalPriceText.text = _shopCart.ClacTotalPrice().ToString("c");
-	}
+            _itemIcons.Add(id, uiIconTemp);
 
-	public void BuyButtonPush()
-	{
-		Clear();
-		_shopCart.Buy();
-	}
-	private void Clear()
-	{
-		foreach (InCartItemUI uiIcon in _itemIcons.Values)
-		{
-			Destroy(uiIcon.gameObject);
-		}
-		_itemIcons.Clear();
-		_shopCanvasObject.SetActive(false);
-	}
+            ///Ž„///
+            test_inCartItemUIs.Add(uiIconTemp);
+            //////
+            if (_itemIcons.Count % _horizontalLimit == 0)
+            {
+                foreach (InCartItemUI item in _itemIcons.Values)
+                {
+                    item.UpdateLimit(_offsetY);
+                }
+                //_yPosition = currentYPosition;
+            }
+        }
+        else
+        {
+            uiIconTemp = _itemIcons[id];
+        }
+        uiIconTemp.UpdateCount(_shopCart.InCarts[id]);
+        TatalPriceDisplay();
+    }
 
-	public void DestoryCartUI(int id)
-	{
-		_shopCart.RemoveCart(id);
-		if (!_shopCart.InCarts.Keys.Contains(id))
-		{
-			_itemIcons[id].UpdateCount(0);
-			_itemIcons.Remove(id);
-			if (0 >= _shopCart.InCarts.Keys.Count)
-			{
-				_shopCanvasObject.SetActive(false);
-			}
-		}
-		else
-		{
-			_itemIcons[id].UpdateCount(_shopCart.InCarts[id]);
-		}
-	}
+    private void TatalPriceDisplay()
+    {
+        _totalPriceText.text = _shopCart.ClacTotalPrice().ToString("c");
+    }
+
+    public void BuyButtonPush()
+    {
+        Clear();
+        _shopCart.Buy();
+    }
+    private void Clear()
+    {
+        foreach (InCartItemUI uiIcon in _itemIcons.Values)
+        {
+            Destroy(uiIcon.gameObject);
+        }
+        _itemIcons.Clear();
+        _shopCanvasObject.SetActive(false);
+    }
+
+    public void DestoryCartUI(int id)
+    {
+        _shopCart.RemoveCart(id);
+        if (!_shopCart.InCarts.Keys.Contains(id))
+        {
+            _itemIcons[id].UpdateCount(0);
+            //Ž„//
+            int index = test_inCartItemUIs.IndexOf(_itemIcons[id]);
+            if (test_inCartItemUIs.Count > index)
+            {
+                for (int i = 0; i < index; i++)
+                {
+                    test_inCartItemUIs[i].UpdateLimit(-_offsetX);
+                }
+                for(int i = index; i < test_inCartItemUIs.Count; i++)
+                {
+                    test_inCartItemUIs[i].UpdateDownLimit(_offsetY);
+                }
+                for(int i = test_inCartItemUIs.Count - 1;i > index; i--)
+                {
+                    test_inCartItemUIs[i].GetComponent<RectTransform>().anchoredPosition = test_inCartItemUIs[i - 1].GetComponent<RectTransform>().anchoredPosition;
+                }
+            }
+            test_inCartItemUIs.Remove(_itemIcons[id]);
+            ////////
+            _itemIcons.Remove(id);
+
+            if (0 >= _shopCart.InCarts.Keys.Count)
+            {
+                _shopCanvasObject.SetActive(false);
+            }
+        }
+        else
+        {
+            _itemIcons[id].UpdateCount(_shopCart.InCarts[id]);
+        }
+    }
 }
