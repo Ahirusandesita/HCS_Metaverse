@@ -119,9 +119,7 @@ public class Ingrodients : NetworkBehaviour, IIngrodientsModerator, IInject<ISwi
 
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
-        /* ------------------------------- Commodity‚ÌID“ü‚ê‚éI ------------------------------------------------------------------------------- */
-            foodSpawnManagerRPC.RPC_CommoditySpawn( 0 /* ©@ID */, transform.rotation.eulerAngles, transform.position, _hitMachine.MachineID);
-        /* ------------------------------------------------------------------------------------------------------------------------------------ */
+            foodSpawnManagerRPC.RPC_CommoditySpawn( commodity.CommodityAsset.CommodityID, transform.rotation.eulerAngles, transform.position, _hitMachine.MachineID);
             foodSpawnManagerRPC.RPC_Despawn(GetComponent<LocalView>().NetworkView.GetComponent<NetworkObject>());
             networkRunner.Despawn(this.gameObject.GetComponent<NetworkObject>());
         }

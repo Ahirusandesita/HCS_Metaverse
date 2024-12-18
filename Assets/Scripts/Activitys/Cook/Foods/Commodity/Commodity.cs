@@ -129,6 +129,7 @@ public class Commodity : NetworkBehaviour, ICommodityModerator, IInject<ISwitcha
         if (collision.transform.root.transform.GetComponentInChildren<Commodity>())
         {
             Commodity collisionCommodity = collision.transform.root.transform.GetComponentInChildren<Commodity>();
+            FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
             if (CommodityAsset.CommodityID > collisionCommodity.CommodityAsset.CommodityID)
             {
                 Commodity mixCommodity = MixCommodity.Mix(new Commodity[] { this, collisionCommodity });

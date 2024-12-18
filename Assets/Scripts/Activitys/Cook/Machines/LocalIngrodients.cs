@@ -4,18 +4,14 @@ using UnityEngine;
 using Fusion;
 using Oculus.Interaction;
 
-public class LocalIngrodients : MonoBehaviour
+public class LocalIngrodients : MonoBehaviour, IGrabbableActiveChangeRequester
 {
     private Machine _hitMachine = default;
-
-    private MachineIDManager _machineIDManager = default;
 
     private LocalView _localView = default;
 
     private void Start()
     {
-        _machineIDManager = FindObjectOfType<MachineIDManager>();
-
         _localView = GetComponent<LocalView>();
 
         PointableUnityEventWrapper pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
@@ -23,9 +19,9 @@ public class LocalIngrodients : MonoBehaviour
         pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.TryGetComponent<Machine>(out var hitMachine))
+        if (other.gameObject.TryGetComponent<Machine>(out var hitMachine) && hitMachine != _hitMachine)
         {
             _localView.NetworkView.GetComponent<NetworkIngrodients>().RPC_PutIngrodients(hitMachine.MachineID);
         }
@@ -33,11 +29,24 @@ public class LocalIngrodients : MonoBehaviour
 
     public void PutMachine(int machineID)
     {
-        _hitMachine = _machineIDManager.GetMachine(machineID);
+        _hitMachine = FindObjectOfType<MachineIDManager>().GetMachine(machineID);
 
         _hitMachine.SetProcessingIngrodient(GetComponent<LocalView>());
 
-        // 強制で掴み解除 ↓
+        // 
+        ISwitchableGrabbableActive grabbableActiveSwicher = GetComponent<ISwitchableGrabbableActive>();
+
+        // 固定するオブジェクトのGrabbableをfalseにする
+        grabbableActiveSwicher.Regist(this);
+        grabbableActiveSwicher.Inactive(this);
+
+        // 固定するオブジェクトの座標をマシンの座標に移動させる
+        transform.position = _hitMachine.ProcesserTransform.position;
+        transform.rotation = _hitMachine.ProcesserTransform.rotation;
+
+        // 固定するオブジェクトのGrabbableをtrueにする
+        grabbableActiveSwicher.Active(this);
+        grabbableActiveSwicher.Cancellation(this);
     }
 
     [Rpc]

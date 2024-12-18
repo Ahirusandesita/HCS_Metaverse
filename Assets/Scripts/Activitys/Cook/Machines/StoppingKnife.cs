@@ -8,11 +8,11 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
     [SerializeField, Tooltip("見た目用オブジェクトのTransform")]
     private Transform _visualObjectTransform = default;
 
-    [SerializeField, Tooltip("初期位置　離したらここに戻る")]
-    private Transform _originTransform = default;
-
     [SerializeField, Tooltip("接触判定用Collider")]
     private Collider _knifeCollider = default;
+
+    [Tooltip("初期位置　離したらここに戻る")]
+    private Transform _originTransform = default;
 
     // 
     private InteractorDetailEventIssuer _detailEventIssuer = default;
@@ -23,6 +23,9 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
     // 
     private StopData _stopData = default;
 
+    // 
+    private Rigidbody _rigidbody = default;
+
     // 停止するオブジェクトに重なっているかどうかを判定するbool
     private bool _onStopperObject = false;
 
@@ -30,7 +33,7 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
     private PointableUnityEventWrapper pointableUnityEventWrapper = default;
 
     // 
-    private NetworkObject _myNetwork = default;
+    private LocalView _localView = default;
 
     /// <summary>
     /// 
@@ -45,10 +48,13 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
     private void Start()
     {
         // 
-        if (_originTransform == null)
-        {
-            _originTransform = GameObject.Find("KnifeOrigin").transform;
-        }
+        _originTransform = GameObject.Find("KnifeOrigin").transform;
+
+        // 
+        _localView = GetComponent<LocalView>();
+
+        // 
+        _rigidbody = GetComponent<Rigidbody>();
 
         // 
         pointableUnityEventWrapper = this.transform.root.GetComponent<PointableUnityEventWrapper>();
@@ -65,22 +71,10 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
         {
             _detailEventsHandType = handler.HandType;
         };
-
-        // 
-        _myNetwork = transform.root.GetComponent<NetworkObject>();
     }
 
     private void Update()
     {
-        Debug.Log("包丁の権限：" + _myNetwork.HasStateAuthority);
-
-        // オブジェクトの操作権限がない場合
-        if (!_myNetwork.HasStateAuthority)
-        {
-            // 処理を中断
-            return;
-        }
-
         // 接触したColliderを判定して格納する
         Collider[] hitColliders = Physics.OverlapBox(_knifeCollider.bounds.center, _knifeCollider.bounds.size / 2, this.transform.rotation);
 
@@ -103,7 +97,7 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
             }
 
             // 固定を解除
-            RPC_UnlockedObject();
+            _localView.NetworkView.GetComponent<NetworkKnife>().RPC_UnLockKnife();
 
             return;
         }
@@ -131,7 +125,7 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
                 NetworkObject networkObject = hitCollider.transform.root.GetComponent<NetworkObject>();
 
                 // 
-                RPC_HitStopCollider(networkObject);
+                RPC_HitBoard(networkObject);
                 return;
             }
         }
@@ -140,7 +134,8 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
     public void UnSelect()
     {
         // オブジェクトの固定を解除する
-        RPC_UnSelectObject();
+        _localView.NetworkView.GetComponent<NetworkKnife>();
+        RPC_UnSelect();
     }
 
     /// <summary>
@@ -161,7 +156,7 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
     /// </summary>
     /// <param name="hitObject">接触したオブジェクトのNetworkObject</param>
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
-    private void RPC_HitStopCollider(NetworkObject hitObject)
+    private void RPC_HitBoard(NetworkObject hitObject)
     {
         // フラグを立てる
         _onStopperObject = true;
@@ -174,29 +169,26 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
 
         // 接触したオブジェクトが持つ接触時の処理を実行する
         hitObject.GetComponent<IManualProcess>().ManualProcessEvent();
-
-        Debug.Log($"<color=blue>当たったよん：ほーちょー</color>");
     }
 
     /// <summary>
     /// オブジェクトの固定を解除する処理
     /// </summary>
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
-    private void RPC_UnlockedObject()
+    public void RPC_UnlockedObject()
     {
         // Viewオブジェクトの固定を解除する
         DestroyStopData();
 
         // フラグを消す
         _onStopperObject = false;
-        Debug.Log($"<color=red>はずれたよん：ほーちょー</color>");
     }
 
     /// <summary>
     /// オブジェクトから手を離した時の処理
     /// </summary>
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
-    private void RPC_UnSelectObject()
+    public void RPC_UnSelect()
     {
         // 座標を初期状態に戻す
         this.transform.position = _originTransform.position;
