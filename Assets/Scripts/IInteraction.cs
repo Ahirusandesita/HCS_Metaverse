@@ -5,7 +5,13 @@ using UnityEngine;
 /// </summary>
 public interface IInteraction
 {
+    /// <summary>
+    /// インタラクトされたときに、オブジェクトからプレイヤー等へ送信する情報クラス
+    /// </summary>
     public abstract class InteractionInfo { }
+    /// <summary>
+    /// InteractionInfoのNullクラス
+    /// </summary>
     public class NullInteractionInfo : InteractionInfo { }
 
     GameObject gameObject { get; }
