@@ -57,6 +57,7 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
         }
         if(Time <= 0 && isCountStart && isFirstInvoke)
         {
+            Debug.LogError("ƒƒ“ƒo[‚ÌFinish");
             OnFinish?.Invoke();
             OnFinish = null;
             OnTime = null;
