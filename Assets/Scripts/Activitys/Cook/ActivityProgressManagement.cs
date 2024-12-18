@@ -91,6 +91,7 @@ public class ActivityProgressManagement : MonoBehaviour
     public async void ActivityStart()
     {
         OnStart?.Invoke();
+        OnStart_All?.Invoke();
         mainTimeInstance = await GateOfFusion.Instance.SpawnAsync(timeNetwork);
         AllSpawn allSpawn = await GateOfFusion.Instance.SpawnAsync(test);
         await allSpawn.Async();
