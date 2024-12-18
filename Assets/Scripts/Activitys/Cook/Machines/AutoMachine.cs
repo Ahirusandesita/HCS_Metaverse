@@ -21,7 +21,7 @@ public class AutoMachine : Machine, IObjectLocker
     private PointableUnityEventWrapper _pointableUnityEventWrapper;
 
     // 
-    public Transform GetObjectLockTransform => _machineTransform;
+    public Transform GetObjectLockTransform => ProcesserTransform;
 
     protected override void Start()
     {

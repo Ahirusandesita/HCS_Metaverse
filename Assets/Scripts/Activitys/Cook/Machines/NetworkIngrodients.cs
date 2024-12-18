@@ -34,7 +34,12 @@ public class NetworkIngrodients : Ingrodients
     {
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
-            SubToIngrodientsDetailInformationsTimeItTakes(_hitMachine.ProcessType, _hitMachine.ProcessingValue);
+            bool isEndProcessing = SubToIngrodientsDetailInformationsTimeItTakes(_hitMachine.ProcessType, _hitMachine.ProcessingValue);
+
+            if (isEndProcessing)
+            {
+                ProcessingStart(_hitMachine.ProcessType, _hitMachine.ProcesserTransform);
+            }
         }
     }
 }

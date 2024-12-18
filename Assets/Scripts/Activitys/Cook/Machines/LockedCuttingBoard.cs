@@ -37,7 +37,7 @@ public class LockedCuttingBoard : Machine, IObjectLocker, IManualProcessing, ISt
     private PointableUnityEventWrapper _pointableUnityEventWrapper;
 
     // 
-    public Transform GetObjectLockTransform => _machineTransform;
+    public Transform GetObjectLockTransform => ProcesserTransform;
 
     protected override void Start()
     {

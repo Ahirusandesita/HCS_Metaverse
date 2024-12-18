@@ -7,8 +7,11 @@ public abstract class Machine : NetworkBehaviour
     // 
     private LocalView _processingIngrodientsView = default;
 
+    [SerializeField]
+    private Transform _processerTransform = default;
+
     [Tooltip("‰ÁH‚ðs‚Á‚Ä‚¢‚éˆÊ’u")]
-    public Transform _machineTransform = default;
+    public Transform ProcesserTransform => _processerTransform;
 
     [SerializeField]
     private int _machineID = 1;
@@ -48,8 +51,8 @@ public abstract class Machine : NetworkBehaviour
     {
         _processingIngrodientsView = setIngrodientsView;
 
-        _processingIngrodientsView.transform.position = _machineTransform.position;
-        _processingIngrodientsView.transform.rotation = _machineTransform.rotation;
+        _processingIngrodientsView.transform.position = ProcesserTransform.position;
+        _processingIngrodientsView.transform.rotation = ProcesserTransform.rotation;
     }
 
     public void UnSetProcessingIngrodient()
