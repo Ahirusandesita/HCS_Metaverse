@@ -30,5 +30,8 @@ public interface IInteraction
 
 public interface IInteractionInfoReceiver
 {
+    /// <summary>
+    /// InteractionInfo‚ªSet‚³‚ê‚é
+    /// </summary>
     void SetInfo(IInteraction.InteractionInfo interactionInfo);
 }

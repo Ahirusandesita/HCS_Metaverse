@@ -42,7 +42,6 @@ public static class Inputter
 		switch (preset)
 		{
 			case InputActionPreset.Default:
-                XDebug.Log("Preset", UnityEngine.Color.magenta);
                 Player.Enable();
 
                 UI.Disable();

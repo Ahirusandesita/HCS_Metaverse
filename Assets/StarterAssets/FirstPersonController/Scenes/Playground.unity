@@ -3282,8 +3282,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42edb6f1d267fe546b314c9e0f111a42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerInteraction: {fileID: 2129524541}
   placingMode:
     value: 0
+--- !u!114 &2129524541 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6875392113250163269, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+  m_PrefabInstance: {fileID: 1156365688}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129524522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4dacdabb1249ed45891e60d7aa03be5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &60889539378096550
 PrefabInstance:
   m_ObjectHideFlags: 0
