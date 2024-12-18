@@ -59,6 +59,7 @@ public class ActivityProgressManagement : MonoBehaviour
         //leader‚Ì‚Ý
         GateOfFusion.Instance.OnActivityConnected += async () =>
         {
+            Debug.LogError("‚­‚Ü‚Æ‚¯‚Á‚±‚ñ‘O");
             if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
             {
                 return;
@@ -66,6 +67,7 @@ public class ActivityProgressManagement : MonoBehaviour
             rpcInstance = await GateOfFusion.Instance.SpawnAsync(activityManagementRPC);
             readyTimeInstance = await GateOfFusion.Instance.SpawnAsync(timeNetwork);
             AllSpawn allSpawn = await GateOfFusion.Instance.SpawnAsync(test);
+            rpcInstance.RPC_RPCInstanceInject();
             foreach (INetworkTimeInjectable networkTimeInjectable in readyTimeInjectable)
             {
                 networkTimeInjectable.Inject(readyTimeInstance);
