@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class Shelf : SafetyInteractionObject
 {
-	public class PlacingInteractionInfo : IInteraction.InteractionInfo
-	{
-		
-	}
+	public class ShelfInteractionInfo : SafetyInteractionInfo { }
 
 	[Header("配置可能な棚板リスト（天板含む）\n※下の方の棚板から設定するのがおすすめ")]
 	[SerializeField] private List<BoxCollider> shelfBoard = default;
 	private int focusBoardIndex = default;
 	private Action UpdateAction = default;
+	private ShelfInteractionInfo shelfInteractionInfo = new ShelfInteractionInfo();
 
 
 	private void Update()
@@ -20,11 +18,17 @@ public class Shelf : SafetyInteractionObject
 		UpdateAction?.Invoke();
 	}
 
+	public override IInteraction.InteractionInfo Open()
+	{
+		base.Open();
+		return shelfInteractionInfo;
+	}
+
 	protected override void SafetyOpen()
 	{
 		XDebug.Log("Shelf Access", "green");
 		focusBoardIndex = 0;
-		interactionInfoSubject.OnNext(new PlacingInteractionInfo());
+		shelfInteractionInfo.InvokeOpen(this);
 		Spawn();
 		UpdateAction += () =>
 		{
@@ -38,6 +42,9 @@ public class Shelf : SafetyInteractionObject
 	{
 		XDebug.Log("Shelf Exit", "green");
 		UpdateAction = null;
+		shelfInteractionInfo.InvokeClose(this);
+		shelfInteractionInfo.ClearOpen(this);
+		shelfInteractionInfo.ClearClose(this);
 	}
 
 	public override void Select(SelectArgs selectArgs)

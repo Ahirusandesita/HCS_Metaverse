@@ -8,12 +8,61 @@ using System;
 /// </summary>
 public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISelectedNotification
 {
+	public class SafetyInteractionInfo : IInteraction.InteractionInfo
+	{
+		/// <summary>
+		/// SafetyOpen（プレイヤーがInteractableなオブジェクトに触れ、かつ入力があった場合）が起動した際に発火するデリゲート
+		/// <br>SafetyCloseが発火したタイミングで中身がすべてDisposeされる</br>
+		/// </summary>
+		public event Action OnSafetyOpenAction = default;
+		/// <summary>
+		/// SafetyClose（プレイヤーがInteractableから特定の操作で離れた場合）が起動した際に発火するデリゲート
+		/// <br>SafetyCloseが発火したタイミングで中身がすべてDisposeされる</br>
+		/// </summary>
+		public event Action OnSafetyCloseAction = default;
+
+		/// <summary>
+		/// SafetyOpen時にデリゲートを実行する
+		/// <br>実行はSafetyInteractionObjectクラスに限る（引数で自身を渡す）</br>
+		/// </summary>
+		/// <param name="safetyInteractionObject">自分自身</param>
+		public void InvokeOpen(SafetyInteractionObject safetyInteractionObject)
+		{
+			OnSafetyOpenAction?.Invoke();
+		}
+		/// <summary>
+		/// SafetyClose時にデリゲートを実行する
+		/// <br>実行はSafetyInteractionObjectクラスに限る（引数で自身を渡す）</br>
+		/// </summary>
+		/// <param name="safetyInteractionObject">自分自身</param>
+		public void InvokeClose(SafetyInteractionObject safetyInteractionObject)
+		{
+			OnSafetyCloseAction?.Invoke();
+		}
+		/// <summary>
+		/// SafetyOpen時のデリゲートをリセットする
+		/// <br>実行はSafetyInteractionObjectクラスに限る（引数で自身を渡す）</br>
+		/// </summary>
+		/// <param name="safetyInteractionObject">自分自身</param>
+		public void ClearOpen(SafetyInteractionObject safetyInteractionObject)
+		{
+			OnSafetyOpenAction = null;
+		}
+		/// <summary>
+		/// SafetyClose時のデリゲートをリセットする
+		/// <br>実行はSafetyInteractionObjectクラスに限る（引数で自身を渡す）</br>
+		/// </summary>
+		/// <param name="safetyInteractionObject">自分自身</param>
+		public void ClearClose(SafetyInteractionObject safetyInteractionObject)
+		{
+			OnSafetyCloseAction = null;
+		}
+	}
+
 	protected bool canInteract = false;
-	protected Subject<IInteraction.InteractionInfo> interactionInfoSubject = new Subject<IInteraction.InteractionInfo>();
 
 	ISelectedNotification IInteraction.SelectedNotification => this;
 	private PlayerInputActions.PlayerActions Player => Inputter.Player;
-	public IObservable<IInteraction.InteractionInfo> InteractionInfoSubject => interactionInfoSubject;
 
 
 	protected virtual void Awake()
@@ -29,15 +78,15 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
 		};
 	}
 
-	IInteraction.InteractionInfo IInteraction.Open()
+	public virtual IInteraction.InteractionInfo Open()
 	{
 		canInteract = true;
 		// UIを表示
 		NotificationUIManager.Instance.DisplayInteraction();
-		return new IInteraction.NullInteractionInfo();
+		return new SafetyInteractionInfo();
 	}
 
-	void IInteraction.Close()
+	public virtual void Close()
 	{
 		canInteract = false;
 		// UIを非表示

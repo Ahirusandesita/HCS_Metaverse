@@ -9,7 +9,7 @@ public class PlayerInteraction : MonoBehaviour
     private InteractionScopeChecker interactionScopeChecker;
     [SerializeField]
     private SelectedNotificationDI DI;
-    private List<IInteractionInfoReceiver> interactionInfoReceivers = default;
+    private List<IInteractionInfoReceiver> interactionInfoReceivers = new List<IInteractionInfoReceiver>();
     private IInteraction nowInteraction = new NullInteraction();
 
     private List<ISelectedNotificationInjectable> selectedNotificationInjectables = new List<ISelectedNotificationInjectable>();
