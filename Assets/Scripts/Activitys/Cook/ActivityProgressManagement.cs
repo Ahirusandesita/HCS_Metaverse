@@ -66,7 +66,6 @@ public class ActivityProgressManagement : MonoBehaviour
             rpcInstance = await GateOfFusion.Instance.SpawnAsync(activityManagementRPC);
             readyTimeInstance = await GateOfFusion.Instance.SpawnAsync(timeNetwork);
             AllSpawn allSpawn = await GateOfFusion.Instance.SpawnAsync(test);
-            rpcInstance.RPC_RPCInstanceInject();
             foreach (INetworkTimeInjectable networkTimeInjectable in readyTimeInjectable)
             {
                 networkTimeInjectable.Inject(readyTimeInstance);
@@ -78,6 +77,7 @@ public class ActivityProgressManagement : MonoBehaviour
 
             await allSpawn.Async();
             GateOfFusion.Instance.Despawn(allSpawn);
+            rpcInstance.RPC_RPCInstanceInject();
             readyTimeInstance.StartTime = 3;
             rpcInstance.RPC_ReadyTimeInject(readyTimeInstance.GetComponent<NetworkObject>());
             await UniTask.Delay(1000);
