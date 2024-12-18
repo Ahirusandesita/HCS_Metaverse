@@ -22,7 +22,7 @@ public class CookProgressUI : MonoBehaviour
             textMesh.text = "Ready?";
         };
 
-        activityProgressManagement.OnStart += async () =>
+        activityProgressManagement.OnStart_All += async () =>
         {
             textMesh.text = "Go!";
             await UniTask.Delay(3000);

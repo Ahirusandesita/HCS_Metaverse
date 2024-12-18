@@ -29,6 +29,7 @@ public class ActivityProgressManagement : MonoBehaviour
     /// Activityを開始するときに発行される
     /// </summary>
     public event Action OnStart;
+    public event Action OnStart_All;
     /// <summary>
     /// Activityを終了するときに発行される
     /// </summary>
@@ -129,6 +130,10 @@ public class ActivityProgressManagement : MonoBehaviour
         {
             OnStart?.Invoke();
         };
+        readyTimeInstance.OnFinish += () =>
+        {
+            OnStart_All?.Invoke();
+        };
 
         foreach (INetworkTimeInjectable networkTimeInjectable in readyTimeInjectable)
         {
@@ -142,10 +147,11 @@ public class ActivityProgressManagement : MonoBehaviour
             return;
         }
         mainTimeInstance = timeNetwork;
-        mainTimeInstance.OnMasterFinish += () =>
+        mainTimeInstance.OnFinish += () =>
         {
             ActivityFinish().Forget();
         };
+
 
         foreach (INetworkTimeInjectable networkTimeInjectable in mainTimeInjectable)
         {
