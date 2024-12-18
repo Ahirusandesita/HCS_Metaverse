@@ -207,10 +207,11 @@ public class GateOfFusion
 		{
 			await UniTask.WaitUntil(() => NetworkRunner.ActivePlayers.Contains(roomPlayer));
 		}
-		XKumaDebugSystem.LogError("‘Sˆõ“ž’…‚µ‚½");
+		XKumaDebugSystem.LogWarning("‘Sˆõ“ž’…‚µ‚½");
 		
-		XKumaDebugSystem.LogError("roomStandbyOn");
+
 		MasterServer.SessionRPCManager.Rpc_RoomStandbyOn();
+		if (!NetworkRunner.IsSharedModeMasterClient) { return; }
 		if (currentRoom.SceneNameType is not SceneNameType.KumaKumaTest or SceneNameType.TestPhotonScene)
 		{
 			_masterServer.SessionRPCManager.Rpc_ExecuteOnActivityConnedted();
