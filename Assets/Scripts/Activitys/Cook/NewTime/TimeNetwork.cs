@@ -20,6 +20,7 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
 
     public event Action<int> OnTime;
     public event Action OnFinish;
+    public event Action OnMasterFinish;
 
     [Networked, OnChangedRender(nameof(SetTime))]
     public float StartTime { get; set; }
@@ -43,6 +44,16 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
     private void Update()
     {
         if (Time <= 0 && isCountStart && canInvoke)
+        {
+            OnMasterFinish?.Invoke();
+            OnMasterFinish = null;
+            OnFinish?.Invoke();
+            OnFinish = null;
+            OnTime = null;
+            canInvoke = false;
+            isCountStart = false;
+        }
+        if(Time <= 0 && isCountStart)
         {
             OnFinish?.Invoke();
             OnFinish = null;

@@ -70,7 +70,6 @@ public class ActivityProgressManagement : MonoBehaviour
             {
                 networkTimeInjectable.Inject(readyTimeInstance);
             }
-
             readyTimeInstance.OnFinish += () =>
             {
                 ActivityStart();
@@ -78,6 +77,7 @@ public class ActivityProgressManagement : MonoBehaviour
 
             await allSpawn.Async();
             GateOfFusion.Instance.Despawn(allSpawn);
+            rpcInstance.RPC_RPCInstanceInject();
             readyTimeInstance.StartTime = 3;
             rpcInstance.RPC_ReadyTimeInject(readyTimeInstance.GetComponent<NetworkObject>());
             await UniTask.Delay(1000);
@@ -95,7 +95,7 @@ public class ActivityProgressManagement : MonoBehaviour
         await allSpawn.Async();
         GateOfFusion.Instance.Despawn(allSpawn);
         mainTimeInstance.StartTime = 180f;
-        mainTimeInstance.OnFinish += () =>
+        mainTimeInstance.OnMasterFinish += () =>
         {
             ActivityFinish().Forget();
         };
@@ -125,7 +125,7 @@ public class ActivityProgressManagement : MonoBehaviour
         }
         OnReady?.Invoke();
         readyTimeInstance = timeNetwork;
-        readyTimeInstance.OnFinish += () =>
+        readyTimeInstance.OnMasterFinish += () =>
         {
             OnStart?.Invoke();
         };
@@ -142,7 +142,7 @@ public class ActivityProgressManagement : MonoBehaviour
             return;
         }
         mainTimeInstance = timeNetwork;
-        mainTimeInstance.OnFinish += () =>
+        mainTimeInstance.OnMasterFinish += () =>
         {
             ActivityFinish().Forget();
         };
