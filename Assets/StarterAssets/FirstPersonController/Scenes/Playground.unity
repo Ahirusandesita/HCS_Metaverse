@@ -975,7 +975,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &661716114
 Transform:
   m_ObjectHideFlags: 0
@@ -1819,6 +1819,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1008322925437327410, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+      propertyPath: playerState
+      value: 
+      objectReference: {fileID: 2129524536}
+    - target: {fileID: 1008322925437327410, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: placingMode.value
       value: 1
       objectReference: {fileID: 0}
@@ -1844,11 +1848,11 @@ PrefabInstance:
       objectReference: {fileID: 5631746211732447871}
     - target: {fileID: 4642946354581435811, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: enabledOnMoving
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4642946354581435811, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: enabledOnJumping
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5086691826065662159, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: _syntheticHand
@@ -2417,7 +2421,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1603575181
 MonoBehaviour:
   m_ObjectHideFlags: 0

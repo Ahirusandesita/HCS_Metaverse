@@ -1,4 +1,6 @@
 using UnityEngine;
+using UniRx;
+using System;
 
 /// <summary>
 /// 二重のインタラクトを実装するオブジェクトの基底クラス
@@ -7,9 +9,11 @@ using UnityEngine;
 public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISelectedNotification
 {
 	protected bool canInteract = false;
+	protected Subject<IInteraction.InteractionInfo> interactionInfoSubject = new Subject<IInteraction.InteractionInfo>();
 
 	ISelectedNotification IInteraction.SelectedNotification => this;
 	private PlayerInputActions.PlayerActions Player => Inputter.Player;
+	public IObservable<IInteraction.InteractionInfo> InteractionInfoSubject => interactionInfoSubject;
 
 
 	protected virtual void Awake()
@@ -25,11 +29,12 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
 		};
 	}
 
-	void IInteraction.Open()
+	IInteraction.InteractionInfo IInteraction.Open()
 	{
 		canInteract = true;
 		// UIを表示
 		NotificationUIManager.Instance.DisplayInteraction();
+		return new IInteraction.NullInteractionInfo();
 	}
 
 	void IInteraction.Close()

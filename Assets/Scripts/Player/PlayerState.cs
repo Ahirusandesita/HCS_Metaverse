@@ -5,11 +5,10 @@ using UniRx;
 
 public class PlayerState : MonoBehaviour, IInputControllable
 {
-    [SerializeField] private BoolReactiveProperty placingMode = default;
+    [SerializeField] private BoolReactiveProperty placingMode = new BoolReactiveProperty();
     public IReadOnlyReactiveProperty<bool> PlacingMode => placingMode;
 
-
-    private void Start()
+	private void Start()
 	{
         placingMode.Subscribe(_ =>
         {

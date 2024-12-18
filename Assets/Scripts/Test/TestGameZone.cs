@@ -45,7 +45,7 @@ namespace HCSMeta.Activity
 		}
 
 		[ContextMenu("Open")]
-		public void Open()
+		public IInteraction.InteractionInfo Open()
 		{
 			gameFrame.GameStart();
 
@@ -59,6 +59,9 @@ namespace HCSMeta.Activity
 				_ = RoomManager.Instance.JoinOrCreate(
 					_sceneNameType, NetworkRunner.LocalPlayer);
 			}
+
+			// To Kuma: もしプレイヤーとかにこのタイミングで情報を送りたい場合は、IInteraction.InteractionInfoを継承したクラスを渡す。
+			return new IInteraction.NullInteractionInfo();
 		}
 
 		public void Select(SelectArgs selectArgs)
