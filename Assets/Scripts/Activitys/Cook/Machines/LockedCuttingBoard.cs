@@ -2,7 +2,7 @@ using UnityEngine;
 using Oculus.Interaction;
 using Fusion;
 
-public class LockedCuttingBoard : Machine, IObjectLocker, IManualProcessing, IStopper
+public class LockedCuttingBoard : Machine, IObjectLocker, IStopper
 {
     [SerializeField, Tooltip("オブジェクトの取得範囲を指定するCollider")]
     private Collider _cuttingAreaCollider = default;
@@ -37,7 +37,7 @@ public class LockedCuttingBoard : Machine, IObjectLocker, IManualProcessing, ISt
     private PointableUnityEventWrapper _pointableUnityEventWrapper;
 
     // 
-    public Transform GetObjectLockTransform => _machineTransform;
+    public Transform GetObjectLockTransform => ProcesserTransform;
 
     protected override void Start()
     {
@@ -78,36 +78,36 @@ public class LockedCuttingBoard : Machine, IObjectLocker, IManualProcessing, ISt
         }  
     }
 
-    public void ProcessingEvent()
+    public void ManualProcessEvent()
     {
-        // オブジェクトが固定されている　かつ　固定されているオブジェクトにIngrodientがついている場合
-        if (_isLockedObject && _processingIngrodient != default)
-        {
-            // 加工を進める
-            bool isEndProcessing = ProcessingAction(_processingType, _processingValue, out Commodity createdCommodity);
+        //// オブジェクトが固定されている　かつ　固定されているオブジェクトにIngrodientがついている場合
+        //if (_isLockedObject && _processingIngrodient != default)
+        //{
+        //    // 加工を進める
+        //    bool isEndProcessing = ProcessingAction(_processingType, _processingValue, out Commodity createdCommodity);
 
-            // 加工が完了した場合
-            if (isEndProcessing)
-            {
-                // 
-                _processingPuttable.DestroyThis();
+        //    // 加工が完了した場合
+        //    if (isEndProcessing)
+        //    {
+        //        // 
+        //        _processingPuttable.DestroyThis();
 
-                // 
-                _processingPuttable = createdCommodity.gameObject.AddComponent<Puttable>();
+        //        // 
+        //        _processingPuttable = createdCommodity.gameObject.AddComponent<Puttable>();
 
-                // 
-                if (createdCommodity.gameObject.TryGetComponent<Ingrodients>(out Ingrodients ingrodients))
-                {
-                    // 
-                    _processingIngrodient = ingrodients;
-                }
-                else
-                {
-                    // 
-                    _processingIngrodient = default;
-                }
-            }
-        }
+        //        // 
+        //        if (createdCommodity.gameObject.TryGetComponent<Ingrodients>(out Ingrodients ingrodients))
+        //        {
+        //            // 
+        //            _processingIngrodient = ingrodients;
+        //        }
+        //        else
+        //        {
+        //            // 
+        //            _processingIngrodient = default;
+        //        }
+        //    }
+        //}
     }
 
     /// <summary>
@@ -118,7 +118,7 @@ public class LockedCuttingBoard : Machine, IObjectLocker, IManualProcessing, ISt
     private void RPC_HitIngrodients(NetworkObject hitObject) // RPC
     {
         // 当たったオブジェクトのIngrodientを取得する
-        _processingIngrodient = hitObject.GetComponent<Ingrodients>();
+        //_processingIngrodient = hitObject.GetComponent<Ingrodients>();
 
         // オブジェクトを固定している状態にする
         _isLockedObject = true;

@@ -12,10 +12,11 @@ using UnityEngine.UI;
 /// <summary>
 /// ãÔçﬁ
 /// </summary>
-public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitchableGrabbableActive>,IGrabbableActiveChangeRequester
+public class Ingrodients : NetworkBehaviour, IIngrodientsModerator, IInject<ISwitchableGrabbableActive>,IGrabbableActiveChangeRequester
 {
     public bool IsGrabed = false;
 
+    protected Machine _hitMachine = default;
 
     [SerializeField]
     private IngrodientsAsset ingrodientsAsset;
@@ -32,7 +33,8 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
             this.NowTimeItTakes = now;
         }
     }
-    private ReactiveProperty<TimeItTakesData> timeItTakesProperty = new ReactiveProperty<TimeItTakesData>();
+
+    private ReactiveProperty<TimeItTakesData> timeItTakesProperty { get; set; }
     public IReadOnlyReactiveProperty<TimeItTakesData> TimeItTakesProperty => timeItTakesProperty;
 
     IngrodientsAsset IIngrodientsModerator.IngrodientsAsset
@@ -110,22 +112,17 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
     }
 
 
-    public Commodity ProcessingStart(ProcessingType processingType, Transform machineTransform)
+    public void ProcessingStart(ProcessingType processingType, Transform machineTransform)
     {
         Commodity commodity = commodityFactory.Generate(this, processingType);
         FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
 
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
-        /* ------------------------------- CommodityÇÃIDì¸ÇÍÇÈÅI ------------------------------------------------------------------------------- */
-            foodSpawnManagerRPC.RPC_CommoditySpawn( 0 /* Å©Å@ID */, transform.rotation.eulerAngles, transform.position);
-        /* ------------------------------------------------------------------------------------------------------------------------------------ */
+            foodSpawnManagerRPC.RPC_CommoditySpawn( commodity.CommodityAsset.CommodityID, transform.rotation.eulerAngles, transform.position, _hitMachine.MachineID);
             foodSpawnManagerRPC.RPC_Despawn(GetComponent<LocalView>().NetworkView.GetComponent<NetworkObject>());
             networkRunner.Despawn(this.gameObject.GetComponent<NetworkObject>());
         }
-
-        Commodity instanceCommodity = Instantiate(commodity.gameObject, this.transform.position, this.transform.rotation).GetComponent<Commodity>();//NetworkRunnnerSpawn /*.transform.parent = machineTransform*/;
-        return instanceCommodity;
     }
 
     void IInject<ISwitchableGrabbableActive>.Inject(ISwitchableGrabbableActive t)

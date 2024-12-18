@@ -4,7 +4,7 @@ using Oculus.Interaction;
 using Fusion;
 using Cysharp.Threading.Tasks;
 
-public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchableGrabbableActive>, IGrabbableActiveChangeRequester
+public class Commodity : NetworkBehaviour, ICommodityModerator, IInject<ISwitchableGrabbableActive>, IGrabbableActiveChangeRequester
 {
     [SerializeField]
     private CommodityAsset commodityAsset;
@@ -129,6 +129,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
         if (collision.transform.root.transform.GetComponentInChildren<Commodity>())
         {
             Commodity collisionCommodity = collision.transform.root.transform.GetComponentInChildren<Commodity>();
+            FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
             if (CommodityAsset.CommodityID > collisionCommodity.CommodityAsset.CommodityID)
             {
                 Commodity mixCommodity = MixCommodity.Mix(new Commodity[] { this, collisionCommodity });

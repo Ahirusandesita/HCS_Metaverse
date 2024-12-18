@@ -21,7 +21,7 @@ public class AutoMachine : Machine, IObjectLocker
     private PointableUnityEventWrapper _pointableUnityEventWrapper;
 
     // 
-    public Transform GetObjectLockTransform => _machineTransform;
+    public Transform GetObjectLockTransform => ProcesserTransform;
 
     protected override void Start()
     {
@@ -32,13 +32,15 @@ public class AutoMachine : Machine, IObjectLocker
         _ingrodientCatcher = new IngrodientCatcher();
     }
 
-    private void Update()
+    protected override void Update()
     {
+        base.Update();
+
         // processingIngrodientを設定する
         ProcessingIngrodientSetting();
 
         // 常に加工を進めていく
-        bool isEndProcessing = ProcessingAction(_processingType, Time.deltaTime);
+        //bool isEndProcessing = ProcessingAction(_processingType, Time.deltaTime);
     }
 
     public void Select()
@@ -60,50 +62,53 @@ public class AutoMachine : Machine, IObjectLocker
     private void ProcessingIngrodientSetting()
     {
         // すでにprocessingIngrodientが設定されていた場合
-        if (_processingIngrodient != default)
-        {
-            // 何もしない
-            return;
-        }
+        //if (_processingIngrodient != default)
+        //{
+        //    // 何もしない
+        //    return;
+        //}
 
         // 指定した判定に接触したIngrodientがあった場合
         if (_ingrodientCatcher.SearchIngrodient(_cuttingAreaCollider.bounds.center, _cuttingAreaCollider.bounds.size / 2, transform.rotation, out NetworkObject hitObject))
         {
             // processingIngrodientを設定する
-            RPC_HitIngrodients(hitObject);
+            //RPC_HitIngrodients(hitObject);
 
             // 処理を終了する
             return;
         }
     }
 
-    /// <summary>
-    /// 食材に当たったときの処理
-    /// </summary>
-    /// <param name="hitObject">当たった食材のNetworkObject</param>
-    [Rpc]
-    private void RPC_HitIngrodients(NetworkObject hitObject) // RPC
-    {
-        // 当たったオブジェクトのIngrodientを取得する
-        _processingIngrodient = hitObject.GetComponent<Ingrodients>();
+    ///// <summary>
+    ///// 食材に当たったときの処理
+    ///// </summary>
+    ///// <param name="hitObject">当たった食材のNetworkObject</param>
+    //[Rpc]
+    //private void RPC_HitIngrodients(GameObject hitObject) // RPC
+    //{
+    //    // 
+        
 
-        // 当たったオブジェクトにPuttableを追加して取得する
-        _processingPuttable = hitObject.gameObject.AddComponent<Puttable>();
+    //    // 当たったオブジェクトのIngrodientを取得する
+    //    //_processingIngrodient = hitObject.GetComponent<Ingrodients>();
 
-        // Puttableに自身を渡す
-        _processingPuttable.SetLockedCuttingObject(this);
+    //    // 当たったオブジェクトにPuttableを追加して取得する
+    //    _processingPuttable = hitObject.gameObject.AddComponent<Puttable>();
 
-        // 
-        _pointableUnityEventWrapper = hitObject.GetComponentInChildren<PointableUnityEventWrapper>();
-        _pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
+    //    // Puttableに自身を渡す
+    //    _processingPuttable.SetLockedCuttingObject(this);
 
-        Debug.Log($"<color=green>{gameObject.name}</color>　が　<color=blue>{hitObject.name}</color>　を固定");
-    }
+    //    // 
+    //    _pointableUnityEventWrapper = hitObject.GetComponentInChildren<PointableUnityEventWrapper>();
+    //    _pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
+
+    //    Debug.Log($"<color=green>{gameObject.name}</color>　が　<color=blue>{hitObject.name}</color>　を固定");
+    //}
 
     public void CanselLock()
     {
         // processingIngrodientを初期化する
-        _processingIngrodient = default;
+        //_processingIngrodient = default;
 
         // Selectの登録を解除する
         _pointableUnityEventWrapper.WhenSelect.RemoveListener((action) => { Select(); });
