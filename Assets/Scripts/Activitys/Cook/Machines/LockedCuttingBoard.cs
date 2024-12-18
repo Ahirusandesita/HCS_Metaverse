@@ -7,12 +7,6 @@ public class LockedCuttingBoard : Machine, IObjectLocker, IStopper
     [SerializeField, Tooltip("オブジェクトの取得範囲を指定するCollider")]
     private Collider _cuttingAreaCollider = default;
 
-    [Tooltip("行う加工の種類")]
-    private ProcessingType _processingType = ProcessingType.Cut;
-
-    // processingEvent１回あたりの作業進行度
-    private int _processingValue = 1;
-
     // オブジェクトの取得範囲を表す値 -----------------------
     // 中心
     private Vector3 _hitBoxCenter = default;
@@ -58,7 +52,7 @@ public class LockedCuttingBoard : Machine, IObjectLocker, IStopper
         _ingrodientCatcher = new IngrodientCatcher();
     }
 
-    private void Update()
+    protected override void Update()
     {
         // オブジェクトを固定している場合
         if (_isLockedObject)
