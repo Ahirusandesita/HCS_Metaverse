@@ -44,6 +44,7 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
     }
     private void Update()
     {
+        Debug.LogError($"{Time}  iscountstart{isCountStart}   caninvoke{canInvoke}   isfirstinvoke{isFirstInvoke}");
         if (Time <= 0 && isCountStart && canInvoke && isFirstInvoke)
         {
             OnMasterFinish?.Invoke();
@@ -60,6 +61,7 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
             Debug.LogError("ƒƒ“ƒo[‚ÌFinish");
             OnFinish?.Invoke();
             OnFinish = null;
+            OnMasterFinish = null;
             OnTime = null;
             canInvoke = false;
             isCountStart = false;
