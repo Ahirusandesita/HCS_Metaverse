@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using System;
-
 public enum ActivitiState
 {
     Ready,
@@ -14,7 +13,7 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
 {
     public bool IsSpawned = false;
     [Networked, OnChangedRender(nameof(Count))]
-    public int Time { get; set; }
+    public int Time { get; set; } = 100;
     [Networked]
     public ActivitiState ActivitiState { get; set; }
 
@@ -30,6 +29,9 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
     private bool isCountStart = false;
     private bool canInvoke = false;
     private bool isFirstInvoke = true;
+
+
+    private bool isSpawn = false;
     private void SetTime()
     {
         countDownTime_s = StartTime;
@@ -40,25 +42,29 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
     private void Count()
     {
         OnTime?.Invoke(Time);
-        isCountStart = true;
     }
     private void Update()
     {
-        Debug.LogError($"{Time}  iscountstart{isCountStart}   caninvoke{canInvoke}   isfirstinvoke{isFirstInvoke}");
+        if (!isSpawn)
+        {
+            return;
+        }
         if (Time <= 0 && canInvoke && isFirstInvoke)
         {
+            Debug.LogError("マスターのFinish");
             OnMasterFinish?.Invoke();
             OnMasterFinish = null;
             OnFinish?.Invoke();
+
             OnFinish = null;
             OnTime = null;
             canInvoke = false;
             isCountStart = false;
             isFirstInvoke = false;
         }
-        if(Time <= 0 && isFirstInvoke)
+        if (Time <= 0 && isFirstInvoke && !canInvoke)
         {
-            Debug.LogError("メンバーのFinish");
+            Debug.LogError("メンバーのFinish" + Time);
             OnFinish?.Invoke();
             OnFinish = null;
             OnMasterFinish = null;
@@ -88,5 +94,14 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
         countDownTime_s = Time;
         lastTime_s = countDownTime_s;
         canInvoke = true;
+    }
+
+    public override void Spawned()
+    {
+        isSpawn = true;
+        if (HasStateAuthority)
+        {
+            Time = 100;
+        }
     }
 }
