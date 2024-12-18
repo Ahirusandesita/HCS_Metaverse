@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using System;
-
 public enum ActivitiState
 {
     Ready,
@@ -14,7 +13,7 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
 {
     public bool IsSpawned = false;
     [Networked, OnChangedRender(nameof(Count))]
-    public int Time { get; set; }
+    public int Time { get; set; } = 1;
     [Networked]
     public ActivitiState ActivitiState { get; set; }
 
@@ -40,23 +39,22 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
     private void Count()
     {
         OnTime?.Invoke(Time);
-        isCountStart = true;
     }
     private void Update()
     {
-        Debug.LogError($"{Time}  iscountstart{isCountStart}   caninvoke{canInvoke}   isfirstinvoke{isFirstInvoke}");
         if (Time <= 0 && canInvoke && isFirstInvoke)
         {
             OnMasterFinish?.Invoke();
             OnMasterFinish = null;
             OnFinish?.Invoke();
+
             OnFinish = null;
             OnTime = null;
             canInvoke = false;
             isCountStart = false;
             isFirstInvoke = false;
         }
-        if(Time <= 0 && isFirstInvoke)
+        if (Time <= 0 && isFirstInvoke)
         {
             Debug.LogError("ƒƒ“ƒo[‚ÌFinish");
             OnFinish?.Invoke();
