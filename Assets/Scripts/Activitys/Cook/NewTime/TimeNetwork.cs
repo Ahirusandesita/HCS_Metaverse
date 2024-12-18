@@ -13,7 +13,7 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
 {
     public bool IsSpawned = false;
     [Networked, OnChangedRender(nameof(Count))]
-    public int Time { get; set; } = 1;
+    public int Time { get; set; } = 100;
     [Networked]
     public ActivitiState ActivitiState { get; set; }
 
@@ -29,6 +29,9 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
     private bool isCountStart = false;
     private bool canInvoke = false;
     private bool isFirstInvoke = true;
+
+
+    private bool isSpawn = false;
     private void SetTime()
     {
         countDownTime_s = StartTime;
@@ -42,8 +45,13 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
     }
     private void Update()
     {
+        if (!isSpawn)
+        {
+            return;
+        }
         if (Time <= 0 && canInvoke && isFirstInvoke)
         {
+            Debug.LogError("マスターのFinish");
             OnMasterFinish?.Invoke();
             OnMasterFinish = null;
             OnFinish?.Invoke();
@@ -54,9 +62,9 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
             isCountStart = false;
             isFirstInvoke = false;
         }
-        if (Time <= 0 && isFirstInvoke)
+        if (Time <= 0 && isFirstInvoke && !canInvoke)
         {
-            Debug.LogError("メンバーのFinish");
+            Debug.LogError("メンバーのFinish"　+ Time);
             OnFinish?.Invoke();
             OnFinish = null;
             OnMasterFinish = null;
@@ -86,5 +94,14 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
         countDownTime_s = Time;
         lastTime_s = countDownTime_s;
         canInvoke = true;
+    }
+
+    public override void Spawned()
+    {
+        if (HasStateAuthority)
+        {
+            Time = 100;
+            isSpawn = true;
+        }
     }
 }
