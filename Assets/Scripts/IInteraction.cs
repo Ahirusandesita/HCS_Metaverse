@@ -5,16 +5,24 @@ using UnityEngine;
 /// </summary>
 public interface IInteraction
 {
+    public abstract class InteractionInfo { }
+    public class NullInteractionInfo : InteractionInfo { }
+
     GameObject gameObject { get; }
     ISelectedNotification SelectedNotification { get; }
     /// <summary>
     /// オブジェクトがインタラクトされたときに呼ばれる処理
     /// <br>多くの場合、プレイヤーがオブジェクトのコライダーに触れたときに呼ばれる</br>
     /// </summary>
-    void Open();
+    InteractionInfo Open();
     /// <summary>
     /// オブジェクトのインタラクト状態から離れるときに呼ばれる処理
     /// <br>多くの場合、プレイヤーがオブジェクトのコライダーから離れたときに呼ばれる</br>
     /// </summary>
     void Close();
+}
+
+public interface IInteractionInfoReceiver
+{
+    void SetInfo(IInteraction.InteractionInfo interactionInfo);
 }

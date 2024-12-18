@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UniRx;
 using System;
+using System.Collections.Generic;
+using UniRx;
+using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -10,6 +9,7 @@ public class PlayerInteraction : MonoBehaviour
     private InteractionScopeChecker interactionScopeChecker;
     [SerializeField]
     private SelectedNotificationDI DI;
+    private List<IInteractionInfoReceiver> interactionInfoReceivers = default;
     private IInteraction nowInteraction = new NullInteraction();
 
     private List<ISelectedNotificationInjectable> selectedNotificationInjectables = new List<ISelectedNotificationInjectable>();
@@ -25,9 +25,9 @@ public class PlayerInteraction : MonoBehaviour
 
         }
 
-        public void Open()
+        public IInteraction.InteractionInfo Open()
         {
-
+            return new IInteraction.NullInteractionInfo();
         }
     }
     private void Awake()
@@ -40,6 +40,11 @@ public class PlayerInteraction : MonoBehaviour
     {
         selectedNotificationInjectables.Add(selectedNotificationInjectable);
     }
+    public void Add(IInteractionInfoReceiver interactionInfoReceiver)
+	{
+        interactionInfoReceivers.Add(interactionInfoReceiver);
+
+    }
     public void Remove(ISelectedNotificationInjectable selectedNotificationInjectable)
     {
         selectedNotificationInjectables.Remove(selectedNotificationInjectable);
@@ -48,7 +53,11 @@ public class PlayerInteraction : MonoBehaviour
     private void InteractionInject(IInteraction interaction)
     {
         this.nowInteraction = interaction;
-        interaction.Open();
+        var info = interaction.Open();
+		foreach (var item in interactionInfoReceivers)
+		{
+            item.SetInfo(info);
+		}
         DI.DependencyInjection(interaction, selectedNotificationInjectables);
     }
     private void InteractionCloseInject(IInteraction interaction)

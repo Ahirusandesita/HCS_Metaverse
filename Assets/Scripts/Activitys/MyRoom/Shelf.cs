@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Shelf : SafetyInteractionObject
 {
+	public class PlacingInteractionInfo : IInteraction.InteractionInfo
+	{
+		
+	}
+
 	[Header("配置可能な棚板リスト（天板含む）\n※下の方の棚板から設定するのがおすすめ")]
 	[SerializeField] private List<BoxCollider> shelfBoard = default;
 	private int focusBoardIndex = default;
@@ -19,6 +24,7 @@ public class Shelf : SafetyInteractionObject
 	{
 		XDebug.Log("Shelf Access", "green");
 		focusBoardIndex = 0;
+		interactionInfoSubject.OnNext(new PlacingInteractionInfo());
 		Spawn();
 		UpdateAction += () =>
 		{
@@ -46,6 +52,6 @@ public class Shelf : SafetyInteractionObject
 
 	private void Spawn()
 	{
-		GetComponent<PlacingTarget_Shelf>().transform.position = shelfBoard[focusBoardIndex].transform.position + Vector3.up * (shelfBoard[focusBoardIndex].size.y + 0.01f);
+		FindObjectOfType<PlacingTarget_Shelf>(true).transform.position = shelfBoard[focusBoardIndex].transform.position + Vector3.up * (shelfBoard[focusBoardIndex].size.y + 0.01f);
 	}
 }
