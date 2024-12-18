@@ -5,9 +5,6 @@ using Oculus.Interaction;
 
 public class AutoMachine : Machine, IObjectLocker
 {
-    [SerializeField, Tooltip("行う加工の種類")]
-    private ProcessingType _processingType = default;
-
     [SerializeField, Tooltip("オブジェクトの取得範囲を指定するCollider")]
     private Collider _cuttingAreaCollider = default;
 
