@@ -91,6 +91,7 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
 
     public void StateAuthorityChanged()
     {
+        Debug.LogError("Œ ŒÀƒQƒbƒg");
         countDownTime_s = Time;
         lastTime_s = countDownTime_s;
         canInvoke = true;
