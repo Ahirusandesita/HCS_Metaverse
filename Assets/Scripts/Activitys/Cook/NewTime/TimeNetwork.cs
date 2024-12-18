@@ -29,6 +29,7 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
 
     private bool isCountStart = false;
     private bool canInvoke = false;
+    private bool isFirstInvoke = true;
     private void SetTime()
     {
         countDownTime_s = StartTime;
@@ -43,7 +44,7 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
     }
     private void Update()
     {
-        if (Time <= 0 && isCountStart && canInvoke)
+        if (Time <= 0 && isCountStart && canInvoke && isFirstInvoke)
         {
             OnMasterFinish?.Invoke();
             OnMasterFinish = null;
@@ -52,14 +53,16 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
             OnTime = null;
             canInvoke = false;
             isCountStart = false;
+            isFirstInvoke = false;
         }
-        if(Time <= 0 && isCountStart)
+        if(Time <= 0 && isCountStart && isFirstInvoke)
         {
             OnFinish?.Invoke();
             OnFinish = null;
             OnTime = null;
             canInvoke = false;
             isCountStart = false;
+            isFirstInvoke = false;
         }
 
         if (!this.GetComponent<NetworkObject>().HasStateAuthority)
