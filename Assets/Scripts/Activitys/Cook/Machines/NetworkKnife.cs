@@ -19,11 +19,11 @@ public class NetworkKnife : NetworkBehaviour
 
     public void RPC_UnLockKnife()
     {
-        _networkView.LocalView.GetComponent<StoppingKnife>().RPC_UnlockedObject();
+        _networkView.LocalView.GetComponent<Knife>().RPC_UnlockedObject();
     }
 
     public void RPC_UnSelect()
     {
-        _networkView.LocalView.GetComponent<StoppingKnife>().RPC_UnSelect();
+        _networkView.LocalView.GetComponent<Knife>().RPC_UnSelect();
     }
 }

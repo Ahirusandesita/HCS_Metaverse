@@ -3,7 +3,7 @@ using UnityEngine;
 using Oculus.Interaction;
 using Cysharp.Threading.Tasks;
 
-public class StoppingKnife : NetworkBehaviour, IStopViewData
+public class Knife : NetworkBehaviour, IStopViewData
 {
     [SerializeField, Tooltip("見た目用オブジェクトのTransform")]
     private Transform _visualObjectTransform = default;
