@@ -47,7 +47,7 @@ public class ShopCart : MonoBehaviour
 		}
 	}
 
-	private void InventoryNiTumeru(List<WebAPIRequester.ItemStock> itemStocks)
+	private void toItemStockList(List<WebAPIRequester.ItemStock> itemStocks)
 	{
 		foreach (var item in _inCarts)
 		{
@@ -62,7 +62,7 @@ public class ShopCart : MonoBehaviour
 	{
 		WebAPIRequester requester = new WebAPIRequester();
 		List<WebAPIRequester.ItemStock> buyItemStocks = new List<WebAPIRequester.ItemStock>();
-		InventoryNiTumeru(buyItemStocks);
+		toItemStockList(buyItemStocks);
 		_visualShop.Buy();
 
 		foreach (KeyValuePair<int, int> pair in _inCarts)
@@ -77,7 +77,7 @@ public class ShopCart : MonoBehaviour
 
 		try
 		{
-			XDebug.LogError(buyItemStocks.Count);
+			//XDebug.LogError(buyItemStocks.Count);
 		}
 		catch
 		{

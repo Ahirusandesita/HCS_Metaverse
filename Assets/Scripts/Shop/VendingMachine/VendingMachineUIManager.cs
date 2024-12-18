@@ -15,8 +15,12 @@ public class VendingMachineUIManager : MonoBehaviour
 	[SerializeField]
 	private RectTransform _startRectTransform;
 	[SerializeField]
+	private MeshRenderer _meshRenderer;
+	[SerializeField]
 	private int _rowMax = 3;
 	private int _shopID = default;
+	private bool _isActive;
+
 	private Dictionary<int, VendingMachineUI> _vendingUIs = new();
 
 	public async UniTaskVoid Initialize(int shopID)
@@ -24,18 +28,29 @@ public class VendingMachineUIManager : MonoBehaviour
 		_shopID = shopID;
 		await ShopUpdate();
 	}
+	private void Start()
+	{
+		Initialize(0).Forget();
+	}
 
 	private async UniTask ShopUpdate()
 	{
 		WebAPIRequester webAPIRequester = new WebAPIRequester();
 
-		WebAPIRequester.OnShopEntryData data = await webAPIRequester.PostShopEntry(_shopID);
-		foreach (WebAPIRequester.ItemLineup lineup in data.GetBody.ItemList)
+		WebAPIRequester.OnVMEntryData data = await webAPIRequester.PostVMEntry(_shopID);
+
+		if (data.GetBody.Active)
 		{
-			int discountedPrice = Mathf.FloorToInt(lineup.Price * (1 - lineup.Discount));
-			AddVendingMachineUI(lineup.ItemID, discountedPrice);
-			UpdateUI(lineup.ItemID, lineup.Stock);
+			Active(data);
+			
 		}
+		else
+		{
+			Inactive();
+			return;
+		}
+
+
 	}
 
 	private void AddVendingMachineUI(int id, int discountedPrice)
@@ -58,7 +73,7 @@ public class VendingMachineUIManager : MonoBehaviour
 		_vendingUIs.Add(id, ui);
 	}
 
-	public void UpdateUI(int id,int stock)
+	public void UpdateUI(int id, int stock)
 	{
 		XKumaDebugSystem.LogWarning($"{id}:{stock}");
 		if (stock <= 0)
@@ -81,7 +96,27 @@ public class VendingMachineUIManager : MonoBehaviour
 			XKumaDebugSystem.LogError("Buy‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½");
 			return;
 		}
+		//•¡””ƒ‚¢‚Í–¢ŽÀ‘•‚Ì‚à‚Ì‚Æ‚·‚é
+		UpdateUI(id, result.GetBody.StockData[0].Amount);
+	}
+	private void Active(WebAPIRequester.OnVMEntryData data)
+	{
+		_meshRenderer.material.color = Color.white;
+		foreach (WebAPIRequester.ItemLineup lineup in data.GetBody.ItemList)
+		{
+			int discountedPrice = Mathf.FloorToInt(lineup.Price * (1 - lineup.Discount));
+			AddVendingMachineUI(lineup.ItemID, discountedPrice);
+			UpdateUI(lineup.ItemID, lineup.Stock);
+		}
+	}
 
-		// UpdateUI();
+	private void Inactive()
+	{
+		_meshRenderer.material.color = Color.black;
+		foreach (VendingMachineUI uI in _vendingUIs.Values)
+		{
+			Destroy(uI);
+		}
+		_vendingUIs.Clear();
 	}
 }
