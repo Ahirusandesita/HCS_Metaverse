@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CuttingBoardObject : MonoBehaviour, IManualProcessing
+public class CuttingBoardObject : MonoBehaviour, IManualProcess
 {
     [SerializeField, Tooltip("切断できる範囲を指定するCollider")]
     private Collider _cuttingAreaCollider = default;
@@ -29,7 +29,7 @@ public class CuttingBoardObject : MonoBehaviour, IManualProcessing
         _hitBoxRotation = this.transform.rotation;
     }
 
-    public void ProcessingEvent()
+    public void ManualProcessEvent()
     {
         // 
         Collider[] hitColliders = Physics.OverlapBox(_hitBoxCenter, _hitBoxSize, _hitBoxRotation);

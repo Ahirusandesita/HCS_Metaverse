@@ -173,7 +173,7 @@ public class StoppingKnife : NetworkBehaviour, IStopViewData
         _stopData.DataSetUp(this);
 
         // 接触したオブジェクトが持つ接触時の処理を実行する
-        hitObject.GetComponent<IManualProcessing>().ProcessingEvent();
+        hitObject.GetComponent<IManualProcess>().ManualProcessEvent();
 
         Debug.Log($"<color=blue>当たったよん：ほーちょー</color>");
     }

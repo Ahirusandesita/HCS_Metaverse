@@ -2,7 +2,7 @@ using UnityEngine;
 using Oculus.Interaction;
 using Fusion;
 
-public class LockedCuttingBoard : Machine, IObjectLocker, IManualProcessing, IStopper
+public class LockedCuttingBoard : Machine, IObjectLocker, IStopper
 {
     [SerializeField, Tooltip("オブジェクトの取得範囲を指定するCollider")]
     private Collider _cuttingAreaCollider = default;
@@ -78,7 +78,7 @@ public class LockedCuttingBoard : Machine, IObjectLocker, IManualProcessing, ISt
         }  
     }
 
-    public void ProcessingEvent()
+    public void ManualProcessEvent()
     {
         //// オブジェクトが固定されている　かつ　固定されているオブジェクトにIngrodientがついている場合
         //if (_isLockedObject && _processingIngrodient != default)

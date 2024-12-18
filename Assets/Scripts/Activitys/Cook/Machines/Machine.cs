@@ -2,16 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 
-public abstract class Machine : NetworkBehaviour
+public abstract class Machine : NetworkBehaviour, IManualProcess
 {
     // 
     private LocalView _processingIngrodientsView = default;
-
-    [SerializeField]
-    private Transform _processerTransform = default;
-
-    [Tooltip("‰ÁH‚ðs‚Á‚Ä‚¢‚éˆÊ’u")]
-    public Transform ProcesserTransform => _processerTransform;
 
     [SerializeField]
     private int _machineID = 1;
@@ -19,11 +13,17 @@ public abstract class Machine : NetworkBehaviour
     [SerializeField]
     private float _processingValue = 1f;
 
+    [SerializeField]
+    private Transform _processerTransform = default;
+
+    [SerializeField]
     private ProcessingType _processingType = ProcessingType.Bake;
 
     public int MachineID => _machineID;
 
     public float ProcessingValue => _processingValue;
+
+    public Transform ProcesserTransform => _processerTransform;
 
     public ProcessingType ProcessType => _processingType;
     
