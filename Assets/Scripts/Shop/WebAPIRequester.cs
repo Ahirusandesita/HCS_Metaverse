@@ -186,6 +186,7 @@ public class WebAPIRequester
 
 		public Body GetBody => body;
 
+		[System.Serializable]
 		public class Body
 		{
 			public Body(List<ItemLineup> itemList, bool active)
