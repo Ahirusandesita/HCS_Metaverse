@@ -18,4 +18,8 @@ public class ScrollTransformInject : MonoBehaviour
             transformInjectable.TransformInject(this.transform);
         }
     }
+    public void Inject(ITransformInjectable transformInjectable)
+    {
+        transformInjectable.TransformInject(this.transform);
+    }
 }
