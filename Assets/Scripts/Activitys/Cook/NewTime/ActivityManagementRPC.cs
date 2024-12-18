@@ -44,6 +44,7 @@ public class ActivityManagementRPC : NetworkBehaviour,IPlayerJoined
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     public void RPC_RPCInstanceInject()
     {
+        Debug.LogError("AAAAAAAAAAAA");
         FindObjectOfType<ActivityProgressManagement>().RPC_RPCInstance(this);
     }
 }

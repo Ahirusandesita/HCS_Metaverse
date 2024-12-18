@@ -59,7 +59,6 @@ public class ActivityProgressManagement : MonoBehaviour
         //leader‚Ì‚Ý
         GateOfFusion.Instance.OnActivityConnected += async () =>
         {
-            Debug.LogError("‚­‚Ü‚Æ‚¯‚Á‚±‚ñ‘O");
             if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
             {
                 return;
@@ -72,8 +71,6 @@ public class ActivityProgressManagement : MonoBehaviour
             {
                 networkTimeInjectable.Inject(readyTimeInstance);
             }
-
-            Debug.LogError("‚­‚Ü‚Æ‚¯‚Á‚±‚ñ");
             readyTimeInstance.OnFinish += () =>
             {
                 ActivityStart();
@@ -162,6 +159,9 @@ public class ActivityProgressManagement : MonoBehaviour
 
     public void RPC_Joined(PlayerRef playerRef)
     {
+        Debug.LogError(rpcInstance);
+        Debug.LogError(readyTimeInstance);
+        Debug.LogError(MainTimeInstance);
         rpcInstance.RPC_NetworkTimeInject(playerRef, readyTimeInstance.GetComponent<NetworkObject>(), mainTimeInstance.GetComponent<NetworkObject>(),rpcInstance.GetComponent<NetworkObject>());
     }
 }
