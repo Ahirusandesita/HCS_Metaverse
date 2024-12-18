@@ -23,6 +23,7 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		if (Input.GetKeyDown(KeyCode.N))
 		{
 			shopCart.AddCart(id);
+			id++;
 		}
 	}
 	public int GetPrice(int id)

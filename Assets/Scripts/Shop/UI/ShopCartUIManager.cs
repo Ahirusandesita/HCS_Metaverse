@@ -14,8 +14,6 @@ public class ShopCartUIManager : MonoBehaviour
 	[SerializeField]
 	private Transform _shopUIParent;
 	[SerializeField]
-	private RectTransform _startPosition;
-	[SerializeField]
 	private GameObject _shopCanvasObject;
 	[SerializeField]
 	private ProductUI _productUIPrefab;
@@ -26,13 +24,17 @@ public class ShopCartUIManager : MonoBehaviour
 	[SerializeField]
 	private RectTransform _startPositionTransform;
 	[SerializeField]
+	private DragSystem _dragSystem = default;
+	[SerializeField]
+	private ScrollTransformInject _scrollTransformInject = default;
+	[SerializeField]
 	private Vector3 _priceCardPositionOffset = default;
 	private Dictionary<int, ProductUI> _productUIs = new();
 	private Dictionary<int, InCartItemUI> _itemIcons = new();
-	private int _yPosition = 0;
+	private int _yPosition = -1;
 	private float _offsetX = 100;
 	private float _offsetY = 100;
-	private int _horizontalLimit = 3;
+	private int _horizontalLimit = 1;
 
 
 	private void Start()
@@ -41,7 +43,7 @@ public class ShopCartUIManager : MonoBehaviour
 		TatalPriceDisplay();
 		_offsetX = iconTransform.sizeDelta.x;
 		_offsetY = iconTransform.sizeDelta.y;
-		_horizontalLimit = Mathf.FloatToHalf((_shopUIParent.transform as RectTransform).sizeDelta.x / _offsetX);
+		//_horizontalLimit = Mathf.FloatToHalf((_shopUIParent.transform as RectTransform).sizeDelta.x / _offsetX);
 	}
 
 	public void AddProductUI(int id, int price, int discountedPrice, int stock, float discount, Vector3 position)
@@ -65,19 +67,20 @@ public class ShopCartUIManager : MonoBehaviour
 			ItemAsset itemAsset = _allItemAsset.GetItemAssetByID(id);
 			int currentYPosition = (_itemIcons.Count / _horizontalLimit);
 			Vector2 popAnchoredPosition =
-				_startPosition.anchoredPosition
+				_startPositionTransform.anchoredPosition
 				+ Vector2.right * (_itemIcons.Count % _horizontalLimit) * _offsetX
-				+ Vector2.up * currentYPosition * _offsetY;
+				+ Vector2.up * currentYPosition * - _offsetY;
 			uiIconTemp = Instantiate(_itemIconPrefab, _shopUIParent);
-			uiIconTemp.Init(itemAsset.ItemIcon, this, popAnchoredPosition, id);
+			uiIconTemp.Init(itemAsset.ItemIcon, this, popAnchoredPosition, id,_dragSystem,_scrollTransformInject,currentYPosition);
 			_itemIcons.Add(id, uiIconTemp);
-			if (_yPosition != currentYPosition)
+
+			if (_itemIcons.Count % _horizontalLimit == 0)
 			{
 				foreach (InCartItemUI item in _itemIcons.Values)
 				{
 					item.UpdateLimit(_offsetY);
 				}
-				_yPosition = currentYPosition;
+				//_yPosition = currentYPosition;
 			}
 		}
 		else

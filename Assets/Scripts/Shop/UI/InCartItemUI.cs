@@ -16,21 +16,29 @@ public class InCartItemUI : MonoBehaviour
 	private YScrollObject _yScrollObject;
 	private float _currentColLimit;
 	private int _id;
+	private int test;
 
-
-	public void Init(Sprite itemSprite, ShopCartUIManager shopCartUIManager, Vector2 popAnchoredPosition, int id)
+	public void Init(Sprite itemSprite, ShopCartUIManager shopCartUIManager, 
+		Vector2 popAnchoredPosition, int id,DragSystem dragSystem,
+		ScrollTransformInject scrollTransformInject,int test)
 	{
 		_id = id;
 		RectTransform myRectTransform = this.transform as RectTransform;
-		_yScrollObject.InjectDownLimit(myRectTransform.localPosition.y);
 		_shopCartUIManager = shopCartUIManager;
 		_image.sprite = itemSprite;
 		myRectTransform.anchoredPosition = popAnchoredPosition;
+		dragSystem.ScrollableInject(_yScrollObject);
+		scrollTransformInject.Inject(_yScrollObject);
+		_currentColLimit -= myRectTransform.localPosition.y;
+		_yScrollObject.InjectDownLimit(myRectTransform.localPosition.y);
+		XKumaDebugSystem.LogError("down:"+myRectTransform.localPosition.y);
+		this.test = test + 1;
 	}
 	public void UpdateLimit(float colLimitGap)
 	{
 		_currentColLimit += colLimitGap;
-		_yScrollObject.InjectDownLimit(_currentColLimit);
+		XKumaDebugSystem.LogError("up:"+_currentColLimit+":"+_id + colLimitGap);
+		_yScrollObject.InjectUpLimit(_currentColLimit);
 	}
 
 	public void UpdateCount(int count)
