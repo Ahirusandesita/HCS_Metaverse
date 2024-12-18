@@ -64,7 +64,7 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
         }
         if (Time <= 0 && isFirstInvoke && !canInvoke)
         {
-            Debug.LogError("メンバーのFinish"　+ Time);
+            Debug.LogError("メンバーのFinish" + Time);
             OnFinish?.Invoke();
             OnFinish = null;
             OnMasterFinish = null;
@@ -91,7 +91,6 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
 
     public void StateAuthorityChanged()
     {
-        Debug.LogError("権限ゲット");
         countDownTime_s = Time;
         lastTime_s = countDownTime_s;
         canInvoke = true;
@@ -99,10 +98,10 @@ public class TimeNetwork : NetworkBehaviour, IStateAuthorityChanged
 
     public override void Spawned()
     {
+        isSpawn = true;
         if (HasStateAuthority)
         {
             Time = 100;
-            isSpawn = true;
         }
     }
 }
