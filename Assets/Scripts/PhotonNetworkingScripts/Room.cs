@@ -26,7 +26,7 @@ public class Room
 		this._worldType = activityType;
 		this._nextSessionName = nextSessionName;
 
-		if (activityType is SceneNameType.KumaKumaTest)
+		if (activityType is SceneNameType.KumaKumaTest or SceneNameType.TestPhotonScene)
 		{
 			_isNonLeader = true;
 		}
