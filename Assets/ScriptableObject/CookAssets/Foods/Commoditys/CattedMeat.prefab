@@ -529,7 +529,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5411146497772972658}
   - component: {fileID: -5465315971116718578}
-  - component: {fileID: 6254293847065142255}
+  - component: {fileID: 5110485631245268766}
   - component: {fileID: 4523506480872104023}
   - component: {fileID: 8104917614159600775}
   - component: {fileID: 6177614806171759728}
@@ -578,7 +578,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   commodityAsset: {fileID: 11400000, guid: dbb1af87c5a4f164d8aed7297d99341f, type: 2}
   stateAuthority: {fileID: 0}
---- !u!114 &6254293847065142255
+--- !u!114 &5110485631245268766
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -587,11 +587,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4904631694389322249}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6f470946ffcf1c488cb86b70e8e1c8d, type: 3}
+  m_Script: {fileID: 11500000, guid: 8354401aa461df946b19ed87a13dd128, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   IsGrabed: 0
   ingrodientsAsset: {fileID: 11400000, guid: 920b689f58524b4489a33fb761b2db8a, type: 2}
+  _collider: {fileID: 7579871666590981847}
 --- !u!54 &4523506480872104023
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -653,7 +654,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb0074a58babc93498ccf19da9c98e09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ingrodients: {fileID: 6254293847065142255}
+  ingrodients: {fileID: 5110485631245268766}
   processDegreeOfProgressView: {fileID: 2055407035727525297}
 --- !u!114 &5988882822987087304
 MonoBehaviour:

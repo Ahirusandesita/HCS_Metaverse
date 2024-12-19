@@ -123,9 +123,8 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
             foodSpawnManagerRPC.RPC_CommoditySpawn(commodity.CommodityAsset.CommodityID, machineTransform.rotation.eulerAngles, machineTransform.position, _hitMachine.MachineID);
             // ---------------------------------------------------------------------------
             foodSpawnManagerRPC.RPC_Despawn(networkObject);
-            Debug.LogWarning($"Despawn‘O");
             networkRunner.Despawn(networkObject);
-            Debug.LogWarning($"DespawnŒã");
+            Destroy(gameObject);
         }
     }
 
