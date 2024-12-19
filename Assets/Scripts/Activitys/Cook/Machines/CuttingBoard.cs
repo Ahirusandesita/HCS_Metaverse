@@ -25,7 +25,7 @@ public class CuttingBoard : Machine
             return;
         }
 
-        Collider[] hitColliders = Physics.OverlapBox(_cuttingBoardCollider.bounds.center, _cuttingBoardCollider.bounds.extents, this.transform.rotation, _itemLayer);
+        Collider[] hitColliders = Physics.OverlapBox(_cuttingBoardCollider.bounds.center, _cuttingBoardCollider.bounds.extents, this.transform.rotation);
 
         if (hitColliders.Length == 0)
         {
@@ -54,6 +54,7 @@ public class CuttingBoard : Machine
 
                     if (_hittingKnife == default)
                     {
+                        Debug.LogWarning($"<color=blue>•ï’š“–‚½‚Á‚½‚æ‚ñ</color>");
                         ProcessEvent(_processingValue);
                         _hittingKnife = knife;
                     }

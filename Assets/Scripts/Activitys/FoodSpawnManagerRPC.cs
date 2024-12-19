@@ -99,7 +99,7 @@ public class FoodSpawnManagerRPC : NetworkBehaviour, IPlayerJoined
     public void RPC_Despawn(NetworkObject networkObject)
     {
         foodSpawnManager.Despawn(networkObject.GetComponent<NetworkView>());
-        commoditySpawnManager.Despawn(networkObject.GetComponent<NetworkView>());
+        //commoditySpawnManager.Despawn(networkObject.GetComponent<NetworkView>());
     }
 
 }

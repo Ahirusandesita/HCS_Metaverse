@@ -341,6 +341,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsGrabed: 0
   ingrodientsAsset: {fileID: 11400000, guid: 1cd9e73d4d6bf434cb8fc98d237716b4, type: 2}
+  _collider: {fileID: 4158260235328978040}
 --- !u!54 &4950398040786217830
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -431,7 +432,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb0074a58babc93498ccf19da9c98e09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ingrodients: {fileID: 0}
+  ingrodients: {fileID: 2404417590566057615}
   processDegreeOfProgressView: {fileID: 554416340636761162}
 --- !u!114 &-2697733448038896801
 MonoBehaviour:

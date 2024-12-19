@@ -74,7 +74,7 @@ public class Throwable : MonoBehaviour
         Vector3 throwVector = _throwData.GetThrowVector() * _velocityCoefficient;
 
         // NetworkView‚Éˆ—‚ÌÀs‚ğˆË—Š‚·‚é
-        _localView.NetworkView.GetComponent<LocalThrow>().RPC_ThrowAllLocalView(throwVector);
+        _localView.NetworkView.GetComponent<NetworkThrow>().RPC_ThrowAllLocalView(throwVector);
 
         // —£‚µ‚Ä‚¢‚éó‘Ô‚É‚·‚é
         _isSelected = false;
