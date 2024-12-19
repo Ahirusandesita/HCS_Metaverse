@@ -1,10 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Fusion;
 
-public class NetworkIngrodients : Ingrodients
+public class NetworkIngrodients : NetworkBehaviour
 {
+    private Machine _hitMachine = default;
+
     private NetworkView _networkView = default;
 
     private void Start()
@@ -30,15 +29,15 @@ public class NetworkIngrodients : Ingrodients
     }
 
     [Rpc]
-    public void RPC_ManualProcess()
+    public void RPC_ProcessEvent(float processValue)
     {
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
-            bool isEndProcessing = SubToIngrodientsDetailInformationsTimeItTakes(_hitMachine.ProcessType, _hitMachine.ProcessingValue);
+            bool isEndProcessing = _networkView.LocalView.GetComponent<LocalIngrodients>().SubToIngrodientsDetailInformationsTimeItTakes(_hitMachine.ProcessType, processValue);
 
             if (isEndProcessing)
             {
-                ProcessingStart(_hitMachine.ProcessType, _hitMachine.ProcesserTransform);
+                _networkView.LocalView.GetComponent<LocalIngrodients>().ProcessingStart(_hitMachine.ProcessType, _hitMachine.ProcesserTransform);
             }
         }
     }

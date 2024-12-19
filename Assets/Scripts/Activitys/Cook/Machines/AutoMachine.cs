@@ -19,12 +19,7 @@ public class AutoMachine : Machine
 
         if (_processingIngrodientsView != default)
         {
-            bool isEndProcess = _processingIngrodientsView.NetworkView.GetComponent<NetworkIngrodients>().SubToIngrodientsDetailInformationsTimeItTakes(_processingType, Time.deltaTime);
-
-            if (isEndProcess)
-            {
-                _processingIngrodientsView.NetworkView.GetComponent<NetworkIngrodients>().ProcessingStart(_processingType, _processerTransform);
-            }
+            ProcessEvent(_processingValue * Time.deltaTime);
         }
     }
 }

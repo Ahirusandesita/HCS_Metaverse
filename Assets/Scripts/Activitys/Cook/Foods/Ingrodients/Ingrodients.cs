@@ -12,7 +12,7 @@ using UnityEngine.UI;
 /// <summary>
 /// ãÔçﬁ
 /// </summary>
-public class Ingrodients : NetworkBehaviour, IIngrodientsModerator, IInject<ISwitchableGrabbableActive>,IGrabbableActiveChangeRequester
+public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitchableGrabbableActive>,IGrabbableActiveChangeRequester
 {
     public bool IsGrabed = false;
 

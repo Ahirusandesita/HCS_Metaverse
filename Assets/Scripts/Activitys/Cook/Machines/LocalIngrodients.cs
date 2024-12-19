@@ -4,10 +4,8 @@ using UnityEngine;
 using Fusion;
 using Oculus.Interaction;
 
-public class LocalIngrodients : MonoBehaviour, IGrabbableActiveChangeRequester
+public class LocalIngrodients : Ingrodients, IGrabbableActiveChangeRequester
 {
-    private Machine _hitMachine = default;
-
     private LocalView _localView = default;
 
     private void Start()

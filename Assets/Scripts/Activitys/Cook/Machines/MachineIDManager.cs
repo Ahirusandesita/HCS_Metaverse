@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MachineIDManager : MonoBehaviour
 {
+    [SerializeField]
     private List<Machine> _machineList = new List<Machine>();
 
     public Machine GetMachine(int machineID)
