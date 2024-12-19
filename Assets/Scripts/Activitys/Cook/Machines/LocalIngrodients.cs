@@ -6,6 +6,9 @@ using Oculus.Interaction;
 
 public class LocalIngrodients : Ingrodients, IGrabbableActiveChangeRequester
 {
+    [SerializeField]
+    private Collider _collider = default;
+
     private LocalView _localView = default;
 
     private void Start()
@@ -17,11 +20,40 @@ public class LocalIngrodients : Ingrodients, IGrabbableActiveChangeRequester
         pointableUnityEventWrapper.WhenSelect.AddListener((action) => { Select(); });
     }
 
+    private void Update()
+    {
+        if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        {
+            return;
+        }
+
+        Collider[] hitColliders = Physics.OverlapBox(_collider.bounds.center, _collider.bounds.extents, this.transform.rotation);
+
+        if (hitColliders.Length == 0)
+        {
+            _hitMachine = default;
+
+            return;
+        }
+        else
+        {
+            for (int i = 0; i < hitColliders.Length; i++)
+            {
+                if (hitColliders[i].gameObject.TryGetComponent<Machine>(out var hitMachine) && hitMachine != _hitMachine)
+                {
+                    _localView.NetworkView.GetComponent<NetworkIngrodients>().RPC_PutIngrodients(hitMachine.MachineID);
+                    Debug.LogWarning($"<color=red>LocalIng‚ ‚½‚Á‚½‚æ->{hitMachine.gameObject.name}</color>");
+                }
+            }
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.TryGetComponent<Machine>(out var hitMachine) && hitMachine != _hitMachine)
         {
             _localView.NetworkView.GetComponent<NetworkIngrodients>().RPC_PutIngrodients(hitMachine.MachineID);
+            Debug.LogWarning($"<color=red>LocalIng‚ ‚½‚Á‚½‚æ->{hitMachine.gameObject.name}</color>");
         }
     }
 

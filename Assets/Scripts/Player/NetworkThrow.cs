@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 
-public class LocalThrow : NetworkBehaviour
+public class NetworkThrow : NetworkBehaviour
 {
     // 
     private NetworkView _networkView = default;

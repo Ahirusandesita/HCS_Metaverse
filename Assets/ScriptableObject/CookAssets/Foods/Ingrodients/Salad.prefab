@@ -366,6 +366,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsGrabed: 0
   ingrodientsAsset: {fileID: 11400000, guid: ecf7ce6660199c04899c60e445116c19, type: 2}
+  _collider: {fileID: 8683470741975180216}
 --- !u!54 &7664446410624043760
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -456,7 +457,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb0074a58babc93498ccf19da9c98e09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ingrodients: {fileID: 0}
+  ingrodients: {fileID: 1640114155979850632}
   processDegreeOfProgressView: {fileID: 5796244543800545396}
 --- !u!114 &601657627656894596
 MonoBehaviour:
@@ -507,7 +508,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 567f9eacd55ffb34ea6a54a0571c70c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshRenderers: []
+  meshRenderers:
+  - {fileID: 8807544386523344511}
 --- !u!1 &3498574826486432006
 GameObject:
   m_ObjectHideFlags: 0

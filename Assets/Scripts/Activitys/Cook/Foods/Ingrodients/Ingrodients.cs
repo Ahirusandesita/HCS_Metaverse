@@ -34,7 +34,7 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
         }
     }
 
-    private ReactiveProperty<TimeItTakesData> timeItTakesProperty { get; set; }
+    private ReactiveProperty<TimeItTakesData> timeItTakesProperty = new ReactiveProperty<TimeItTakesData>();
     public IReadOnlyReactiveProperty<TimeItTakesData> TimeItTakesProperty => timeItTakesProperty;
 
     IngrodientsAsset IIngrodientsModerator.IngrodientsAsset
@@ -118,9 +118,14 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
         {
             Commodity commodity = commodityFactory.Generate(this, processingType);
             FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
-            foodSpawnManagerRPC.RPC_CommoditySpawn( commodity.CommodityAsset.CommodityID, machineTransform.rotation.eulerAngles, machineTransform.position, _hitMachine.MachineID);
-            foodSpawnManagerRPC.RPC_Despawn(GetComponent<LocalView>().NetworkView.GetComponent<NetworkObject>());
-            networkRunner.Despawn(this.gameObject.GetComponent<NetworkObject>());
+            NetworkObject networkObject = GetComponent<LocalView>().NetworkView.GetComponent<NetworkObject>();
+            // ----------------------------- ID ------------------------------------------
+            foodSpawnManagerRPC.RPC_CommoditySpawn(commodity.CommodityAsset.CommodityID, machineTransform.rotation.eulerAngles, machineTransform.position, _hitMachine.MachineID);
+            // ---------------------------------------------------------------------------
+            foodSpawnManagerRPC.RPC_Despawn(networkObject);
+            Debug.LogWarning($"Despawn‘O");
+            networkRunner.Despawn(networkObject);
+            Debug.LogWarning($"DespawnŒã");
         }
     }
 
