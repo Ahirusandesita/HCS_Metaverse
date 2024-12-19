@@ -9,6 +9,8 @@ public class CuttingBoard : Machine
 
     Knife _hittingKnife = default;
 
+    LayerMask _itemLayer = 1 >> 7;
+
     protected override void Start()
     {
         base.Start();
@@ -18,8 +20,12 @@ public class CuttingBoard : Machine
     {
         base.Update();
 
-        // ê⁄êGÇµÇΩColliderÇîªíËÇµÇƒäiî[Ç∑ÇÈ
-        Collider[] hitColliders = Physics.OverlapBox(_cuttingBoardCollider.bounds.center, _cuttingBoardCollider.bounds.extents, this.transform.rotation);
+        if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        {
+            return;
+        }
+
+        Collider[] hitColliders = Physics.OverlapBox(_cuttingBoardCollider.bounds.center, _cuttingBoardCollider.bounds.extents, this.transform.rotation, _itemLayer);
 
         if (hitColliders.Length == 0)
         {
@@ -29,41 +35,39 @@ public class CuttingBoard : Machine
         }
         else
         {
+            bool isHitKnife = false;
 
-        }
-    }
+            for (int i = 0; i < hitColliders.Length; i++)
+            {
+                Knife knife = hitColliders[i].transform.root.GetComponentInChildren<Knife>();
 
-    private void OnTriggerStay(Collider other)
-    {
-        Knife knife = other.transform.root.GetComponentInChildren<Knife>();
+                if (knife == null)
+                {
+                    if (_hittingKnife == null)
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    isHitKnife = true;
 
-        if (knife == null)
-        {
-            if (_hittingKnife == null)
-            {
-                return;
+                    if (_hittingKnife == default)
+                    {
+                        ManualProcessEvent();
+                        _hittingKnife = knife;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
             }
-            else
-            {
-                _hittingKnife = null;
-            }
-        }
-        else
-        {
-            if (_hittingKnife == null)
-            {
-                ManualProcessEvent();
-                _hittingKnife = knife;
-            }
-            else
-            {
-                return;
-            }
-        }
 
-        if (other.transform.root.GetComponentInChildren<Knife>() != null)
-        {
-            ManualProcessEvent();
+            if (!isHitKnife)
+            {
+                _hittingKnife = default;
+            }
         }
     }
 }
