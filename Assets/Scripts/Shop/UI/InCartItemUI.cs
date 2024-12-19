@@ -16,6 +16,7 @@ public class InCartItemUI : MonoBehaviour
 	private YScrollObject _yScrollObject;
 	private float _currentColLimit;
 	private int _id;
+	public int ID => _id;
 	private int test;
 
 	public bool CanDestory = false;
@@ -34,13 +35,18 @@ public class InCartItemUI : MonoBehaviour
 		//_currentColLimit -= myRectTransform.localPosition.y;
 		testDownLimit = popAnchoredPosition.y;
 		_yScrollObject.InjectDownLimit(popAnchoredPosition.y);
-		XKumaDebugSystem.LogError("down:"+myRectTransform.localPosition.y);
+		UpLimit(popAnchoredPosition.y);
+		//XKumaDebugSystem.LogError("down:"+myRectTransform.localPosition.y);
 		this.test = test + 1;
 	}
+	private void UpLimit(float limit)
+    {
+		_currentColLimit = limit;
+		_yScrollObject.InjectUpLimit(limit);
+    }
 	public void UpdateLimit(float colLimitGap)
 	{
-		_currentColLimit += colLimitGap;
-		_yScrollObject.InjectUpLimit(_currentColLimit);
+		_yScrollObject.InjectUpLimit(_currentColLimit + colLimitGap);
 	}
 	public void UpdateDownLimit(float limit)
     {
