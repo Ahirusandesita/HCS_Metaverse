@@ -37,14 +37,14 @@ public abstract class Machine : NetworkBehaviour, IManualProcess
 
     }
 
-    public void ManualProcessEvent()
+    public void ProcessEvent(float processValue)
     {
         if (_processingIngrodientsView == default)
         {
             return;
         }
 
-        _processingIngrodientsView.NetworkView.GetComponent<NetworkIngrodients>().RPC_ManualProcess();
+        _processingIngrodientsView.NetworkView.GetComponent<NetworkIngrodients>().RPC_ProcessEvent(processValue);
     }
 
     public void SetProcessingIngrodient(LocalView setIngrodientsView)

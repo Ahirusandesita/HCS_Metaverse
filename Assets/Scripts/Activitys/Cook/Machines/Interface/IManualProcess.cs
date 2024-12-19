@@ -1,4 +1,4 @@
 public interface IManualProcess
 {
-    public void ManualProcessEvent();
+    public void ProcessEvent(float processValue);
 }

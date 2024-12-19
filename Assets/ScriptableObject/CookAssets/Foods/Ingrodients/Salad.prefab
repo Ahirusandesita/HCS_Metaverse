@@ -315,7 +315,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3315551373877976711}
-  - component: {fileID: 1007244645545015487}
+  - component: {fileID: 1640114155979850632}
   - component: {fileID: 7664446410624043760}
   - component: {fileID: 6097322304720769460}
   - component: {fileID: -4452063645714083423}
@@ -352,7 +352,7 @@ Transform:
   - {fileID: 8441734311894767695}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1007244645545015487
+--- !u!114 &1640114155979850632
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -361,7 +361,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3206259490211938747}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6f470946ffcf1c488cb86b70e8e1c8d, type: 3}
+  m_Script: {fileID: 11500000, guid: 8354401aa461df946b19ed87a13dd128, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   IsGrabed: 0
@@ -456,7 +456,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb0074a58babc93498ccf19da9c98e09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ingrodients: {fileID: 1007244645545015487}
+  ingrodients: {fileID: 0}
   processDegreeOfProgressView: {fileID: 5796244543800545396}
 --- !u!114 &601657627656894596
 MonoBehaviour:

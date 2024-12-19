@@ -54,7 +54,7 @@ public class CuttingBoard : Machine
 
                     if (_hittingKnife == default)
                     {
-                        ManualProcessEvent();
+                        ProcessEvent(_processingValue);
                         _hittingKnife = knife;
                     }
                     else
