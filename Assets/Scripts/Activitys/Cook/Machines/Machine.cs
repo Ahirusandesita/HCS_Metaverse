@@ -39,7 +39,7 @@ public abstract class Machine : NetworkBehaviour, IManualProcess
 
     public void ManualProcessEvent()
     {
-        if (_processingIngrodientsView == null)
+        if (_processingIngrodientsView == default)
         {
             return;
         }
@@ -57,6 +57,6 @@ public abstract class Machine : NetworkBehaviour, IManualProcess
 
     public void UnSetProcessingIngrodient()
     {
-        _processingIngrodientsView = null;
+        _processingIngrodientsView = default;
     }
 }
