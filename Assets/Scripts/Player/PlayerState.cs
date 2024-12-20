@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UniRx;
+using UnityEngine;
 
 public class PlayerState : MonoBehaviour, IInputControllable, IInteractionInfoReceiver
 {
@@ -20,6 +18,8 @@ public class PlayerState : MonoBehaviour, IInputControllable, IInteractionInfoRe
 
 	private void Awake()
 	{
+		placingMode.AddTo(this);
+		// IInteractionから送られてくる情報を受け取るために、受け取り者リストをAddする
 		playerInteraction.Add(this);
 	}
 
@@ -29,19 +29,18 @@ public class PlayerState : MonoBehaviour, IInputControllable, IInteractionInfoRe
 		{
 			if (placingMode.Value)
 			{
-				// Debug
 				Inputter.ChangeInputPreset(this, Inputter.InputActionPreset.Placing);
 			}
 			else
 			{
-				// Debug
 				Inputter.ChangeInputPreset(this, Inputter.InputActionPreset.Default);
 			}
-		}).AddTo(this);
+		});
 	}
 
 	private void Update()
 	{
+		// 本番環境では、インベントリまたはプレイヤーからの要求があって初めてPlacingModeが変化する
 		if (Input.GetKeyDown(KeyCode.E))
 		{
 			placingMode.Value = !placingMode.Value;
@@ -50,10 +49,13 @@ public class PlayerState : MonoBehaviour, IInputControllable, IInteractionInfoRe
 
 	void IInteractionInfoReceiver.SetInfo(IInteraction.InteractionInfo interactionInfo)
 	{
+		// IInteractionから受け取ったクラスがShelf（棚）のものだったら
 		if (interactionInfo is Shelf.ShelfInteractionInfo shelfInteractionInfo)
 		{
-			shelfInteractionInfo.OnSafetyOpenAction += () => placingMode.Value = true;
-			shelfInteractionInfo.OnSafetyCloseAction += () => placingMode.Value = false;
+			// Actionを受け取る。各アクションはSafetyOpenとSafetyCloseのタイミングで発火する
+			// つまり棚のSafetyOpenが発火したときPlacingModeをONにし、SafetyCloseが発火したときPlacingModeをOFFにする
+			shelfInteractionInfo.OnSafetyOpenAction += data => placingMode.Value = true;
+			shelfInteractionInfo.OnSafetyCloseAction += data => placingMode.Value = false;
 		}
 	}
 }

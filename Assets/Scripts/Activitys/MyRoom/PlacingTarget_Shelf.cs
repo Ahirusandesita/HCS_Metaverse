@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlacingTarget_Shelf : PlacingTarget
+public class PlacingTarget_Shelf : PlacingTarget, IInteractionInfoReceiver
 {
 	private const float MOVE_SPEED = 3f; 
 	private Vector2 inputDir = default;
 
 	public override PlacingTarget Initialize(IEditOnlyGhost ghostModel, PlaceableObject placeableObject, Transform player)
 	{
-		var result = base.Initialize(ghostModel, placeableObject, player);
+		base.Initialize(ghostModel, placeableObject, player);
 		Inputter.Player.Move.performed += OnMove;
 		Inputter.Player.Move.canceled += OnMoveCancel;
-		return result;
+		FindObjectOfType<PlayerInteraction>().Add(this);
+		return this;
 	}
 
 	protected override void LateUpdate()
@@ -124,5 +125,22 @@ public class PlacingTarget_Shelf : PlacingTarget
 	private	void OnMoveCancel(InputAction.CallbackContext context)
 	{
 		inputDir = Vector2.zero;
+	}
+
+	void IInteractionInfoReceiver.SetInfo(IInteraction.InteractionInfo interactionInfo)
+	{
+		if (interactionInfo is Shelf.ShelfInteractionInfo shelfInteractionInfo)
+		{
+			shelfInteractionInfo.OnSafetyOpenAction += SetInitialPosition;
+		}
+	}
+
+	private void SetInitialPosition(SafetyInteractionObject.SafetyInteractionInfo.OnSafetyActionInfo data)
+	{
+		// 
+		if (data is Shelf.ShelfInteractionInfo.OnShelfInteractionInfo onShelfInteractionInfo)
+		{
+			//onShelfInteractionInfo.shelfBoards
+		}
 	}
 }

@@ -1,6 +1,5 @@
-using UnityEngine;
-using UniRx;
 using System;
+using UnityEngine;
 
 /// <summary>
 /// 二重のインタラクトを実装するオブジェクトの基底クラス
@@ -10,41 +9,46 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
 {
 	public class SafetyInteractionInfo : IInteraction.InteractionInfo
 	{
+		public abstract class OnSafetyActionInfo { }
+		public class NullOnSafetyActionInfo : OnSafetyActionInfo { }
+
 		/// <summary>
 		/// SafetyOpen（プレイヤーがInteractableなオブジェクトに触れ、かつ入力があった場合）が起動した際に発火するデリゲート
 		/// <br>SafetyCloseが発火したタイミングで中身がすべてDisposeされる</br>
 		/// </summary>
-		public event Action OnSafetyOpenAction = default;
+		public event Action<OnSafetyActionInfo> OnSafetyOpenAction = default;
 		/// <summary>
 		/// SafetyClose（プレイヤーがInteractableから特定の操作で離れた場合）が起動した際に発火するデリゲート
 		/// <br>SafetyCloseが発火したタイミングで中身がすべてDisposeされる</br>
 		/// </summary>
-		public event Action OnSafetyCloseAction = default;
+		public event Action<OnSafetyActionInfo> OnSafetyCloseAction = default;
 
 		/// <summary>
 		/// SafetyOpen時にデリゲートを実行する
 		/// <br>実行はSafetyInteractionObjectクラスに限る（引数で自身を渡す）</br>
 		/// </summary>
-		/// <param name="safetyInteractionObject">自分自身</param>
-		public void InvokeOpen(SafetyInteractionObject safetyInteractionObject)
+		/// <param name="_">自分自身</param>
+		/// <param name="data">Actionの引数</param>
+		public void InvokeOpen(SafetyInteractionObject _, OnSafetyActionInfo data)
 		{
-			OnSafetyOpenAction?.Invoke();
+			OnSafetyOpenAction?.Invoke(data);
 		}
 		/// <summary>
 		/// SafetyClose時にデリゲートを実行する
 		/// <br>実行はSafetyInteractionObjectクラスに限る（引数で自身を渡す）</br>
 		/// </summary>
-		/// <param name="safetyInteractionObject">自分自身</param>
-		public void InvokeClose(SafetyInteractionObject safetyInteractionObject)
+		/// <param name="_">自分自身</param>
+		/// <param name="data">Actionの引数</param>
+		public void InvokeClose(SafetyInteractionObject _, OnSafetyActionInfo data)
 		{
-			OnSafetyCloseAction?.Invoke();
+			OnSafetyCloseAction?.Invoke(data);
 		}
 		/// <summary>
 		/// SafetyOpen時のデリゲートをリセットする
 		/// <br>実行はSafetyInteractionObjectクラスに限る（引数で自身を渡す）</br>
 		/// </summary>
-		/// <param name="safetyInteractionObject">自分自身</param>
-		public void ClearOpen(SafetyInteractionObject safetyInteractionObject)
+		/// <param name="_">自分自身</param>
+		public void ClearOpen(SafetyInteractionObject _)
 		{
 			OnSafetyOpenAction = null;
 		}
@@ -52,8 +56,8 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
 		/// SafetyClose時のデリゲートをリセットする
 		/// <br>実行はSafetyInteractionObjectクラスに限る（引数で自身を渡す）</br>
 		/// </summary>
-		/// <param name="safetyInteractionObject">自分自身</param>
-		public void ClearClose(SafetyInteractionObject safetyInteractionObject)
+		/// <param name="_">自分自身</param>
+		public void ClearClose(SafetyInteractionObject _)
 		{
 			OnSafetyCloseAction = null;
 		}
