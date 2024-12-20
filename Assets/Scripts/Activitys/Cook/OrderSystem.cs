@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Fusion;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,8 +28,10 @@ public class OrderSystem : MonoBehaviour
     private List<OrderInformation> orderTickets = new List<OrderInformation>();
     private List<OrderInformation> removeOrderTickets = new List<OrderInformation>();
 
-    private void Start()
+    private bool isActivityConnected = false;
+    private async void Start()
     {
+        isActivityConnected = false;
         activityProgressManagement.OnStart += () =>
         {
             if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
@@ -36,6 +39,10 @@ public class OrderSystem : MonoBehaviour
                 StartCoroutine(Co());
             }
         };
+
+        await UniTask.WaitUntil(() => GateOfFusion.Instance.IsActivityConnected);
+        isActivityConnected = true;
+
     }
     public OrderTicket Order(int index, float orderWaitingTime, OrderWaitingType orderWaitingType)
     {
@@ -70,6 +77,11 @@ public class OrderSystem : MonoBehaviour
 
     private void Update()
     {
+        if (!isActivityConnected)
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.C))
         {
             StartCoroutine(Co());
@@ -107,7 +119,7 @@ public class OrderSystem : MonoBehaviour
         orderTickets.Add(new OrderInformation(orderTicket, index));
     }
 
-    private async void On(CustomerInformation customerInformation)
+    private void On(CustomerInformation customerInformation)
     {
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {

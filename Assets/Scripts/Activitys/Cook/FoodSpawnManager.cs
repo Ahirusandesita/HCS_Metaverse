@@ -70,6 +70,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
 
         AllSpawn allSpawnInstance = await GateOfFusion.Instance.SpawnAsync(allSpawn);
         await allSpawnInstance.Async();
+        GateOfFusion.Instance.Despawn(allSpawnInstance);
         foodSpawnRPC.RPC_StartSpawnLocalView(id, networkView.GetComponent<NetworkObject>(), index);
     }
     public async void SpawnNetworkView(int id, Vector3 position)
@@ -79,6 +80,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
         networkInformations.Add(new NetworkInformation(networkView, id));
         AllSpawn allSpawnInstance = await GateOfFusion.Instance.SpawnAsync(allSpawn);
         await allSpawnInstance.Async();
+        GateOfFusion.Instance.Despawn(allSpawnInstance);
         foodSpawnRPC.RPC_SpawnLocalView(id, position, networkView.GetComponent<NetworkObject>());
     }
     public void NewMember(PlayerRef player)

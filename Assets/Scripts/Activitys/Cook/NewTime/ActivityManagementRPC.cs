@@ -4,10 +4,19 @@ using UnityEngine;
 using Fusion;
 using Cysharp.Threading.Tasks;
 
-public class ActivityManagementRPC : NetworkBehaviour,IPlayerJoined
+public class ActivityManagementRPC : NetworkBehaviour, IPlayerJoined
 {
     private bool isStart = false;
 
+    private AllSpawn allSpawn;
+    public AllSpawn AllSpawn { set => allSpawn = value; }
+    private void Awake()
+    {
+        GateOfFusion.Instance.OnActivityConnected += () =>
+        {
+            isStart = true;
+        };
+    }
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     public void RPC_ReadyTimeInject(NetworkObject networkObject)
     {
@@ -20,7 +29,7 @@ public class ActivityManagementRPC : NetworkBehaviour,IPlayerJoined
     }
 
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
-    public void RPC_NetworkTimeInject([RpcTarget]PlayerRef playerRef, NetworkObject readyTime,NetworkObject mainTime,NetworkObject rpcObject)
+    public void RPC_NetworkTimeInject([RpcTarget] PlayerRef playerRef, NetworkObject readyTime, NetworkObject mainTime, NetworkObject rpcObject)
     {
         FindObjectOfType<ActivityProgressManagement>().RPC_ReadyInjectable(readyTime.GetComponent<TimeNetwork>());
         FindObjectOfType<ActivityProgressManagement>().RPC_MainInjectable(mainTime.GetComponent<TimeNetwork>());
@@ -28,14 +37,15 @@ public class ActivityManagementRPC : NetworkBehaviour,IPlayerJoined
     }
     public async void PlayerJoined(PlayerRef player)
     {
-        //if (!isStart)
-        //{
-        //    return;
-        //}
-        //âºé¿ëïÅ@Ç∆ÇËÇ†Ç¶Ç∏Ç‹Ç¬
-        await UniTask.Delay(1000);
+        if (!isStart)
+        {
+            return;
+        }
 
-        if(GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        AllSpawn item = await GateOfFusion.Instance.SpawnAsync(allSpawn);
+        await item.Async();
+        GateOfFusion.Instance.Despawn(item);
+        if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
             FindObjectOfType<ActivityProgressManagement>().RPC_Joined(player);
         }
