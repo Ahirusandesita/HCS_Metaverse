@@ -77,6 +77,7 @@ public class ActivityProgressManagement : MonoBehaviour
             };
             await allSpawn.Async();
             GateOfFusion.Instance.Despawn(allSpawn);
+            rpcInstance.AllSpawn = test;
             rpcInstance.RPC_RPCInstanceInject();
             readyTimeInstance.StartTime = 3;
             rpcInstance.RPC_ReadyTimeInject(readyTimeInstance.GetComponent<NetworkObject>());
