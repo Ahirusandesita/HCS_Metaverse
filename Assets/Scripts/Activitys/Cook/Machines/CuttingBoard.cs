@@ -1,6 +1,6 @@
 using UnityEngine;
 using Oculus.Interaction;
-using Fusion;
+using Cysharp.Threading.Tasks;
 
 public class CuttingBoard : Machine
 {
@@ -19,6 +19,11 @@ public class CuttingBoard : Machine
     protected override void Update()
     {
         base.Update();
+
+        if (!GateOfFusion.Instance.IsActivityConnected)
+        {
+            return;
+        }
 
         if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {

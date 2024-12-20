@@ -42,6 +42,25 @@ public class SubmisionTable : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!GateOfFusion.Instance.IsActivityConnected)
+        {
+            return;
+        }
+
+        if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        {
+            return;
+        }
+
+        if (collision.gameObject.TryGetComponent<Commodity>(out Commodity hitCommodity))
+        {
+            Submit(hitCommodity);
+            hitCommodity.LocalView.NetworkView.GetComponent<NetworkCommodity>().RPC_Despawn();
+        }
+    }
+
     public void Submit(Commodity commodity)
     {
         if (orderManager.CanSubmit(commodity))

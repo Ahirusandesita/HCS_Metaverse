@@ -11,6 +11,8 @@ public class LocalIngrodients : Ingrodients, IGrabbableActiveChangeRequester
 
     private LocalView _localView = default;
 
+    public LocalView LocalView => _localView;
+
     private void Start()
     {
         _localView = GetComponent<LocalView>();
@@ -100,5 +102,11 @@ public class LocalIngrodients : Ingrodients, IGrabbableActiveChangeRequester
         _hitMachine.UnSetProcessingIngrodient();
 
         _hitMachine = null;
+    }
+
+    [Rpc]
+    public void RPC_Destroy()
+    {
+        Destroy(gameObject);
     }
 }
