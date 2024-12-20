@@ -10,12 +10,10 @@ public class ActivityManagementRPC : NetworkBehaviour, IPlayerJoined
 
     private AllSpawn allSpawn;
     public AllSpawn AllSpawn { set => allSpawn = value; }
-    private void Awake()
+    private async void Awake()
     {
-        GateOfFusion.Instance.OnActivityConnected += () =>
-        {
-            isStart = true;
-        };
+        await UniTask.WaitUntil(() => GateOfFusion.Instance.IsActivityConnected);
+        isStart = true;
     }
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     public void RPC_ReadyTimeInject(NetworkObject networkObject)
