@@ -17,6 +17,16 @@ public class AutoMachine : Machine
     {
         base.Update();
 
+        if (!GateOfFusion.Instance.IsActivityConnected)
+        {
+            return;
+        }
+
+        if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        {
+            return;
+        }
+
         if (_processingIngrodientsView != default)
         {
             ProcessEvent(_processingValue * Time.deltaTime);

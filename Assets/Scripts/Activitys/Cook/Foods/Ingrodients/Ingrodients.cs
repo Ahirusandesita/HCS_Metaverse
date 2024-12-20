@@ -112,8 +112,9 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
     }
 
 
-    public void ProcessingStart(ProcessingType processingType, Transform machineTransform)
+    public async void ProcessingStart(ProcessingType processingType, Transform machineTransform)
     {
+        await UniTask.WaitUntil(() => GateOfFusion.Instance.IsActivityConnected);
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
             Commodity commodity = commodityFactory.Generate(this, processingType);

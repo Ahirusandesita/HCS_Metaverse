@@ -1,4 +1,5 @@
 using Fusion;
+using Cysharp.Threading.Tasks;
 
 public class NetworkIngrodients : NetworkBehaviour
 {
@@ -6,14 +7,18 @@ public class NetworkIngrodients : NetworkBehaviour
 
     private NetworkView _networkView = default;
 
+    public NetworkView NetworkView => _networkView;
+
     private void Start()
     {
         _networkView = GetComponent<NetworkView>();
     }
 
     [Rpc]
-    public void RPC_PutIngrodients(int machineID)
+    public async void RPC_PutIngrodients(int machineID)
     {
+        await UniTask.WaitUntil(() => GateOfFusion.Instance.IsActivityConnected);
+
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
             _hitMachine = FindObjectOfType<MachineIDManager>().GetMachine(machineID);
@@ -29,15 +34,20 @@ public class NetworkIngrodients : NetworkBehaviour
     }
 
     [Rpc]
-    public void RPC_ProcessEvent(float processValue)
+    public async void RPC_ProcessEvent(float processValue)
     {
+        await UniTask.WaitUntil(() => GateOfFusion.Instance.IsActivityConnected);
+
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
-            bool isEndProcessing = _networkView.LocalView.GetComponent<LocalIngrodients>().SubToIngrodientsDetailInformationsTimeItTakes(_hitMachine.ProcessType, processValue);
+            LocalIngrodients ingrodients = _networkView.LocalView.GetComponent<LocalIngrodients>();
+
+            bool isEndProcessing = ingrodients.SubToIngrodientsDetailInformationsTimeItTakes(_hitMachine.ProcessType, processValue);
 
             if (isEndProcessing)
             {
-                _networkView.LocalView.GetComponent<LocalIngrodients>().ProcessingStart(_hitMachine.ProcessType, _hitMachine.ProcesserTransform);
+                ingrodients.ProcessingStart(_hitMachine.ProcessType, _hitMachine.ProcesserTransform);
+                ingrodients.RPC_Destroy();
             }
         }
     }

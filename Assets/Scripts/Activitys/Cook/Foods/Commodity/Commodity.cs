@@ -4,7 +4,7 @@ using Oculus.Interaction;
 using Fusion;
 using Cysharp.Threading.Tasks;
 
-public class Commodity : NetworkBehaviour, ICommodityModerator, IInject<ISwitchableGrabbableActive>, IGrabbableActiveChangeRequester
+public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchableGrabbableActive>, IGrabbableActiveChangeRequester
 {
     [SerializeField]
     private CommodityAsset commodityAsset;
@@ -19,6 +19,9 @@ public class Commodity : NetworkBehaviour, ICommodityModerator, IInject<ISwitcha
     private PointableUnityEventWrapper pointableUnityEventWrapper;
     public event PointableHandler OnPointable;
     private GrabObjectScale grabObjectScale;
+
+    private LocalView _localView = default;
+    public LocalView LocalView => _localView;
 
     [SerializeField]
     private StateAuthorityData stateAuthority;
@@ -142,7 +145,7 @@ public class Commodity : NetworkBehaviour, ICommodityModerator, IInject<ISwitcha
                     this.putableOnDish.CommodityReset();
                     NetworkObject networkObject = await networkRunner.SpawnAsync(mixCommodity.gameObject, this.transform.position, this.transform.rotation);
                     Commodity createCommodity = networkObject.GetComponent<Commodity>();
-                    createCommodity.PutOnDish(this.putableOnDish, isOnDish);
+                    //createCommodity.PutOnDish(this.putableOnDish, isOnDish);
                     createCommodity.GetComponent<Rigidbody>().isKinematic = false;
                 }
             }
@@ -153,24 +156,24 @@ public class Commodity : NetworkBehaviour, ICommodityModerator, IInject<ISwitcha
             //table.Sub(this);
         }
 
-        if (collision.transform.root.gameObject.TryGetComponent<IPutableOnDish>(out IPutableOnDish putableOnDish))
-        {
-            Debug.Log("put:commodity");
+        //if (collision.transform.root.gameObject.TryGetComponent<IPutableOnDish>(out IPutableOnDish putableOnDish))
+        //{
+        //    Debug.Log("put:commodity");
 
-            isOnDish = true;
-            this.putableOnDish = putableOnDish;
-            this.putableOnDish.Rpc_PutCommodity(GetComponent<NetworkObject>());
+        //    isOnDish = true;
+        //    this.putableOnDish = putableOnDish;
+        //    this.putableOnDish.Rpc_PutCommodity(GetComponent<NetworkObject>());
 
-            //RPCEvents.RPC_Event<Commodity>(this.GetComponent<NetworkObject>(), collision.transform.root.gameObject.GetComponent<NetworkObject>());
-        }
+        //    //RPCEvents.RPC_Event<Commodity>(this.GetComponent<NetworkObject>(), collision.transform.root.gameObject.GetComponent<NetworkObject>());
+        //}
     }
 
-    public void PutOnDish(IPutableOnDish putableOnDish, bool isOnDish)
-    {
-        this.isOnDish = isOnDish;
-        this.putableOnDish = putableOnDish;
-        this.putableOnDish.Rpc_PutCommodity(GetComponent<NetworkObject>());
-    }
+    //public void PutOnDish(IPutableOnDish putableOnDish, bool isOnDish)
+    //{
+    //    this.isOnDish = isOnDish;
+    //    this.putableOnDish = putableOnDish;
+    //    this.putableOnDish.Rpc_PutCommodity(GetComponent<NetworkObject>());
+    //}
     public void Inject(ISwitchableGrabbableActive t)
     {
         this.switchableGrabbableActive = t;
