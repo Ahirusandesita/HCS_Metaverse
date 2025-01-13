@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,6 +6,8 @@ public class PlacingTarget_Shelf : PlacingTarget, IInteractionInfoReceiver
 {
 	private const float MOVE_SPEED = 3f; 
 	private Vector2 inputDir = default;
+	private Collider[] shelfColliders = default;
+	private IReadOnlyList<BoxCollider> shelfBoards = default;
 
 	public override PlacingTarget Initialize(IEditOnlyGhost ghostModel, PlaceableObject placeableObject, Transform player)
 	{
@@ -33,35 +34,21 @@ public class PlacingTarget_Shelf : PlacingTarget, IInteractionInfoReceiver
 		// 計算誤差用の定数
 		const float CALC_ERROR_OFFSET = 0.01f;
 
-		// 自分の身長の4分の1は床判定
-		// GameObject.transformはモデルによって違うので、y軸補正の際はすべて足し算で行う
-
 		// Ghost（自分）の中心および足元の座標を取得
 		// モデルによって、原点の位置が違う問題を、boundsによって一応解決した
 		Vector3 center = boxCollider.bounds.center;
 		Vector3 underOrigin = new Vector3(center.x, center.y - boxHalfSize.y, center.z);
 
-		// 接地判定
-		bool isHitShelfBoard = Physics.BoxCast(
-			center: center,
-			halfExtents: boxHalfSize,
-			direction: Vector3.down,
-			hitInfo: out RaycastHit shelfHitInfo,
-			orientation: transform.rotation,
-			maxDistance: boxHalfSize.y
-			);
-		// 壁に触れている面の中心点を取得（RaycastHit.pointではランダムな点が返るため、投影を使い求める）
-		Vector3 hitPoint = center + Vector3.Project(shelfHitInfo.point - center, -shelfHitInfo.normal);
-
-		float rayDistance = Vector3.Distance(hitPoint, center) + CALC_ERROR_OFFSET;
-		Ray checkGroundRay_rf = new Ray(underOrigin + boxHalfSize.x * transform.right + boxHalfSize.y * transform.up + boxHalfSize.z * transform.forward, Vector3.down);
-		Ray checkGroundRay_lf = new Ray(underOrigin + -boxHalfSize.x * transform.right + boxHalfSize.y * transform.up + boxHalfSize.z * transform.forward, Vector3.down);
-		Ray checkGroundRay_rb = new Ray(underOrigin + boxHalfSize.x * transform.right + boxHalfSize.y * transform.up + -boxHalfSize.z * transform.forward, Vector3.down);
-		Ray checkGroundRay_lb = new Ray(underOrigin + -boxHalfSize.x * transform.right + boxHalfSize.y * transform.up + -boxHalfSize.z * transform.forward, Vector3.down);
-		bool isHitGround_rf = Physics.Raycast(checkGroundRay_rf, out RaycastHit _, rayDistance);
-		bool isHitGround_lf = Physics.Raycast(checkGroundRay_lf, out RaycastHit _, rayDistance);
-		bool isHitGround_rb = Physics.Raycast(checkGroundRay_rb, out RaycastHit _, rayDistance);
-		bool isHitGround_lb = Physics.Raycast(checkGroundRay_lb, out RaycastHit _, rayDistance);
+		// 棚の場合の接地判定Rayの長さはなんでもいいので、適当な長さ
+		float rayDistance = boxHalfSize.y / 2;
+		Ray checkGroundRay_rf = new Ray(underOrigin + boxHalfSize.x * transform.right + boxHalfSize.z * transform.forward, Vector3.down);
+		Ray checkGroundRay_lf = new Ray(underOrigin + -boxHalfSize.x * transform.right + boxHalfSize.z * transform.forward, Vector3.down);
+		Ray checkGroundRay_rb = new Ray(underOrigin + boxHalfSize.x * transform.right + -boxHalfSize.z * transform.forward, Vector3.down);
+		Ray checkGroundRay_lb = new Ray(underOrigin + -boxHalfSize.x * transform.right + -boxHalfSize.z * transform.forward, Vector3.down);
+		bool isHitGround_rf = Physics.Raycast(checkGroundRay_rf, out RaycastHit _, rayDistance, Layer.GROUNDWALL);
+		bool isHitGround_lf = Physics.Raycast(checkGroundRay_lf, out RaycastHit _, rayDistance, Layer.GROUNDWALL);
+		bool isHitGround_rb = Physics.Raycast(checkGroundRay_rb, out RaycastHit _, rayDistance, Layer.GROUNDWALL);
+		bool isHitGround_lb = Physics.Raycast(checkGroundRay_lb, out RaycastHit _, rayDistance, Layer.GROUNDWALL);
 #if UNITY_EDITOR
 		Debug.DrawRay(checkGroundRay_rf.origin, checkGroundRay_rf.direction * rayDistance, Color.yellow);
 		Debug.DrawRay(checkGroundRay_lf.origin, checkGroundRay_lf.direction * rayDistance, Color.yellow);
@@ -69,20 +56,9 @@ public class PlacingTarget_Shelf : PlacingTarget, IInteractionInfoReceiver
 		Debug.DrawRay(checkGroundRay_lb.origin, checkGroundRay_lb.direction * rayDistance, Color.yellow);
 #endif
 
-		if (Vector3.Angle(Vector3.up, shelfHitInfo.normal) > slopeLimit)
-		{
-			return false;
-		}
-
 		Vector2 movePos = Time.deltaTime * inputDir * MOVE_SPEED;
 		xPosition += movePos.x;
 		zPosition += movePos.y;
-
-		// Rayが当たった位置をy軸の座標とする
-		// もしRayが当たらない = 高すぎる位置にいるときは「設置できない」と表現するため、プレイヤーと同じ高さでキープする（浮かせる）
-		yPosition = isHitShelfBoard
-			? shelfHitInfo.point.y + CALC_ERROR_OFFSET
-			: default;
 
 		// 原点が足元にない場合は埋まってしまうので、その場合は補正する
 		if (placeableObject.PivotType == GhostModel.PivotType.Center)
@@ -96,20 +72,8 @@ public class PlacingTarget_Shelf : PlacingTarget, IInteractionInfoReceiver
 		{
 			return false;
 		}
-		// 1にすると誤差が出るのでちょっと引いてる
-		if (shelfHitInfo.normal.y < 1 - CALC_ERROR_OFFSET)
-		{
-			return false;
-		}
-		if (isCollision)
-		{
-			return false;
-		}
 
-		Vector3 toPlayer = player.position - transform.position;
-		Ray toPlayerRay = new Ray(transform.position, toPlayer.normalized);
-		bool isHitBack = Physics.Raycast(toPlayerRay, out RaycastHit _, toPlayer.magnitude, Layer.GROUNDWALL);
-		if (isHitBack)
+		if (isCollision)
 		{
 			return false;
 		}
@@ -137,10 +101,29 @@ public class PlacingTarget_Shelf : PlacingTarget, IInteractionInfoReceiver
 
 	private void SetInitialPosition(SafetyInteractionObject.SafetyInteractionInfo.OnSafetyActionInfo data)
 	{
-		// 
 		if (data is Shelf.ShelfInteractionInfo.OnShelfInteractionInfo onShelfInteractionInfo)
 		{
-			//onShelfInteractionInfo.shelfBoards
+			shelfBoards = onShelfInteractionInfo.shelfBoards;
+			yPosition = shelfBoards[0].bounds.center.y + shelfBoards[0].bounds.size.y / 2 + 0.01f;
+
+			// 設置中は棚のコライダーをすべてOFFにする
+			// ただし、棚板のコライダーには干渉したくないため、親オブジェクトにとどめる
+			shelfColliders = onShelfInteractionInfo.shelf.GetComponents<Collider>();
+			foreach (var collider in shelfColliders)
+			{
+				collider.enabled = false;
+			}
+		}
+	}
+
+	protected override void OnPlacing()
+	{
+		base.OnPlacing();
+
+		// 設置完了後、OFFにしたコライダーをすべてONに戻す
+		foreach (var collider in shelfColliders)
+		{
+			collider.enabled = true;
 		}
 	}
 }
