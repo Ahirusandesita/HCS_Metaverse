@@ -127,27 +127,20 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
         return false;
     }
 
-    private async void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
+        if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        {
+            return;
+        }
+
         if (collision.transform.root.transform.GetComponentInChildren<Commodity>())
         {
             Commodity collisionCommodity = collision.transform.root.transform.GetComponentInChildren<Commodity>();
             FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
             if (CommodityAsset.CommodityID > collisionCommodity.CommodityAsset.CommodityID)
             {
-                Commodity mixCommodity = MixCommodity.Mix(new Commodity[] { this, collisionCommodity });
-                if (!(mixCommodity is null))
-                {
-                    if (collisionCommodity.IsOnDish)
-                    {
-                        this.putableOnDish = collisionCommodity.putableOnDish;
-                    }
-                    this.putableOnDish.CommodityReset();
-                    NetworkObject networkObject = await networkRunner.SpawnAsync(mixCommodity.gameObject, this.transform.position, this.transform.rotation);
-                    Commodity createCommodity = networkObject.GetComponent<Commodity>();
-                    //createCommodity.PutOnDish(this.putableOnDish, isOnDish);
-                    createCommodity.GetComponent<Rigidbody>().isKinematic = false;
-                }
+                _localView.NetworkView.GetComponent<NetworkCommodity>().RPC_MixCommodity(collision.gameObject.GetComponent<NetworkObject>());
             }
         }
 
@@ -166,6 +159,25 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
 
         //    //RPCEvents.RPC_Event<Commodity>(this.GetComponent<NetworkObject>(), collision.transform.root.gameObject.GetComponent<NetworkObject>());
         //}
+    }
+
+    [Rpc]
+    public async void RPC_MixCommodity(NetworkObject hitObject)
+    {
+        Commodity collisionCommodity = hitObject.transform.root.transform.GetComponentInChildren<Commodity>();
+        Commodity mixCommodity = MixCommodity.Mix(new Commodity[] { this, collisionCommodity });
+        if (!(mixCommodity is null))
+        {
+            //if (collisionCommodity.IsOnDish)
+            //{
+            //    this.putableOnDish = collisionCommodity.putableOnDish;
+            //}
+            //this.putableOnDish.CommodityReset();
+            NetworkObject networkObject = await networkRunner.SpawnAsync(mixCommodity.gameObject, this.transform.position, this.transform.rotation);
+            Commodity createCommodity = networkObject.GetComponent<Commodity>();
+            //createCommodity.PutOnDish(this.putableOnDish, isOnDish);
+            createCommodity.GetComponent<Rigidbody>().isKinematic = false;
+        }
     }
 
     //public void PutOnDish(IPutableOnDish putableOnDish, bool isOnDish)
