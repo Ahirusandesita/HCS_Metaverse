@@ -8,11 +8,13 @@ public class Shelf : SafetyInteractionObject
 	{
 		public class OnShelfInteractionInfo : OnSafetyActionInfo
 		{
-			public OnShelfInteractionInfo(IReadOnlyList<BoxCollider> shelfBoards)
+			public OnShelfInteractionInfo(GameObject shelf, IReadOnlyList<BoxCollider> shelfBoards)
 			{
+				this.shelf = shelf;
 				this.shelfBoards = shelfBoards;
 			}
 
+			public GameObject shelf { get; private set; }
 			public IReadOnlyList<BoxCollider> shelfBoards { get; private set; }
 		}
 	}
@@ -39,13 +41,12 @@ public class Shelf : SafetyInteractionObject
 	{
 		XDebug.Log("Shelf Access", "green");
 		focusBoardIndex = 0;
-		shelfInteractionInfo.InvokeOpen(this, new ShelfInteractionInfo.OnShelfInteractionInfo(shelfBoards));
-		Spawn();
+		shelfInteractionInfo.InvokeOpen(this, new ShelfInteractionInfo.OnShelfInteractionInfo(gameObject, shelfBoards));
 		UpdateAction += () =>
 		{
 			// Debug
-			if (Input.GetKeyDown(KeyCode.UpArrow)) { focusBoardIndex++; Spawn(); }
-			if (Input.GetKeyDown(KeyCode.DownArrow)) { focusBoardIndex--; Spawn(); }
+			if (Input.GetKeyDown(KeyCode.UpArrow)) { focusBoardIndex++; }
+			if (Input.GetKeyDown(KeyCode.DownArrow)) { focusBoardIndex--; }
 		};
 	}
 
@@ -66,10 +67,5 @@ public class Shelf : SafetyInteractionObject
 	public override void Unselect(SelectArgs selectArgs)
 	{
 		throw new System.NotImplementedException();
-	}
-
-	private void Spawn()
-	{
-		FindObjectOfType<PlacingTarget_Shelf>(true).transform.position = shelfBoards[focusBoardIndex].transform.position + Vector3.up * (shelfBoards[focusBoardIndex].size.y + 0.01f);
 	}
 }
