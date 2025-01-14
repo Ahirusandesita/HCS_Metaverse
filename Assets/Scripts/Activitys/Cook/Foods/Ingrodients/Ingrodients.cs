@@ -117,14 +117,13 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
         await UniTask.WaitUntil(() => GateOfFusion.Instance.IsActivityConnected);
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
-            Commodity commodity = commodityFactory.Generate(this, processingType);
             FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
             NetworkObject networkObject = GetComponent<LocalView>().NetworkView.GetComponent<NetworkObject>();
             // ----------------------------- ID ------------------------------------------
-            foodSpawnManagerRPC.RPC_CommoditySpawn(commodity.CommodityAsset.CommodityID, machineTransform.rotation.eulerAngles, machineTransform.position, _hitMachine.MachineID);
+            foodSpawnManagerRPC.RPC_CommoditySpawn(commodityFactory.CommodityIndex(commodityFactory.Generate(this, processingType)), machineTransform.rotation.eulerAngles, machineTransform.position, _hitMachine.MachineID);
             // ---------------------------------------------------------------------------
             foodSpawnManagerRPC.RPC_Despawn(networkObject);
-            networkRunner.Despawn(networkObject);
+            //networkRunner.Despawn(networkObject);
             Destroy(gameObject);
         }
     }

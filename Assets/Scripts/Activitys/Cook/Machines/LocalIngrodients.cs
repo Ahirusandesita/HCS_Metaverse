@@ -24,7 +24,7 @@ public class LocalIngrodients : Ingrodients, IGrabbableActiveChangeRequester
 
     private void Update()
     {
-        if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        if (GateOfFusion.Instance.IsActivityConnected && !GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
             return;
         }
