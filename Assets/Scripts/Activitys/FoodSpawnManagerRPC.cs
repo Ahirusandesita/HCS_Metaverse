@@ -95,6 +95,12 @@ public class FoodSpawnManagerRPC : NetworkBehaviour, IPlayerJoined
         commoditySpawnManager.SpawnLocalView(index, rotation, position, networkObject.GetComponent<NetworkView>(), machineID);
     }
 
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
+    public void RPC_CommodityLocalSpawn(int index, Vector3 rotation, Vector3 position, NetworkObject networkObject)
+    {
+        commoditySpawnManager.SpawnLocalView(index, rotation, position, networkObject.GetComponent<NetworkView>());
+    }
+
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     public void RPC_Despawn(NetworkObject networkObject)
     {

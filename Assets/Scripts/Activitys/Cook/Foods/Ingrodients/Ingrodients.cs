@@ -112,10 +112,9 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
     }
 
 
-    public async void ProcessingStart(ProcessingType processingType, Transform machineTransform)
+    public void ProcessingStart(ProcessingType processingType, Transform machineTransform)
     {
-        await UniTask.WaitUntil(() => GateOfFusion.Instance.IsActivityConnected);
-        if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        if (GateOfFusion.Instance.IsActivityConnected && GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
             FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
             NetworkObject networkObject = GetComponent<LocalView>().NetworkView.GetComponent<NetworkObject>();

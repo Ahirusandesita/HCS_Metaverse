@@ -28,6 +28,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
     private NetworkRunner networkRunner;
 
     private bool isGrab = false;
+
     private void Awake()
     {
         pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
@@ -69,6 +70,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
         this.transform.parent = null;
         this.transform.localScale = grabObjectScale.StartSize;
     }
+
     private void FixedUpdate()
     {
         if (isGrab)
@@ -76,6 +78,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
             GetComponent<LocalView>().NetworkView.RPC_Position(this.transform.position, this.transform.rotation.eulerAngles);
         }
     }
+
     public void InjectPutableOnDish(IPutableOnDish putableOnDish)
     {
         isOnDish = false;
@@ -86,6 +89,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
     {
         this.commodityAsset = commodityAsset;
     }
+
     public bool IsMatchCommodity(CommodityAsset commodityAsset)
     {
         if (this.commodityAsset.CommodityID == commodityAsset.CommodityID)
@@ -186,6 +190,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
     //    this.putableOnDish = putableOnDish;
     //    this.putableOnDish.Rpc_PutCommodity(GetComponent<NetworkObject>());
     //}
+
     public void Inject(ISwitchableGrabbableActive t)
     {
         this.switchableGrabbableActive = t;

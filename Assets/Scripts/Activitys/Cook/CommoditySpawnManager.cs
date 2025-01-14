@@ -35,11 +35,40 @@ public class CommoditySpawnManager : MonoBehaviour
         networkInformations.Add(new NetworkInformation(networkView, index));
     }
 
+    public async void SpawnNetworkView(int index, Vector3 rotation, Vector3 position)
+    {
+        //for(int i = 0; i < allCommodityAsset.Commodities.Count; i++)
+        //{
+        //    Commodity item = allCommodityAsset.Commodities[i];
+        //    if(item.CommodityAsset.CommodityID == index)
+        //    {
+        //        index = i;
+        //        break;
+        //    }
+        //}
+
+        NetworkView networkView = await GateOfFusion.Instance.SpawnAsync(allCommodityAsset.NetworkViews[index], position, Quaternion.Euler(rotation));
+        LocalView localView = Instantiate(allCommodityAsset.Commodities[index], position, Quaternion.Euler(rotation)).GetComponent<LocalView>();
+        //localView.GetComponent<LocalIngrodients>().PutMachine(machineID);
+
+        localView.NetworkViewInject(networkView);
+        rpc.RPC_CommodityLocalSpawn(index, rotation, position, networkView.GetComponent<NetworkObject>());
+        networkInformations.Add(new NetworkInformation(networkView, index));
+    }
+
     public void SpawnLocalView(int index, Vector3 rotation, Vector3 position, NetworkView networkView, int machineID)
     {
         LocalView localView = Instantiate(allCommodityAsset.Commodities[index], position, Quaternion.Euler(rotation)).GetComponent<LocalView>();
         //localView.GetComponent<LocalIngrodients>().PutMachine(machineID);
         FindObjectOfType<MachineIDManager>().GetMachine(machineID).UnSetProcessingIngrodient();
+        localView.NetworkViewInject(networkView);
+        networkInformations.Add(new NetworkInformation(networkView, index));
+    }
+
+    public void SpawnLocalView(int index, Vector3 rotation, Vector3 position, NetworkView networkView)
+    {
+        LocalView localView = Instantiate(allCommodityAsset.Commodities[index], position, Quaternion.Euler(rotation)).GetComponent<LocalView>();
+        //localView.GetComponent<LocalIngrodients>().PutMachine(machineID);
         localView.NetworkViewInject(networkView);
         networkInformations.Add(new NetworkInformation(networkView, index));
     }
