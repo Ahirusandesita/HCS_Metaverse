@@ -60,6 +60,7 @@ public class ActivityProgressManagement : MonoBehaviour
         //leaderÇÃÇ›
         GateOfFusion.Instance.OnActivityConnected += async () =>
         {
+            Debug.LogError("Awakeé¿çs");
             if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
             {
                 return;
