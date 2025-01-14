@@ -49,6 +49,11 @@ public class LocalView : MonoBehaviour, IGrabbableActiveChangeRequester
 
         this.networkView.LocalViewInject(this);
     }
+
+    public void SetMeshRenderers(List<MeshRenderer> meshRenderers)
+	{
+        this.meshRenderers = meshRenderers;
+	}
     private void OnDestroy()
     {
         switchableGrabbable.Cancellation(this);
