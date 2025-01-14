@@ -34,11 +34,9 @@ public class NetworkIngrodients : NetworkBehaviour
     }
 
     [Rpc]
-    public async void RPC_ProcessEvent(float processValue)
+    public void RPC_ProcessEvent(float processValue)
     {
-        await UniTask.WaitUntil(() => GateOfFusion.Instance.IsActivityConnected);
-
-        if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        if (GateOfFusion.Instance.IsActivityConnected && GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
             LocalIngrodients ingrodients = _networkView.LocalView.GetComponent<LocalIngrodients>();
 
@@ -47,7 +45,7 @@ public class NetworkIngrodients : NetworkBehaviour
             if (isEndProcessing)
             {
                 ingrodients.ProcessingStart(_hitMachine.ProcessType, _hitMachine.ProcesserTransform);
-                ingrodients.RPC_Destroy();
+                //ingrodients.RPC_Destroy();
             }
         }
     }

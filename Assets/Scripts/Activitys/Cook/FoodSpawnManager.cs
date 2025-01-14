@@ -214,7 +214,16 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
 
     public void Despawn(NetworkView networkView)
     {
-        networkInformations.Remove(networkInformations.Where((information) => information.NetworkView == networkView).First());
+        NetworkInformation information = default;
+        foreach (NetworkInformation item in networkInformations)
+        {
+            if(item.NetworkView == networkView)
+            {
+                Debug.LogError("NeetworkViewˆê’v");
+                information = item;
+            }
+        }
+        networkInformations.Remove(information);
     }
 }
 
