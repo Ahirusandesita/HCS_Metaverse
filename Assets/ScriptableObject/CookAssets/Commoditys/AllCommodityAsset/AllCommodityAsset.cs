@@ -27,4 +27,15 @@ public class AllCommodityAsset : ScriptableObject, IAllCommodityAsset
     private List<NetworkView> networkViews = new List<NetworkView>();
     public IReadOnlyList<NetworkView> NetworkViews => networkViews;
 
+    public int CommodityIndex(Commodity commodity)
+    {
+        for (int i = 0; i < commodities.Count; i++)
+        {
+            if (commodities[i].CommodityAsset.CommodityID == commodity.CommodityAsset.CommodityID)
+            {
+                return i;
+            }
+        }
+        throw new System.Exception();
+    }
 }
