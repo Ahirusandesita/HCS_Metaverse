@@ -15,6 +15,7 @@ public class WebAPIRequester
 	private const string DETABASE_PATH_SHOP_BUY = DETABASE_PATH_BASE + "shop/buy";
 	private const string DETABASE_PATH_MYROOM_ENTRY = DETABASE_PATH_BASE + "myroom/entry";
 	private const string DETABASE_PATH_USER_LOCATION = DETABASE_PATH_BASE + "user/location";
+	private const string DETABASE_PATH_USER_LOCATION_CATCH = DETABASE_PATH_BASE + "user/location/catch";
 	private const string DETABASE_PATH_VENDINGMACHINE_ENTRY = DETABASE_PATH_BASE + "salesmachine";
 	private const string DETABASE_PATH_VENDINGMACHINE_BUY = DETABASE_PATH_BASE + "salesmachine/buy";
 	private const string CONTENT_TYPE = "application/json";
@@ -160,7 +161,7 @@ public class WebAPIRequester
 	/// <returns>なし</returns>
 	public async UniTask PostUserLocation(int userId, string sessionName, string locationName)
 	{
-		var sendUserLocationData = new SendUserLocationData(userId, sessionName, locationName);
+		var sendUserLocationData = new UserLocationData(userId, sessionName, locationName);
 		string jsonData = JsonUtility.ToJson(sendUserLocationData);
 
 		using var request = UnityWebRequest.Post(DETABASE_PATH_USER_LOCATION, jsonData, CONTENT_TYPE);
@@ -173,6 +174,30 @@ public class WebAPIRequester
 			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
 				throw new APIConnectException(request.error);
 		}
+	}
+
+	/// <summary>
+	/// ユーザー場所情報取得時のAPI通信
+	/// </summary>
+	/// <returns>・ユーザーID
+	/// <br>・セッション名</br>
+	/// <br>・ロケーション名</br></returns>
+	public async UniTask<OnCatchUserLocationData> GetUserLocation()
+	{
+		using var request = UnityWebRequest.Post(DETABASE_PATH_USER_LOCATION_CATCH, new WWWForm());
+		await request.SendWebRequest();
+
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				throw new APIConnectException(request.error);
+		}
+
+		var onCatchUserLocationData = JsonUtility.FromJson<OnCatchUserLocationData>(request.downloadHandler.text);
+		return onCatchUserLocationData;
 	}
 	#endregion
 
@@ -362,6 +387,33 @@ public class WebAPIRequester
 			public int ShopID => shopId;
 		}
 	}
+
+	/// <summary>
+	/// ユーザー場所情報取得時のレスポンスデータ
+	/// </summary>
+	[System.Serializable]
+	public class OnCatchUserLocationData : ResponseData
+	{
+		public OnCatchUserLocationData(Body body)
+		{
+			this.body = body;
+		}
+
+		[SerializeField] private Body body = default;
+		public Body GetBody => body;
+
+		[System.Serializable]
+		public class Body
+		{
+			public Body(List<UserLocationData> userLocationDataList)
+			{
+				this.userLocationDataList = userLocationDataList;
+			}
+
+			[SerializeField] private List<UserLocationData> userLocationDataList = default;
+			public IReadOnlyList<UserLocationData> UserLoacationDataList => userLocationDataList;
+		}
+	}
 	#endregion
 
 	#region 送信データ
@@ -386,14 +438,16 @@ public class WebAPIRequester
 		public int ShopID => shopId;
 		public int UserID => userId;
 	}
+	#endregion
 
+	#region 送受信データ
 	/// <summary>
 	/// ユーザー場所情報登録時の送信データ
 	/// </summary>
 	[System.Serializable]
-	public class SendUserLocationData
+	public class UserLocationData
 	{
-		public SendUserLocationData(int userId, string sessionName, string locationName)
+		public UserLocationData(int userId, string sessionName, string locationName)
 		{
 			this.userId = userId;
 			this.sessionName = sessionName;
@@ -408,9 +462,7 @@ public class WebAPIRequester
 		public string SessionName => sessionName;
 		public string LocationName => locationName;
 	}
-	#endregion
 
-	#region Struct
 	/// <summary>
 	/// ・アイテムID
 	/// <br>・価格</br>
