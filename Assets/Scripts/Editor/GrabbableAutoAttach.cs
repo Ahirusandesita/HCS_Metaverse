@@ -9,6 +9,8 @@ using UnityEngine;
 public class GrabbableAutoAttach : EditorWindow
 {
 	[SerializeField] private GameObject prefab = default;
+	[SerializeField] private GameObject[] prefabs = default;
+	[SerializeField] private bool autoSerach = default;
 	[SerializeField] private bool useHandGrab = default;
 	[SerializeField] private bool useDistanceGrab = default;
 	[SerializeField] private bool useDistanceHandGrab = default;
@@ -54,6 +56,7 @@ public class GrabbableAutoAttach : EditorWindow
 		EditorGUILayout.Space(16);
 
 		prefab = EditorGUILayout.ObjectField("Target Object", prefab, typeof(GameObject), false) as GameObject;
+		autoSerach = EditorGUILayout.Toggle("Auto Search", autoSerach);
 
 		EditorGUILayout.Space(16);
 
@@ -70,168 +73,194 @@ public class GrabbableAutoAttach : EditorWindow
 		// Button押下で自動アタッチ実行
 		if (GUILayout.Button("Auto Attach"))
 		{
-			if (prefab is null)
+			if (autoSerach)
+			{
+				// すべてのPrefabのAssetPathを取得
+				var assetPaths = AssetDatabase.FindAssets($"t:Prefab")
+					.Select(AssetDatabase.GUIDToAssetPath)
+					.ToArray();
+
+				List<GameObject> gameObjects = new();
+				for (int i = 0; i < assetPaths.Length; i++)
+				{
+					// AssetPathからGameObjectを取得する。
+					var loadAsset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPaths[i]);
+					if (loadAsset.TryGetComponent(out PlaceableObject _))
+					{
+						gameObjects.Add(loadAsset);
+					}
+				}
+				prefabs = gameObjects.ToArray();
+			}
+			else if (prefab is null)
 			{
 				Debug.Log("Target Objectにプレハブがアタッチされていません。");
 				return;
 			}
-
-			// Rigidbodyがアタッチされていなければ新たにアタッチ
-			Rigidbody rigidbody;
-			if (prefab.TryGetComponent(out Rigidbody rb))
-			{
-				rigidbody = rb;
-			}
 			else
 			{
-				rigidbody = prefab.AddComponent<Rigidbody>();
+				prefabs = new GameObject[] { prefab };
 			}
-			rigidbody.useGravity = false;
-			rigidbody.isKinematic = true;
 
-			// Grabbableがアタッチされていなければ新たにアタッチ
-			Grabbable grabbable;
-			if (prefab.TryGetComponent(out Grabbable grb))
+			foreach (var prefab in prefabs)
 			{
-				grabbable = grb;
-			}
-			else
-			{
-				grabbable = prefab.AddComponent<Grabbable>();
-			}
-			grabbable.InjectOptionalRigidbody(rigidbody);
-
-			if (useHandGrab)
-			{
-				// HandGrabInteractableがアタッチされていなければ新たにアタッチ
-				HandGrabInteractable handGrab;
-				if (prefab.TryGetComponent(out HandGrabInteractable hgi))
+				// Rigidbodyがアタッチされていなければ新たにアタッチ
+				Rigidbody rigidbody;
+				if (prefab.TryGetComponent(out Rigidbody rb))
 				{
-					handGrab = hgi;
+					rigidbody = rb;
 				}
 				else
 				{
-					handGrab = prefab.AddComponent<HandGrabInteractable>();
+					rigidbody = prefab.AddComponent<Rigidbody>();
 				}
-				handGrab.InjectOptionalPointableElement(grabbable);
-				handGrab.InjectRigidbody(rigidbody);
-			}
-			// boolがfalseにもかかわらずアタッチされていた場合は消去する
-			else
-			{
-				if (prefab.TryGetComponent(out HandGrabInteractable hgi))
-				{
-					DestroyImmediate(hgi, true);
-				}
-			}
+				rigidbody.useGravity = false;
+				rigidbody.isKinematic = true;
 
-			if (useDistanceGrab)
-			{
-				// DistanceGrabInteractableがアタッチされていなければ新たにアタッチ
-				DistanceGrabInteractable distanceGrab;
-				if (prefab.TryGetComponent(out DistanceGrabInteractable dgi))
+				// Grabbableがアタッチされていなければ新たにアタッチ
+				Grabbable grabbable;
+				if (prefab.TryGetComponent(out Grabbable grb))
 				{
-					distanceGrab = dgi;
+					grabbable = grb;
 				}
 				else
 				{
-					distanceGrab = prefab.AddComponent<DistanceGrabInteractable>();
+					grabbable = prefab.AddComponent<Grabbable>();
 				}
-				distanceGrab.InjectOptionalPointableElement(grabbable);
-				distanceGrab.InjectRigidbody(rigidbody);
-			}
-			// boolがfalseにもかかわらずアタッチされていた場合は消去する
-			else
-			{
-				if (prefab.TryGetComponent(out DistanceGrabInteractable dgi))
-				{
-					DestroyImmediate(dgi, true);
-				}
-			}
+				grabbable.InjectOptionalRigidbody(rigidbody);
 
-			if (useDistanceHandGrab)
-			{
-				// DistanceHandGrabInteractableがアタッチされていなければ新たにアタッチ
-				DistanceHandGrabInteractable distanceHandGrab;
-				if (prefab.TryGetComponent(out DistanceHandGrabInteractable dhgi))
+				if (useHandGrab)
 				{
-					distanceHandGrab = dhgi;
+					// HandGrabInteractableがアタッチされていなければ新たにアタッチ
+					HandGrabInteractable handGrab;
+					if (prefab.TryGetComponent(out HandGrabInteractable hgi))
+					{
+						handGrab = hgi;
+					}
+					else
+					{
+						handGrab = prefab.AddComponent<HandGrabInteractable>();
+					}
+					handGrab.InjectOptionalPointableElement(grabbable);
+					handGrab.InjectRigidbody(rigidbody);
+				}
+				// boolがfalseにもかかわらずアタッチされていた場合は消去する
+				else
+				{
+					if (prefab.TryGetComponent(out HandGrabInteractable hgi))
+					{
+						DestroyImmediate(hgi, true);
+					}
+				}
+
+				if (useDistanceGrab)
+				{
+					// DistanceGrabInteractableがアタッチされていなければ新たにアタッチ
+					DistanceGrabInteractable distanceGrab;
+					if (prefab.TryGetComponent(out DistanceGrabInteractable dgi))
+					{
+						distanceGrab = dgi;
+					}
+					else
+					{
+						distanceGrab = prefab.AddComponent<DistanceGrabInteractable>();
+					}
+					distanceGrab.InjectOptionalPointableElement(grabbable);
+					distanceGrab.InjectRigidbody(rigidbody);
+				}
+				// boolがfalseにもかかわらずアタッチされていた場合は消去する
+				else
+				{
+					if (prefab.TryGetComponent(out DistanceGrabInteractable dgi))
+					{
+						DestroyImmediate(dgi, true);
+					}
+				}
+
+				if (useDistanceHandGrab)
+				{
+					// DistanceHandGrabInteractableがアタッチされていなければ新たにアタッチ
+					DistanceHandGrabInteractable distanceHandGrab;
+					if (prefab.TryGetComponent(out DistanceHandGrabInteractable dhgi))
+					{
+						distanceHandGrab = dhgi;
+					}
+					else
+					{
+						distanceHandGrab = prefab.AddComponent<DistanceHandGrabInteractable>();
+					}
+					distanceHandGrab.InjectOptionalPointableElement(grabbable);
+					distanceHandGrab.InjectRigidbody(rigidbody);
+				}
+				// boolがfalseにもかかわらずアタッチされていた場合は消去する
+				else
+				{
+					if (prefab.TryGetComponent(out DistanceHandGrabInteractable dhgi))
+					{
+						DestroyImmediate(dhgi, true);
+					}
+				}
+
+				// PointableUnityEventWrapperがアタッチされていなければ新たにアタッチ
+				PointableUnityEventWrapper pointableWrapper;
+				if (prefab.TryGetComponent(out PointableUnityEventWrapper puew))
+				{
+					pointableWrapper = puew;
 				}
 				else
 				{
-					distanceHandGrab = prefab.AddComponent<DistanceHandGrabInteractable>();
+					pointableWrapper = prefab.AddComponent<PointableUnityEventWrapper>();
 				}
-				distanceHandGrab.InjectOptionalPointableElement(grabbable);
-				distanceHandGrab.InjectRigidbody(rigidbody);
-			}
-			// boolがfalseにもかかわらずアタッチされていた場合は消去する
-			else
-			{
-				if (prefab.TryGetComponent(out DistanceHandGrabInteractable dhgi))
+				pointableWrapper.InjectPointable(grabbable);
+
+				// 選択したIDisplayItem型文字列配列が"None"以外のとき、そのスクリプトをアタッチ
+				if (selectedIndex != 0)
 				{
-					DestroyImmediate(dhgi, true);
+					// 文字列からTypeを取得
+					// クラス名のみを指定するとなぜかNullが出力されるため、カンマを挟んでアセンブリ名を指定（そうすると正常に動作する）
+					// Assembly-CSharpは、アセンブリが切られてないスクリプトが自動的に割り振られるアセンブリ（自作クラスは指定しなければすべてここに入る）
+					Type displayItem = Type.GetType($"{displayOptions[selectedIndex]}, Assembly-CSharp");
+
+					Component component;
+					// Componentがアタッチされていなければ新たにアタッチ
+					if (prefab.TryGetComponent(displayItem, out Component cmp))
+					{
+						component = cmp;
+					}
+					else
+					{
+						component = prefab.AddComponent(displayItem);
+					}
+					(component as IDisplayItem).InjectPointableUnityEventWrapper(pointableWrapper);
 				}
-			}
 
-			// PointableUnityEventWrapperがアタッチされていなければ新たにアタッチ
-			PointableUnityEventWrapper pointableWrapper;
-			if (prefab.TryGetComponent(out PointableUnityEventWrapper puew))
-			{
-				pointableWrapper = puew;
-			}
-			else
-			{
-				pointableWrapper = prefab.AddComponent<PointableUnityEventWrapper>();
-			}
-			pointableWrapper.InjectPointable(grabbable);
-
-			// 選択したIDisplayItem型文字列配列が"None"以外のとき、そのスクリプトをアタッチ
-			if (selectedIndex != 0)
-			{
-				// 文字列からTypeを取得
-				// クラス名のみを指定するとなぜかNullが出力されるため、カンマを挟んでアセンブリ名を指定（そうすると正常に動作する）
-				// Assembly-CSharpは、アセンブリが切られてないスクリプトが自動的に割り振られるアセンブリ（自作クラスは指定しなければすべてここに入る）
-				Type displayItem = Type.GetType($"{displayOptions[selectedIndex]}, Assembly-CSharp");
-
-				Component component;
-				// Componentがアタッチされていなければ新たにアタッチ
-				if (prefab.TryGetComponent(displayItem, out Component cmp))
+				if (!prefab.TryGetComponent(out SwitchableGrabbableActive _))
 				{
-					component = cmp;
+					prefab.AddComponent<SwitchableGrabbableActive>();
+				}
+
+				DistanceInteractableActivatable distanceInteractableActivatable;
+				if (prefab.TryGetComponent(out DistanceInteractableActivatable dia))
+				{
+					distanceInteractableActivatable = dia;
 				}
 				else
 				{
-					component = prefab.AddComponent(displayItem);
+					distanceInteractableActivatable = prefab.AddComponent<DistanceInteractableActivatable>();
 				}
-				(component as IDisplayItem).InjectPointableUnityEventWrapper(pointableWrapper);
-			}
+				distanceInteractableActivatable.SetActiveDistance(2f);
 
-			if (!prefab.TryGetComponent(out SwitchableGrabbableActive _))
-			{
-				prefab.AddComponent<SwitchableGrabbableActive>();
+				LocalView localView;
+				if (prefab.TryGetComponent(out LocalView lv))
+				{
+					localView = lv;
+				}
+				else
+				{
+					localView = prefab.AddComponent<LocalView>();
+				}
+				localView.SetMeshRenderers(prefab.GetComponents<MeshRenderer>().ToList());
 			}
-
-			DistanceInteractableActivatable distanceInteractableActivatable;
-			if (prefab.TryGetComponent(out DistanceInteractableActivatable dia))
-			{
-				distanceInteractableActivatable = dia;
-			}
-			else
-			{
-				distanceInteractableActivatable = prefab.AddComponent<DistanceInteractableActivatable>();
-			}
-			distanceInteractableActivatable.SetActiveDistance(2f);
-
-			LocalView localView;
-			if (prefab.TryGetComponent(out LocalView lv))
-			{
-				localView = lv;
-			}
-			else
-			{
-				localView = prefab.AddComponent<LocalView>();
-			}
-			localView.SetMeshRenderers(prefab.GetComponents<MeshRenderer>().ToList());
 
 			Debug.Log("Attach Completed!");
 
