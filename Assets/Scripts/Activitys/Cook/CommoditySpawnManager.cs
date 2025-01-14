@@ -15,15 +15,15 @@ public class CommoditySpawnManager : MonoBehaviour
 
     public async void SpawnNetworkView(int index, Vector3 rotation, Vector3 position, int machineID)
     {
-        for(int i = 0; i < allCommodityAsset.Commodities.Count; i++)
-        {
-            Commodity item = allCommodityAsset.Commodities[i];
-            if(item.CommodityAsset.CommodityID == index)
-            {
-                index = i;
-                break;
-            }
-        }
+        //for(int i = 0; i < allCommodityAsset.Commodities.Count; i++)
+        //{
+        //    Commodity item = allCommodityAsset.Commodities[i];
+        //    if(item.CommodityAsset.CommodityID == index)
+        //    {
+        //        index = i;
+        //        break;
+        //    }
+        //}
 
         NetworkView networkView = await GateOfFusion.Instance.SpawnAsync(allCommodityAsset.NetworkViews[index], position, Quaternion.Euler(rotation));
         LocalView localView = Instantiate(allCommodityAsset.Commodities[index], position, Quaternion.Euler(rotation)).GetComponent<LocalView>();
