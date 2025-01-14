@@ -5,6 +5,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 19bc17c23fcd5cb4b83d6a6bdc3e9950, type: 3}
@@ -56,6 +57,15 @@ PrefabInstance:
       value: dresser_027
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 19bc17c23fcd5cb4b83d6a6bdc3e9950, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -7480453343439791867}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 19bc17c23fcd5cb4b83d6a6bdc3e9950, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -5350867418338480959}
   m_SourcePrefab: {fileID: 100100000, guid: 19bc17c23fcd5cb4b83d6a6bdc3e9950, type: 3}
 --- !u!1 &5579990027415316733 stripped
 GameObject:
@@ -70,9 +80,33 @@ MeshCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5579990027415316733}
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 4
+  serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -367500376616371173, guid: 19bc17c23fcd5cb4b83d6a6bdc3e9950, type: 3}
+--- !u!114 &-5350867418338480959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5579990027415316733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ad02228002de134c81fe02b928812ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ghostOrigin: {fileID: 5579990027415316733}
+  pivotType: 0
+  placingStyle: 0
+  colliders: []
