@@ -150,7 +150,6 @@ public class WebAPIRequester
 			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
 				throw new APIConnectException(request.error);
 		}
-
 		var onMyroomEntryData = JsonUtility.FromJson<OnMyRoomEntryData>(request.downloadHandler.text);
 		return onMyroomEntryData;
 	}
@@ -512,27 +511,34 @@ public class WebAPIRequester
 		{
 			this.itemId = itemId;
 			this.housingId = housingId;
-			x_position = position.x;
-			y_position = position.y;
-			z_position = position.z;
-			x_direction = eulerRotation.x;
-			y_direction = eulerRotation.y;
-			z_direction = eulerRotation.z;
+			positionX = position.x;
+			positionY = position.y;
+			positionZ = position.z;
+			directionX = eulerRotation.x;
+			directionY = eulerRotation.y;
+			directionZ = eulerRotation.z;
 		}
 
 		[SerializeField] private int itemId;
 		[SerializeField] private int housingId;
-		[SerializeField] private float x_position;
-		[SerializeField] private float y_position;
-		[SerializeField] private float z_position;
-		[SerializeField] private float x_direction;
-		[SerializeField] private float y_direction;
-		[SerializeField] private float z_direction;
+		[SerializeField] private float positionX;
+		[SerializeField] private float positionY;
+		[SerializeField] private float positionZ;
+		[SerializeField] private float directionX;
+		[SerializeField] private float directionY;
+		[SerializeField] private float directionZ;
 
 		public int ItemID => itemId;
 		public int HousingID => housingId;
-		public Vector3 Position => new Vector3(x_position, y_position, z_position);
-		public Vector3 EulerRotation => new Vector3(x_direction, y_direction, z_direction);
+		public Vector3 Position
+		{
+			get
+			{
+				XDebug.LogWarning(positionX + ":" + positionY + ":" + positionZ);
+				return new Vector3(positionX, positionY, positionZ);
+			}
+		}
+		public Vector3 EulerRotation => new Vector3(directionX, directionY, directionZ);
 	}
 	#endregion
 

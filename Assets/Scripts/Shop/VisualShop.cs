@@ -13,7 +13,7 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 	[SerializeField] private ShopCart shopCart = default;
 	[SerializeField] private ShopCartUIManager uiManager = default;
 	private Dictionary<int, int> prices = new();
-	private List<GameObject> displayedItems = default;
+	private List<GameObject> displayedItems = new();
 	private IReadonlyPositionAdapter positionAdapter = default;
 	[SerializeField]
 	private int id = 20004;
