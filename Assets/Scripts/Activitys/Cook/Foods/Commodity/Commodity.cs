@@ -35,6 +35,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
     private void Awake()
     {
         pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
+        _localView = GetComponent<LocalView>();
 
         pointableUnityEventWrapper.WhenSelect.AddListener((data) => OnPointable?.Invoke(new GrabEventArgs(GrabType.Grab)));
         pointableUnityEventWrapper.WhenUnselect.AddListener((data) => OnPointable?.Invoke(new GrabEventArgs(GrabType.UnGrab)));
@@ -136,7 +137,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        if (GateOfFusion.Instance.IsActivityConnected && GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
             return;
         }
@@ -154,10 +155,11 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
                     if (!(mixCommodity is null))
                     {
                         CommodityFactory commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
-                        _localView.NetworkView.GetComponent<NetworkCommodity>().RPC_MixCommodity(collision.gameObject.GetComponent<NetworkObject>(), commodityFactory.CommodityIndex(mixCommodity));
-
+                        Debug.LogWarning($"<color=blue>CollisionCommodity = {collisionCommodity} , NetworkObject = {collisionCommodity.LocalView.NetworkView.GetComponent<NetworkObject>()}</color>");
+                        _localView.NetworkView.GetComponent<NetworkCommodity>().RPC_MixCommodity(collisionCommodity.LocalView.NetworkView.GetComponent<NetworkObject>(), commodityFactory.CommodityIndex(mixCommodity));
+                        canMix = false;
+                        collisionCommodity.canMix = false;
                     }
-
                 }
             }
         }
@@ -180,16 +182,22 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
         //}
     }
 
-    [Rpc]
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     public void RPC_MixCommodity(NetworkObject hitObject, int commodityID)
     {
-            FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
-            NetworkObject networkObject = GetComponent<LocalView>().NetworkView.GetComponent<NetworkObject>();
-            // ----------------------------- ID ------------------------------------------
-            foodSpawnManagerRPC.RPC_CommoditySpawn(commodityID, transform.rotation.eulerAngles, transform.position);
-            // ---------------------------------------------------------------------------
-            foodSpawnManagerRPC.RPC_Despawn(networkObject);
-            Destroy(gameObject);
+        FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
+        NetworkObject networkObject = GetComponent<LocalView>().NetworkView.GetComponent<NetworkObject>();
+        // ----------------------------- ID ------------------------------------------
+        foodSpawnManagerRPC.RPC_CommoditySpawn(commodityID, transform.rotation.eulerAngles, transform.position);
+        // ---------------------------------------------------------------------------
+        foodSpawnManagerRPC.RPC_Despawn(networkObject);
+        Destroy(gameObject);
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
+    public void RPC_Destroy()
+    {
+        Destroy(gameObject);
     }
 
     //public void PutOnDish(IPutableOnDish putableOnDish, bool isOnDish)
