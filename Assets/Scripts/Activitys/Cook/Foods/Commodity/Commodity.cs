@@ -144,14 +144,17 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
             FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
             if (CommodityAsset.CommodityID > collisionCommodity.CommodityAsset.CommodityID)
             {
-                _localView.NetworkView.GetComponent<NetworkCommodity>().RPC_MixCommodity(collision.gameObject.GetComponent<NetworkObject>());
+                
+
+                _localView.NetworkView.GetComponent<NetworkCommodity>().RPC_MixCommodity(collision.gameObject.GetComponent<NetworkObject>(), 1);
             }
         }
 
         if (collision.gameObject.TryGetComponent<SubmisionTable>(out SubmisionTable table))
         {
-            //table.Sub(this);
+            table.Submit(this);
         }
+        
 
         //if (collision.transform.root.gameObject.TryGetComponent<IPutableOnDish>(out IPutableOnDish putableOnDish))
         //{
@@ -166,22 +169,15 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
     }
 
     [Rpc]
-    public async void RPC_MixCommodity(NetworkObject hitObject)
+    public void RPC_MixCommodity(NetworkObject hitObject, int commodityID)
     {
-        Commodity collisionCommodity = hitObject.transform.root.transform.GetComponentInChildren<Commodity>();
-        Commodity mixCommodity = MixCommodity.Mix(new Commodity[] { this, collisionCommodity });
-        if (!(mixCommodity is null))
-        {
-            //if (collisionCommodity.IsOnDish)
-            //{
-            //    this.putableOnDish = collisionCommodity.putableOnDish;
-            //}
-            //this.putableOnDish.CommodityReset();
-            NetworkObject networkObject = await networkRunner.SpawnAsync(mixCommodity.gameObject, this.transform.position, this.transform.rotation);
-            Commodity createCommodity = networkObject.GetComponent<Commodity>();
-            //createCommodity.PutOnDish(this.putableOnDish, isOnDish);
-            createCommodity.GetComponent<Rigidbody>().isKinematic = false;
-        }
+            FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
+            NetworkObject networkObject = GetComponent<LocalView>().NetworkView.GetComponent<NetworkObject>();
+            // ----------------------------- ID ------------------------------------------
+            foodSpawnManagerRPC.RPC_CommoditySpawn(commodityID, transform.rotation.eulerAngles, transform.position);
+            // ---------------------------------------------------------------------------
+            foodSpawnManagerRPC.RPC_Despawn(networkObject);
+            Destroy(gameObject);
     }
 
     //public void PutOnDish(IPutableOnDish putableOnDish, bool isOnDish)
