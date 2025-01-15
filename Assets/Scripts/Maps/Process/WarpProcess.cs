@@ -16,8 +16,8 @@ public class WarpProcess : MonoBehaviour, IMarkProcess
     {
         if (markEventArgs.MarkProcessType == MarkProcessType.Select)
         {
-            whiteVignette = FindObjectOfType<WhiteVignetteManager>();
-            Warp(markData.MarkPosition).Forget();
+            //注意！！　たかやなぎの危険領域に侵入！
+            FindObjectOfType<VRPlayerController>().Warp(markData.MarkPosition).Forget();
         }
     }
 
