@@ -14,7 +14,7 @@ public class NetworkIngrodients : NetworkBehaviour
         _networkView = GetComponent<NetworkView>();
     }
 
-    [Rpc]
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     public async void RPC_PutIngrodients(int machineID)
     {
         await UniTask.WaitUntil(() => GateOfFusion.Instance.IsActivityConnected);
@@ -27,13 +27,13 @@ public class NetworkIngrodients : NetworkBehaviour
         }
     }
 
-    [Rpc]
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     public void RPC_IngrodientsSelect()
     {
         _networkView.LocalView.GetComponent<LocalIngrodients>().UnPutMachine();
     }
 
-    [Rpc]
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     public void RPC_ProcessEvent(float processValue)
     {
         if (GateOfFusion.Instance.IsActivityConnected && GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
