@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using System.Reflection;
+using System.IO;
 
 public class GrabbableAutoAttach : EditorWindow
 {
@@ -15,6 +17,8 @@ public class GrabbableAutoAttach : EditorWindow
 	[SerializeField] private bool useDistanceGrab = default;
 	[SerializeField] private bool useDistanceHandGrab = default;
 	[SerializeField] private int selectedIndex = default;
+	[SerializeField] private bool createItemAsset = default;
+	[SerializeField] private string folderName = default;
 
 	private SerializedObject target = default;
 	private Vector2 scrollPosition = default;
@@ -67,6 +71,11 @@ public class GrabbableAutoAttach : EditorWindow
 		EditorGUILayout.Space(16);
 
 		selectedIndex = EditorGUILayout.Popup("Set IDisplayItem Script", selectedIndex, displayOptions);
+
+		EditorGUILayout.Space(16);
+
+		createItemAsset = EditorGUILayout.Toggle("Create Item Asset", createItemAsset);
+		folderName = EditorGUILayout.TextField("Folder Name", folderName);
 
 		EditorGUILayout.Space(16);
 
@@ -260,15 +269,66 @@ public class GrabbableAutoAttach : EditorWindow
 					localView = prefab.AddComponent<LocalView>();
 				}
 				localView.SetMeshRenderers(prefab.GetComponents<MeshRenderer>().ToList());
+
+				if (createItemAsset)
+				{
+					if (string.IsNullOrEmpty(folderName))
+					{
+						XDebug.Log($"{nameof(folderName)} が入力されていません。", "yellow");
+						break;
+					}
+
+					// Conditionalはメソッド内はコンパイルされてしまうので、仕方なく二重
+					var existingAsset = AssetDatabase.FindAssets($"t:{nameof(ItemAsset)}")
+							.Select(AssetDatabase.GUIDToAssetPath)
+							.Select(AssetDatabase.LoadAssetAtPath<ItemAsset>)
+							.Where(asset => asset.name == prefab.name)
+							.FirstOrDefault();
+					if (existingAsset != null)
+					{
+						XDebug.Log($"すでに {nameof(existingAsset.Name)} のアセットは存在しているため、生成がスキップされました。", "yellow");
+						continue;
+					}
+					var itemAsset = CreateInstance<ItemAsset>();
+
+					var isDisplayableInfo = itemAsset.GetType()
+						.GetField("isDisplayable", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+					if (isDisplayableInfo != null)
+					{
+						isDisplayableInfo.SetValue(itemAsset, true);
+					}
+
+					var displayItemInfo = itemAsset.GetType()
+						.GetField("displayItem", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+					if (displayItemInfo != null)
+					{
+						if (selectedIndex != 0)
+						{
+							displayItemInfo.SetValue(itemAsset, prefab.GetComponent<IDisplayItem>());
+						}
+					}
+
+					var itemNameInfo = itemAsset.GetType()
+						.GetField("itemName", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+					if (itemNameInfo != null)
+					{
+						itemNameInfo.SetValue(itemAsset, prefab.name);
+					}
+
+					string fileName = $"{prefab.name}.asset";
+					string path = $"Assets/ScriptableObject/ItemData/{folderName}";
+
+					AssetDatabase.CreateAsset(itemAsset, Path.Combine(path, fileName));
+				}
+
+				// Colliderが付いていなかったときに通知する
+				if (!prefab.TryGetComponent(out Collider _))
+				{
+					Debug.LogWarning("コライダーがアタッチされていません。手動でいずれかのコライダーをアタッチしてください。");
+				}
 			}
 
-			Debug.Log("Attach Completed!");
-
-			// Colliderが付いていなかったときに通知する
-			if (!prefab.TryGetComponent(out Collider _))
-			{
-				Debug.LogWarning("コライダーがアタッチされていません。手動でいずれかのコライダーをアタッチしてください。");
-			}
+			XDebug.Log("Attach Completed!", "orange");
 		}
 
 		EditorGUILayout.EndScrollView();
