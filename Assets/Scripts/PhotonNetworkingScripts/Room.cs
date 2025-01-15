@@ -107,11 +107,6 @@ public class Room
 		}
 		_roomPlayers.Remove(leftPlayer);
 
-		if (_isEndJoining)
-		{
-			_isEndJoining = false;
-		}
-
 		return result;
 	}
 

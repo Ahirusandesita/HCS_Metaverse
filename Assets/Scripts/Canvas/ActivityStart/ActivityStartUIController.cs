@@ -5,7 +5,7 @@ using UnityEngine;
 public class ActivityStartUIController : MonoBehaviour
 {
 	[SerializeField]
-	private Vector3 _offset = default;
+	private float _offsetZ = default;
 	private Transform _myTransform = default;
 	private Transform _playerHeadTransform;
 	private Transform MyTransform { get => _myTransform ??= transform; }
@@ -17,7 +17,8 @@ public class ActivityStartUIController : MonoBehaviour
 
 	private void Update()
 	{
+		MyTransform.position = _playerHeadTransform.forward * _offsetZ 
+			+ _playerHeadTransform.position;
 		MyTransform.rotation = _playerHeadTransform.rotation;
-		MyTransform.position = _playerHeadTransform.position + _offset;
 	}
 }
