@@ -14,6 +14,9 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
     private bool isOnDish;
     public bool IsOnDish => isOnDish;
 
+    private bool canMix = true;
+    public bool CanMix => canMix;
+
     private ISwitchableGrabbableActive switchableGrabbableActive;
 
     private PointableUnityEventWrapper pointableUnityEventWrapper;
@@ -141,12 +144,21 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
         if (collision.transform.root.transform.GetComponentInChildren<Commodity>())
         {
             Commodity collisionCommodity = collision.transform.root.transform.GetComponentInChildren<Commodity>();
-            FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
-            if (CommodityAsset.CommodityID > collisionCommodity.CommodityAsset.CommodityID)
-            {
-                
 
-                _localView.NetworkView.GetComponent<NetworkCommodity>().RPC_MixCommodity(collision.gameObject.GetComponent<NetworkObject>(), 1);
+            if (canMix && collisionCommodity.CanMix)
+            {
+                if (CommodityAsset.CommodityID > collisionCommodity.CommodityAsset.CommodityID)
+                {
+                    Commodity mixCommodity = MixCommodity.Mix(new Commodity[] { this, collisionCommodity });
+
+                    if (!(mixCommodity is null))
+                    {
+                        CommodityFactory commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
+                        _localView.NetworkView.GetComponent<NetworkCommodity>().RPC_MixCommodity(collision.gameObject.GetComponent<NetworkObject>(), commodityFactory.CommodityIndex(mixCommodity));
+
+                    }
+
+                }
             }
         }
 
