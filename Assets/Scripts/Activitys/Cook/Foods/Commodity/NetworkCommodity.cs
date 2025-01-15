@@ -16,8 +16,8 @@ public class NetworkCommodity : NetworkBehaviour
     }
 
     [Rpc]
-    public void RPC_MixCommodity(NetworkObject hitObject)
+    public void RPC_MixCommodity(NetworkObject hitObject, int commodityID)
     {
-        _networkView.LocalView.GetComponent<Commodity>().RPC_MixCommodity(hitObject);
+        _networkView.LocalView.GetComponent<Commodity>().RPC_MixCommodity(hitObject, commodityID);
     }
 }

@@ -89,6 +89,16 @@ public class FoodSpawnManagerRPC : NetworkBehaviour, IPlayerJoined
             commoditySpawnManager.SpawnNetworkView(index, rotation, position, machineID);
         }
     }
+
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
+    public void RPC_CommoditySpawn(int index, Vector3 rotation, Vector3 position)
+    {
+        if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        {
+            commoditySpawnManager.SpawnNetworkView(index, rotation, position);
+        }
+    }
+
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     public void RPC_CommodityLocalSpawn(int index,Vector3 rotation,Vector3 position,NetworkObject networkObject, int machineID)
     {
