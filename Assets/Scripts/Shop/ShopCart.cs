@@ -47,12 +47,12 @@ public class ShopCart : MonoBehaviour
 		}
 	}
 
-	private void toItemStockList(List<WebAPIRequester.ItemStock> itemStocks)
+	private void toItemStockList(List<ItemIDAmountPair> itemStocks)
 	{
 		foreach (var item in _inCarts)
 		{
-			WebAPIRequester.ItemStock stockTemp 
-				= new WebAPIRequester.ItemStock(item.Key, item.Value);
+			ItemIDAmountPair stockTemp 
+				= new ItemIDAmountPair(item.Key, item.Value);
 			itemStocks.Add(stockTemp);
 		}
 
@@ -61,7 +61,7 @@ public class ShopCart : MonoBehaviour
 	public async void Buy()
 	{
 		WebAPIRequester requester = new WebAPIRequester();
-		List<WebAPIRequester.ItemStock> buyItemStocks = new List<WebAPIRequester.ItemStock>();
+		List<ItemIDAmountPair> buyItemStocks = new List<ItemIDAmountPair>();
 		toItemStockList(buyItemStocks);
 		_visualShop.Buy();
 

@@ -53,7 +53,7 @@ public class WebAPIRequester
 	/// <br>・購入後の金額</br>
 	/// <br>・ショップの在庫リスト</br>
 	/// <br>・ユーザーID</br></returns>
-	public async UniTask<OnShopPaymentData> PostShopPayment(List<ItemStock> inventory, int shopId, int userId)
+	public async UniTask<OnShopPaymentData> PostShopPayment(List<ItemIDAmountPair> inventory, int shopId, int userId)
 	{
 		var sendShopPaymentData = new SendPaymentData(inventory, shopId, userId);
 		string jsonData = JsonUtility.ToJson(sendShopPaymentData);
@@ -109,8 +109,8 @@ public class WebAPIRequester
 	/// <br>・自販機のアップデートフラグ</br></returns>
 	public async UniTask<OnVMPaymentData> PostVMPayment(int itemId, int shopId, int userId)
 	{
-		var itemList = new List<ItemStock>();
-		itemList.Add(new ItemStock(itemId, 1));
+		var itemList = new List<ItemIDAmountPair>();
+		itemList.Add(new ItemIDAmountPair(itemId, 1));
 		var sendPaymentData = new SendPaymentData(itemList, shopId, userId);
 		string jsonData = JsonUtility.ToJson(sendPaymentData);
 
@@ -261,7 +261,7 @@ public class WebAPIRequester
 		[System.Serializable]
 		public class Body
 		{
-			public Body(List<ItemStock> inventory, int money, List<ItemStock> stockData, int userId)
+			public Body(List<ItemIDAmountPair> inventory, int money, List<ItemIDAmountPair> stockData, int userId)
 			{
 				this.inventory = inventory;
 				this.money = money;
@@ -269,14 +269,14 @@ public class WebAPIRequester
 				this.userId = userId;
 			}
 
-			[SerializeField] private List<ItemStock> inventory = default;
+			[SerializeField] private List<ItemIDAmountPair> inventory = default;
 			[SerializeField] private int money = default;
-			[SerializeField] private List<ItemStock> stockData = default;
+			[SerializeField] private List<ItemIDAmountPair> stockData = default;
 			[SerializeField] private int userId = default;
 
-			public IReadOnlyList<ItemStock> Inventory => inventory;
+			public IReadOnlyList<ItemIDAmountPair> Inventory => inventory;
 			public int Money => money;
-			public IReadOnlyList<ItemStock> StockData => stockData;
+			public IReadOnlyList<ItemIDAmountPair> StockData => stockData;
 			public int UserID => userId;
 		}
 	}
@@ -331,7 +331,7 @@ public class WebAPIRequester
 		[System.Serializable]
 		public class Body
 		{
-			public Body(List<ItemStock> inventory, int money, List<ItemStock> stockData, int userId, bool updateFlg)
+			public Body(List<ItemIDAmountPair> inventory, int money, List<ItemIDAmountPair> stockData, int userId, bool updateFlg)
 			{
 				this.inventory = inventory;
 				this.money = money;
@@ -340,15 +340,15 @@ public class WebAPIRequester
 				this.updateFlg = updateFlg;
 			}
 
-			[SerializeField] private List<ItemStock> inventory = default;
+			[SerializeField] private List<ItemIDAmountPair> inventory = default;
 			[SerializeField] private int money = default;
-			[SerializeField] private List<ItemStock> stockData = default;
+			[SerializeField] private List<ItemIDAmountPair> stockData = default;
 			[SerializeField] private int userId = default;
 			[SerializeField] private bool updateFlg = default;
 
-			public IReadOnlyList<ItemStock> Inventory => inventory;
+			public IReadOnlyList<ItemIDAmountPair> Inventory => inventory;
 			public int Money => money;
-			public IReadOnlyList<ItemStock> StockData => stockData;
+			public IReadOnlyList<ItemIDAmountPair> StockData => stockData;
 			public int UserID => userId;
 			public bool UpdateFlg => updateFlg;
 		}
@@ -423,18 +423,18 @@ public class WebAPIRequester
 	[System.Serializable]
 	private class SendPaymentData
 	{
-		public SendPaymentData(List<ItemStock> itemList, int shopId, int userId)
+		public SendPaymentData(List<ItemIDAmountPair> itemList, int shopId, int userId)
 		{
 			this.itemList = itemList;
 			this.shopId = shopId;
 			this.userId = userId;
 		}
 
-		[SerializeField] private List<ItemStock> itemList = default;
+		[SerializeField] private List<ItemIDAmountPair> itemList = default;
 		[SerializeField] private int shopId = default;
 		[SerializeField] public int userId = default;
 
-		public IReadOnlyList<ItemStock> ItemList => itemList;
+		public IReadOnlyList<ItemIDAmountPair> ItemList => itemList;
 		public int ShopID => shopId;
 		public int UserID => userId;
 	}
@@ -498,25 +498,6 @@ public class WebAPIRequester
 		public int Size => size;
 	}
 
-	/// <summary>
-	/// ・アイテムID
-	/// <br>・数</br>
-	/// </summary>
-	[System.Serializable]
-	public struct ItemStock
-	{
-		public ItemStock(int itemId, int amount)
-		{
-			this.itemId = itemId;
-			this.amount = amount;
-		}
-
-		[SerializeField] private int itemId;
-		[SerializeField] private int amount;
-
-		public int ItemID => itemId;
-		public int Amount => amount;
-	}
 
 	/// <summary>
 	/// ・アイテムID

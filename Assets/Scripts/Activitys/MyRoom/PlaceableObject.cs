@@ -13,11 +13,13 @@ public class PlaceableObject : MonoBehaviour
     [Tooltip("îzíuâ¬î\èÍèä")]
     [SerializeField] private GhostModel.PlacingStyle placingStyle = default;
     [SerializeField] private List<Collider> colliders = default;
+    private int housingID = -1;
 
     public GameObject GhostOrigin => ghostOrigin;
     public GhostModel.PivotType PivotType => pivotType;
     public GhostModel.PlacingStyle PlacingStyle => placingStyle;
     public IReadOnlyList<Collider> Colliders => colliders;
+    public int HousingID { get => housingID; set => housingID = value; }
 
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     protected virtual void Reset()

@@ -93,9 +93,14 @@ public class RoomManager : MonoBehaviour
 			//“ü‚ê‚é•”‰®‚ª‚ ‚é‚©
 			roomTemp = _rooms.Values.FirstOrDefault(room => !room.IsEndJoining
 			&& room.SceneNameType == sceneNameType);
+			if (roomTemp != null)
+			{
+				XKumaDebugSystem.LogWarning($"{roomTemp.IsEndJoining}:{roomTemp.SceneNameType}");
+			}
 		}
 		else if (_rooms.ContainsKey(roomNumber))
 		{
+			XKumaDebugSystem.LogWarning($"containconosnons{roomNumber}");
 			roomTemp = _rooms[roomNumber];
 		}
 
@@ -105,7 +110,7 @@ public class RoomManager : MonoBehaviour
 			//©“®‚ÅƒL[‚ğì‚éê‡
 			if (roomNumber < 0) { roomNumber = 1; }
 			for (; _rooms.ContainsKey(roomNumber); roomNumber++) ;
-			if (sceneNameType == SceneNameType.TestPhotonScene)
+			if (sceneNameType is SceneNameType.TestPhotonScene)
 			{
 				roomTemp = Create(sceneNameType, 0);
 			}
@@ -113,7 +118,9 @@ public class RoomManager : MonoBehaviour
 			{
 				roomTemp = Create(sceneNameType, roomNumber);
 			}
-			if (!roomTemp.IsNonLeader && joinPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer)
+
+			if (!roomTemp.IsNonLeader && 
+				joinPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer)
 			{
 				InstantiateLeaderObject();
 			}

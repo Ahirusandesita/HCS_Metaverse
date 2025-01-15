@@ -166,6 +166,7 @@ public class GateOfFusion
 		_syncResult = SyncResult.Connecting;
 		if (!MasterServer.IsUsePhoton)
 		{
+			PlayerDontDestroyData.Instance.PreviousScene = sceneName;
 			SceneManager.LoadScene(sceneName);
 			_syncResult = SyncResult.Complete;
 			return;
@@ -196,6 +197,7 @@ public class GateOfFusion
 		await MasterServer.Disconnect();
 		XKumaDebugSystem.LogWarning($"切断した", KumaDebugColor.MessageColor);
 		await SceneManager.LoadSceneAsync(sceneName);
+		PlayerDontDestroyData.Instance.PreviousScene = sceneName;
 		XKumaDebugSystem.LogWarning($"シーンを読み込んだ");
 		await MasterServer.JoinOrCreateSession(sessionName, localPlayerRef);
 		XKumaDebugSystem.LogWarning($"自分がセッション移動した", KumaDebugColor.MessageColor);
