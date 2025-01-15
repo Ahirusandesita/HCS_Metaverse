@@ -16,8 +16,13 @@ public class MyRoomLoader : MonoBehaviour
 	public async UniTask Load()
 	{
 		WebAPIRequester requester = new WebAPIRequester();
+		for(int i = 1;i <= 10 ; i++)
+		{
+			MyRoomEntryData myRoomEntryDataa = await requester.PostMyRoomEntry(i);
+			XDebug.LogWarning(myRoomEntryDataa.GetBody.ShopID);
+		}
 		MyRoomEntryData myRoomEntryData = await requester.PostMyRoomEntry(PlayerData.PlayerID);
-		XDebug.LogWarning(myRoomEntryData.GetBody.ObjectList[0].Position,Color.cyan);
+		XDebug.LogWarning(myRoomEntryData.GetBody.ObjectList[0].HousingID);
 		foreach(MyRoomObject myRoomObject in myRoomEntryData.GetBody.ObjectList)
 		{
 			SetRoomObject(myRoomObject);
@@ -31,6 +36,7 @@ public class MyRoomLoader : MonoBehaviour
 	private void SetRoomObject(MyRoomObject myRoomObject)
 	{
 		GameObject prefab = _itemBundleAsset.GetItemAssetByID(myRoomObject.ItemID).DisplayItem.gameObject;
+		
 		GameObject instance = Instantiate(
 			prefab,
 			myRoomObject.Position,
