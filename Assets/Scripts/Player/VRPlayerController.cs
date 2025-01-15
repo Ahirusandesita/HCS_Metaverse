@@ -145,7 +145,7 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 		}
 	}
 
-	private async UniTaskVoid Warp()
+	private async UniTaskVoid WarpAtPointer()
 	{
 		// ワープしたのでビューは非表示に
 		warpPointer.SetActive(false);
@@ -156,16 +156,29 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 		float targetRotationY = Calculator.GetEulerBy2DVector(moveDir, Vector3.down).y;
 		float centerEyeRotationY = centerEyeTransform.rotation.y;
 
+		// 座標を更新（ワープ！）
+		await Warp(warpPos);
+
+		// 方向を更新
+		myTransform.Rotate(Vector3.up * (targetRotationY - centerEyeRotationY));
+	}
+
+	/// <summary>
+	/// ワープ処理（Rotationは各自でやって）
+	/// </summary>
+	/// <param name="warpPos">目標座標</param>
+	public async UniTask Warp(Vector3 warpPos)
+	{
 		// ホワイトアウトの演出（画面が一度見えなくなるまで待機）
 		await whiteVignetteManager.WhiteOut();
 
 		// 座標を更新（ワープ！）
 		// そのままのWarpPosだと地面に埋まっちゃうので、足元に来るよう補正
-		// 衝突判定を行ってほしいため、CharacterContorollerのMove関数を使う
+		// 衝突判定を一時的にOFFにする
+		characterController.detectCollisions = false;
 		Vector3 correctedWarpPos = warpPos + Vector3.up * (characterController.height / 2 + characterController.skinWidth);
 		characterController.Move(correctedWarpPos - myTransform.position);
-		// 方向を更新
-		myTransform.Rotate(Vector3.up * (targetRotationY - centerEyeRotationY));
+		characterController.detectCollisions = true;
 	}
 
 	/// <summary>
@@ -188,7 +201,7 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 			case VRMoveType.Warp:
 				if (canWarp)
 				{
-					Warp().Forget();
+					WarpAtPointer().Forget();
 				}
 				break;
 		}
