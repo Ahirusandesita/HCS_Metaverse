@@ -1437,6 +1437,7 @@ GameObject:
   - component: {fileID: 6632934823874355765}
   - component: {fileID: 1008322925437327410}
   - component: {fileID: 4076484240525892576}
+  - component: {fileID: 6262937014878458594}
   m_Layer: 6
   m_Name: PlayerAvatar
   m_TagString: Untagged
@@ -1631,13 +1632,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9142103114872535056}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b953624d1bd0714fa1ff8ff00a70ac2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerState: {fileID: 0}
-  testOrigin: {fileID: 8820349977917249677, guid: 4b2d61582302a1e48a13fad15c0a40ec, type: 3}
+  playerState: {fileID: 6262937014878458594}
+  testOrigin: {fileID: -2942061275075726587, guid: 31695c81fd816264ba8e8655910f450f, type: 3}
 --- !u!114 &4076484240525892576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1652,6 +1653,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _localBodyParent: {fileID: 6559691209768167212}
   _localPartParent: {fileID: 5956024454042010045}
+--- !u!114 &6262937014878458594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9142103114872535056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42edb6f1d267fe546b314c9e0f111a42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerInteraction: {fileID: 6875392113250163269}
+  placingMode:
+    value: 0
 --- !u!1001 &209632335693756794
 PrefabInstance:
   m_ObjectHideFlags: 0

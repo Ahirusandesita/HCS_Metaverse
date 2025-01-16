@@ -13,6 +13,7 @@ public interface IEditorItemBundleAsset
 [CreateAssetMenu(fileName = "ItemBundleData", menuName = "ScriptableObjects/ItemAsset/Bundle")]
 public class ItemBundleAsset : ScriptableObject, IEditorItemBundleAsset
 {
+    [Header("全アイテムのリスト\n※ジャンルごとに整列")]
     [SerializeField] private List<ItemAsset> items = default;
     public IReadOnlyList<ItemAsset> Items => items;
     List<ItemAsset> IEditorItemBundleAsset.EditorItems { set => items = value; }
