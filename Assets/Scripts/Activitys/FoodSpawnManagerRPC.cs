@@ -129,7 +129,7 @@ public class FoodSpawnManagerRPC : NetworkBehaviour, IPlayerJoined
     {
         AllSpawn instance = await GateOfFusion.Instance.SpawnAsync(allSpawn);
         await instance.Async();
-        GateOfFusion.Instance.Despawn(allSpawn);
+        GateOfFusion.Instance.Despawn(instance);
         GateOfFusion.Instance.Despawn(networkObject);
     }
 
