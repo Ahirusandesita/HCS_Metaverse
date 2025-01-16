@@ -97,15 +97,13 @@ public class Throwable : MonoBehaviour
     /// <returns></returns>
     private IEnumerator OverwriteVelocity(Vector3 throwVector)
     {
-        Debug.LogError($"<color=yellow>Wait前{_thisRigidbody.isKinematic}</color>");
         // 1フレーム待機する　1フレーム待機しないとOVRに消される
         yield return null;
 
         // Kinematicを無効にする
         _thisRigidbody.isKinematic = false;
-        Debug.LogError($"<color=green>変更後{_thisRigidbody.isKinematic}</color>");
+
         // 投擲ベクトルを速度に上書きする
         _thisRigidbody.velocity = throwVector;
-        Debug.LogError($"<olor=blue>投擲後{_thisRigidbody.isKinematic}</color>");
     }
 }
