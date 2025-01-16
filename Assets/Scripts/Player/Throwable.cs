@@ -97,6 +97,7 @@ public class Throwable : MonoBehaviour
     /// <returns></returns>
     private IEnumerator OverwriteVelocity(Vector3 throwVector)
     {
+        Debug.LogError($"<color=yellow>Throw発動</color>");
         // 1フレーム待機する　1フレーム待機しないとOVRに消される
         yield return new WaitForEndOfFrame();
 
