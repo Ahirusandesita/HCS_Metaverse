@@ -9,6 +9,8 @@ public class FoodSpawnManagerRPC : NetworkBehaviour, IPlayerJoined
 
     [SerializeField]
     private CommoditySpawnManager commoditySpawnManager;
+    [SerializeField]
+    private AllSpawn allSpawn;
 
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     public void RPC_FoodSpawn(NetworkObject networkObject, int index)
@@ -120,8 +122,15 @@ public class FoodSpawnManagerRPC : NetworkBehaviour, IPlayerJoined
         //エラーでるかも　重いと
         if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
-            GateOfFusion.Instance.Despawn(networkObject);
+            Despawn(networkObject);
         }
+    }
+    private async void Despawn(NetworkObject networkObject)
+    {
+        AllSpawn instance = await GateOfFusion.Instance.SpawnAsync(allSpawn);
+        await instance.Async();
+        GateOfFusion.Instance.Despawn(allSpawn);
+        GateOfFusion.Instance.Despawn(networkObject);
     }
 
 }
