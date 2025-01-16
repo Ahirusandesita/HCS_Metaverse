@@ -225,8 +225,8 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
             }
         }
         networkInformations.Remove(information);
-        GateOfFusion.Instance.Despawn(information.NetworkView);
         Destroy(information.NetworkView.LocalView.gameObject);
+        GateOfFusion.Instance.Despawn(information.NetworkView);
     }
 }
 
