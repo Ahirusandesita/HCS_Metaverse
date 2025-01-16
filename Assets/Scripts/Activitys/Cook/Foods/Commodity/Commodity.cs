@@ -197,7 +197,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
         // ---------------------------------------------------------------------------
         Debug.LogError($"mixŒã");
         foodSpawnManagerRPC.RPC_Despawn(networkObject);
-        Destroy(gameObject);
+        foodSpawnManagerRPC.RPC_Despawn(hitObject);
     }
 
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
