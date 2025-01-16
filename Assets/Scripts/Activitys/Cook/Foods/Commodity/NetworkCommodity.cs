@@ -35,7 +35,6 @@ public class NetworkCommodity : NetworkBehaviour
         {
             return;
         }
-        Debug.LogError($"mix’†");
         _networkView.LocalView.GetComponent<Commodity>().RPC_MixCommodity(hitObject, commodityID);
     }
 }

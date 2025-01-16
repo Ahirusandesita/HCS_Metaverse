@@ -212,7 +212,10 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
             //}
         }
     }
-
+    public bool ExistInformation(NetworkView networkView)
+    {
+        return networkInformations.Any((information) => information.NetworkView == networkView);
+    }
     public void Despawn(NetworkView networkView)
     {
         NetworkInformation information = default;

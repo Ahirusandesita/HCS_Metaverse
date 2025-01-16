@@ -116,7 +116,14 @@ public class FoodSpawnManagerRPC : NetworkBehaviour, IPlayerJoined
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     public void RPC_Despawn(NetworkObject networkObject)
     {
-        foodSpawnManager.Despawn(networkObject.GetComponent<NetworkView>());
+        if (foodSpawnManager.ExistInformation(networkObject.GetComponent<NetworkView>()))
+        {
+            foodSpawnManager.Despawn(networkObject.GetComponent<NetworkView>());
+        }
+        if(commoditySpawnManager.ExistInformation(networkObject.GetComponent<NetworkView>()))
+        {
+            commoditySpawnManager.Despawn(networkObject.GetComponent<NetworkView>());
+        }
         //commoditySpawnManager.Despawn(networkObject.GetComponent<NetworkView>());
 
         //エラーでるかも　重いと

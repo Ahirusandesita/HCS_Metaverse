@@ -89,8 +89,27 @@ public class CommoditySpawnManager : MonoBehaviour
         }
     }
 
+    public bool ExistInformation(NetworkView networkView)
+    {
+        return networkInformations.Any((information) => information.NetworkView == networkView);      
+    }
     public void Despawn(NetworkView networkView)
     {
-        networkInformations.Remove(networkInformations.Where((information) => information.NetworkView == networkView).First());
+        NetworkInformation information = default;
+        foreach (NetworkInformation item in networkInformations)
+        {
+            if (item.NetworkView == networkView)
+            {
+                Debug.LogError("NetworkViewˆê’v");
+                information = item;
+            }
+        }
+        if (information == null)
+        {
+            Debug.LogError("NetworkView‚Ì•sˆê’v");
+            return;
+        }
+        networkInformations.Remove(information);
+        Destroy(information.NetworkView.LocalView.gameObject);
     }
 }
