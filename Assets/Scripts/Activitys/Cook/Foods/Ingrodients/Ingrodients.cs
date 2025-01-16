@@ -135,13 +135,11 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
     public async void NonVRTest_GrabAndRelease()
     {
         GetComponent<DisplayItem>().WhenSelect(new PointerEvent());
-        GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()).Forget();
         this.transform.position = Vector3.zero;
 
         await UniTask.Delay(2000);
 
         GetComponent<DisplayItem>().WhenUnselect(new PointerEvent());
-        GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>());
     }
 
     private void FixedUpdate()

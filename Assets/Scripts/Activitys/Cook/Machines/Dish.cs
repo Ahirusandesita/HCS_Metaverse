@@ -65,8 +65,6 @@ public class Dish : NetworkBehaviour, IPutableOnDish,IGrabbableActiveChangeReque
 
         _myNetwork = GetComponent<NetworkObject>();
 
-        pointableUnityEventWrapper.WhenSelect.AddListener((data) => GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()).Forget());
-        pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
     }
 
     private void Update()

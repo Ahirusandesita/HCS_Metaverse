@@ -47,42 +47,7 @@ public class GateOfFusion
 		}
 	}
 
-	/// <summary>
-	/// 掴むときに呼ぶ
-	/// </summary>
-	/// <param name="networkObject">掴んだオブジェクト</param>
-	public async UniTask Grab(NetworkObject networkObject)
-	{
-		if (!MasterServer.IsUsePhoton) { return; }
-		XKumaDebugSystem.LogWarning($"Grab:{networkObject.name}", KumaDebugColor.InformationColor);
-		StateAuthorityData stateAuthorityData = networkObject.GetComponent<StateAuthorityData>();
-		await UniTask.WaitUntil(() => stateAuthorityData.IsEnable);
-		if (stateAuthorityData.IsNotReleaseStateAuthority)
-		{
-			XKumaDebugSystem.LogWarning($"権限をとることができません", KumaDebugColor.WarningColor);
-			return;
-		}
-		if (networkObject.HasStateAuthority)
-		{
-			XKumaDebugSystem.LogWarning($"自分が権限を持っています", KumaDebugColor.WarningColor);
-			return;
-		}
-		PlayerRef stateAuthorityPlayerRef = networkObject.StateAuthority;
-		MasterServer.SessionRPCManager.Rpc_GrabStateAuthorityChanged(networkObject);
-		MasterServer.SessionRPCManager.Rpc_ReleaseStateAuthority(stateAuthorityPlayerRef, networkObject);
-		await UniTask.WaitUntil(() => networkObject.StateAuthority == PlayerRef.None);
-		//XKumaDebugSystem.LogWarning("grab待機終了", KumaDebugColor.WarningColor);
-		networkObject.RequestStateAuthority();
-	}
-
-	public void Release(NetworkObject networkObject)
-	{
-		if (!MasterServer.IsUsePhoton) { return; }
-		MasterServer.SessionRPCManager.Rpc_ReleseStateAuthorityChanged(networkObject);
-		StateAuthorityData stateAuthorityData = networkObject.GetComponent<StateAuthorityData>();
-		stateAuthorityData.IsNotReleaseStateAuthority = false;
-	}
-
+	#region Spawn_Despawn
 	public void Despawn<T>(T despawnObject) where T : Component
 	{
 		if (!MasterServer.IsUsePhoton)
@@ -141,6 +106,7 @@ public class GateOfFusion
 		temp.transform.SetParent(parent);
 		return temp;
 	}
+	#endregion
 
 	public async void ActivityStart()
 	{
@@ -216,7 +182,6 @@ public class GateOfFusion
 
 
 		MasterServer.SessionRPCManager.Rpc_RoomStandbyOn();
-		//if (!NetworkRunner.IsSharedModeMasterClient) { return; }
 		if (currentRoom.SceneNameType is not SceneNameType.KumaKumaTest or SceneNameType.TestPhotonScene)
 		{
 			_masterServer.SessionRPCManager.Rpc_ExecuteOnActivityConnedted();
