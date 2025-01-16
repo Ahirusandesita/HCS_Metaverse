@@ -14,9 +14,7 @@ public interface IEditorItemBundleAsset
 public class ItemBundleAsset : ScriptableObject, IEditorItemBundleAsset
 {
     [SerializeField] private List<ItemAsset> items = default;
-    [SerializeField] private List<NetworkView> networkViews;
     public IReadOnlyList<ItemAsset> Items => items;
-    public IReadOnlyList<NetworkView> NetworkViews => networkViews;
     List<ItemAsset> IEditorItemBundleAsset.EditorItems { set => items = value; }
 
     public ItemAsset GetItemAssetByID(int id)
@@ -34,6 +32,7 @@ namespace UnityEditor.HCSMeta
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
+            EditorGUI.BeginChangeCheck();
 
             EditorGUILayout.Space(12f);
 
@@ -55,6 +54,11 @@ namespace UnityEditor.HCSMeta
                 // 要素ない状態でボタン押すと例外出る→うざいので握りつぶす
                 catch (System.NullReferenceException) { }
             }
+
+            if (EditorGUI.EndChangeCheck())
+			{
+                EditorUtility.SetDirty(target);
+			}
         }
     }
 }
