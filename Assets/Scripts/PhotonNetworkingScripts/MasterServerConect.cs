@@ -50,15 +50,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	public bool IsKumaDebug => _isKumaDebug;
 #endif
 	#endregion
-
-	[SerializeField]
-	private NetworkObject testObj;
-
-	[ContextMenu("teste")]
-	private void test()
-	{
-		GateOfFusion.Instance.Grab(testObj);
-	}
+	
 	[ContextMenu("start")]
 	private void ActivityS()
 	{
