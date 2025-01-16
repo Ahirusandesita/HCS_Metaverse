@@ -225,3 +225,11 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 		leftHand = information.LeftHand;
 	}
 }
+public static class VRPlayerControllerExtens
+{
+	public static async UniTask Warp(this VRPlayerController VRPlayerController,Vector3 position,Quaternion rotation)
+    {
+		VRPlayerController.transform.rotation = rotation;
+		await VRPlayerController.Warp(position);
+    }
+}
