@@ -13,7 +13,7 @@ public class PlaceableObject : MonoBehaviour
     [Tooltip("”z’u‰Â”\êŠ")]
     [SerializeField] private GhostModel.PlacingStyle placingStyle = default;
     [SerializeField] private List<Collider> colliders = default;
-    private int housingID = -1;
+    [SerializeField] private int housingID = -1;
 
     public GameObject GhostOrigin => ghostOrigin;
     public GhostModel.PivotType PivotType => pivotType;
