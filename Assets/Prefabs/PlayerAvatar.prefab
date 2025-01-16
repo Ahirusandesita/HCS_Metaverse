@@ -1636,7 +1636,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b953624d1bd0714fa1ff8ff00a70ac2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placingMode: 0
+  playerState: {fileID: 0}
   testOrigin: {fileID: 8820349977917249677, guid: 4b2d61582302a1e48a13fad15c0a40ec, type: 3}
 --- !u!114 &4076484240525892576
 MonoBehaviour:
@@ -7601,7 +7601,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
       propertyPath: m_LocalPosition.z

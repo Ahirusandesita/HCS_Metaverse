@@ -137,10 +137,14 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (GateOfFusion.Instance.IsActivityConnected && GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        Debug.LogError($"{GateOfFusion.Instance.IsActivityConnected} , {GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient}");
+
+        if (!GateOfFusion.Instance.IsActivityConnected || !GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
             return;
         }
+
+        Debug.LogError($"Commodity‚Ü‚·‚½[");
 
         if (collision.transform.root.transform.GetComponentInChildren<Commodity>())
         {
@@ -154,6 +158,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
 
                     if (!(mixCommodity is null))
                     {
+                        Debug.LogError($"mix‘O");
                         CommodityFactory commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
                         Debug.LogWarning($"<color=blue>CollisionCommodity = {collisionCommodity} , NetworkObject = {collisionCommodity.LocalView.NetworkView.GetComponent<NetworkObject>()}</color>");
                         _localView.NetworkView.GetComponent<NetworkCommodity>().RPC_MixCommodity(collisionCommodity.LocalView.NetworkView.GetComponent<NetworkObject>(), commodityFactory.CommodityIndex(mixCommodity));
@@ -190,6 +195,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
         // ----------------------------- ID ------------------------------------------
         foodSpawnManagerRPC.RPC_CommoditySpawn(commodityID, transform.rotation.eulerAngles, transform.position);
         // ---------------------------------------------------------------------------
+        Debug.LogError($"mixŒã");
         foodSpawnManagerRPC.RPC_Despawn(networkObject);
         Destroy(gameObject);
     }

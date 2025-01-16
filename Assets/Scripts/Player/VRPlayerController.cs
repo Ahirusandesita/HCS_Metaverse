@@ -174,14 +174,12 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 
 		// 座標を更新（ワープ！）
 		// そのままのWarpPosだと地面に埋まっちゃうので、足元に来るよう補正
-		// 衝突判定を一時的にOFFにする
-		characterController.detectCollisions = false;
-		int cacheLayers = characterController.includeLayers;
-		characterController.includeLayers = 0;
-		Vector3 correctedWarpPos = warpPos + Vector3.up * (characterController.height / 2 + characterController.skinWidth);
-		characterController.Move(correctedWarpPos - myTransform.position);
-		characterController.includeLayers = cacheLayers;
-		characterController.detectCollisions = true;
+		// 衝突判定を一時的にOFFにするために、最後にその場ワープ
+		characterController.enabled = false;
+        Vector3 correctedWarpPos = warpPos + Vector3.up * (characterController.height / 2 + characterController.skinWidth);
+		transform.position = correctedWarpPos;
+		characterController.enabled = true;
+		characterController.Move(Vector3.zero);
 	}
 
 	/// <summary>

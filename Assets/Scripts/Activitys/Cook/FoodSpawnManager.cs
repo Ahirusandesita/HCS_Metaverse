@@ -36,6 +36,8 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     [SerializeField]
     private AllSpawn allSpawn;
 
+    private Vector3 upVector = new Vector3(0, 0.4f, 0);
+
     private List<NetworkInformation> networkInformations = new List<NetworkInformation>();
 
     private void Start()
@@ -102,7 +104,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     {
 
         GameObject itemObject;
-        var position = foodLineup[index].FoodBox.position + Vector3.up;
+        var position = foodLineup[index].FoodBox.position + upVector;
         var asset = foodItemAsset.GetItemAssetByID(foodLineup[index].FoodID);
         itemObject = Object.Instantiate(asset.DisplayItem.gameObject, position, Quaternion.identity);
         var displayItem = itemObject.GetComponent<IDisplayItem>();
@@ -182,7 +184,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
             for (int i = 0; i < foodLineup.Count; i++)
             {
                 var asset = foodItemAsset.GetItemAssetByID(foodLineup[i].FoodID);
-                var position = foodLineup[i].FoodBox.position + Vector3.up;
+                var position = foodLineup[i].FoodBox.position + upVector;
 
                 foodSpawnRPC.RPC_StartSpawnNetworkView(asset.ID, position, i);
                 //var foodItem = await IDisplayItem.InstantiateSync(asset, position, Quaternion.identity, this);
@@ -195,7 +197,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     {
         IDisplayItem displayItem = networkObject.GetComponent<IDisplayItem>();
         var asset = foodItemAsset.GetItemAssetByID(foodLineup[index].FoodID);
-        var position = foodLineup[index].FoodBox.position + Vector3.up;
+        var position = foodLineup[index].FoodBox.position + upVector;
 
         var itemSelectArgs = new ItemSelectArgs(asset.ID, asset.Name, position, displayItem.gameObject);
         displayItem.Inject_ItemSelectArgsAndSelectedNotification(itemSelectArgs, this);
