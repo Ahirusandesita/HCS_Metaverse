@@ -116,6 +116,12 @@ public class FoodSpawnManagerRPC : NetworkBehaviour, IPlayerJoined
     {
         foodSpawnManager.Despawn(networkObject.GetComponent<NetworkView>());
         //commoditySpawnManager.Despawn(networkObject.GetComponent<NetworkView>());
+
+        //エラーでるかも　重いと
+        if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        {
+            GateOfFusion.Instance.Despawn(networkObject);
+        }
     }
 
 }
