@@ -17,7 +17,7 @@ public class NetworkCommodity : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     public void RPC_Despawn()
     {
-        if (GateOfFusion.Instance.IsActivityConnected && GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        if (!GateOfFusion.Instance.IsActivityConnected || !GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
             return;
         }
@@ -31,11 +31,11 @@ public class NetworkCommodity : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     public void RPC_MixCommodity(NetworkObject hitObject, int commodityID)
     {
-        if (GateOfFusion.Instance.IsActivityConnected && GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        if (!GateOfFusion.Instance.IsActivityConnected || !GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
             return;
         }
-
+        Debug.LogError($"mix’†");
         _networkView.LocalView.GetComponent<Commodity>().RPC_MixCommodity(hitObject, commodityID);
     }
 }
