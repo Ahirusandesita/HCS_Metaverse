@@ -118,9 +118,7 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
         {
             FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
             NetworkObject networkObject = GetComponent<LocalView>().NetworkView.GetComponent<NetworkObject>();
-            // ----------------------------- ID ------------------------------------------
             foodSpawnManagerRPC.RPC_CommoditySpawn(commodityFactory.CommodityIndex(commodityFactory.Generate(this, processingType)), machineTransform.rotation.eulerAngles, machineTransform.position, _hitMachine.MachineID);
-            // ---------------------------------------------------------------------------
             foodSpawnManagerRPC.RPC_Despawn(networkObject);
         }
     }

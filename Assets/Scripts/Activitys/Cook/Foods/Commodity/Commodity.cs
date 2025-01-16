@@ -192,10 +192,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
     {
         FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
         NetworkObject networkObject = GetComponent<LocalView>().NetworkView.GetComponent<NetworkObject>();
-        // ----------------------------- ID ------------------------------------------
         foodSpawnManagerRPC.RPC_CommoditySpawn(commodityID, transform.rotation.eulerAngles, transform.position);
-        // ---------------------------------------------------------------------------
-        Debug.LogError($"mixå„");
         foodSpawnManagerRPC.RPC_Despawn(networkObject);
         foodSpawnManagerRPC.RPC_Despawn(hitObject);
     }
