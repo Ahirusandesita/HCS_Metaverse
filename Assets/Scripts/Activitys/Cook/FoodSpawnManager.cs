@@ -220,9 +220,14 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
         {
             if(item.NetworkView == networkView)
             {
-                Debug.LogError("NeetworkViewˆê’v");
+                Debug.LogError("NetworkViewˆê’v");
                 information = item;
             }
+        }
+        if(information == null)
+        {
+            Debug.LogError("NetworkView‚Ì•sˆê’v");
+            return;
         }
         networkInformations.Remove(information);
         Destroy(information.NetworkView.LocalView.gameObject);
