@@ -8,11 +8,15 @@ public class ItemAsset : ScriptableObject
     [SerializeField] private Sprite itemIcon = default;
     [SerializeField] private string itemText = default;
     [SerializeField] private ItemGenre itemGenre = default;
-    [SerializeField] private GameObject prefab = default;
     [Space(10)]
-    [SerializeField] private bool isDisplayable = true;
-    [SerializeField, InterfaceType(typeof(IDisplayItem)), HideForBool(nameof(isDisplayable), false)]
+    [Header("通常のプレハブ（表示のみのもの）")]
+    [SerializeField] private GameObject prefab = default;
+    [Header("Grabbableなプレハブ")]
+    [SerializeField, InterfaceType(typeof(IDisplayItem))]
     private Object displayItem = default;
+    [Header("Network共有するViewプレハブ")]
+    [SerializeField]
+    private NetworkView networkView = default;
 
     public int ID => itemID;
     public string Name => itemName;
@@ -20,8 +24,8 @@ public class ItemAsset : ScriptableObject
     public string Text => itemText;
     public ItemGenre Genre => itemGenre;
     public GameObject Prefab => prefab;
-    public bool IsDisplayable => isDisplayable;
     public IDisplayItem DisplayItem => displayItem as IDisplayItem;
+    public NetworkView NetworkView => networkView;
 
 #if UNITY_EDITOR
     public void OnValidate()

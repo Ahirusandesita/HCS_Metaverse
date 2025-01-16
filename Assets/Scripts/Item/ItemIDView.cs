@@ -77,7 +77,7 @@ namespace UnityEditor.HCSMeta
 
             foreach (var item in allItemAsset.Items)
             {
-                if (!item.IsDisplayable)
+                if (item.DisplayItem is null)
                 {
                     stringBuilder.Append("NoPrefab : ");
                 }
