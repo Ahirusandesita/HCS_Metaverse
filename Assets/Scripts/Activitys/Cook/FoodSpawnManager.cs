@@ -64,8 +64,8 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
 
     public async void StartSpawnNetworkView(int id, Vector3 position, int index)
     {
-        NetworkItemAsset networkItemAsset = foodItemAsset.GetNetworkItemAssetById(id);
-        NetworkView networkView = await GateOfFusion.Instance.SpawnAsync(networkItemAsset.NetworkView, position, Quaternion.identity);
+        ItemAsset itemAsset = foodItemAsset.GetItemAssetByID(id);
+        NetworkView networkView = await GateOfFusion.Instance.SpawnAsync(itemAsset.NetworkView, position, Quaternion.identity);
         networkInformations.Add(new NetworkInformation(networkView, id));
 
         AllSpawn allSpawnInstance = await GateOfFusion.Instance.SpawnAsync(allSpawn);
@@ -75,8 +75,8 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     }
     public async void SpawnNetworkView(int id, Vector3 position)
     {
-        NetworkItemAsset networkItemAsset = foodItemAsset.GetNetworkItemAssetById(id);
-        NetworkView networkView = await GateOfFusion.Instance.SpawnAsync(networkItemAsset.NetworkView, position, Quaternion.identity);
+        ItemAsset itemAsset = foodItemAsset.GetItemAssetByID(id);
+        NetworkView networkView = await GateOfFusion.Instance.SpawnAsync(itemAsset.NetworkView, position, Quaternion.identity);
         networkInformations.Add(new NetworkInformation(networkView, id));
         AllSpawn allSpawnInstance = await GateOfFusion.Instance.SpawnAsync(allSpawn);
         await allSpawnInstance.Async();
@@ -100,7 +100,6 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     }
     public void StartSpawnLocalView(int id, NetworkView networkView, int index)
     {
-
         GameObject itemObject;
         var position = foodLineup[index].FoodBox.position + Vector3.up;
         var asset = foodItemAsset.GetItemAssetByID(foodLineup[index].FoodID);

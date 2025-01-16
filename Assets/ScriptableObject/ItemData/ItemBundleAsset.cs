@@ -21,38 +21,9 @@ public class ItemBundleAsset : ScriptableObject, IEditorItemBundleAsset
 
     public ItemAsset GetItemAssetByID(int id)
     {
-        return items.Where(item => item.ID == id).First();
-    }
-
-///////////////////////////////////////////////////////////////////////
-
-    //ItemAssetとNetworkViewが別のリストなので、１対１で紐づけした型を返してる。　
-    //なんで、ItemAssetを改良するならこれ変わるもしくは要らない。
-    public NetworkItemAsset GetNetworkItemAssetById(int id)
-    {
-        for(int i = 0; i < items.Count; i++)
-        {
-            if(items[i].ID == id)
-            {
-                return new NetworkItemAsset(items[i], networkViews[i]);
-            }
-        }
-        return null;
-    }
-
-}
-public class NetworkItemAsset
-{
-    public readonly ItemAsset ItemAsset;
-    public readonly NetworkView NetworkView;
-    public NetworkItemAsset(ItemAsset itemAsset,NetworkView networkView)
-    {
-        this.ItemAsset = itemAsset;
-        this.NetworkView = networkView;
+        return items.Where(item => item.ID == id).FirstOrDefault();
     }
 }
-///////////////////////////////////////////////////////////////
-
 
 #if UNITY_EDITOR
 namespace UnityEditor.HCSMeta

@@ -291,13 +291,6 @@ public class GrabbableAutoAttach : EditorWindow
 					}
 					var itemAsset = CreateInstance<ItemAsset>();
 
-					var isDisplayableInfo = itemAsset.GetType()
-						.GetField("isDisplayable", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-					if (isDisplayableInfo != null)
-					{
-						isDisplayableInfo.SetValue(itemAsset, true);
-					}
-
 					var displayItemInfo = itemAsset.GetType()
 						.GetField("displayItem", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 					if (displayItemInfo != null)
