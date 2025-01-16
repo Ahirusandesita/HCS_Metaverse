@@ -99,7 +99,7 @@ public class Throwable : MonoBehaviour
     {
         Debug.LogError($"<color=yellow>Wait前{_thisRigidbody.isKinematic}</color>");
         // 1フレーム待機する　1フレーム待機しないとOVRに消される
-        yield return new WaitForEndOfFrame();
+        yield return null;
 
         // Kinematicを無効にする
         _thisRigidbody.isKinematic = false;
