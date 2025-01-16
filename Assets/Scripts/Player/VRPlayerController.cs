@@ -176,8 +176,11 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 		// ‚»‚Ì‚Ü‚Ü‚ÌWarpPos‚¾‚Æ’n–Ê‚É–„‚Ü‚Á‚¿‚á‚¤‚Ì‚ÅA‘«Œ³‚É—ˆ‚é‚æ‚¤•â³
 		// Õ“Ë”»’è‚ğˆê“I‚ÉOFF‚É‚·‚é
 		characterController.detectCollisions = false;
+		int cacheLayers = characterController.includeLayers;
+		characterController.includeLayers = 0;
 		Vector3 correctedWarpPos = warpPos + Vector3.up * (characterController.height / 2 + characterController.skinWidth);
 		characterController.Move(correctedWarpPos - myTransform.position);
+		characterController.includeLayers = cacheLayers;
 		characterController.detectCollisions = true;
 	}
 
