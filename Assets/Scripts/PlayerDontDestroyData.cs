@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerDontDestroyData : MonoBehaviour
 {
 	private static PlayerDontDestroyData _instance = default;
-	private int _playerID = 2;
+	private int _playerID = 5;
 	private int _money = 0;
 	private string _previousScene = "";
 	private readonly object _moneyLockObject = new object();

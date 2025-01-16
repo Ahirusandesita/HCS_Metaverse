@@ -14,8 +14,8 @@ public class WebAPIRequester
 	private const string DETABASE_PATH_SHOP_ENTRY = DETABASE_PATH_BASE + "shop/entry";
 	private const string DETABASE_PATH_SHOP_BUY = DETABASE_PATH_BASE + "shop/buy";
 	private const string DETABASE_PATH_MYROOM_ENTRY = DETABASE_PATH_BASE + "myroom/entry";
-	private const string DETABASE_PATH_USER_LOCATION = DETABASE_PATH_BASE + "user/location";
-	private const string DETABASE_PATH_USER_LOCATION_CATCH = DETABASE_PATH_BASE + "user/location/catch";
+	private const string DETABASE_PATH_USER_LOCATION = DETABASE_PATH_BASE + "location";
+	private const string DETABASE_PATH_USER_LOCATION_CATCH = DETABASE_PATH_BASE + "location/catch";
 	private const string DETABASE_PATH_VENDINGMACHINE_ENTRY = DETABASE_PATH_BASE + "salesmachine";
 	private const string DETABASE_PATH_VENDINGMACHINE_BUY = DETABASE_PATH_BASE + "salesmachine/buy";
 	private const string CONTENT_TYPE = "application/json";
@@ -183,9 +183,8 @@ public class WebAPIRequester
 	/// <br>・ロケーション名</br></returns>
 	public async UniTask<OnCatchUserLocationData> GetUserLocation()
 	{
-		using var request = UnityWebRequest.Post(DETABASE_PATH_USER_LOCATION_CATCH, new WWWForm());
+		using var request = UnityWebRequest.Post(DETABASE_PATH_USER_LOCATION_CATCH,new WWWForm());
 		await request.SendWebRequest();
-
 		switch (request.result)
 		{
 			case Result.InProgress:
@@ -194,7 +193,6 @@ public class WebAPIRequester
 			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
 				throw new APIConnectException(request.error);
 		}
-
 		var onCatchUserLocationData = JsonUtility.FromJson<OnCatchUserLocationData>(request.downloadHandler.text);
 		return onCatchUserLocationData;
 	}
@@ -399,18 +397,19 @@ public class WebAPIRequester
 		}
 
 		[SerializeField] private Body body = default;
-		public Body GetBody => body;
+		public IReadOnlyList<UserLocationData> SessionList =>body.SessionList;
+
 
 		[System.Serializable]
 		public class Body
 		{
-			public Body(List<UserLocationData> userLocationDataList)
+			public Body(List<UserLocationData> sessionList)
 			{
-				this.userLocationDataList = userLocationDataList;
+				this.sessionList = sessionList;
 			}
 
-			[SerializeField] private List<UserLocationData> userLocationDataList = default;
-			public IReadOnlyList<UserLocationData> UserLoacationDataList => userLocationDataList;
+			[SerializeField] private List<UserLocationData> sessionList = default;
+			public IReadOnlyList<UserLocationData> SessionList => sessionList;
 		}
 	}
 	#endregion
