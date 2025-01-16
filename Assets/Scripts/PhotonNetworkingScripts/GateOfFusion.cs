@@ -15,7 +15,7 @@ public class GateOfFusion
 	public bool IsActivityConnected => MasterServer.IsActivityConnected;
 	public event System.Action OnConnect;
 	public event System.Action OnActivityConnected;
-	
+
 
 	public GateOfFusion()
 	{
@@ -69,7 +69,7 @@ public class GateOfFusion
 		}
 		PlayerRef stateAuthorityPlayerRef = networkObject.StateAuthority;
 		MasterServer.SessionRPCManager.Rpc_GrabStateAuthorityChanged(networkObject);
-		MasterServer.SessionRPCManager.Rpc_ReleaseStateAuthority(stateAuthorityPlayerRef,networkObject);
+		MasterServer.SessionRPCManager.Rpc_ReleaseStateAuthority(stateAuthorityPlayerRef, networkObject);
 		await UniTask.WaitUntil(() => networkObject.StateAuthority == PlayerRef.None);
 		//XKumaDebugSystem.LogWarning("grab待機終了", KumaDebugColor.WarningColor);
 		networkObject.RequestStateAuthority();
@@ -197,7 +197,10 @@ public class GateOfFusion
 		await MasterServer.Disconnect();
 		XKumaDebugSystem.LogWarning($"切断した", KumaDebugColor.MessageColor);
 		await SceneManager.LoadSceneAsync(sceneName);
-		PlayerDontDestroyData.Instance.PreviousScene = sceneName;
+		if (PlayerDontDestroyData.Instance != null)
+		{
+			PlayerDontDestroyData.Instance.PreviousScene = sceneName;
+		}
 		XKumaDebugSystem.LogWarning($"シーンを読み込んだ");
 		await MasterServer.JoinOrCreateSession(sessionName, localPlayerRef);
 		XKumaDebugSystem.LogWarning($"自分がセッション移動した", KumaDebugColor.MessageColor);
@@ -210,7 +213,7 @@ public class GateOfFusion
 			await UniTask.WaitUntil(() => NetworkRunner.ActivePlayers.Contains(roomPlayer));
 		}
 		XKumaDebugSystem.LogWarning("全員到着した");
-		
+
 
 		MasterServer.SessionRPCManager.Rpc_RoomStandbyOn();
 		//if (!NetworkRunner.IsSharedModeMasterClient) { return; }
