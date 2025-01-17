@@ -130,6 +130,6 @@ public class OrderSystem : MonoBehaviour
     private IEnumerator Co()
     {
         yield return new WaitForSeconds(2f);
-        OrderTicket orderTicket = Order(Random.Range(0, orderAsset.OrderDetailInformations.Count), Random.Range(10f, 20f), OrderWaitingType.Manifest);
+        OrderTicket orderTicket = Order(Random.Range(0, orderAsset.OrderDetailInformations.Count), 60f, OrderWaitingType.Manifest);
     }
 }
