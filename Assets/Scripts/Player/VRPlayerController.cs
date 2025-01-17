@@ -176,12 +176,11 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 		// そのままのWarpPosだと地面に埋まっちゃうので、足元に来るよう補正
 		// 衝突判定を一時的にOFFにするために、最後にその場ワープ
 		characterController.enabled = false;
-		Vector3 moveDirectionNormal = (warpPos - transform.position).normalized;
         Vector3 correctedWarpPos = warpPos + Vector3.up * (characterController.height / 2 + characterController.skinWidth);
 		transform.position = correctedWarpPos;
 		characterController.enabled = true;
-		// ワープ後に衝突判定が欲しいため、ほんの少しだけベクトルを与える
-		characterController.Move(moveDirectionNormal * 0.01f);
+		// ワープ後に衝突判定が欲しいため、その場に移動
+		characterController.Move(Vector3.zero);
 	}
 
 	/// <summary>
