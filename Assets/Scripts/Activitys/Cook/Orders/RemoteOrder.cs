@@ -15,10 +15,10 @@ public class RemoteOrder : NetworkBehaviour, IPlayerJoined
     }
 
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
-    public void RPC_Submision(int index)
+    public void RPC_Submision(int index, int chainValue)
     {
         orderManager = GameObject.FindObjectOfType<OrderManager>();
-        orderManager.RemoteSubmision(index);
+        orderManager.RemoteSubmision(index, chainValue);
     }
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RPC_Initialize()
@@ -43,7 +43,7 @@ public class RemoteOrder : NetworkBehaviour, IPlayerJoined
         }
     }
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
-    public void RPC_Order([RpcTarget]PlayerRef player,int index, float orderWaitingTime, int orderWaitingType)
+    public void RPC_Order([RpcTarget] PlayerRef player, int index, float orderWaitingTime, int orderWaitingType)
     {
         customer = GameObject.FindObjectOfType<OrderSystem>();
         customer.RemoteOrder(index, orderWaitingTime, orderWaitingType);
