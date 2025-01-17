@@ -15,6 +15,11 @@ public static class Inputter
         /// <br>移動、転回、ジャンプ、Signed（オブジェクトの転回や上昇下降）、設置</br>
         /// </summary>
         Placing,
+        /// <summary>
+        /// OverrayCanvas用の入力バインド
+        /// <br>移動、転回、ジャンプ、スプリント</br>
+        /// </summary>
+        UIControll,
 	}
 
     private static PlayerInputActions s_inputActions = default;
@@ -59,6 +64,14 @@ public static class Inputter
                 UI.Disable();
                 VRHead.Disable();
 				break;
+            case InputActionPreset.UIControll:
+                Player.Enable();
+                Player.Interact.Disable();
+
+                UI.Disable();
+                VRHead.Disable();
+                PlacingMode.Disable();
+                break;
 			default:
 				break;
 		}
