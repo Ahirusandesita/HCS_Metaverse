@@ -94,7 +94,6 @@ public class WebAPIRequester
 			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
 				throw new APIConnectException(request.error);
 		}
-
 		var onVMEntryData = JsonUtility.FromJson<OnVMEntryData>(request.downloadHandler.text);
 		return onVMEntryData;
 	}
@@ -291,7 +290,8 @@ public class WebAPIRequester
 
 		[SerializeField] private Body body = default;
 
-		public Body GetBody => body;
+		public IReadOnlyList<ItemLineup> ItemList => body.ItemList;
+		public bool Active => body.Active;
 
 		[System.Serializable]
 		public class Body
@@ -363,7 +363,11 @@ public class WebAPIRequester
 		}
 
 		[SerializeField] private Body body = default;
-		public Body GetBody => body;
+		public IReadOnlyList<MyRoomObject> ObjectList => body.ObjectList;
+		/// <summary>
+		/// é©îÃã@Ç™ë∂ç›ÇµÇ»Ç¢èÍçáÇÕ-1
+		/// </summary>
+		public int ShopID => body.ShopID;
 
 		[System.Serializable]
 		public class Body
@@ -533,7 +537,6 @@ public class WebAPIRequester
 		{
 			get
 			{
-				XDebug.LogWarning(positionX + ":" + positionY + ":" + positionZ);
 				return new Vector3(positionX, positionY, positionZ);
 			}
 		}
