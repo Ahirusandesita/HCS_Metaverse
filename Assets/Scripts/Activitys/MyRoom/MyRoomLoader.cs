@@ -16,26 +16,27 @@ public class MyRoomLoader : MonoBehaviour
 	public async UniTask Load()
 	{
 		WebAPIRequester requester = new WebAPIRequester();
-		for(int i = 1;i <= 10 ; i++)
-		{
-			MyRoomEntryData myRoomEntryDataa = await requester.PostMyRoomEntry(i);
-			XDebug.LogWarning(myRoomEntryDataa.GetBody.ShopID);
-		}
 		MyRoomEntryData myRoomEntryData = await requester.PostMyRoomEntry(PlayerData.PlayerID);
-		XDebug.LogWarning(myRoomEntryData.GetBody.ObjectList[0].HousingID);
-		foreach(MyRoomObject myRoomObject in myRoomEntryData.GetBody.ObjectList)
+		foreach(MyRoomObject myRoomObject in myRoomEntryData.ObjectList)
 		{
 			SetRoomObject(myRoomObject);
 		}
-		int shopID = myRoomEntryData.GetBody.ShopID;
+		int shopID = myRoomEntryData.ShopID;
 		//-1‚Í•”‰®‚ÉŽ©”Ì‹@‚ª‚È‚¢ê‡
 		if(shopID == -1) { return; }
-		FindObjectOfType<VendingMachineUIManager>().Initialize(shopID).Forget();
+		FindObjectOfType<VendingMachineUIManager>().Initialize(shopID,PlayerData.PlayerID).Forget();
+	}
+
+	public async UniTask UnLoad()
+	{
+
 	}
 
 	private void SetRoomObject(MyRoomObject myRoomObject)
 	{
-		GameObject prefab = _itemBundleAsset.GetItemAssetByID(myRoomObject.ItemID).DisplayItem.gameObject;
+		myRoomObject.ItemID.PrintWarning();
+		ItemAsset asset = _itemBundleAsset.GetItemAssetByID(myRoomObject.ItemID);
+		GameObject prefab =	asset.DisplayItem.gameObject;
 		
 		GameObject instance = Instantiate(
 			prefab,

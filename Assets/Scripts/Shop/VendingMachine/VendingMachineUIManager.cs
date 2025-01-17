@@ -15,22 +15,19 @@ public class VendingMachineUIManager : MonoBehaviour
 	[SerializeField]
 	private RectTransform _startRectTransform;
 	[SerializeField]
-	private MeshRenderer _meshRenderer;
+	private Transform _viewTransform;
 	[SerializeField]
 	private int _rowMax = 3;
-	private int _shopID = default;
-	private bool _isActive;
-
+	private int _shopID = -1;
+	private int _roomAdminID = -1;
 	private Dictionary<int, VendingMachineUI> _vendingUIs = new();
+	private PlayerDontDestroyData PlayerData => PlayerDontDestroyData.Instance;
 
-	public async UniTaskVoid Initialize(int shopID)
+	public async UniTaskVoid Initialize(int shopID,int roomAdminID)
 	{
 		_shopID = shopID;
+		_roomAdminID = roomAdminID;
 		await ShopUpdate();
-	}
-	private void Start()
-	{
-		Initialize(0).Forget();
 	}
 
 	private async UniTask ShopUpdate()
@@ -39,21 +36,59 @@ public class VendingMachineUIManager : MonoBehaviour
 
 		WebAPIRequester.OnVMEntryData data = await webAPIRequester.PostVMEntry(_shopID);
 
-		if (data.GetBody.Active)
+		//if (data.Active)
+		//{
+		//	Active(data);
+		//}
+		//else
+		//{
+		//	Inactive();
+		//}
+		Active(data);
+		if (IsAdminPlayer(PlayerData.PlayerID))
 		{
-			Active(data);
-			
+			AddAdminManuButton();
 		}
-		else
-		{
-			Inactive();
-			return;
-		}
+	}
 
+	private bool IsAdminPlayer(int playerID)
+	{
+		return _roomAdminID == playerID;
+	}
+
+	private void Active(WebAPIRequester.OnVMEntryData data)
+	{
+		_viewTransform.GetComponentInChildren<Renderer>().material.color = Color.white;
+
+		foreach (WebAPIRequester.ItemLineup lineup in data.ItemList)
+		{
+			int discountedPrice = Mathf.FloorToInt(lineup.Price * (1 - lineup.Discount));
+			AddBuyButtonUI(lineup.ItemID, discountedPrice);
+			UpdateUI(lineup.ItemID, lineup.Stock);
+		}
+	}
+
+	private void Inactive()
+	{
+		_viewTransform.GetComponentInChildren<Renderer>().material.color = Color.black;
+		foreach (VendingMachineUI uI in _vendingUIs.Values)
+		{
+			Destroy(uI);
+		}
+		_vendingUIs.Clear();
+	}
+
+	private void AddAdminManuButton()
+	{
 
 	}
 
-	private void AddVendingMachineUI(int id, int discountedPrice)
+	private void OpenAdminManu()
+	{
+
+	}
+
+	private void AddBuyButtonUI(int id, int discountedPrice)
 	{
 		VendingMachineUI ui = Instantiate(_vendingMachineUIPrefab, _parent);
 		RectTransform rectTransform = ui.transform as RectTransform;
@@ -65,6 +100,7 @@ public class VendingMachineUIManager : MonoBehaviour
 				Vector3.right * (prefabSize.x * (productCount % _rowMax)) +
 				Vector3.down * (prefabSize.y * (productCount / _rowMax));
 		ItemAsset itemAsset = _itemBundleAsset.GetItemAssetByID(id);
+
 		ui.Init(id
 			, discountedPrice
 			, this
@@ -75,10 +111,8 @@ public class VendingMachineUIManager : MonoBehaviour
 
 	public void UpdateUI(int id, int stock)
 	{
-		XKumaDebugSystem.LogWarning($"{id}:{stock}");
 		if (stock <= 0)
 		{
-			XKumaDebugSystem.LogWarning($"{id}:hide");
 			_vendingUIs[id].SoldOut();
 		}
 	}
@@ -99,24 +133,6 @@ public class VendingMachineUIManager : MonoBehaviour
 		//•¡””ƒ‚¢‚Í–¢ŽÀ‘•‚Ì‚à‚Ì‚Æ‚·‚é
 		UpdateUI(id, result.GetBody.StockData[0].Amount);
 	}
-	private void Active(WebAPIRequester.OnVMEntryData data)
-	{
-		_meshRenderer.material.color = Color.white;
-		foreach (WebAPIRequester.ItemLineup lineup in data.GetBody.ItemList)
-		{
-			int discountedPrice = Mathf.FloorToInt(lineup.Price * (1 - lineup.Discount));
-			AddVendingMachineUI(lineup.ItemID, discountedPrice);
-			UpdateUI(lineup.ItemID, lineup.Stock);
-		}
-	}
 
-	private void Inactive()
-	{
-		_meshRenderer.material.color = Color.black;
-		foreach (VendingMachineUI uI in _vendingUIs.Values)
-		{
-			Destroy(uI);
-		}
-		_vendingUIs.Clear();
-	}
+
 }
