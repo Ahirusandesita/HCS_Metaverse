@@ -147,6 +147,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
                 customers[i] = null;
                 PackOrders();
 
+                Debug.LogError($"index{i}");
                 if (i == 0)
                 {
                     chainValue++;

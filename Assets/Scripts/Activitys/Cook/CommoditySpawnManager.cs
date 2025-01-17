@@ -10,6 +10,8 @@ public class CommoditySpawnManager : MonoBehaviour
     private AllCommodityAsset allCommodityAsset;
     [SerializeField]
     FoodSpawnManagerRPC rpc;
+    [SerializeField]
+    private AllSpawn allSpawn;
 
     private List<NetworkInformation> networkInformations = new List<NetworkInformation>();
 
@@ -31,6 +33,10 @@ public class CommoditySpawnManager : MonoBehaviour
         FindObjectOfType<MachineIDManager>().GetMachine(machineID).UnSetProcessingIngrodient();
 
         localView.NetworkViewInject(networkView);
+
+        AllSpawn instance = await GateOfFusion.Instance.SpawnAsync(allSpawn);
+        await instance.Async();
+        GateOfFusion.Instance.Despawn(instance);
         rpc.RPC_CommodityLocalSpawn(index, rotation, position, networkView.GetComponent<NetworkObject>(), machineID);
         networkInformations.Add(new NetworkInformation(networkView, index));
     }
@@ -50,8 +56,10 @@ public class CommoditySpawnManager : MonoBehaviour
         NetworkView networkView = await GateOfFusion.Instance.SpawnAsync(allCommodityAsset.NetworkViews[index], position, Quaternion.Euler(rotation));
         LocalView localView = Instantiate(allCommodityAsset.Commodities[index], position, Quaternion.Euler(rotation)).GetComponent<LocalView>();
         //localView.GetComponent<LocalIngrodients>().PutMachine(machineID);
-        Debug.LogError($"spawn‚¿‚ã‚¤");
         localView.NetworkViewInject(networkView);
+        AllSpawn instance = await GateOfFusion.Instance.SpawnAsync(allSpawn);
+        await instance.Async();
+        GateOfFusion.Instance.Despawn(instance);
         rpc.RPC_CommodityLocalSpawn(index, rotation, position, networkView.GetComponent<NetworkObject>());
         networkInformations.Add(new NetworkInformation(networkView, index));
     }
@@ -100,7 +108,6 @@ public class CommoditySpawnManager : MonoBehaviour
         {
             if (item.NetworkView == networkView)
             {
-                Debug.LogError("NetworkViewˆê’v");
                 information = item;
             }
         }
