@@ -147,7 +147,6 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
                 customers[i] = null;
                 PackOrders();
 
-                Debug.LogError($"index{i}");
                 if (i == 0)
                 {
                     chainValue++;
@@ -162,8 +161,6 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
                 break;
             }
         }
-
-        Debug.LogError("Despawn Commodity");
         //GateOfFusion.Instance.NetworkRunner.Despawn(commodity.GetComponent<Fusion.NetworkObject>());
 
 
