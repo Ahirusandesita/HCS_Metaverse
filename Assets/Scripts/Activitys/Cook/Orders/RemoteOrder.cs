@@ -31,7 +31,7 @@ public class RemoteOrder : NetworkBehaviour, IPlayerJoined
     public void RPC_Cancel(int index)
     {
         orderManager = GameObject.FindObjectOfType<OrderManager>();
-        orderManager.RemoteSubmision(index);
+        orderManager.Cancel(index);
     }
 
     public void PlayerJoined(PlayerRef player)
