@@ -15,7 +15,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     private OrderSystem customer;
 
     private IScoreCalculator scoreCalculator;
-
+    private int chainValue = 0;
     public class NullOrderable : IOrderable
     {
         public void Order(CommodityAsset commodityAsset, CustomerInformation customer)
@@ -147,9 +147,17 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
                 customers[i] = null;
                 PackOrders();
 
+                if (i == 0)
+                {
+                    chainValue++;
+                }
+                else
+                {
+                    chainValue = 0;
+                }
                 //Score
-                scoreCalculator.GetScoreCalculator.ScoreCalucuration(commodity.CommodityAsset.Score, 1);
-                instance.RPC_Submision(i);
+                scoreCalculator.GetScoreCalculator.ScoreCalucuration(commodity.CommodityAsset.Score, chainValue);
+                instance.RPC_Submision(i, chainValue);
                 break;
             }
         }
@@ -172,9 +180,10 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
         OnSubmission?.Invoke(customerInformation);
     }
 
-    public void RemoteSubmision(int index)
+    public void RemoteSubmision(int index, int chainValue)
     {
-        scoreCalculator.GetScoreCalculator.ScoreCalucuration(commodityAssets[index].Score, 1);
+        this.chainValue = chainValue;
+        scoreCalculator.GetScoreCalculator.ScoreCalucuration(commodityAssets[index].Score, chainValue);
         commodityAssets[index] = null;
         customers[index] = null;
         PackOrders();

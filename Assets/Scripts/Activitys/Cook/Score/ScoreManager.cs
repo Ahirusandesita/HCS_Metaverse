@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UniRx;
-
+using TMPro;
 public class ScoreManager : MonoBehaviour, IScoreProperty, IScoreCalculator
 {
     [SerializeField, Tooltip("スコアを表示するためのText")]
     private Text _scoreText = default;
+
+    [SerializeField]
+    private TextMeshProUGUI chainText;
 
     // ScoreCalcuratorのインスタンス保持用
     private ScoreCalculator _scoreCalculator = default;
@@ -20,6 +23,7 @@ public class ScoreManager : MonoBehaviour, IScoreProperty, IScoreCalculator
 
     // 現在のスコアを設定するためのプロパティ
     public int ScoreSetter { get { return _nowScore.Value; } set { _nowScore.Value = value; } }
+    private int chainValue = 0;
 
     // スコア表示の固定部分
     private const string SCORE_PREAMBLE = "SCORE : ";
@@ -49,5 +53,13 @@ public class ScoreManager : MonoBehaviour, IScoreProperty, IScoreCalculator
     {
         // 現在のスコアを表示する
         _scoreText.text = SCORE_PREAMBLE + _nowScore.Value.ToString();
+    }
+    public int ChainValue 
+    { 
+        set 
+        {
+            chainValue = value;
+            chainText.text = chainValue.ToString();
+        }
     }
 }

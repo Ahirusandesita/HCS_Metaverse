@@ -7,4 +7,5 @@ public interface IScoreProperty
     /// </summary>
     // åªç›ÇÃÉXÉRÉA
     int ScoreSetter { get;  set; }
+    int ChainValue { set; }
 }
