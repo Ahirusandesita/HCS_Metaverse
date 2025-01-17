@@ -53,6 +53,7 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
     private StateAuthorityData stateAuthority;
 
     private bool isGrab = false;
+    public bool IsGrab => isGrab;
     private void Awake()
     {
         this.commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
