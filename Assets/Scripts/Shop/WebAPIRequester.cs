@@ -14,6 +14,7 @@ public class WebAPIRequester
 	private const string DETABASE_PATH_SHOP_ENTRY = DETABASE_PATH_BASE + "shop/entry";
 	private const string DETABASE_PATH_SHOP_BUY = DETABASE_PATH_BASE + "shop/buy";
 	private const string DETABASE_PATH_MYROOM_ENTRY = DETABASE_PATH_BASE + "myroom/entry";
+	private const string DETABASE_PATH_MYROOM_SAVE = DETABASE_PATH_BASE + "myroom/save";
 	private const string DETABASE_PATH_USER_LOCATION = DETABASE_PATH_BASE + "location";
 	private const string DETABASE_PATH_USER_LOCATION_CATCH = DETABASE_PATH_BASE + "location/catch";
 	private const string DETABASE_PATH_VENDINGMACHINE_ENTRY = DETABASE_PATH_BASE + "salesmachine";
@@ -151,6 +152,27 @@ public class WebAPIRequester
 		}
 		var onMyroomEntryData = JsonUtility.FromJson<OnMyRoomEntryData>(request.downloadHandler.text);
 		return onMyroomEntryData;
+	}
+
+	/// <summary>
+	/// マイルーム退室時のAPI通信
+	/// </summary>
+	public async UniTask PostMyRoomSave(List<MyRoomObjectSaved> myRoomObjectSaveds)
+	{
+		var sendMyRoomSaveData = new SendMyRoomSaveData(myRoomObjectSaveds);
+		string jsonData = JsonUtility.ToJson(sendMyRoomSaveData);
+
+		using var request = UnityWebRequest.Post(DETABASE_PATH_MYROOM_SAVE, jsonData, CONTENT_TYPE);
+		await request.SendWebRequest();
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				XDebug.LogError(request.result, "red");
+				throw new APIConnectException(request.error);
+		}
 	}
 
 	/// <summary>
@@ -435,10 +457,20 @@ public class WebAPIRequester
 		[SerializeField] private List<ItemIDAmountPair> itemList = default;
 		[SerializeField] private int shopId = default;
 		[SerializeField] public int userId = default;
+	}
 
-		public IReadOnlyList<ItemIDAmountPair> ItemList => itemList;
-		public int ShopID => shopId;
-		public int UserID => userId;
+	/// <summary>
+	/// MyRoom情報の送信データ（内部パースに使用）
+	/// </summary>
+	[System.Serializable]
+	private class SendMyRoomSaveData
+	{
+		public SendMyRoomSaveData(List<MyRoomObjectSaved> objectList)
+		{
+			this.objectList = objectList;
+		}
+
+		[SerializeField] private List<MyRoomObjectSaved> objectList = default;
 	}
 	#endregion
 
@@ -541,6 +573,52 @@ public class WebAPIRequester
 			}
 		}
 		public Vector3 EulerRotation => new Vector3(directionX, directionY, directionZ);
+	}
+
+	/// <summary>
+	/// ・アイテムID
+	/// <br>・ハウジングID</br>
+	/// <br>・絶対座標</br>
+	/// <br>・EulerRotation</br>
+	/// <br>・削除フラグ</br>
+	/// </summary>
+	[System.Serializable]
+	public struct MyRoomObjectSaved
+	{
+		public MyRoomObjectSaved(int itemId, int housingId, Vector3 position, Vector3 eulerRotation, bool deleteFlg)
+		{
+			this.itemId = itemId;
+			this.housingId = housingId;
+			positionX = position.x;
+			positionY = position.y;
+			positionZ = position.z;
+			directionX = eulerRotation.x;
+			directionY = eulerRotation.y;
+			directionZ = eulerRotation.z;
+			this.deleteFlg = deleteFlg;
+		}
+
+		[SerializeField] private int itemId;
+		[SerializeField] private int housingId;
+		[SerializeField] private float positionX;
+		[SerializeField] private float positionY;
+		[SerializeField] private float positionZ;
+		[SerializeField] private float directionX;
+		[SerializeField] private float directionY;
+		[SerializeField] private float directionZ;
+		[SerializeField] private bool deleteFlg;
+
+		public int ItemID => itemId;
+		public int HousingID => housingId;
+		public Vector3 Position
+		{
+			get
+			{
+				return new Vector3(positionX, positionY, positionZ);
+			}
+		}
+		public Vector3 EulerRotation => new Vector3(directionX, directionY, directionZ);
+		public bool DeleteFlg => deleteFlg;
 	}
 	#endregion
 
