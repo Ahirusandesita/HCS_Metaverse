@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using System.Reflection;
 using System.IO;
+using Fusion;
 
 public class GrabbableAutoAttach : EditorWindow
 {
@@ -19,6 +20,8 @@ public class GrabbableAutoAttach : EditorWindow
 	[SerializeField] private int selectedIndex = default;
 	[SerializeField] private bool createItemAsset = default;
 	[SerializeField] private string folderName = default;
+	[SerializeField] private bool createNetworkViewPrefab = default;
+	[SerializeField] private string prefabFolderName = default;
 
 	private SerializedObject target = default;
 	private Vector2 scrollPosition = default;
@@ -78,6 +81,9 @@ public class GrabbableAutoAttach : EditorWindow
 		folderName = EditorGUILayout.TextField("Folder Name", folderName);
 
 		EditorGUILayout.Space(16);
+
+		createNetworkViewPrefab = EditorGUILayout.Toggle("Create NetworkView Prefab", createNetworkViewPrefab);
+		prefabFolderName = EditorGUILayout.TextField("Prefab Folder Name", prefabFolderName);
 
 		// Button押下で自動アタッチ実行
 		if (GUILayout.Button("Auto Attach"))
@@ -284,12 +290,16 @@ public class GrabbableAutoAttach : EditorWindow
 							.Select(AssetDatabase.LoadAssetAtPath<ItemAsset>)
 							.Where(asset => asset.name == prefab.name)
 							.FirstOrDefault();
+
+					ItemAsset itemAsset;
 					if (existingAsset != null)
 					{
-						XDebug.Log($"すでに {nameof(existingAsset.Name)} のアセットは存在しているため、生成がスキップされました。", "yellow");
-						continue;
+						itemAsset = existingAsset;
 					}
-					var itemAsset = CreateInstance<ItemAsset>();
+					else
+					{
+						itemAsset = CreateInstance<ItemAsset>();
+					}
 
 					var displayItemInfo = itemAsset.GetType()
 						.GetField("displayItem", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
@@ -308,10 +318,43 @@ public class GrabbableAutoAttach : EditorWindow
 						itemNameInfo.SetValue(itemAsset, prefab.name);
 					}
 
-					string fileName = $"{prefab.name}.asset";
-					string path = $"Assets/ScriptableObject/ItemData/{folderName}";
+					if (createNetworkViewPrefab)
+					{
+						if (string.IsNullOrEmpty(prefabFolderName))
+						{
+							XDebug.Log($"{nameof(prefabFolderName)} が入力されていません。", "yellow");
+							break;
+						}
 
-					AssetDatabase.CreateAsset(itemAsset, Path.Combine(path, fileName));
+						GameObject tmpObject = EditorUtility.CreateGameObjectWithHideFlags(
+							$"Network_{prefab.name}",
+							HideFlags.HideInHierarchy,
+							typeof(MeshFilter), typeof(MeshRenderer), typeof(NetworkObject), typeof(NetworkTransform), typeof(NetworkView)
+							);
+
+						tmpObject.GetComponent<MeshFilter>().sharedMesh = prefab.GetComponent<MeshFilter>().sharedMesh;
+						tmpObject.GetComponent<MeshRenderer>().sharedMaterials = prefab.GetComponent<MeshRenderer>().sharedMaterials;
+						tmpObject.GetComponent<NetworkObject>().Flags = NetworkObjectFlags.MasterClientObject;
+						tmpObject.GetComponent<NetworkTransform>().AutoUpdateAreaOfInterestOverride = true;
+
+						GameObject networkViewPrefab = PrefabUtility.CreatePrefab($"Assets/Prefabs/NetworkView/{prefabFolderName}/Network_{prefab.name}.prefab", tmpObject);
+						DestroyImmediate(tmpObject);
+
+						var networkViewInfo = itemAsset.GetType()
+							.GetField("networkView", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+						if (networkViewInfo != null)
+						{
+							networkViewInfo.SetValue(itemAsset, networkViewPrefab.GetComponent<NetworkView>());
+						}
+					}
+
+					if (existingAsset == null)
+					{
+						string fileName = $"{prefab.name}.asset";
+						string path = $"Assets/ScriptableObject/ItemData/{folderName}";
+
+						AssetDatabase.CreateAsset(itemAsset, Path.Combine(path, fileName));
+					}
 				}
 
 				// Colliderが付いていなかったときに通知する
