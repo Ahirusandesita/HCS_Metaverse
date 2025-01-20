@@ -318,6 +318,13 @@ public class GrabbableAutoAttach : EditorWindow
 						itemNameInfo.SetValue(itemAsset, prefab.name);
 					}
 
+					var genreInfo = itemAsset.GetType()
+						.GetField("itemGenre", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+					if (genreInfo != null)
+					{
+						genreInfo.SetValue(itemAsset, ItemGenre.Interior);
+					}
+
 					if (createNetworkViewPrefab)
 					{
 						if (string.IsNullOrEmpty(prefabFolderName))

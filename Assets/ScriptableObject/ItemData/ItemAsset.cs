@@ -3,7 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ItemData", menuName = "ScriptableObjects/ItemAsset/Item")]
 public class ItemAsset : ScriptableObject
 {
-    [SerializeField] private int itemID = default;
+    [SerializeField, Hide] private int itemID = default;
     [SerializeField] private string itemName = default;
     [SerializeField] private Sprite itemIcon = default;
     [SerializeField] private string itemText = default;
@@ -40,10 +40,10 @@ public class ItemAsset : ScriptableObject
 
 public enum ItemGenre
 {
-    Interior,
-    Costume,
-    Usable,
-    Food,
+    Interior = 1,
+    Costume = 2,
+    Usable = 3,
+    Food = 4,
 }
 
 #if UNITY_EDITOR
