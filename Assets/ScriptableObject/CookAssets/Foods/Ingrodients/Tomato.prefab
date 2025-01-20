@@ -300,7 +300,6 @@ GameObject:
   - component: {fileID: -2895489745502121024}
   - component: {fileID: -2027565131169706859}
   - component: {fileID: -5098682456142031638}
-  - component: {fileID: -2468888891693497830}
   m_Layer: 7
   m_Name: Tomato
   m_TagString: Untagged
@@ -486,20 +485,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   meshRenderers:
   - {fileID: 3806334747972007016}
---- !u!114 &-2468888891693497830
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4358447038765927267}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bca3e66e317f34b4a9eaae957e7c2748, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  commodityAsset: {fileID: 11400000, guid: dbb1af87c5a4f164d8aed7297d99341f, type: 2}
-  stateAuthority: {fileID: 0}
 --- !u!1 &4644511373556415613
 GameObject:
   m_ObjectHideFlags: 0
