@@ -1,4 +1,5 @@
 using Fusion;
+using UnityEngine;
 using Cysharp.Threading.Tasks;
 
 public class NetworkIngrodients : NetworkBehaviour
@@ -15,13 +16,13 @@ public class NetworkIngrodients : NetworkBehaviour
     }
 
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
-    public async void RPC_PutIngrodients(int machineID)
+    public void RPC_PutIngrodients(int machineID)
     {
-        await UniTask.WaitUntil(() => GateOfFusion.Instance.IsActivityConnected);
-
-        if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        if (GateOfFusion.Instance.IsActivityConnected && GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
             _hitMachine = FindObjectOfType<MachineIDManager>().GetMachine(machineID);
+
+            Debug.LogError($"Put:NetworkView = {_networkView}");
 
             _networkView.LocalView.GetComponent<LocalIngrodients>().RPC_PutMachine(machineID);
         }
