@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5905761701702463838}
   - component: {fileID: 5311999812161824448}
   - component: {fileID: -4703797531657372958}
+  - component: {fileID: -5845671024179479443}
   m_Layer: 0
   m_Name: NetworkTomato
   m_TagString: Untagged
@@ -58,6 +59,7 @@ MonoBehaviour:
   - {fileID: 5905761701702463838}
   - {fileID: 5311999812161824448}
   - {fileID: -4703797531657372958}
+  - {fileID: -5845671024179479443}
 --- !u!114 &2896036394294955063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,6 +113,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _OneGrab: 0
+--- !u!114 &-5845671024179479443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1665663529392589167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d1181dabac941e4ea98dffcc651800c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3550519213703366873
 PrefabInstance:
   m_ObjectHideFlags: 0
