@@ -80,7 +80,8 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     public async void SpawnNetworkView(int id, Vector3 position)
     {
         ItemAsset itemAsset = foodItemAsset.GetItemAssetByID(id);
-        NetworkView networkView = await GateOfFusion.Instance.SpawnAsync(itemAsset.NetworkView, position, Quaternion.identity);
+        NetworkObject networkObject = await GateOfFusion.Instance.NetworkRunner.SpawnAsync(itemAsset.NetworkView, position, Quaternion.identity);
+        NetworkView networkView = networkObject.GetComponent<NetworkView>();
         networkInformations.Add(new NetworkInformation(networkView, id));
         AllSpawn allSpawnInstance = await GateOfFusion.Instance.SpawnAsync(allSpawn);
         await allSpawnInstance.Async();
