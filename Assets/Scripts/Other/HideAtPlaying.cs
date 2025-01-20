@@ -15,3 +15,15 @@ public class HideAtPlaying : MultiPropertyAttribute
     }
 #endif
 }
+
+public class Hide : MultiPropertyAttribute
+{
+#if UNITY_EDITOR
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        EditorGUI.BeginDisabledGroup(true);
+        EditorGUI.PropertyField(position, property, label, true);
+        EditorGUI.EndDisabledGroup();
+    }
+#endif
+}
