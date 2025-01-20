@@ -355,7 +355,7 @@ public class GrabbableAutoAttach : EditorWindow
 						}
 					}
 
-					AssetDatabase.SaveAssets();
+					EditorUtility.SetDirty(itemAsset);
 
 					if (existingAsset == null)
 					{

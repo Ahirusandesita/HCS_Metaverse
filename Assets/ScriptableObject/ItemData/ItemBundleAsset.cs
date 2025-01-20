@@ -106,10 +106,10 @@ namespace UnityEditor.HCSMeta
 								throw new System.InvalidOperationException();
 						}
 
+						EditorUtility.SetDirty(itemAsset);
 					}
 				}
 
-				AssetDatabase.SaveAssets();
 				EditorSaveSystem.Save(PATH, $"{id1}/{id2}/{id3}/{id4}");
 			}
 
