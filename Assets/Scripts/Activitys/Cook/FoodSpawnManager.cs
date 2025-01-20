@@ -2,6 +2,8 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
+using Cysharp.Threading.Tasks;
+
 public class NetworkInformation
 {
     public readonly NetworkView NetworkView;
@@ -83,6 +85,8 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
         AllSpawn allSpawnInstance = await GateOfFusion.Instance.SpawnAsync(allSpawn);
         await allSpawnInstance.Async();
         GateOfFusion.Instance.Despawn(allSpawnInstance);
+
+        await UniTask.Delay(3000);
         foodSpawnRPC.RPC_SpawnLocalView(id, position, networkView.GetComponent<NetworkObject>());
     }
     public void NewMember(PlayerRef player)
