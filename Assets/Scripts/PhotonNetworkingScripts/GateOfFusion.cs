@@ -67,20 +67,24 @@ public class GateOfFusion
 
 	public async UniTask<T> SpawnAsync<T>(T prefab, Vector3 position = default, Quaternion quaternion = default, Transform parent = default) where T : Component
 	{
+		Debug.LogError("aaaa");
 		T temp;
 		if (!MasterServer.IsUsePhoton)
 		{
 			temp = Object.Instantiate(prefab, position, quaternion);
+			Debug.LogError("bbb");
 		}
 		else if (prefab.TryGetComponent(out NetworkObject networkObject))
 		{
 			await UniTask.WaitUntil(() => MasterServer.IsConnected);
 			temp = (await NetworkRunner.SpawnAsync(networkObject, position, quaternion)).GetComponent<T>();
+			Debug.LogError("ccc");
 		}
 		else
 		{
 			XKumaDebugSystem.LogError("NetworkObject‚ªæ“¾‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B‚È‚Ì‚ÅInstantiate‚µ‚Ü‚·B", KumaDebugColor.ErrorColor);
 			temp = Object.Instantiate(prefab, position, quaternion);
+			Debug.LogError("ddd");
 		}
 		temp.transform.SetParent(parent);
 		return temp;
