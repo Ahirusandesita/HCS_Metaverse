@@ -86,7 +86,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
         await allSpawnInstance.Async();
         GateOfFusion.Instance.Despawn(allSpawnInstance);
 
-        await UniTask.Delay(3000);
+        //await UniTask.Delay(3000);
         foodSpawnRPC.RPC_SpawnLocalView(id, position, networkView.GetComponent<NetworkObject>());
     }
     public void NewMember(PlayerRef player)
