@@ -105,9 +105,11 @@ namespace UnityEditor.HCSMeta
 							default:
 								throw new System.InvalidOperationException();
 						}
+
 					}
 				}
 
+				AssetDatabase.SaveAssets();
 				EditorSaveSystem.Save(PATH, $"{id1}/{id2}/{id3}/{id4}");
 			}
 

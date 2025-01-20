@@ -355,6 +355,8 @@ public class GrabbableAutoAttach : EditorWindow
 						}
 					}
 
+					AssetDatabase.SaveAssets();
+
 					if (existingAsset == null)
 					{
 						string fileName = $"{prefab.name}.asset";
