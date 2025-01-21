@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
 using System.Reflection;
+using Cysharp.Threading.Tasks;
 
 /// <summary>
 /// このInterfaceはエディタクラスからのみアクセスすること
@@ -111,6 +112,20 @@ namespace UnityEditor.HCSMeta
 				}
 
 				EditorSaveSystem.Save(PATH, $"{id1}/{id2}/{id3}/{id4}");
+			}
+
+			EditorGUILayout.Space(12f);
+
+			if (GUILayout.Button("Register ID in the Database (API Connecting)"))
+			{
+				var itemBundleAsset = target as ItemBundleAsset;
+				var editorWebAPIRequester = new EditorWebAPIRequester();
+				var itemDataList = new List<EditorWebAPIRequester.ItemData>();
+				foreach (var itemAsset in itemBundleAsset.Items)
+				{
+					itemDataList.Add(new EditorWebAPIRequester.ItemData(itemAsset.ID, itemAsset.Name, itemAsset.Size));
+				}
+				editorWebAPIRequester.PostAddID(itemDataList).Forget();
 			}
 
 			if (EditorGUI.EndChangeCheck())

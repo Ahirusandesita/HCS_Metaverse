@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 using Result = UnityEngine.Networking.UnityWebRequest.Result;
 
 /// <summary>
-/// Shopとデータベースの送受信を行う。現時点では各Shopごとにインスタンスを所持する設計。
+/// データベースとのAPI通信を行うクラス
 /// </summary>
 public class WebAPIRequester
 {
@@ -634,3 +634,101 @@ public class WebAPIRequester
 	}
 	#endregion
 }
+
+#if UNITY_EDITOR
+/// <summary>
+/// エディターでデータベースとのAPI通信を行うクラス
+/// <br>このクラスはビルドには含まれません</br>
+/// </summary>
+public class EditorWebAPIRequester
+{
+	private const string DETABASE_PATH_BASE = "http://10.11.33.228:8080/api/";
+	private const string ID_TRANSFER_ADD = DETABASE_PATH_BASE + "transfer/add";
+	private const string ID_TRANSFER_UPDATE = DETABASE_PATH_BASE + "transfer/update";
+	private const string ID_TRANSFER_DELETE = DETABASE_PATH_BASE + "transfer/delete";
+	private const string CONTENT_TYPE = "application/json";
+
+
+	public async UniTask PostAddID(List<ItemData> addDataList)
+	{
+		var sendIDData = new SendIDData(addDataList);
+		string jsonData = JsonUtility.ToJson(sendIDData);
+
+		using var request = UnityWebRequest.Post(ID_TRANSFER_ADD, jsonData, CONTENT_TYPE);
+		await request.SendWebRequest();
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				throw new WebAPIRequester.APIConnectException(request.error);
+		}
+	}
+
+	public async UniTask PostUpdateID(List<ItemData> updateDataList)
+	{
+		var sendIDData = new SendIDData(updateDataList);
+		string jsonData = JsonUtility.ToJson(sendIDData);
+
+		using var request = UnityWebRequest.Post(ID_TRANSFER_UPDATE, jsonData, CONTENT_TYPE);
+		await request.SendWebRequest();
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				throw new WebAPIRequester.APIConnectException(request.error);
+		}
+	}
+
+	public async UniTask PostDeleteID(int itemId)
+	{
+		WWWForm form = new WWWForm();
+		form.AddField("itemId", itemId);
+
+		using var request = UnityWebRequest.Post(ID_TRANSFER_DELETE, form);
+		await request.SendWebRequest();
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				throw new WebAPIRequester.APIConnectException(request.error);
+		}
+	}
+
+	[System.Serializable]
+	private class SendIDData
+	{
+		[SerializeField] private List<ItemData> itemDataList = default;
+		public IReadOnlyList<ItemData> ItemDataList => itemDataList;
+
+		public SendIDData(List<ItemData> itemDataList)
+		{
+			this.itemDataList = itemDataList;
+		}
+	}
+
+	[System.Serializable]
+	public class ItemData
+	{
+		[SerializeField] private int itemId;
+		[SerializeField] private string itemName;
+		[SerializeField] private int size;
+
+		public int ItemID => itemId;
+		public string ItemName => itemName;
+		public int Size => size;
+
+		public ItemData(int itemId, string itemName, int size)
+		{
+			this.itemId = itemId;
+			this.itemName = itemName;
+			this.size = size;
+		}
+	}
+}
+#endif
