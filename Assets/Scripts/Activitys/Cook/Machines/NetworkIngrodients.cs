@@ -18,6 +18,11 @@ public class NetworkIngrodients : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     public void RPC_PutIngrodients(int machineID)
     {
+        if (_hitMachine != null)
+        {
+            return;
+        }
+
         if (GateOfFusion.Instance.IsActivityConnected && GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
             _hitMachine = FindObjectOfType<MachineIDManager>().GetMachine(machineID);

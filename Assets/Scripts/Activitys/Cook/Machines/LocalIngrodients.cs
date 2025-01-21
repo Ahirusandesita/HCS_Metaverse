@@ -50,14 +50,14 @@ public class LocalIngrodients : Ingrodients, IGrabbableActiveChangeRequester
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.TryGetComponent<Machine>(out var hitMachine) && hitMachine != _hitMachine)
-        {
-            _localView.NetworkView.GetComponent<NetworkIngrodients>().RPC_PutIngrodients(hitMachine.MachineID);
-            Debug.LogWarning($"<color=red>LocalIng‚ ‚½‚Á‚½‚æ->{hitMachine.gameObject.name}</color>");
-        }
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.gameObject.TryGetComponent<Machine>(out var hitMachine) && hitMachine != _hitMachine)
+    //    {
+    //        _localView.NetworkView.GetComponent<NetworkIngrodients>().RPC_PutIngrodients(hitMachine.MachineID);
+    //        Debug.LogWarning($"<color=red>LocalIng‚ ‚½‚Á‚½‚æ->{hitMachine.gameObject.name}</color>");
+    //    }
+    //}
 
     public void PutMachine(int machineID)
     {
