@@ -63,4 +63,9 @@ public class NetworkView : NetworkBehaviour, IAfterSpawned
         Debug.Log("LocalView Injected");
         this.localView = localView;
     }
+
+    private void OnDestroy()
+    {
+        Debug.LogError(gameObject.name + "Destory");
+    }
 }
