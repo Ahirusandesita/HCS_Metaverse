@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using KumaDebug;
 using UnityEngine;
-using Cysharp.Threading.Tasks;
 
 public class VendingMachineUIManager : MonoBehaviour
 {
@@ -11,96 +11,123 @@ public class VendingMachineUIManager : MonoBehaviour
 	[SerializeField]
 	private VendingMachineUI _vendingMachineUIPrefab = default;
 	[SerializeField]
-	private Transform _parent = default;
-	[SerializeField]
 	private RectTransform _startRectTransform;
+
 	[SerializeField]
-	private Transform _viewTransform;
+	private VendingMachineOpenAdminMenu _vendingMachineOpenAdminMenu;
+
+	[SerializeField]
+	private VendingMachine _vendingMachine = default;
+	[SerializeField]
+	private GameObject _buyPanel = default;
+	[SerializeField]
+	private GameObject _adminPanel = default;
+	private Dictionary<int, VendingMachineUI> _vendingUIs = new();
+	[Header("ÉpÉâÉÅÅ[É^")]
 	[SerializeField]
 	private int _rowMax = 3;
-	private int _shopID = -1;
-	private int _roomAdminID = -1;
-	private Dictionary<int, VendingMachineUI> _vendingUIs = new();
-	private PlayerDontDestroyData PlayerData => PlayerDontDestroyData.Instance;
+	[SerializeField]
+	private Vector2 _mergin;
 
-	public async UniTaskVoid Initialize(int shopID,int roomAdminID)
+	public void InitBuyUI(WebAPIRequester.OnVMEntryData data)
 	{
-		_shopID = shopID;
-		_roomAdminID = roomAdminID;
-		await ShopUpdate();
-	}
-
-	private async UniTask ShopUpdate()
-	{
-		WebAPIRequester webAPIRequester = new WebAPIRequester();
-
-		WebAPIRequester.OnVMEntryData data = await webAPIRequester.PostVMEntry(_shopID);
-
-		//if (data.Active)
-		//{
-		//	Active(data);
-		//}
-		//else
-		//{
-		//	Inactive();
-		//}
-		Active(data);
-		if (IsAdminPlayer(PlayerData.PlayerID))
+		XDebug.LogWarning("init");
+		foreach (VendingMachineUI uI in _vendingUIs.Values)
 		{
-			AddAdminManuButton();
+			Destroy(uI.gameObject);
 		}
-	}
-
-	private bool IsAdminPlayer(int playerID)
-	{
-		return _roomAdminID == playerID;
-	}
-
-	private void Active(WebAPIRequester.OnVMEntryData data)
-	{
-		_viewTransform.GetComponentInChildren<Renderer>().material.color = Color.white;
-
+		_vendingUIs.Clear();
 		foreach (WebAPIRequester.ItemLineup lineup in data.ItemList)
 		{
 			int discountedPrice = Mathf.FloorToInt(lineup.Price * (1 - lineup.Discount));
-			AddBuyButtonUI(lineup.ItemID, discountedPrice);
+			AddBuyUI(lineup.ItemID, discountedPrice);
 			UpdateUI(lineup.ItemID, lineup.Stock);
 		}
+		CloseBuyUI();
 	}
 
-	private void Inactive()
+	public void OpenBuyUI()
 	{
-		_viewTransform.GetComponentInChildren<Renderer>().material.color = Color.black;
-		foreach (VendingMachineUI uI in _vendingUIs.Values)
+		XDebug.LogWarning("open");
+		foreach (VendingMachineUI ui in _vendingUIs.Values)
 		{
-			Destroy(uI);
+			ui.gameObject.SetActive(true);
 		}
-		_vendingUIs.Clear();
 	}
 
-	private void AddAdminManuButton()
+	public void OpenBuyButton()
 	{
-
+		foreach (VendingMachineUI ui in _vendingUIs.Values)
+		{
+			ui.BuyButton.SetActive(true);
+		}
 	}
 
-	private void OpenAdminManu()
+	public void CloseBuyUI()
 	{
-
+		foreach (VendingMachineUI ui in _vendingUIs.Values)
+		{
+			ui.gameObject.SetActive(false);
+			ui.BuyButton.SetActive(false);
+		}
 	}
 
-	private void AddBuyButtonUI(int id, int discountedPrice)
+	public void OpenAdminManuButton()
 	{
-		VendingMachineUI ui = Instantiate(_vendingMachineUIPrefab, _parent);
+		_vendingMachineOpenAdminMenu.gameObject.SetActive(true);
+	}
+	public void CloseAdminManuButton()
+	{
+		_vendingMachineOpenAdminMenu.gameObject.SetActive(false);
+	}
+	public void OpenBuyCanvas()
+	{
+		_buyPanel.SetActive(true);
+	}
+
+	public void CloseBuyCanvas()
+	{
+		CloseBuyUI();
+		_buyPanel.SetActive(false);
+	}
+
+	public void OpenAdminMenuUI()
+	{
+		CloseBuyCanvas();
+		_adminPanel.SetActive(true);
+
+	}
+	public void CloseAdminMenuUI()
+	{
+		_adminPanel.SetActive(false);
+	}
+
+	[ContextMenu("adada")]
+	private void Reload()
+	{
+		FindAnyObjectByType<MyRoomLoader>().Load().Forget();
+	}
+
+	private void AddBuyUI(int id, int discountedPrice)
+	{
+		if(id > 20000)
+		{
+			id += 20000;
+		}
+		VendingMachineUI ui = Instantiate(_vendingMachineUIPrefab, _buyPanel.transform);
 		RectTransform rectTransform = ui.transform as RectTransform;
 		RectTransform prefabRectTransform = _vendingMachineUIPrefab.transform as RectTransform;
 		int productCount = _vendingUIs.Count;
-		Vector2 prefabSize = prefabRectTransform.sizeDelta;
+		Vector2 prefabSize = prefabRectTransform.sizeDelta + _mergin;
+
 		rectTransform.localPosition =
 			_startRectTransform.localPosition +
-				Vector3.right * (prefabSize.x * (productCount % _rowMax)) +
+				Vector3.right * (prefabSize.x * (productCount % _rowMax) ) +
 				Vector3.down * (prefabSize.y * (productCount / _rowMax));
 		ItemAsset itemAsset = _itemBundleAsset.GetItemAssetByID(id);
-
+		//XDebug.LogWarning($"{ui}:{Resources.Load<Sprite>("NotExistIcon")}");
+		//XDebug.LogWarning($"{id}:{discountedPrice}:{this}:{itemAsset}");
+		//XDebug.LogWarning($"{itemAsset.ItemIcon}:{itemAsset.name}");
 		ui.Init(id
 			, discountedPrice
 			, this
@@ -123,7 +150,15 @@ public class VendingMachineUIManager : MonoBehaviour
 		WebAPIRequester.OnVMPaymentData result;
 		try
 		{
-			result = await webAPIRequester.PostVMPayment(id, int.MaxValue, int.MinValue);
+			result = await webAPIRequester.PostVMPayment(id, int.MaxValue, _vendingMachine.ShopID);
+			if (result.GetBody.UpdateFlg)
+			{
+				WebAPIRequester.OnVMEntryData entryData =
+					await webAPIRequester.PostVMEntry(_vendingMachine.ShopID);
+				InitBuyUI(entryData);
+				XKumaDebugSystem.LogError("BuyÇ≈Ç´Ç‹ÇπÇÒÇ≈ÇµÇΩ");
+				return;
+			}
 		}
 		catch
 		{
@@ -133,6 +168,4 @@ public class VendingMachineUIManager : MonoBehaviour
 		//ï°êîîÉÇ¢ÇÕñ¢é¿ëïÇÃÇ‡ÇÃÇ∆Ç∑ÇÈ
 		UpdateUI(id, result.GetBody.StockData[0].Amount);
 	}
-
-
 }

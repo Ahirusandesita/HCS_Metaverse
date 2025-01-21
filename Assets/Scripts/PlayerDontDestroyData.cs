@@ -4,9 +4,13 @@ using UnityEngine;
 public class PlayerDontDestroyData : MonoBehaviour
 {
 	private static PlayerDontDestroyData _instance = default;
+	[SerializeField,Header("Debug")]
 	private int _playerID = 5;
+	[SerializeField]
 	private int _money = 0;
+	[SerializeField]
 	private string _previousScene = "";
+	[Space(10)]
 	private readonly object _moneyLockObject = new object();
 	private readonly object _inventoryLockObject = new object();
 

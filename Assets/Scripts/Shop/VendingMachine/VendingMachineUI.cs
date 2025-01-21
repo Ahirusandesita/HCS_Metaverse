@@ -19,6 +19,7 @@ public class VendingMachineUI : MonoBehaviour
     private VendingMachineUIManager _uiManager;
     private int _id = -1;
     public int ID => _id;
+    public GameObject BuyButton => _buyButton;
     public void Init(int id,int discountedPrice,VendingMachineUIManager uiManager,Sprite sprite,string name)
 	{
         _id = id;
