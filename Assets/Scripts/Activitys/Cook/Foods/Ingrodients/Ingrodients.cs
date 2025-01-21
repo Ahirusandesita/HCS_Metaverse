@@ -47,10 +47,7 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
 
     private CommodityFactory commodityFactory;
 
-    private NetworkRunner networkRunner;
-
     private PointableUnityEventWrapper pointableUnityEventWrapper;
-    private StateAuthorityData stateAuthority;
 
     private bool isGrab = false;
     public bool IsGrab => isGrab;
@@ -67,7 +64,6 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
 
         //pointableUnityEventWrapper.WhenSelect.AddListener((data) => GateOfFusion.Instance.Grab(this.GetComponent<NetworkObject>()).Forget());
         //pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GateOfFusion.Instance.Release(this.GetComponent<NetworkObject>()));
-        networkRunner = GateOfFusion.Instance.NetworkRunner;
 
         pointableUnityEventWrapper.WhenSelect.AddListener((data) => GetComponent<LocalView>().Grab());
         pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GetComponent<LocalView>().Release());
