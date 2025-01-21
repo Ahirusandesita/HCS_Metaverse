@@ -3,11 +3,18 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ItemData", menuName = "ScriptableObjects/ItemAsset/Item")]
 public class ItemAsset : ScriptableObject
 {
+	private enum ItemSize
+	{
+		Large = 0,
+		Small = 1
+	}
+
 	[SerializeField, Hide] private int itemID = default;
 	[SerializeField] private string itemName = default;
 	[SerializeField] private Sprite itemIcon = default;
 	[SerializeField] private string itemText = default;
 	[SerializeField] private ItemGenre itemGenre = default;
+	[SerializeField] private ItemSize size = default;
 	[Space(10)]
 	[Header("通常のプレハブ（表示のみのもの）")]
 	[SerializeField] private GameObject prefab = default;
@@ -34,6 +41,7 @@ public class ItemAsset : ScriptableObject
 
 	public string Text => itemText;
 	public ItemGenre Genre => itemGenre;
+	public int Size => (int)size;
 	public GameObject Prefab => prefab;
 	public IDisplayItem DisplayItem => displayItem as IDisplayItem;
 	public NetworkView NetworkView => networkView;
