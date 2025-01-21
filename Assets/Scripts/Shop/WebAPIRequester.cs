@@ -19,6 +19,7 @@ public class WebAPIRequester
 	private const string DETABASE_PATH_USER_LOCATION_CATCH = DETABASE_PATH_BASE + "location/catch";
 	private const string DETABASE_PATH_VENDINGMACHINE_ENTRY = DETABASE_PATH_BASE + "salesmachine";
 	private const string DETABASE_PATH_VENDINGMACHINE_BUY = DETABASE_PATH_BASE + "salesmachine/buy";
+	private const string DETABASE_PATH_VENDINGMACHINE_UPDATE = DETABASE_PATH_BASE + "salesmachine/update";
 	private const string CONTENT_TYPE = "application/json";
 
 
@@ -131,6 +132,31 @@ public class WebAPIRequester
 	}
 
 	/// <summary>
+	/// 自販機更新時のAPI通信
+	/// </summary>
+	/// <returns>・インベントリ差分</returns>
+	public async UniTask<IReadOnlyList<ItemIDAmountPair>> PostVMUpdate(int shopId, List<VMSalesData> vmSalesData)
+	{
+		var sendVMSalesdata = new SendVMSalesData(shopId, vmSalesData);
+		string jsonData = JsonUtility.ToJson(sendVMSalesdata);
+
+		using var request = UnityWebRequest.Post(DETABASE_PATH_VENDINGMACHINE_UPDATE, jsonData, CONTENT_TYPE);
+		await request.SendWebRequest();
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				XDebug.LogError(request.result, "red");
+				throw new APIConnectException(request.error);
+		}
+
+		var onVMUpdateData = JsonUtility.FromJson<OnVMUpdateData>(request.downloadHandler.text);
+		return onVMUpdateData.Inventory;
+	}
+
+	/// <summary>
 	/// マイルーム入室時のAPI通信
 	/// </summary>
 	/// <returns>・オブジェクトリスト
@@ -157,9 +183,9 @@ public class WebAPIRequester
 	/// <summary>
 	/// マイルーム退室時のAPI通信
 	/// </summary>
-	public async UniTask PostMyRoomSave(List<MyRoomObjectSaved> myRoomObjectSaveds)
+	public async UniTask PostMyRoomSave(int userId, List<MyRoomObjectSaved> myRoomObjectSaveds)
 	{
-		var sendMyRoomSaveData = new SendMyRoomSaveData(myRoomObjectSaveds);
+		var sendMyRoomSaveData = new SendMyRoomSaveData(userId, myRoomObjectSaveds);
 		string jsonData = JsonUtility.ToJson(sendMyRoomSaveData);
 
 		using var request = UnityWebRequest.Post(DETABASE_PATH_MYROOM_SAVE, jsonData, CONTENT_TYPE);
@@ -204,7 +230,7 @@ public class WebAPIRequester
 	/// <br>・ロケーション名</br></returns>
 	public async UniTask<OnCatchUserLocationData> GetUserLocation()
 	{
-		using var request = UnityWebRequest.Post(DETABASE_PATH_USER_LOCATION_CATCH,new WWWForm());
+		using var request = UnityWebRequest.Post(DETABASE_PATH_USER_LOCATION_CATCH, new WWWForm());
 		await request.SendWebRequest();
 		switch (request.result)
 		{
@@ -373,6 +399,19 @@ public class WebAPIRequester
 		}
 	}
 
+	[System.Serializable]
+	private class OnVMUpdateData : ResponseData
+	{
+		public OnVMUpdateData(List<ItemIDAmountPair> inventory)
+		{
+			this.inventory = inventory;
+		}
+
+		[SerializeField] private List<ItemIDAmountPair> inventory = default;
+
+		public IReadOnlyList<ItemIDAmountPair> Inventory => inventory;
+	}
+
 	/// <summary>
 	/// マイルーム入室時のレスポンスデータ
 	/// </summary>
@@ -423,7 +462,7 @@ public class WebAPIRequester
 		}
 
 		[SerializeField] private Body body = default;
-		public IReadOnlyList<UserLocationData> SessionList =>body.SessionList;
+		public IReadOnlyList<UserLocationData> SessionList => body.SessionList;
 
 
 		[System.Serializable]
@@ -459,17 +498,35 @@ public class WebAPIRequester
 		[SerializeField] public int userId = default;
 	}
 
+	[System.Serializable]
+	private class SendVMSalesData
+	{
+		public SendVMSalesData(int shopId, List<VMSalesData> updateList)
+		{
+			this.shopId = shopId;
+			this.updateList = updateList;
+		}
+
+		[SerializeField] private int shopId = default;
+		[SerializeField] private List<VMSalesData> updateList = default;
+
+		public int ShopId => shopId;
+		public IReadOnlyList<VMSalesData> UpdateList => updateList;
+	}
+
 	/// <summary>
 	/// MyRoom情報の送信データ（内部パースに使用）
 	/// </summary>
 	[System.Serializable]
 	private class SendMyRoomSaveData
 	{
-		public SendMyRoomSaveData(List<MyRoomObjectSaved> objectList)
+		public SendMyRoomSaveData(int userId, List<MyRoomObjectSaved> objectList)
 		{
+			this.userId = userId;
 			this.objectList = objectList;
 		}
 
+		[SerializeField] private int userId = default;
 		[SerializeField] private List<MyRoomObjectSaved> objectList = default;
 	}
 	#endregion
@@ -532,6 +589,39 @@ public class WebAPIRequester
 		public int Size => size;
 	}
 
+	/// <summary>
+	/// ・アイテムID
+	/// <br>・在庫数差分</br>
+	/// <br>・金額</br>
+	/// <br>・削除フラグ</br>
+	/// </summary>
+	[System.Serializable]
+	public struct VMSalesData
+	{
+		public VMSalesData(int itemId, int stock, int price, bool deleteFlg)
+		{
+			this.itemId = itemId;
+			this.stock = stock;
+			this.price = price;
+			this.deleteFlg = deleteFlg;
+		}
+
+		[SerializeField] private int itemId;
+		[SerializeField] private int stock;
+		[SerializeField] private int price;
+		[SerializeField] private bool deleteFlg;
+
+		public int ItemID => itemId;
+		/// <summary>
+		/// 前回在庫量と今回在庫量の差分
+		/// </summary>
+		public int StockDiff => stock;
+		public int Price => price;
+		/// <summary>
+		/// true: 削除済み
+		/// </summary>
+		public bool DeleteFlg => deleteFlg;
+	}
 
 	/// <summary>
 	/// ・アイテムID
@@ -653,7 +743,6 @@ public class EditorWebAPIRequester
 	{
 		var sendIDData = new SendIDData(addDataList);
 		string jsonData = JsonUtility.ToJson(sendIDData);
-
 		using var request = UnityWebRequest.Post(ID_TRANSFER_ADD, jsonData, CONTENT_TYPE);
 		await request.SendWebRequest();
 		switch (request.result)
