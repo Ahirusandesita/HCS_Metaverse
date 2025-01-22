@@ -39,7 +39,6 @@ public class Shelf : SafetyInteractionObject
 
 	protected override void SafetyOpen()
 	{
-		XDebug.Log("Shelf Access", "green");
 		focusBoardIndex = 0;
 		shelfInteractionInfo.InvokeOpen(this, new ShelfInteractionInfo.OnShelfInteractionInfo(gameObject, shelfBoards));
 		UpdateAction += () =>
@@ -52,7 +51,6 @@ public class Shelf : SafetyInteractionObject
 
 	protected override void SafetyClose()
 	{
-		XDebug.Log("Shelf Exit", "green");
 		UpdateAction = null;
 		shelfInteractionInfo.InvokeClose(this, new SafetyInteractionInfo.NullOnSafetyActionInfo());
 		shelfInteractionInfo.ClearOpen(this);

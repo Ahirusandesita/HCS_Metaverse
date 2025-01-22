@@ -417,13 +417,31 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Signed"",
+                    ""name"": ""AnalogSigned"",
                     ""type"": ""Button"",
                     ""id"": ""416669fb-7161-4d42-98cf-3d6906f0fa85"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Signed"",
+                    ""type"": ""Value"",
+                    ""id"": ""10aadf36-1396-4efa-8972-22e9ed615d17"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""NextOrPrevious"",
+                    ""type"": ""Value"",
+                    ""id"": ""abebfef6-d814-4f3f-a114-c882360fd792"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -456,7 +474,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Signed"",
+                    ""action"": ""AnalogSigned"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
@@ -467,7 +485,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""KeyboardMouse"",
-                    ""action"": ""Signed"",
+                    ""action"": ""AnalogSigned"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -478,13 +496,79 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""KeyboardMouse"",
+                    ""action"": ""AnalogSigned"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""XR"",
+                    ""id"": ""e935fc2f-b1a0-4cb6-b6d2-03d933318e04"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AnalogSigned"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""e60728ef-7209-4474-a881-ca7efdaeb111"",
+                    ""path"": ""<XRController>{LeftHand}/primaryButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AnalogSigned"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""554e2902-d45d-428f-b9b6-a50c44b3f652"",
+                    ""path"": ""<XRController>{RightHand}/primaryButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AnalogSigned"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Arrow"",
+                    ""id"": ""9108fa1d-6ce6-4cbb-a0aa-60c2d4c08107"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Signed"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Negative"",
+                    ""id"": ""cb169e1d-9702-40df-9f65-36928eb752fc"",
+                    ""path"": ""<Keyboard>/numpad1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
                     ""action"": ""Signed"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""Trigger"",
-                    ""id"": ""e935fc2f-b1a0-4cb6-b6d2-03d933318e04"",
+                    ""name"": ""Positive"",
+                    ""id"": ""15650d97-7306-421f-9b43-e5fb6e751520"",
+                    ""path"": ""<Keyboard>/numpad3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Signed"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""XR"",
+                    ""id"": ""0f8c9cd2-a316-4e24-b215-c1c281cf1b0b"",
                     ""path"": ""1DAxis"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -495,8 +579,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""negative"",
-                    ""id"": ""554e2902-d45d-428f-b9b6-a50c44b3f652"",
-                    ""path"": ""<XRController>{LeftHand}/triggerPressed"",
+                    ""id"": ""c88af5ef-60e6-4d23-b667-fe215e02f240"",
+                    ""path"": ""<XRController>{LeftHand}/secondaryButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -506,12 +590,67 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""positive"",
-                    ""id"": ""e60728ef-7209-4474-a881-ca7efdaeb111"",
-                    ""path"": ""<XRController>{RightHand}/triggerPressed"",
+                    ""id"": ""67f6eb30-4507-4128-9817-5bc1083563b1"",
+                    ""path"": ""<XRController>{RightHand}/secondaryButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Signed"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""XR"",
+                    ""id"": ""e32f50ea-6265-466b-b32e-002239561b07"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NextOrPrevious"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Negative"",
+                    ""id"": ""d43775c7-f8e4-4c7c-816d-76a3a7634ce9"",
+                    ""path"": ""<OculusTouchController>{RightHand}/thumbstick/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NextOrPrevious"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Negative"",
+                    ""id"": ""fd7356c6-ffa5-4962-95cf-030afe434481"",
+                    ""path"": ""<OculusTouchController>{RightHand}/thumbstick/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NextOrPrevious"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Positive"",
+                    ""id"": ""c6dba79a-f607-4ffa-9fd7-86dfd46203c9"",
+                    ""path"": ""<OculusTouchController>{RightHand}/thumbstick/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NextOrPrevious"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Positive"",
+                    ""id"": ""17169a59-4850-499e-a076-144022af0041"",
+                    ""path"": ""<OculusTouchController>{RightHand}/thumbstick/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NextOrPrevious"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 }
@@ -586,7 +725,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         // PlacingMode
         m_PlacingMode = asset.FindActionMap("PlacingMode", throwIfNotFound: true);
         m_PlacingMode_Place = m_PlacingMode.FindAction("Place", throwIfNotFound: true);
+        m_PlacingMode_AnalogSigned = m_PlacingMode.FindAction("AnalogSigned", throwIfNotFound: true);
         m_PlacingMode_Signed = m_PlacingMode.FindAction("Signed", throwIfNotFound: true);
+        m_PlacingMode_NextOrPrevious = m_PlacingMode.FindAction("NextOrPrevious", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -835,13 +976,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_PlacingMode;
     private List<IPlacingModeActions> m_PlacingModeActionsCallbackInterfaces = new List<IPlacingModeActions>();
     private readonly InputAction m_PlacingMode_Place;
+    private readonly InputAction m_PlacingMode_AnalogSigned;
     private readonly InputAction m_PlacingMode_Signed;
+    private readonly InputAction m_PlacingMode_NextOrPrevious;
     public struct PlacingModeActions
     {
         private @PlayerInputActions m_Wrapper;
         public PlacingModeActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Place => m_Wrapper.m_PlacingMode_Place;
+        public InputAction @AnalogSigned => m_Wrapper.m_PlacingMode_AnalogSigned;
         public InputAction @Signed => m_Wrapper.m_PlacingMode_Signed;
+        public InputAction @NextOrPrevious => m_Wrapper.m_PlacingMode_NextOrPrevious;
         public InputActionMap Get() { return m_Wrapper.m_PlacingMode; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -854,9 +999,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Place.started += instance.OnPlace;
             @Place.performed += instance.OnPlace;
             @Place.canceled += instance.OnPlace;
+            @AnalogSigned.started += instance.OnAnalogSigned;
+            @AnalogSigned.performed += instance.OnAnalogSigned;
+            @AnalogSigned.canceled += instance.OnAnalogSigned;
             @Signed.started += instance.OnSigned;
             @Signed.performed += instance.OnSigned;
             @Signed.canceled += instance.OnSigned;
+            @NextOrPrevious.started += instance.OnNextOrPrevious;
+            @NextOrPrevious.performed += instance.OnNextOrPrevious;
+            @NextOrPrevious.canceled += instance.OnNextOrPrevious;
         }
 
         private void UnregisterCallbacks(IPlacingModeActions instance)
@@ -864,9 +1015,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Place.started -= instance.OnPlace;
             @Place.performed -= instance.OnPlace;
             @Place.canceled -= instance.OnPlace;
+            @AnalogSigned.started -= instance.OnAnalogSigned;
+            @AnalogSigned.performed -= instance.OnAnalogSigned;
+            @AnalogSigned.canceled -= instance.OnAnalogSigned;
             @Signed.started -= instance.OnSigned;
             @Signed.performed -= instance.OnSigned;
             @Signed.canceled -= instance.OnSigned;
+            @NextOrPrevious.started -= instance.OnNextOrPrevious;
+            @NextOrPrevious.performed -= instance.OnNextOrPrevious;
+            @NextOrPrevious.canceled -= instance.OnNextOrPrevious;
         }
 
         public void RemoveCallbacks(IPlacingModeActions instance)
@@ -941,6 +1098,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     public interface IPlacingModeActions
     {
         void OnPlace(InputAction.CallbackContext context);
+        void OnAnalogSigned(InputAction.CallbackContext context);
         void OnSigned(InputAction.CallbackContext context);
+        void OnNextOrPrevious(InputAction.CallbackContext context);
     }
 }

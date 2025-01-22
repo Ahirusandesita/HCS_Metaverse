@@ -12,7 +12,7 @@ public static class Inputter
         Default,
         /// <summary>
         /// ハウジング中の入力バインド
-        /// <br>移動、転回、ジャンプ、Signed（オブジェクトの転回や上昇下降）、設置</br>
+        /// <br>移動、転回、ジャンプ、スプリント、Signed（オブジェクトの転回や上昇下降）、設置</br>
         /// </summary>
         Placing,
         /// <summary>
@@ -58,8 +58,8 @@ public static class Inputter
                 Player.Move.Enable();
                 Player.Look.Enable();
                 Player.Jump.Enable();
+                Player.SprintOrWarp.Enable();
 
-                Player.SprintOrWarp.Disable();
                 Player.Interact.Disable();
                 UI.Disable();
                 VRHead.Disable();
