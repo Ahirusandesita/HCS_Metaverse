@@ -10,7 +10,6 @@ public class AllSpawn : NetworkBehaviour, IAfterSpawned
     private bool isAllSpawned = false;
     void IAfterSpawned.AfterSpawned()
     {
-        Debug.Log("AferSpawned");
         RPC_Spawned();
     }
 
