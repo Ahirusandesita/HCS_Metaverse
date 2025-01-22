@@ -89,6 +89,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
         GateOfFusion.Instance.Despawn(allSpawnInstance);
 
         //await UniTask.Delay(3000);
+        foodSpawnRPC.RPC_SpawnLocalView(id, position, networkView.Id);
         foodSpawnRPC.RPC_SpawnLocalView(id, position, networkView.GetComponent<NetworkObject>());
         GateOfFusion.Instance.Despawn(DummyObject);
     }
@@ -139,6 +140,11 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
             networkInformations.Add(new NetworkInformation(networkView, id));
         }
     }
+    public void Test(NetworkBehaviourId networkBehaviourId)
+    {
+        Debug.LogError("ë∂ç›ÇµÇƒÇ¢ÇÈÇ©" + GateOfFusion.Instance.NetworkRunner.TryFindBehaviour(networkBehaviourId, out NetworkBehaviour networkBehaviour));
+    }
+
     public void LateJoinSpawnLocalView(int id, Vector3 position, NetworkView networkView)
     {
         GameObject itemObject;
