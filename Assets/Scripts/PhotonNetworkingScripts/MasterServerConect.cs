@@ -23,10 +23,11 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	private bool _isUsePhoton = true;
 	private NetworkRunner _networkRunner;
 	private SessionRPCManager _sessionRPCManager;
-	private bool _isConnected = default;	
+	private bool _isConnected = default;
 	private bool _isRoomStandby = false;
 	private bool _isActivityConnected = false;
 	public event Action OnConnect;
+	public event Action OnShutdownEvent;
 	public bool IsActivityConnected => _isActivityConnected;
 	public bool IsUsePhoton => _isUsePhoton;
 	public bool IsConnected => _isConnected;
@@ -50,7 +51,33 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	public bool IsKumaDebug => _isKumaDebug;
 #endif
 	#endregion
-	
+
+	[ContextMenu("aaaa")]
+	private async void getTes()
+	{
+		WebAPIRequester requester = new();
+		WebAPIRequester.OnCatchUserLocationData catchUserLocationData
+			= await requester.GetUserLocation();
+		foreach (WebAPIRequester.UserLocationData locationData in catchUserLocationData.SessionList)
+		{
+			XDebug.LogWarning(
+				$"UserID:{locationData.UserID}" +
+				$"SessionName:{locationData.SessionName}" +
+				$"LocationName:{locationData.LocationName}"
+				);
+		}
+
+	}
+	[ContextMenu("adadad")]
+	private void Mainssss()
+	{
+		WebAPIRequester webAPIRequester = new WebAPIRequester();
+		webAPIRequester
+			.PostUserLocation(PlayerDontDestroyData.Instance.PlayerID,"Main01","Main")
+			.Forget();
+
+	}
+
 	[ContextMenu("start")]
 	private void ActivityS()
 	{
@@ -125,6 +152,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	{
 		XKumaDebugSystem.LogError("room:disc");
 		_isRoomStandby = false;
+		OnShutdownEvent?.Invoke();
 		XKumaDebugSystem.LogWarning($"Disconnect", KumaDebugColor.SuccessColor);
 		if (!_isUsePhoton) { return; }
 		if (_networkRunner == null)
