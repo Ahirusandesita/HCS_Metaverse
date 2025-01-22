@@ -80,7 +80,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
     public async void SpawnNetworkView(int id, Vector3 position)
     {
         ItemAsset itemAsset = foodItemAsset.GetItemAssetByID(id);
-        NetworkView DummyObject = await GateOfFusion.Instance.SpawnAsync(itemAsset.NetworkView, position, Quaternion.identity);
+        //NetworkView DummyObject = await GateOfFusion.Instance.SpawnAsync(itemAsset.NetworkView, position, Quaternion.identity);
 
         NetworkView networkView = await GateOfFusion.Instance.SpawnAsync(itemAsset.NetworkView, position, Quaternion.identity);
         networkInformations.Add(new NetworkInformation(networkView, id));
@@ -91,7 +91,7 @@ public class FoodSpawnManager : MonoBehaviour, ISelectedNotification
         //await UniTask.Delay(3000);
         foodSpawnRPC.RPC_SpawnLocalView(id, position, networkView.Id);
         foodSpawnRPC.RPC_SpawnLocalView(id, position, networkView.GetComponent<NetworkObject>());
-        GateOfFusion.Instance.Despawn(DummyObject);
+        //GateOfFusion.Instance.Despawn(DummyObject);
     }
     public void NewMember(PlayerRef player)
     {
