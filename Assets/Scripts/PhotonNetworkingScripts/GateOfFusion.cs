@@ -15,11 +15,13 @@ public class GateOfFusion
 	public bool IsActivityConnected => MasterServer.IsActivityConnected;
 	public event System.Action OnConnect;
 	public event System.Action OnActivityConnected;
+	public event System.Action OnShutdown;
 
 
 	public GateOfFusion()
 	{
 		MasterServer.OnConnect += () => OnConnect?.Invoke();
+		MasterServer.OnShutdownEvent += () => OnShutdown?.Invoke();
 	}
 	private MasterServerConect MasterServer
 	{
@@ -149,6 +151,7 @@ public class GateOfFusion
 			_syncResult = SyncResult.Complete;
 			return;
 		}
+		
 		string sessionName = currentRoom.NextSessionName;
 		PlayerRef localPlayerRef = NetworkRunner.LocalPlayer;
 		foreach (PlayerRef roomPlayer in currentRoom.JoinRoomPlayer)
