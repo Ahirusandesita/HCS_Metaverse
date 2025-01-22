@@ -56,11 +56,6 @@ public class FoodSpawnManagerRPC : NetworkBehaviour, IPlayerJoined
     {
         foodSpawnManager.SpawnLocalView(id, position, networkObject.GetComponent<NetworkView>());
     }
-    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
-    public void RPC_SpawnLocalView(int id, Vector3 position, NetworkBehaviourId networkBehaviourId)
-    {
-        foodSpawnManager.Test(networkBehaviourId);
-    }
 
 
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
