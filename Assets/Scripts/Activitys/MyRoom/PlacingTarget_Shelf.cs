@@ -4,10 +4,11 @@ using UnityEngine.InputSystem;
 
 public class PlacingTarget_Shelf : PlacingTarget, IInteractionInfoReceiver
 {
-	private const float MOVE_SPEED = 3f; 
+	private const float MOVE_SPEED = 3f;
 	private Vector2 inputDir = default;
 	private Collider[] shelfColliders = default;
 	private IReadOnlyList<BoxCollider> shelfBoards = default;
+	private int focusBoardIndex = 0;
 
 	public override PlacingTarget Initialize(IEditOnlyGhost ghostModel, PlaceableObject placeableObject, Transform player)
 	{
@@ -86,7 +87,7 @@ public class PlacingTarget_Shelf : PlacingTarget, IInteractionInfoReceiver
 		inputDir = context.ReadValue<Vector2>();
 	}
 
-	private	void OnMoveCancel(InputAction.CallbackContext context)
+	private void OnMoveCancel(InputAction.CallbackContext context)
 	{
 		inputDir = Vector2.zero;
 	}
@@ -95,30 +96,54 @@ public class PlacingTarget_Shelf : PlacingTarget, IInteractionInfoReceiver
 	{
 		if (interactionInfo is Shelf.ShelfInteractionInfo shelfInteractionInfo)
 		{
-			shelfInteractionInfo.OnSafetyOpenAction += SetInitialPosition;
+			shelfInteractionInfo.OnSafetyOpenAction += OnSafetyOpen;
+			shelfInteractionInfo.OnSafetyCloseAction += OnSafetyClose;
 		}
-	}
 
-	private void SetInitialPosition(SafetyInteractionObject.SafetyInteractionInfo.OnSafetyActionInfo data)
-	{
-		if (data is Shelf.ShelfInteractionInfo.OnShelfInteractionInfo onShelfInteractionInfo)
+		void OnSafetyOpen(SafetyInteractionObject.SafetyInteractionInfo.OnSafetyActionInfo data)
 		{
-			shelfBoards = onShelfInteractionInfo.shelfBoards;
-			yPosition = shelfBoards[0].bounds.center.y + shelfBoards[0].bounds.size.y / 2 + 0.01f;
-
-			// 設置中は棚のコライダーをすべてOFFにする
-			// ただし、棚板のコライダーには干渉したくないため、親オブジェクトにとどめる
-			shelfColliders = onShelfInteractionInfo.shelf.GetComponents<Collider>();
-			foreach (var collider in shelfColliders)
+			if (data is Shelf.ShelfInteractionInfo.OnShelfInteractionInfo onShelfInteractionInfo)
 			{
-				collider.enabled = false;
+				shelfBoards = onShelfInteractionInfo.shelfBoards;
+				// 設置中は棚のコライダーをすべてOFFにする
+				// ただし、棚板のコライダーには干渉したくないため、親オブジェクトにとどめる
+				shelfColliders = onShelfInteractionInfo.shelf.GetComponents<Collider>();
+				foreach (var collider in shelfColliders)
+				{
+					collider.enabled = false;
+				}
+
+				focusBoardIndex = 0;
+				SetPosition();
+			}
+		}
+
+		void OnSafetyClose(SafetyInteractionObject.SafetyInteractionInfo.OnSafetyActionInfo data)
+		{
+			if (data is Shelf.ShelfInteractionInfo.OnShelfInteractionInfo onShelfInteractionInfo)
+			{
+				// OFFにしたコライダーをすべてONに戻す
+				foreach (var collider in shelfColliders)
+				{
+					collider.enabled = true;
+				}
+
+				shelfInteractionInfo.OnSafetyOpenAction -= OnSafetyOpen;
+				shelfInteractionInfo.OnSafetyCloseAction -= OnSafetyClose;
 			}
 		}
 	}
 
-	protected override void OnPlacing()
+	private void SetPosition()
 	{
-		base.OnPlacing();
+		xPosition = shelfBoards[focusBoardIndex].bounds.center.x;
+		yPosition = shelfBoards[focusBoardIndex].bounds.center.y + shelfBoards[focusBoardIndex].bounds.size.y / 2 + 0.01f;
+		zPosition = shelfBoards[focusBoardIndex].bounds.center.z;
+	}
+
+	protected override void OnPlacing(InputAction.CallbackContext context)
+	{
+		base.OnPlacing(context);
 
 		// 設置完了後、OFFにしたコライダーをすべてONに戻す
 		foreach (var collider in shelfColliders)

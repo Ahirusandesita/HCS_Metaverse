@@ -1789,7 +1789,6 @@ MonoBehaviour:
   pivotType: 0
   placingStyle: 0
   colliders: []
-  housingID: -1
 --- !u!1 &1097014557 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3800496436466665405, guid: 82f624b1964c7ba4fb21eae95f185a9c, type: 3}
@@ -1871,6 +1870,14 @@ PrefabInstance:
       propertyPath: _materialEditor
       value: 
       objectReference: {fileID: 605326064}
+    - target: {fileID: 6508186075653536544, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6508186075653536550, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6777667520213291276, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: _handVisual
       value: 
@@ -2876,8 +2883,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3, y: 8, z: 3}
-  m_Center: {x: 0.0000025629997, y: -2, z: 0.2506149}
+  m_Size: {x: 3, y: 3.5545888, z: 3}
+  m_Center: {x: 0.0000026226044, y: 0.2227056, z: 0.25061488}
 --- !u!114 &1992925372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2890,7 +2897,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bb62f1bd7b0a29409134895e3eb8f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shelfBoards: []
+  shelfBoards:
+  - {fileID: 209676668}
+  - {fileID: 607524847}
 --- !u!4 &1992925376 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6132598536177721071, guid: b850d167848978c439136b3f6412c3b7, type: 3}
@@ -3784,6 +3793,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -4441020322441633496, guid: d471aec8414e2b8449122c6434f49631, type: 3}
+      propertyPath: placingStyle
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3668906544723490716, guid: d471aec8414e2b8449122c6434f49631, type: 3}
       propertyPath: m_Name
       value: flower_011
@@ -3798,7 +3811,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4152674809549499686, guid: d471aec8414e2b8449122c6434f49631, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.854
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4152674809549499686, guid: d471aec8414e2b8449122c6434f49631, type: 3}
       propertyPath: m_LocalPosition.z

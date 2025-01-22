@@ -148,7 +148,7 @@ public class PlacingTarget_Wall : PlacingTarget
         return true;
     }
 
-    protected override void OnSigned(InputAction.CallbackContext context)
+    protected override void OnAnalogSigned(InputAction.CallbackContext context)
     {   
         // オブジェクト（ゴースト）自身の転回処理
         // ボタンを押している間回る
