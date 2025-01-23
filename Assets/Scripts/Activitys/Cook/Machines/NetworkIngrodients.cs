@@ -8,6 +8,8 @@ public class NetworkIngrodients : NetworkBehaviour
 
     private NetworkView _networkView = default;
 
+    private ConnectionChecker _connectionChecker = new ConnectionChecker();
+
     public NetworkView NetworkView => _networkView;
 
     private void Start()
@@ -23,7 +25,7 @@ public class NetworkIngrodients : NetworkBehaviour
             return;
         }
 
-        if (GateOfFusion.Instance.IsActivityConnected && GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        if (_connectionChecker.IsConnection)
         {
             _hitMachine = FindObjectOfType<MachineIDManager>().GetMachine(machineID);
 
@@ -40,17 +42,19 @@ public class NetworkIngrodients : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     public void RPC_ProcessEvent(float processValue)
     {
-        if (GateOfFusion.Instance.IsActivityConnected && GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        if (!_connectionChecker.IsConnection)
         {
-            LocalIngrodients ingrodients = _networkView.LocalView.GetComponent<LocalIngrodients>();
+            return;
+        }
 
-            bool isEndProcessing = ingrodients.SubToIngrodientsDetailInformationsTimeItTakes(_hitMachine.ProcessType, processValue);
+        LocalIngrodients ingrodients = _networkView.LocalView.GetComponent<LocalIngrodients>();
 
-            if (isEndProcessing)
-            {
-                ingrodients.ProcessingStart(_hitMachine.ProcessType, _hitMachine.ProcesserTransform);
-                //ingrodients.RPC_Destroy();
-            }
+        bool isEndProcessing = ingrodients.SubToIngrodientsDetailInformationsTimeItTakes(_hitMachine.ProcessType, processValue);
+
+        if (isEndProcessing)
+        {
+            ingrodients.ProcessingStart(_hitMachine.ProcessType, _hitMachine.ProcesserTransform);
+            ingrodients.RPC_Destroy();
         }
     }
 }

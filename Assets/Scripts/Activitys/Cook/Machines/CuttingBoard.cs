@@ -7,6 +7,8 @@ public class CuttingBoard : Machine
     [SerializeField]
     Collider _cuttingBoardCollider = default;
 
+    ConnectionChecker _connentionChecker = new ConnectionChecker();
+
     Knife _hittingKnife = default;
 
     LayerMask _itemLayer = 1 >> 7;
@@ -20,7 +22,7 @@ public class CuttingBoard : Machine
     {
         base.Update();
 
-        if (!GateOfFusion.Instance.IsActivityConnected || !GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        if (!_connentionChecker.IsConnection)
         {
             return;
         }

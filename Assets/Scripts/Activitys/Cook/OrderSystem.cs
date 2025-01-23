@@ -20,6 +20,7 @@ public class OrderSystem : MonoBehaviour
     [SerializeField]
     private OrderManager orderManager;
     private RemoteOrder remoteOrder;
+    private ConnectionChecker _connectonChecker = new ConnectionChecker();
     public bool IsLeader { get; set; }
 
     [SerializeField]
@@ -34,7 +35,7 @@ public class OrderSystem : MonoBehaviour
         isActivityConnected = false;
         activityProgressManagement.OnStart += () =>
         {
-            if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+            if (_connectonChecker.IsConnection)
             {
                 StartCoroutine(Co());
             }
@@ -42,7 +43,6 @@ public class OrderSystem : MonoBehaviour
 
         await UniTask.WaitUntil(() => GateOfFusion.Instance.IsActivityConnected);
         isActivityConnected = true;
-
     }
     public OrderTicket Order(int index, float orderWaitingTime, OrderWaitingType orderWaitingType)
     {
@@ -87,7 +87,7 @@ public class OrderSystem : MonoBehaviour
             StartCoroutine(Co());
         }
 
-        if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        if (!_connectonChecker.IsConnection)
         {
             return;
         }
@@ -121,7 +121,7 @@ public class OrderSystem : MonoBehaviour
 
     private void On(CustomerInformation customerInformation)
     {
-        if (GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        if (_connectonChecker.IsConnection)
         {
             StartCoroutine(Co());
         }

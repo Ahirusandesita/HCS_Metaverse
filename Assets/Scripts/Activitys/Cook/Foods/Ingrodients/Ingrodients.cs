@@ -18,6 +18,8 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
 
     protected Machine _hitMachine = default;
 
+    private ConnectionChecker _connectionChecker = new ConnectionChecker();
+
     [SerializeField]
     private IngrodientsAsset ingrodientsAsset;
     private List<IngrodientsDetailInformation> ingrodientsDetailInformations = new List<IngrodientsDetailInformation>();
@@ -111,13 +113,15 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
 
     public void ProcessingStart(ProcessingType processingType, Transform machineTransform)
     {
-        if (GateOfFusion.Instance.IsActivityConnected && GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        if (!_connectionChecker.IsConnection)
         {
-            FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
-            NetworkObject networkObject = GetComponent<LocalView>().NetworkView.GetComponent<NetworkObject>();
-            foodSpawnManagerRPC.RPC_CommoditySpawn(commodityFactory.CommodityIndex(commodityFactory.Generate(this, processingType)), machineTransform.rotation.eulerAngles, machineTransform.position, _hitMachine.MachineID);
-            foodSpawnManagerRPC.RPC_Despawn(networkObject);
+            return;
         }
+
+        FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
+        NetworkObject networkObject = GetComponent<LocalView>().NetworkView.GetComponent<NetworkObject>();
+        foodSpawnManagerRPC.RPC_CommoditySpawn(commodityFactory.CommodityIndex(commodityFactory.Generate(this, processingType)), machineTransform.rotation.eulerAngles, machineTransform.position, _hitMachine.MachineID);
+        foodSpawnManagerRPC.RPC_Despawn(networkObject);
     }
 
     void IInject<ISwitchableGrabbableActive>.Inject(ISwitchableGrabbableActive t)
