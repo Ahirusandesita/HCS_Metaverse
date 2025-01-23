@@ -24,7 +24,7 @@ public class LocalIngrodients : Ingrodients, IGrabbableActiveChangeRequester
 
     private void Update()
     {
-        if (GateOfFusion.Instance.IsActivityConnected && !GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        if (!GateOfFusion.Instance.IsActivityConnected && !GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
             return;
         }
@@ -79,9 +79,12 @@ public class LocalIngrodients : Ingrodients, IGrabbableActiveChangeRequester
         // 固定するオブジェクトのGrabbableをtrueにする
         grabbableActiveSwicher.Active(this);
         grabbableActiveSwicher.Cancellation(this);
+
+        // 物理判定を止める
+        GetComponent<Rigidbody>().isKinematic = true;
     }
 
-    [Rpc]
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     public void RPC_PutMachine(int machineID)
     {
         PutMachine(machineID);
@@ -102,9 +105,11 @@ public class LocalIngrodients : Ingrodients, IGrabbableActiveChangeRequester
         _hitMachine.UnSetProcessingIngrodient();
 
         _hitMachine = null;
+
+        GetComponent<Rigidbody>().isKinematic = false;
     }
 
-    [Rpc]
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     public void RPC_Destroy()
     {
         Destroy(gameObject);

@@ -27,8 +27,6 @@ public class NetworkIngrodients : NetworkBehaviour
         {
             _hitMachine = FindObjectOfType<MachineIDManager>().GetMachine(machineID);
 
-            Debug.LogError($"Put:NetworkView = {_networkView}");
-
             _networkView.LocalView.GetComponent<LocalIngrodients>().RPC_PutMachine(machineID);
         }
     }
