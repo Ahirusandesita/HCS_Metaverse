@@ -20,12 +20,7 @@ public class CuttingBoard : Machine
     {
         base.Update();
 
-        if (!GateOfFusion.Instance.IsActivityConnected)
-        {
-            return;
-        }
-
-        if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        if (!GateOfFusion.Instance.IsActivityConnected || !GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
             return;
         }

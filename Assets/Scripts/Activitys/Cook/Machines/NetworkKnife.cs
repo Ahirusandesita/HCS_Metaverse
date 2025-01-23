@@ -24,6 +24,6 @@ public class NetworkKnife : NetworkBehaviour
 
     public void RPC_UnSelect()
     {
-        //_networkView.LocalView.GetComponent<Knife>().RPC_UnSelect();
+        _networkView.LocalView.GetComponent<Knife>().RPC_UnSelect();
     }
 }
