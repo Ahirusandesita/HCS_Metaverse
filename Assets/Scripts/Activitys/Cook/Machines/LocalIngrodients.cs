@@ -11,6 +11,8 @@ public class LocalIngrodients : Ingrodients, IGrabbableActiveChangeRequester
 
     private LocalView _localView = default;
 
+    private ConnectionChecker _connentionChecker = new ConnectionChecker();
+
     public LocalView LocalView => _localView;
 
     private void Start()
@@ -24,7 +26,7 @@ public class LocalIngrodients : Ingrodients, IGrabbableActiveChangeRequester
 
     private void Update()
     {
-        if (!GateOfFusion.Instance.IsActivityConnected && !GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
+        if (!_connentionChecker.IsConnection)
         {
             return;
         }
