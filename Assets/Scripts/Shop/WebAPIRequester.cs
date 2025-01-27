@@ -20,8 +20,9 @@ public class WebAPIRequester
 	private const string DETABASE_PATH_VENDINGMACHINE_ENTRY = DETABASE_PATH_BASE + "salesmachine";
 	private const string DETABASE_PATH_VENDINGMACHINE_BUY = DETABASE_PATH_BASE + "salesmachine/buy";
 	private const string DETABASE_PATH_VENDINGMACHINE_UPDATE = DETABASE_PATH_BASE + "salesmachine/update";
+	private const string DETABASE_PATH_LOGIN = "http://10.11.33.228:8080/login";
 	private const string CONTENT_TYPE = "application/json";
-
+	private const string TOKEN_KEY = "Authorization";
 
 	#region Post/Get メソッド
 	/// <summary>
@@ -30,9 +31,11 @@ public class WebAPIRequester
 	/// <returns>・商品ラインナップ</returns>
 	public async UniTask<OnShopEntryData> PostShopEntry(int shopId)
 	{
+
 		WWWForm form = new WWWForm();
 		form.AddField("shopId", shopId);
 		using var request = UnityWebRequest.Post(DETABASE_PATH_SHOP_ENTRY, form);
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
 		await request.SendWebRequest();
 
 		switch (request.result)
@@ -49,6 +52,34 @@ public class WebAPIRequester
 	}
 
 	/// <summary>
+	/// ログイン時のAPI通信
+	/// </summary>
+	/// <param name="userName">ユーザー名または、メールアドレス</param>
+	/// <param name="password">パスワード</param>
+	/// <returns>ログインの成否</returns>
+	public async UniTask<bool> PostLogin(string userName, string password)
+	{
+		var sendLoginData = new SendLoginData(userName, password);
+		string jsonData = JsonUtility.ToJson(sendLoginData);
+		using var request = UnityWebRequest.Post(DETABASE_PATH_LOGIN, jsonData, CONTENT_TYPE);
+
+		await request.SendWebRequest();
+
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				return false;
+		}
+
+		string token = request.GetResponseHeader(TOKEN_KEY);
+		PlayerDontDestroyData.Instance.Token = token;
+		return true;
+	}
+
+	/// <summary>
 	/// ショップ購入時のAPI通信
 	/// </summary>
 	/// <returns>・購入後の所持品リスト
@@ -61,6 +92,7 @@ public class WebAPIRequester
 		string jsonData = JsonUtility.ToJson(sendShopPaymentData);
 
 		using var request = UnityWebRequest.Post(DETABASE_PATH_SHOP_BUY, jsonData, CONTENT_TYPE);
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
 		await request.SendWebRequest();
 		switch (request.result)
 		{
@@ -86,6 +118,7 @@ public class WebAPIRequester
 		WWWForm form = new WWWForm();
 		form.AddField("shopId", shopId);
 		using var request = UnityWebRequest.Post(DETABASE_PATH_VENDINGMACHINE_ENTRY, form);
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
 		await request.SendWebRequest();
 
 		switch (request.result)
@@ -116,6 +149,7 @@ public class WebAPIRequester
 		string jsonData = JsonUtility.ToJson(sendPaymentData);
 
 		using var request = UnityWebRequest.Post(DETABASE_PATH_VENDINGMACHINE_BUY, jsonData, CONTENT_TYPE);
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
 		await request.SendWebRequest();
 		switch (request.result)
 		{
@@ -141,6 +175,7 @@ public class WebAPIRequester
 		string jsonData = JsonUtility.ToJson(sendVMSalesdata);
 
 		using var request = UnityWebRequest.Post(DETABASE_PATH_VENDINGMACHINE_UPDATE, jsonData, CONTENT_TYPE);
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
 		await request.SendWebRequest();
 		switch (request.result)
 		{
@@ -161,11 +196,12 @@ public class WebAPIRequester
 	/// </summary>
 	/// <returns>・オブジェクトリスト
 	/// <br>・ショップID（自販機）</br></returns>
-	public async UniTask<OnMyRoomEntryData> PostMyRoomEntry(int userId)
+	public async UniTask<OnMyRoomEntryData> PostMyRoomEntry()
 	{
 		WWWForm form = new WWWForm();
-		form.AddField("userId", userId);
 		using var request = UnityWebRequest.Post(DETABASE_PATH_MYROOM_ENTRY, form);
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
+		
 		await request.SendWebRequest();
 
 		switch (request.result)
@@ -189,6 +225,7 @@ public class WebAPIRequester
 		string jsonData = JsonUtility.ToJson(sendMyRoomSaveData);
 
 		using var request = UnityWebRequest.Post(DETABASE_PATH_MYROOM_SAVE, jsonData, CONTENT_TYPE);
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
 		await request.SendWebRequest();
 		switch (request.result)
 		{
@@ -211,6 +248,7 @@ public class WebAPIRequester
 		string jsonData = JsonUtility.ToJson(sendUserLocationData);
 
 		using var request = UnityWebRequest.Post(DETABASE_PATH_USER_LOCATION, jsonData, CONTENT_TYPE);
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
 		await request.SendWebRequest();
 		switch (request.result)
 		{
@@ -231,6 +269,8 @@ public class WebAPIRequester
 	public async UniTask<OnCatchUserLocationData> GetUserLocation()
 	{
 		using var request = UnityWebRequest.Post(DETABASE_PATH_USER_LOCATION_CATCH, new WWWForm());
+		request.SetRequestHeader(TOKEN_KEY,PlayerDontDestroyData.Instance.Token);
+		
 		await request.SendWebRequest();
 		switch (request.result)
 		{
@@ -495,7 +535,21 @@ public class WebAPIRequester
 
 		[SerializeField] private List<ItemIDAmountPair> itemList = default;
 		[SerializeField] private int shopId = default;
-		[SerializeField] public int userId = default;
+		[SerializeField] private int userId = default;
+	}
+
+	[System.Serializable]
+	private class SendLoginData
+	{
+		public SendLoginData(string userName, string password)
+		{
+
+			this.userId = userName;
+			this.password = password;
+		}
+		//命名と意味が違うけど気にしないで
+		[SerializeField] private string userId = default;
+		[SerializeField] private string password = default;
 	}
 
 	[System.Serializable]
