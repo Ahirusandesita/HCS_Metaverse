@@ -15,7 +15,11 @@ public class GrabbableSceneRegister : MonoBehaviour, IGrabbableActiveChangeReque
                 return;
             }
         }
-        this.GetComponent<ISwitchableGrabbableActive>().Regist(this);
-        this.GetComponent<ISwitchableGrabbableActive>().Inactive(this);
+
+        if (registerSceneInInspectors.Count == 0)
+        {
+            this.GetComponent<ISwitchableGrabbableActive>().Regist(this);
+            this.GetComponent<ISwitchableGrabbableActive>().Inactive(this);
+        }
     }
 }
