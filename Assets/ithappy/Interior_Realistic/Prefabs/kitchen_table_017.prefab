@@ -93,6 +93,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a60bec2c52180aa499d5f01394af0d66, type: 3}
       insertIndex: -1
       addedObject: {fileID: -8216956311157095847}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a60bec2c52180aa499d5f01394af0d66, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2075410492069760555}
   m_SourcePrefab: {fileID: 100100000, guid: a60bec2c52180aa499d5f01394af0d66, type: 3}
 --- !u!23 &7180575691421998528 stripped
 MeshRenderer:
@@ -315,3 +318,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   meshRenderers:
   - {fileID: 7180575691421998528}
+--- !u!114 &2075410492069760555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8693772453965265941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41947717757c60444b61b1fe23f74628, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  registerSceneInInspectors:
+  - name: Shop
+    selectedIndex: 6

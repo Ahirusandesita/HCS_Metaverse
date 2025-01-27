@@ -16,7 +16,7 @@ public class GrabbableSceneRegister : MonoBehaviour, IGrabbableActiveChangeReque
             }
         }
 
-        if (registerSceneInInspectors.Count == 0)
+        if (registerSceneInInspectors.Count != 0)
         {
             this.GetComponent<ISwitchableGrabbableActive>().Regist(this);
             this.GetComponent<ISwitchableGrabbableActive>().Inactive(this);
