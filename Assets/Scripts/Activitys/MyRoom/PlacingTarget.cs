@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDependencyInformation>, IInputControllable
 {
 	private const float GROUND_OFFSET = 0.01f;
-	protected const float ROTATE_DURATION = 30f;  // 1秒間に回転する角度（度数法）
+	protected const float ROTATE_DURATION = 45f;  // 1秒間に回転する角度（度数法）
 	protected const float ROTATE_MAGNITUDE = 15f;
 
 	protected BoxCollider boxCollider = default;
@@ -24,6 +24,8 @@ public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDepend
 
 	protected float forwardOffset = default;
 	protected Action UpdateAction = default;
+
+	protected bool isDigitalSigned = false;
 
 
 	public virtual PlacingTarget Initialize(IEditOnlyGhost ghostModel, PlaceableObject placeableObject, Transform player)
@@ -48,10 +50,9 @@ public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDepend
 			? playerHeight
 			: forwardOffset;
 
-		Inputter.PlacingMode.AnalogSigned.performed += OnAnalogSigned;
-		Inputter.PlacingMode.AnalogSigned.canceled += OnAnalogSignedCancel;
 		Inputter.PlacingMode.Signed.performed += OnSigned;
 		Inputter.PlacingMode.Signed.canceled += OnSignedCancel;
+		Inputter.PlacingMode.Switch.performed += OnSwitch;
 		Inputter.PlacingMode.Place.performed += OnPlacing;
 
 		return this;
@@ -175,24 +176,31 @@ public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDepend
 		return true;
 	}
 
-	protected virtual void OnAnalogSigned(InputAction.CallbackContext context)
+	protected virtual void OnSigned(InputAction.CallbackContext context)
 	{
-		// オブジェクト（ゴースト）自身の転回処理
-		// ボタンを押している間回る
-		UpdateAction += () => rotateAngle += Time.deltaTime * context.ReadValue<float>() * ROTATE_DURATION;
+		if (isDigitalSigned)
+		{
+			rotateAngle += context.ReadValue<float>() * ROTATE_MAGNITUDE;
+		}
+		else
+		{
+			// オブジェクト（ゴースト）自身の転回処理
+			// ボタンを押している間回る
+			UpdateAction += () => rotateAngle += Time.deltaTime * context.ReadValue<float>() * ROTATE_DURATION;
+		}
 	}
 
-	protected virtual void OnAnalogSignedCancel(InputAction.CallbackContext context)
+	protected virtual void OnSignedCancel(InputAction.CallbackContext context)
 	{
 		UpdateAction = null;
 	}
 
-	protected virtual void OnSigned(InputAction.CallbackContext context)
+	protected virtual void OnSwitch(InputAction.CallbackContext context)
 	{
-		rotateAngle += context.ReadValue<float>() * ROTATE_MAGNITUDE;
+		isDigitalSigned = !isDigitalSigned;
 	}
 
-	protected virtual void OnSignedCancel(InputAction.CallbackContext context) { }
+	protected virtual void OnSwitchCancel(InputAction.CallbackContext context) { }
 
 	/// <summary>
 	/// 設置完了後の処理

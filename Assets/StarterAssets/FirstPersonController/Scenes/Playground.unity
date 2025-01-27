@@ -142,6 +142,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -2522731784440590359, guid: 82f624b1964c7ba4fb21eae95f185a9c, type: 3}
+      propertyPath: availableScenes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -2522731784440590359, guid: 82f624b1964c7ba4fb21eae95f185a9c, type: 3}
+      propertyPath: availableScenes.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: -285803165228392166, guid: 82f624b1964c7ba4fb21eae95f185a9c, type: 3}
       propertyPath: ghostOrigin
       value: 
@@ -605,6 +613,42 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1449846641731173931, guid: b850d167848978c439136b3f6412c3b7, type: 3}
+      propertyPath: aaa.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -1449846641731173931, guid: b850d167848978c439136b3f6412c3b7, type: 3}
+      propertyPath: aaa.Array.data[0].name
+      value: MyRoom
+      objectReference: {fileID: 0}
+    - target: {fileID: -1449846641731173931, guid: b850d167848978c439136b3f6412c3b7, type: 3}
+      propertyPath: availableScenes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -1449846641731173931, guid: b850d167848978c439136b3f6412c3b7, type: 3}
+      propertyPath: availableScenes.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -1449846641731173931, guid: b850d167848978c439136b3f6412c3b7, type: 3}
+      propertyPath: availableScenes.Array.data[1]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -1449846641731173931, guid: b850d167848978c439136b3f6412c3b7, type: 3}
+      propertyPath: aaa.Array.data[0].selectedIndex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -1449846641731173931, guid: b850d167848978c439136b3f6412c3b7, type: 3}
+      propertyPath: availableScenes.Array.data[0].name
+      value: Shop
+      objectReference: {fileID: 0}
+    - target: {fileID: -1449846641731173931, guid: b850d167848978c439136b3f6412c3b7, type: 3}
+      propertyPath: availableScenes.Array.data[1].name
+      value: Test
+      objectReference: {fileID: 0}
+    - target: {fileID: -1449846641731173931, guid: b850d167848978c439136b3f6412c3b7, type: 3}
+      propertyPath: availableScenes.Array.data[0].selectedIndex
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 6132598536177721071, guid: b850d167848978c439136b3f6412c3b7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0
@@ -948,17 +992,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f4311c30c24207e4e843d66d96338ab4, type: 3}
---- !u!114 &638396281 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4637959439538846677, guid: d471aec8414e2b8449122c6434f49631, type: 3}
-  m_PrefabInstance: {fileID: 4824747880680811802}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ad02228002de134c81fe02b928812ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &661716112
 GameObject:
   m_ObjectHideFlags: 0
@@ -1794,6 +1827,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3800496436466665405, guid: 82f624b1964c7ba4fb21eae95f185a9c, type: 3}
   m_PrefabInstance: {fileID: 53128466}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1097014567 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -285803165228392166, guid: 82f624b1964c7ba4fb21eae95f185a9c, type: 3}
+  m_PrefabInstance: {fileID: 53128466}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1097014557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ad02228002de134c81fe02b928812ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1156365688
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1809,7 +1853,7 @@ PrefabInstance:
     - target: {fileID: 1008322925437327410, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: testOrigin
       value: 
-      objectReference: {fileID: 638396281}
+      objectReference: {fileID: 1097014567}
     - target: {fileID: 1008322925437327410, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: placingMode
       value: 0

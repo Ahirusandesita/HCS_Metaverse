@@ -137,7 +137,6 @@ MonoBehaviour:
   pivotType: 0
   placingStyle: 0
   colliders: []
-  housingID: -1
 --- !u!54 &4998275752282632756
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -269,7 +268,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   onGrabbed: {fileID: 458083855350203262}
-  availableScenes: 
+  availableScenes: []
   canUseAtStart: 0
   maxInventoryCapacity: 0
 --- !u!114 &1658568817830385222
