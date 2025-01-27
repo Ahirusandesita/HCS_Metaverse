@@ -12,19 +12,17 @@ public class MyRoomLoader : MonoBehaviour
 
 	private async void Start()
 	{
+
 		await Load();
-		var editorWebAPIRequester = new EditorWebAPIRequester();
-		var itemDataList = new List<EditorWebAPIRequester.ItemData>();
-		foreach (var itemAsset in _itemBundleAsset.Items)
-		{
-			itemDataList.Add(new EditorWebAPIRequester.ItemData(itemAsset.ID, itemAsset.Name, itemAsset.Size));
-		}
-		editorWebAPIRequester.PostAddID(itemDataList).Forget();
 	}
 	public async UniTask Load()
 	{
 		WebAPIRequester requester = new WebAPIRequester();
-		MyRoomEntryData myRoomEntryData = await requester.PostMyRoomEntry(PlayerData.PlayerID);
+		if(PlayerDontDestroyData.Instance.Token == "")
+		{
+			await requester.PostLogin("User1", "hcs5511");
+		}
+		MyRoomEntryData myRoomEntryData = await requester.PostMyRoomEntry();
 		foreach (MyRoomObject myRoomObject in myRoomEntryData.ObjectList)
 		{
 			SetRoomObject(myRoomObject);

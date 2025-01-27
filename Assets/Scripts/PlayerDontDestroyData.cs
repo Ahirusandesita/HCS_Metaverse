@@ -10,6 +10,8 @@ public class PlayerDontDestroyData : MonoBehaviour
 	private int _money = 0;
 	[SerializeField]
 	private string _previousScene = "";
+	[SerializeField,Hide]
+	private string _token = default;
 	[Space(10)]
 	private readonly object _moneyLockObject = new object();
 	private readonly object _inventoryLockObject = new object();
@@ -17,8 +19,8 @@ public class PlayerDontDestroyData : MonoBehaviour
 	//id count
 	private List<ItemIDAmountPair> _inventory = new();
 	public static PlayerDontDestroyData Instance => _instance;
-	public IReadOnlyList<ItemIDAmountPair> Inventory => _inventory;
 	public int PlayerID { get => _playerID; set => _playerID = value; }
+	public IReadOnlyList<ItemIDAmountPair> Inventory => _inventory;
 	public string PreviousScene { get => _previousScene; set => _previousScene = value; }
 	public int Money
 	{
@@ -31,12 +33,20 @@ public class PlayerDontDestroyData : MonoBehaviour
 			}
 		}
 	}
+	public string Token { get => _token; set => _token = value; } 
 
 	public void AddInventory(ItemIDAmountPair itemIDAmountPair)
 	{
 		lock (_inventoryLockObject)
 		{
 			_inventory.Add(itemIDAmountPair);
+		}
+	}
+
+	public void AddDifferenceItem(IReadOnlyList<ItemIDAmountPair> list)
+	{
+		lock (_inventoryLockObject)
+		{
 		}
 	}
 
