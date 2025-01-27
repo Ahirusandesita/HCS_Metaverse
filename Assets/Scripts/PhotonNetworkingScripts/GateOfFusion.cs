@@ -16,22 +16,12 @@ public class GateOfFusion
 	public event System.Action OnConnect;
 	public event System.Action OnActivityConnected;
 	public event System.Action OnShutdown;
-
-
-	public GateOfFusion()
+	public MasterServerConect MasterServerConect { set => _masterServer = value; }
+	private GateOfFusion()
 	{
-		MasterServer.OnConnect += () => OnConnect?.Invoke();
-		MasterServer.OnShutdownEvent += () => OnShutdown?.Invoke();
+		
 	}
-	private MasterServerConect MasterServer
-	{
-		get
-		{
-			_masterServer ??= Object.FindObjectOfType<MasterServerConect>();
-			_masterServer ??= new GameObject("Master").AddComponent<MasterServerConect>();
-			return _masterServer;
-		}
-	}
+	private MasterServerConect MasterServer => _masterServer;
 	public bool IsUsePhoton { get => MasterServer.IsUsePhoton; }
 	public NetworkRunner NetworkRunner
 	{
@@ -47,6 +37,12 @@ public class GateOfFusion
 		{
 			_networkRunner = value;
 		}
+	}
+
+	public void Init()
+	{
+		MasterServer.OnConnect += () => OnConnect?.Invoke();
+		MasterServer.OnShutdownEvent += () => OnShutdown?.Invoke();
 	}
 
 	#region Spawn_Despawn
@@ -151,7 +147,7 @@ public class GateOfFusion
 			_syncResult = SyncResult.Complete;
 			return;
 		}
-		
+
 		string sessionName = currentRoom.NextSessionName;
 		PlayerRef localPlayerRef = NetworkRunner.LocalPlayer;
 		foreach (PlayerRef roomPlayer in currentRoom.JoinRoomPlayer)
