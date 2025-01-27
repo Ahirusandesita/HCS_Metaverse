@@ -51,7 +51,6 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	public bool IsKumaDebug => _isKumaDebug;
 #endif
 	#endregion
-
 	[ContextMenu("aaaa")]
 	private async void getTes()
 	{
@@ -137,6 +136,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 			Destroy(this.gameObject);
 			return;
 		}
+		GateOfFusion.Instance.MasterServerConect = this;
 		DontDestroyOnLoad(this.gameObject);
 		_networkRunner = await InstanceNetworkRunnerAsync();
 		if (!_isUsePhoton)
