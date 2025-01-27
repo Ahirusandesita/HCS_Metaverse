@@ -21,7 +21,7 @@ public class DishManager : MonoBehaviour
             return;
         }
 
-        GateOfFusion gateOfFusion = new GateOfFusion();
+        GateOfFusion gateOfFusion = GateOfFusion.Instance;
 
         GameObject newDishObject = await gateOfFusion.SpawnAsync(_dishAsset);
 
