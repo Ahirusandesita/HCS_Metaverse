@@ -21,6 +21,7 @@ public class WebAPIRequester
 	private const string DETABASE_PATH_VENDINGMACHINE_BUY = DETABASE_PATH_BASE + "salesmachine/buy";
 	private const string DETABASE_PATH_VENDINGMACHINE_UPDATE = DETABASE_PATH_BASE + "salesmachine/update";
 	private const string DETABASE_PATH_LOGIN = "http://10.11.33.228:8080/login";
+	private const string DETABASE_PATH_INVENTORY_CATCH = DETABASE_PATH_BASE + "inventory/catch";
 	private const string CONTENT_TYPE = "application/json";
 	private const string TOKEN_KEY = "Authorization";
 
@@ -201,7 +202,7 @@ public class WebAPIRequester
 		WWWForm form = new WWWForm();
 		using var request = UnityWebRequest.Post(DETABASE_PATH_MYROOM_ENTRY, form);
 		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
-		
+
 		await request.SendWebRequest();
 
 		switch (request.result)
@@ -269,8 +270,8 @@ public class WebAPIRequester
 	public async UniTask<OnCatchUserLocationData> GetUserLocation()
 	{
 		using var request = UnityWebRequest.Post(DETABASE_PATH_USER_LOCATION_CATCH, new WWWForm());
-		request.SetRequestHeader(TOKEN_KEY,PlayerDontDestroyData.Instance.Token);
-		
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
+
 		await request.SendWebRequest();
 		switch (request.result)
 		{
@@ -282,6 +283,28 @@ public class WebAPIRequester
 		}
 		var onCatchUserLocationData = JsonUtility.FromJson<OnCatchUserLocationData>(request.downloadHandler.text);
 		return onCatchUserLocationData;
+	}
+
+	/// <summary>
+	/// ユーザーインベントリの取得
+	/// </summary>
+	/// <returns></returns>
+	public async UniTask<OnCatchUserInventory> GetInventory()
+	{
+		using var request = UnityWebRequest.Post(DETABASE_PATH_INVENTORY_CATCH, new WWWForm());
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
+
+		await request.SendWebRequest();
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				throw new APIConnectException(request.error);
+		}
+		var onCatchUserInventoryData = JsonUtility.FromJson<OnCatchUserInventory>(request.downloadHandler.text);
+		return onCatchUserInventoryData;
 	}
 	#endregion
 
@@ -517,6 +540,28 @@ public class WebAPIRequester
 			public IReadOnlyList<UserLocationData> SessionList => sessionList;
 		}
 	}
+
+	[System.Serializable]
+	public class OnCatchUserInventory : ResponseData
+	{
+		public OnCatchUserInventory(Body body)
+		{
+			this.body = body;
+		}
+		[SerializeField] private Body body = default;
+		public IReadOnlyList<UserInventoryData> Inventory => body.Inventory;
+		[System.Serializable]
+		public class Body
+		{
+			public Body(List<UserInventoryData> itemList)
+			{
+				this.itemList = itemList;
+			}
+
+			[SerializeField] private List<UserInventoryData> itemList = default;
+			public IReadOnlyList<UserInventoryData> Inventory => itemList;
+		}
+	}
 	#endregion
 
 	#region 送信データ
@@ -607,6 +652,27 @@ public class WebAPIRequester
 		public string SessionName => sessionName;
 		public string LocationName => locationName;
 	}
+
+	[System.Serializable]
+	public struct UserInventoryData
+	{
+		[SerializeField] private int itemId;
+		[SerializeField] private string itemName;
+		[SerializeField] private int userIndex;
+		[SerializeField] private int quantity;
+		public UserInventoryData(int itemId,string itemName,int userIndex,int quantity)
+		{
+			this.itemId = itemId;
+			this.itemName = itemName;
+			this.userIndex = userIndex;
+			this.quantity = quantity;
+		}
+		public int ItemID => itemId;
+		public string ItemName => itemName;
+		public int UserIndex => userIndex;
+		public int Count => quantity;
+	}
+
 
 	/// <summary>
 	/// ・アイテムID
