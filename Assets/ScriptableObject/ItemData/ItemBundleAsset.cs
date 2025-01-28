@@ -123,7 +123,7 @@ namespace UnityEditor.HCSMeta
 				var itemDataList = new List<EditorWebAPIRequester.ItemData>();
 				foreach (var itemAsset in itemBundleAsset.Items)
 				{
-					itemDataList.Add(new EditorWebAPIRequester.ItemData(itemAsset.ID, itemAsset.Name, itemAsset.Size));
+					itemDataList.Add(new EditorWebAPIRequester.ItemData(itemAsset.ID, itemAsset.Name, itemAsset.Size, (int)itemAsset.Genre));
 				}
 				editorWebAPIRequester.PostAddID(itemDataList).Forget();
 			}
