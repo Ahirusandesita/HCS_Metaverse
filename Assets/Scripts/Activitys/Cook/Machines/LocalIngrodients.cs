@@ -102,8 +102,18 @@ public class LocalIngrodients : Ingrodients, IGrabbableActiveChangeRequester
         _localView.NetworkView.GetComponent<NetworkIngrodients>().RPC_IngrodientsSelect();
     }
 
+    private void OnDestroy()
+    {
+        UnPutMachine();
+    }
+
     public void UnPutMachine()
     {
+        if (_hitMachine == null)
+        {
+            return;
+        }
+
         _hitMachine.UnSetProcessingIngrodient();
 
         _hitMachine = null;

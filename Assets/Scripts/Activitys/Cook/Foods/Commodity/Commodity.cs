@@ -19,39 +19,39 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
 
     private ISwitchableGrabbableActive switchableGrabbableActive;
 
-    private PointableUnityEventWrapper pointableUnityEventWrapper;
+    private PointableUnityEventWrapper _pointableUnityEventWrapper;
     public event PointableHandler OnPointable;
-    private GrabObjectScale grabObjectScale;
+    private GrabObjectScale _grabObjectScale;
 
     private LocalView _localView = default;
     public LocalView LocalView => _localView;
 
     [SerializeField]
-    private StateAuthorityData stateAuthority;
-    private NetworkRunner networkRunner;
+    private StateAuthorityData _stateAuthority;
+    private NetworkRunner _networkRunner;
 
     private bool isGrab = false;
 
     private void Awake()
     {
-        pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
+        _pointableUnityEventWrapper = this.GetComponentInChildren<PointableUnityEventWrapper>();
         _localView = GetComponent<LocalView>();
 
-        pointableUnityEventWrapper.WhenSelect.AddListener((data) => OnPointable?.Invoke(new GrabEventArgs(GrabType.Grab)));
-        pointableUnityEventWrapper.WhenUnselect.AddListener((data) => OnPointable?.Invoke(new GrabEventArgs(GrabType.UnGrab)));
+        _pointableUnityEventWrapper.WhenSelect.AddListener((data) => OnPointable?.Invoke(new GrabEventArgs(GrabType.Grab)));
+        _pointableUnityEventWrapper.WhenUnselect.AddListener((data) => OnPointable?.Invoke(new GrabEventArgs(GrabType.UnGrab)));
 
         if (!GetComponent<Ingrodients>())
         {
-            pointableUnityEventWrapper.WhenSelect.AddListener((data) => GetComponent<LocalView>().Grab());
-            pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GetComponent<LocalView>().Release());
+            _pointableUnityEventWrapper.WhenSelect.AddListener((data) => GetComponent<LocalView>().Grab());
+            _pointableUnityEventWrapper.WhenUnselect.AddListener((data) => GetComponent<LocalView>().Release());
 
-            pointableUnityEventWrapper.WhenSelect.AddListener((data) => isGrab = true);
-            pointableUnityEventWrapper.WhenUnhover.AddListener((data) => isGrab = false);
+            _pointableUnityEventWrapper.WhenSelect.AddListener((data) => isGrab = true);
+            _pointableUnityEventWrapper.WhenUnhover.AddListener((data) => isGrab = false);
         }
 
 
-        grabObjectScale = new GrabObjectScale();
-        grabObjectScale.StartSize = this.transform.lossyScale;
+        _grabObjectScale = new GrabObjectScale();
+        _grabObjectScale.StartSize = this.transform.lossyScale;
 
         //this.stateAuthority = this.GetComponent<StateAuthorityData>();
         //stateAuthority.OnAuthrity += (data) =>
@@ -66,17 +66,18 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
         //    }
         //};
 
-        networkRunner = GateOfFusion.Instance.NetworkRunner;
+        _networkRunner = GateOfFusion.Instance.NetworkRunner;
     }
 
     public void Grab()
     {
         this.transform.parent = null;
-        this.transform.localScale = grabObjectScale.StartSize;
+        this.transform.localScale = _grabObjectScale.StartSize;
     }
 
     private void FixedUpdate()
     {
+        // NetworkViewとの座標同期
         if (isGrab)
         {
             GetComponent<LocalView>().NetworkView.RPC_Position(this.transform.position, this.transform.rotation.eulerAngles);
@@ -137,25 +138,28 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.LogError($"{GateOfFusion.Instance.IsActivityConnected} , {GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient}");
-
+        // 接続後かつホストの時 でなければ終了
         if (!GateOfFusion.Instance.IsActivityConnected || !GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient)
         {
             return;
         }
 
-        Debug.LogError($"Commodityますたー");
-
+        // 接触したCollisionがCommodityを持つかどうか
         if (collision.transform.root.transform.GetComponentInChildren<Commodity>())
         {
+            // Commodityをキャッシュ
             Commodity collisionCommodity = collision.transform.root.transform.GetComponentInChildren<Commodity>();
 
+            // 組み合わせ可能な状態かどうか
             if (canMix && collisionCommodity.CanMix)
             {
+                // CommodityIDが大きい方を優先して実行
                 if (CommodityAsset.CommodityID > collisionCommodity.CommodityAsset.CommodityID)
                 {
+                    // 組み合わせ後のCommodityの種類を取得
                     Commodity mixCommodity = MixCommodity.Mix(new Commodity[] { this, collisionCommodity });
 
+                    // 
                     if (!(mixCommodity is null))
                     {
                         Debug.LogError($"mix前");
