@@ -660,7 +660,7 @@ public class WebAPIRequester
 		[SerializeField] private string itemName;
 		[SerializeField] private int userIndex;
 		[SerializeField] private int quantity;
-		public UserInventoryData(int itemId,string itemName,int userIndex,int quantity)
+		public UserInventoryData(int itemId, string itemName, int userIndex, int quantity)
 		{
 			this.itemId = itemId;
 			this.itemName = itemName;
@@ -927,16 +927,19 @@ public class EditorWebAPIRequester
 		[SerializeField] private int itemId;
 		[SerializeField] private string itemName;
 		[SerializeField] private int size;
+		[SerializeField] private int genre;
 
 		public int ItemID => itemId;
 		public string ItemName => itemName;
 		public int Size => size;
+		public int Genre => genre;
 
-		public ItemData(int itemId, string itemName, int size)
+		public ItemData(int itemId, string itemName, int size, int genre)
 		{
 			this.itemId = itemId;
 			this.itemName = itemName;
 			this.size = size;
+			this.genre = genre;
 		}
 	}
 }
