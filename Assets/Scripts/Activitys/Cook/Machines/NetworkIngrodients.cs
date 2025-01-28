@@ -1,6 +1,4 @@
 using Fusion;
-using UnityEngine;
-using Cysharp.Threading.Tasks;
 
 public class NetworkIngrodients : NetworkBehaviour
 {
