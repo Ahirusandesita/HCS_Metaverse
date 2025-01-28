@@ -1,19 +1,19 @@
+using Fusion;
 using Oculus.Interaction;
 using Oculus.Interaction.HandGrab;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using System.Reflection;
-using System.IO;
-using Fusion;
 
 public class GrabbableAutoAttach : EditorWindow
 {
 	[SerializeField] private GameObject prefab = default;
 	[SerializeField] private GameObject[] prefabs = default;
-	[SerializeField] private bool autoSerach = default;
+	[SerializeField] private bool autoSearch = default;
 	[SerializeField] private bool useHandGrab = default;
 	[SerializeField] private bool useDistanceGrab = default;
 	[SerializeField] private bool useDistanceHandGrab = default;
@@ -63,7 +63,7 @@ public class GrabbableAutoAttach : EditorWindow
 		EditorGUILayout.Space(16);
 
 		prefab = EditorGUILayout.ObjectField("Target Object", prefab, typeof(GameObject), false) as GameObject;
-		autoSerach = EditorGUILayout.Toggle("Auto Search", autoSerach);
+		autoSearch = EditorGUILayout.Toggle("Auto Search", autoSearch);
 
 		EditorGUILayout.Space(16);
 
@@ -88,7 +88,7 @@ public class GrabbableAutoAttach : EditorWindow
 		// Button押下で自動アタッチ実行
 		if (GUILayout.Button("Auto Attach"))
 		{
-			if (autoSerach)
+			if (autoSearch)
 			{
 				// すべてのPrefabのAssetPathを取得
 				var assetPaths = AssetDatabase.FindAssets($"t:Prefab")
@@ -110,6 +110,8 @@ public class GrabbableAutoAttach : EditorWindow
 			else if (prefab is null)
 			{
 				Debug.Log("Target Objectにプレハブがアタッチされていません。");
+				EditorGUILayout.EndScrollView();
+				target.ApplyModifiedProperties();
 				return;
 			}
 			else
@@ -284,7 +286,6 @@ public class GrabbableAutoAttach : EditorWindow
 						break;
 					}
 
-					// Conditionalはメソッド内はコンパイルされてしまうので、仕方なく二重
 					var existingAsset = AssetDatabase.FindAssets($"t:{nameof(ItemAsset)}")
 							.Select(AssetDatabase.GUIDToAssetPath)
 							.Select(AssetDatabase.LoadAssetAtPath<ItemAsset>)
