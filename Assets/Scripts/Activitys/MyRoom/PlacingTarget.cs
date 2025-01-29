@@ -207,7 +207,8 @@ public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDepend
 	/// </summary>
 	protected virtual void OnPlacing(InputAction.CallbackContext context)
 	{
-
+		Instantiate(placeableObject, transform.position, transform.rotation);
+		Destroy(gameObject);
 	}
 
 	protected virtual void OnTriggerEnter(Collider other)

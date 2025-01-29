@@ -142,8 +142,7 @@ public class GhostModel : IEditOnlyGhost
             for (int k = 0; k < renderers[i].sharedMaterials.Length; k++)
             {
                 // ì¬‚·‚éMaterial‚Í‚·‚×‚ÄGhost‚¾‚ªA’†g‚ÌTexture‚ð•Ï‚¦‚é
-                //ghostMaterials.Add(material);
-                renderer.materials[k].SetTexture(TEXTURE_NAME, renderers[i].materials[k].mainTexture);
+                renderer.materials[k].SetTexture(TEXTURE_NAME, renderers[i].sharedMaterials[k].mainTexture);
                 renderer.materials[k].SetColor(COLOR_NAME, (Color)defaultColor);
             }
             // -----------------------------------------------------------------------------

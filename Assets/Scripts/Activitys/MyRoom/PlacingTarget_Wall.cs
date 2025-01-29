@@ -150,16 +150,9 @@ public class PlacingTarget_Wall : PlacingTarget
 
 	protected override void OnSigned(InputAction.CallbackContext context)
 	{
-		if (isDigitalSigned)
-		{
-			yPositionRising += context.ReadValue<float>() * ROTATE_MAGNITUDE;
-		}
-		else
-		{
-			// オブジェクト（ゴースト）自身の転回処理
-			// ボタンを押している間回る
-			UpdateAction += () => yPositionRising += Time.deltaTime * context.ReadValue<float>() * RISING_SPEED;
-		}
+		// オブジェクト（ゴースト）自身の転回処理
+		// ボタンを押している間回る
+		UpdateAction += () => yPositionRising += Time.deltaTime * context.ReadValue<float>() * RISING_SPEED;
 	}
 
 #if UNITY_EDITOR

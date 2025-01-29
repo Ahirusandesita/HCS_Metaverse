@@ -17,7 +17,8 @@ public class PlacingTarget_Shelf : PlacingTarget, IInteractionInfoReceiver
 		Inputter.Player.Move.canceled += OnMoveCancel;
 		Inputter.PlacingMode.NextOrPrevious.performed += _ =>
 		{
-			XDebug.Log(_.ReadValue<float>());
+			XDebug.Log("Wow!", "orange");
+			XDebug.Log(_.ReadValue<float>(), "orange");
 		};
 		FindObjectOfType<PlayerInteraction>().Add(this);
 		return this;
