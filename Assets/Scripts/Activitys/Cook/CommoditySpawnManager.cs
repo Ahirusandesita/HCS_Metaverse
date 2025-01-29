@@ -57,6 +57,11 @@ public class CommoditySpawnManager : MonoBehaviour
         LocalView localView = Instantiate(allCommodityAsset.Commodities[index], position, Quaternion.Euler(rotation)).GetComponent<LocalView>();
         //localView.GetComponent<LocalIngrodients>().PutMachine(machineID);
         localView.NetworkViewInject(networkView);
+        Rigidbody rigidbody = localView.GetComponentInChildren<Rigidbody>();
+        if (rigidbody != null)
+        {
+            rigidbody.isKinematic = false;
+        }
         AllSpawn instance = await GateOfFusion.Instance.SpawnAsync(allSpawn);
         await instance.Async();
         GateOfFusion.Instance.Despawn(instance);
@@ -79,6 +84,11 @@ public class CommoditySpawnManager : MonoBehaviour
         //localView.GetComponent<LocalIngrodients>().PutMachine(machineID);
         localView.NetworkViewInject(networkView);
         networkInformations.Add(new NetworkInformation(networkView, index));
+        Rigidbody rigidbody = localView.GetComponentInChildren<Rigidbody>();
+        if (rigidbody != null)
+        {
+            rigidbody.isKinematic = false;
+        }
     }
 
     public void NewMember(PlayerRef player)
