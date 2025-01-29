@@ -159,12 +159,11 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
                     // 組み合わせ後のCommodityの種類を取得
                     Commodity mixCommodity = MixCommodity.Mix(new Commodity[] { this, collisionCommodity });
 
-                    // 
+                    // 組み合わせ後のCommodityが存在した場合のみ実行
                     if (!(mixCommodity is null))
                     {
-                        Debug.LogError($"mix前");
+                        // commodityFactory
                         CommodityFactory commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
-                        Debug.LogWarning($"<color=blue>CollisionCommodity = {collisionCommodity} , NetworkObject = {collisionCommodity.LocalView.NetworkView.GetComponent<NetworkObject>()}</color>");
                         _localView.NetworkView.GetComponent<NetworkCommodity>().RPC_MixCommodity(collisionCommodity.LocalView.NetworkView.GetComponent<NetworkObject>(), commodityFactory.CommodityIndex(mixCommodity));
                         canMix = false;
                         collisionCommodity.canMix = false;

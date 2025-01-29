@@ -17,6 +17,11 @@ public class TestMovieAnimation : MonoBehaviour
 
     private void Start()
     {
+        FindObjectOfType<TestRunning>().animationEvent += AnimationChenge;        
+    }
+
+    private void AnimationChenge()
+    {
         animator = GetComponent<Animator>();
 
         StartCoroutine(StartWalking());
@@ -47,7 +52,7 @@ public class TestMovieAnimation : MonoBehaviour
 
     private IEnumerator WaveHand()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
 
         animator.SetTrigger("OnAction");
     }
