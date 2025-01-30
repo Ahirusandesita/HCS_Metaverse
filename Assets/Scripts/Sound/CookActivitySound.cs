@@ -7,9 +7,9 @@ public class CookActivitySound : MonoBehaviour
     [System.Serializable]
     public struct CookSE
     {
-        public AudioClip _cut;
-        public AudioClip _bake;
-        public AudioClip _mix;
+        public AudioClip cut;
+        public AudioClip bake;
+        public AudioClip mix;
     }
 
     [SerializeField]
@@ -27,13 +27,13 @@ public class CookActivitySound : MonoBehaviour
         switch (name)
         {
             case SEName_Cook.cut:
-                return _cookSE._cut;
+                return _cookSE.cut;
 
             case SEName_Cook.bake:
-                return _cookSE._bake;
+                return _cookSE.bake;
 
             case SEName_Cook.mix:
-                return _cookSE._mix;
+                return _cookSE.mix;
 
             default:
                 Debug.Log("SENameÇ™ë∂ç›ÇµÇ‹ÇπÇÒ by CookActivity");
