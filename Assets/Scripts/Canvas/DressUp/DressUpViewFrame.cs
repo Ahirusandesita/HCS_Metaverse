@@ -17,7 +17,7 @@ public class DressUpViewFrame : MonoBehaviour
     private List<ItemAsset> itemAssets;
     private int index;
 
-    public event Action<int> OnDressUp;
+    public event Action<int, string> OnDressUp;
 
     private void Awake()
     {
@@ -50,17 +50,17 @@ public class DressUpViewFrame : MonoBehaviour
 
     public void Click_Next()
     {
-        if(itemAssets == null)
+        if (itemAssets == null)
         {
             return;
         }
 
         index++;
-        if(index > itemAssets.Count - 1)
+        if (index > itemAssets.Count - 1)
         {
             index = 0;
         }
-        OnDressUp?.Invoke(index);
+        OnDressUp?.Invoke(itemAssets[index].ID, itemAssets[index].Name);
         icon.sprite = itemAssets[index].ItemIcon;
         textMesh.text = itemAssets[index].Name;
     }
@@ -72,11 +72,11 @@ public class DressUpViewFrame : MonoBehaviour
         }
 
         index--;
-        if(index < 0)
+        if (index < 0)
         {
             index = itemAssets.Count - 1;
         }
-        OnDressUp?.Invoke(index);
+        OnDressUp?.Invoke(itemAssets[index].ID, itemAssets[index].Name);
         icon.sprite = itemAssets[index].ItemIcon;
         textMesh.text = itemAssets[index].Name;
     }

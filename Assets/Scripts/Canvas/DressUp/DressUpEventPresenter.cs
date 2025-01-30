@@ -4,11 +4,11 @@ using System.Linq;
 using UnityEngine;
 public interface IDressUpEventSubscriber
 {
-    void OnDressUp(int id);
+    void OnDressUp(int id, string name);
 }
 public class DressUpEventPresenter : MonoBehaviour
 {
-    [SerializeField,Tooltip("ただ名前つけたら分かりやすいから置いてるだけ")]
+    [SerializeField, Tooltip("ただ名前つけたら分かりやすいから置いてるだけ")]
     private string dressUpName;
 
     [SerializeField, InterfaceType(typeof(IDressUpEventVendor))]

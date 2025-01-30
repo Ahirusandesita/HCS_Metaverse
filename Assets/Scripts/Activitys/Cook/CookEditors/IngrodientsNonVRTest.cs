@@ -1,6 +1,6 @@
 using UnityEditor;
 using UnityEngine;
-
+#if UNITY_EDITOR
 [CustomEditor(typeof(Ingrodients))]//Šg’£‚·‚éƒNƒ‰ƒX‚ðŽw’è
 public class IngrodientsNonVRTest : Editor
 {
@@ -20,3 +20,4 @@ public class IngrodientsNonVRTest : Editor
     }
 
 }
+#endif

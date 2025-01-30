@@ -5,7 +5,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 public interface IDressUpEventVendor
 {
-    IDisposable SubscribeDressUpEvent(Action<int> action);
+    IDisposable SubscribeDressUpEvent(Action<int, string> action);
 }
 public class DressUpInformation
 {
@@ -32,10 +32,10 @@ public class DressUpViewControl : MonoBehaviour, IDressUpEventVendor
 
     private class DressUpEventHelper : IDisposable
     {
-        public Action<int> action;
+        public Action<int, string> action;
 
         private DressUpEventHelper() { }
-        public DressUpEventHelper(Action<int> action)
+        public DressUpEventHelper(Action<int, string> action)
         {
             this.action = action;
         }
@@ -59,7 +59,7 @@ public class DressUpViewControl : MonoBehaviour, IDressUpEventVendor
 
         SpawnFrame();
     }
-    public IDisposable SubscribeDressUpEvent(Action<int> action)
+    public IDisposable SubscribeDressUpEvent(Action<int, string> action)
     {
         DressUpEventHelper dressUpEventHelper = new DressUpEventHelper(action);
         foreach (DressUpViewFrame dressUpViewFrame in dressUpViewFrames)
