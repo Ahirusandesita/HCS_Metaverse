@@ -26200,6 +26200,7 @@ GameObject:
   - component: {fileID: -8518734178690992804}
   - component: {fileID: 347929714470228871}
   - component: {fileID: 6239254122608754491}
+  - component: {fileID: 9065789869709379307}
   m_Layer: 7
   m_Name: RemoteAvatar
   m_TagString: Untagged
@@ -26279,6 +26280,25 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 1
+--- !u!114 &9065789869709379307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7202047677650180228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0bebc7e0ab492d4194e9570212f09b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _footsteps:
+    footsteps_1: {fileID: 8300000, guid: 9eb09173afc69c841a42dfb441d589dd, type: 3}
+    footsteps_2: {fileID: 8300000, guid: 2cc16de4686264d40b011785eed17467, type: 3}
+    footsteps_3: {fileID: 8300000, guid: d2af31575c7822d439b94035c00d4956, type: 3}
+    footsteps_4: {fileID: 8300000, guid: 8024532b6a312f54baca75e848cf9172, type: 3}
+    footsteps_5: {fileID: 8300000, guid: 69b5485a0ff487b49909d02fd8b84875, type: 3}
+    footsteps_6: {fileID: 8300000, guid: b902d6695bd9c5f498bce55b50d65f06, type: 3}
 --- !u!1 &7206829699767853654
 GameObject:
   m_ObjectHideFlags: 0

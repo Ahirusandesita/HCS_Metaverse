@@ -17,7 +17,11 @@ public class RemoteView : NetworkBehaviour,IDependencyInjector<PlayerBodyDepende
 
 	private Transform _playerTransform;
 	private Transform _viewTransform;
+	private Vector2 _inputDirection;
+	private float _footstepsInterval;
+	private const float FOOTSTEPS_INTERVAL = 0.8f;
 	private PlayerBodyDependencyInformation _information;
+	private PlayerSE _playerSE;
 
 	public override void Spawned()
 	{
@@ -25,6 +29,13 @@ public class RemoteView : NetworkBehaviour,IDependencyInjector<PlayerBodyDepende
 		base.Spawned();
 		_playerTransform = FindObjectOfType<VRPlayerController>().transform;
 		_viewTransform = transform;
+
+		_playerSE = GetComponentInChildren<PlayerSE>();
+
+		Inputter.Player.Move.performed += dir =>
+		{
+			_inputDirection = dir.ReadValue<Vector2>();
+		};
 
 		PlayerInitialize.ConsignmentInject_static(this);
 	}
@@ -39,6 +50,18 @@ public class RemoteView : NetworkBehaviour,IDependencyInjector<PlayerBodyDepende
 		Vector3 rotation = _viewTransform.rotation.eulerAngles;
         rotation.y = _information.Head.Rotation.eulerAngles.y;
         _viewTransform.rotation = Quaternion.Euler(rotation);
+
+		if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient) return;
+
+		_footstepsInterval -= Time.deltaTime;
+
+		if (_footstepsInterval > 0) return;
+
+        if (_inputDirection != Vector2.zero)
+        {
+			_playerSE.PlayFootStep();
+			_footstepsInterval = FOOTSTEPS_INTERVAL;
+		}
     }
 
     public void Inject(PlayerBodyDependencyInformation information)
