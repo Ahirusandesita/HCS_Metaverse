@@ -26,6 +26,8 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
     private LocalView _localView = default;
     public LocalView LocalView => _localView;
 
+    private CookActivitySound _sound = default;
+
     [SerializeField]
     private StateAuthorityData _stateAuthority;
     private NetworkRunner _networkRunner;
@@ -67,6 +69,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
         //};
 
         _networkRunner = GateOfFusion.Instance.NetworkRunner;
+        _sound = FindObjectOfType<CookActivitySound>();
     }
 
     public void Grab()
@@ -162,6 +165,8 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
                     // ‘g‚Ý‡‚í‚¹Œã‚ÌCommodity‚ª‘¶Ý‚µ‚½ê‡‚Ì‚ÝŽÀs
                     if (!(mixCommodity is null))
                     {
+                        _sound.PlayOneShotSE(CookActivitySound.SEName_Cook.mix, transform.position);
+
                         // commodityFactory
                         CommodityFactory commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();
                         _localView.NetworkView.GetComponent<NetworkCommodity>().RPC_MixCommodity(collisionCommodity.LocalView.NetworkView.GetComponent<NetworkObject>(), commodityFactory.CommodityIndex(mixCommodity));
