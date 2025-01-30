@@ -63,6 +63,7 @@ public enum ItemGenre
 	Costume = 2,
 	Usable = 3,
 	Food = 4,
+	Animation = 5,
 }
 
 #if UNITY_EDITOR

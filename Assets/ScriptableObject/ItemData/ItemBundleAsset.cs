@@ -70,10 +70,12 @@ namespace UnityEditor.HCSMeta
 				StringBuilder sb2 = new StringBuilder(EditorSaveSystem.Load(PATH));
 				StringBuilder sb3 = new StringBuilder(EditorSaveSystem.Load(PATH));
 				StringBuilder sb4 = new StringBuilder(EditorSaveSystem.Load(PATH));
-				int id1 = int.Parse(sb1.Remove(5, 18).ToString());
-				int id2 = int.Parse(sb2.Remove(0, 6).Remove(5, 12).ToString());
-				int id3 = int.Parse(sb3.Remove(0, 12).Remove(5, 6).ToString());
-				int id4 = int.Parse(sb4.Remove(0, 18).ToString());
+				StringBuilder sb5 = new StringBuilder(EditorSaveSystem.Load(PATH));
+				int id1 = int.Parse(sb1.Remove(5, 24).ToString());
+				int id2 = int.Parse(sb2.Remove(0, 6).Remove(5, 18).ToString());
+				int id3 = int.Parse(sb3.Remove(0, 12).Remove(5, 12).ToString());
+				int id4 = int.Parse(sb4.Remove(0, 18).Remove(5, 6).ToString());
+				int id5 = int.Parse(sb5.Remove(0, 24).ToString());
 
 				foreach (var itemAsset in itemBundleAsset.Items)
 				{
@@ -101,6 +103,11 @@ namespace UnityEditor.HCSMeta
 							case ItemGenre.Food:
 								itemIDInfo.SetValue(itemAsset, id4);
 								id4++;
+								break;
+
+							case ItemGenre.Animation:
+								itemIDInfo.SetValue(itemAsset, id5);
+								id5++;
 								break;
 
 							default:
