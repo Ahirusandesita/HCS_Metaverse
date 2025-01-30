@@ -9,6 +9,8 @@ public class CuttingBoard : Machine
 
     ConnectionChecker _connentionChecker = new ConnectionChecker();
 
+    CookActivitySound _sound = default;
+
     Knife _hittingKnife = default;
 
     LayerMask _itemLayer = 1 >> 7;
@@ -16,6 +18,7 @@ public class CuttingBoard : Machine
     protected override void Start()
     {
         base.Start();
+        _sound = FindObjectOfType<CookActivitySound>();
     }
 
     protected override void Update()
@@ -59,6 +62,7 @@ public class CuttingBoard : Machine
                         Debug.LogWarning($"<color=blue>•ï’š“–‚½‚Á‚½‚æ‚ñ</color>");
                         ProcessEvent(_processingValue);
                         _hittingKnife = knife;
+                        _sound.PlayOneShotSE(CookActivitySound.SEName_Cook.cut, transform.position);
                     }
                     else
                     {
