@@ -24,6 +24,10 @@ public class ItemAsset : ScriptableObject
 	[Header("Network共有するViewプレハブ")]
 	[SerializeField]
 	private NetworkView networkView = default;
+	[Space(10)]
+	[Header("データベースから除外する")]
+	[SerializeField]
+	private bool excludeDatabese = false;
 
 	public int ID => itemID;
 	public string Name => itemName;
@@ -45,6 +49,7 @@ public class ItemAsset : ScriptableObject
 	public GameObject Prefab => prefab;
 	public IDisplayItem DisplayItem => displayItem as IDisplayItem;
 	public NetworkView NetworkView => networkView;
+	public bool ExcludeDatabase => excludeDatabese;
 
 #if UNITY_EDITOR
 	public void OnValidate()
