@@ -36,7 +36,7 @@ public class ChangeOfClothes : MonoBehaviour
             action(itemAsset, "Glove", CharacterControl.Instance.CharacterBase.PartsGlove);
         }
 
-        GetComponentInChildren<CharacterBase>().Initialize();
+        //GetComponentInChildren<CharacterBase>().Initialize();
     }
     private void Update()
     {
