@@ -137,7 +137,14 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
 
         for (int i = 0; i < _children.Length; i++)
         {
-            if (_children[i].GetComponent<ItemAsset>().ID != id)
+            if (_children[i].TryGetComponent<ItemAsset>(out ItemAsset itemAsset))
+            {
+                if (itemAsset.ID != id)
+                {
+                    continue;
+                }
+            }
+            else
             {
                 continue;
             }
