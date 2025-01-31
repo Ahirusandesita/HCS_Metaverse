@@ -124,6 +124,34 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
     {
         Transform partParent = transform.Find("Parts");
         _children = partParent.GetComponentsInChildren<Transform>(true);
+
+        Transform[] wearing = partParent.GetComponentsInChildren<Transform>();
+
+        for (int wearingIndex = 0; wearingIndex < wearing.Length; wearingIndex++)
+        {
+            string name = wearing[wearingIndex].name;
+
+            for (int i = 0; i < _children.Length; i++)
+            {
+                if (!_children[i].name.Contains(name))
+                {
+                    continue;
+                }
+
+                int machIndex = UNWEAR_INDEX;
+
+                for (int nameIndex = 0; nameIndex < _partsNames.Length; nameIndex++)
+                {
+                    if (_children[i].gameObject.name.Contains(_partsNames[nameIndex]))
+                    {
+                        machIndex = nameIndex;
+                        break;
+                    }
+                }
+
+                _wearingPartsIndex.SetParts(machIndex, i);
+            }
+        }
     }
 
     public void OnDressUp(int id, string name)
