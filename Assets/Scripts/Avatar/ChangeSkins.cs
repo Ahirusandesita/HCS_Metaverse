@@ -122,7 +122,8 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
 
     private void Start()
     {
-        _children = transform.GetComponentsInChildren<Transform>();
+        Transform partParent = transform.Find("Parts");
+        _children = partParent.GetComponentsInChildren<Transform>(true);
     }
 
     public void OnDressUp(int id, string name)
