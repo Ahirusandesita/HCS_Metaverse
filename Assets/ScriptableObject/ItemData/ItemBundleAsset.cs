@@ -118,7 +118,7 @@ namespace UnityEditor.HCSMeta
 					}
 				}
 
-				EditorSaveSystem.Save(PATH, $"{id1}/{id2}/{id3}/{id4}");
+				EditorSaveSystem.Save(PATH, $"{id1}/{id2}/{id3}/{id4}/{id5}");
 			}
 
 			EditorGUILayout.Space(12f);
