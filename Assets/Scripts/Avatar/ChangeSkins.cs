@@ -133,18 +133,9 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
             return;
         }
 
-        ItemAsset skinAsset = _itemBundle.GetItemAssetByID(id);
-
         for (int i = 0; i < _children.Length; i++)
         {
-            if (_children[i].TryGetComponent<ItemAsset>(out ItemAsset itemAsset))
-            {
-                if (itemAsset.ID != id)
-                {
-                    continue;
-                }
-            }
-            else
+            if (!_children[i].name.Contains(name))
             {
                 continue;
             }
