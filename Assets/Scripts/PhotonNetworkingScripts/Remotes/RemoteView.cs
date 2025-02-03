@@ -37,6 +37,11 @@ public class RemoteView : NetworkBehaviour,IDependencyInjector<PlayerBodyDepende
 			_inputDirection = dir.ReadValue<Vector2>();
 		};
 
+		Inputter.Player.Move.canceled += dir =>
+		{
+			_inputDirection = Vector2.zero;
+		};
+
 		PlayerInitialize.ConsignmentInject_static(this);
 	}
 

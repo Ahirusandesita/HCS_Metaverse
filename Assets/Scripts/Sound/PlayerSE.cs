@@ -39,6 +39,11 @@ public class PlayerSE : MonoBehaviour
         {
             _direction = dir.ReadValue<Vector2>();
         };
+
+        Inputter.Player.Move.canceled += dir =>
+        {
+            _direction = Vector2.zero;
+        };
     }
 
     private void Update()
@@ -57,5 +62,6 @@ public class PlayerSE : MonoBehaviour
     public void PlayFootStep()
     {
         AudioSource.PlayClipAtPoint(GetRandomFootsteps, transform.position);
+        Debug.LogError($"ë´âπÅF{gameObject.name}");
     }
 }
