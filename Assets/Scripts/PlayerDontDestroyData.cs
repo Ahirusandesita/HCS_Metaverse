@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Linq;
+using Cysharp.Threading.Tasks;
 public class PlayerDontDestroyData : MonoBehaviour
 {
 	private static PlayerDontDestroyData _instance = default;
@@ -27,7 +28,8 @@ public class PlayerDontDestroyData : MonoBehaviour
 
 	public static PlayerDontDestroyData Instance => _instance;
 	public int PlayerID { get => _playerID; set => _playerID = value; }
-	public IReadOnlyList<ItemIDAmountPair> Inventory => _inventory;
+	public ItemIDAmountPair[] Inventory => _inventory;
+	public List<ItemIDAmountPair> InventoryToList => _inventory.Where(item => item.ItemID <= 0).ToList();
 	public IReadOnlyList<int> CostumeInventory => _costumeInventory;
 	public string PreviousScene { get => _previousScene; set => _previousScene = value; }
 	public int Money
@@ -64,8 +66,7 @@ public class PlayerDontDestroyData : MonoBehaviour
 #if UNITY_EDITOR
 		await webAPIRequester.PostLogin("User1", "hcs5511");
 #endif
-		WebAPIRequester.OnCatchUserInventory inventoryData = await webAPIRequester.GetInventory();
-		AddInventory(inventoryData.Inventory);
+		await UpdateInventory(webAPIRequester);
 	}
 
 	public bool AddInventory(ItemIDAmountPair itemIDAmountPair)
@@ -102,10 +103,17 @@ public class PlayerDontDestroyData : MonoBehaviour
 		return true;
 	}
 
-	public void AddInventory(IReadOnlyList<WebAPIRequester.UserInventoryData> inventoryData)
+	public async UniTask UpdateInventory()
 	{
+		WebAPIRequester webAPIRequester = new WebAPIRequester();
+		await UpdateInventory(webAPIRequester);
+	}
+
+	public async UniTask UpdateInventory(WebAPIRequester webAPIRequester)
+	{
+		WebAPIRequester.OnCatchUserInventory inventoryData = await webAPIRequester.GetInventory();
 		_inventory = new ItemIDAmountPair[_MAX_INVENTORY_COUNT];
-		foreach (var item in inventoryData)
+		foreach (var item in inventoryData.Inventory)
 		{
 			ItemAsset itemAsset = _allItemAssets.GetItemAssetByID(item.ItemID);
 			if(itemAsset.Genre == ItemGenre.Costume)
@@ -123,15 +131,6 @@ public class PlayerDontDestroyData : MonoBehaviour
 			}
 		}
 	}
-
-	public void AddDifferenceItem(IReadOnlyList<ItemIDAmountPair> list)
-	{
-		lock (_inventoryLockObject)
-		{
-		}
-	}
-
-
 }
 
 
