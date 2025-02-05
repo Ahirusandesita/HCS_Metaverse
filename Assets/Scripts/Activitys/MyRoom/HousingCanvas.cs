@@ -9,15 +9,6 @@ public class HousingCanvas : MonoBehaviour, IPointerClickRegistrable, IInteracti
 
 	ISelectedNotification IInteraction.SelectedNotification => throw new System.NotImplementedException();
 
-	private void Update()
-	{
-		if (Input.GetKeyDown(KeyCode.E))
-		{
-			var player = FindAnyObjectByType<PlayerState>();
-			player.ChangePlacingMode();
-		}
-	}
-
 	void IPointerClickRegistrable.OnPointerClick(PointerEventData data)
 	{
 		var player = FindAnyObjectByType<PlayerState>();

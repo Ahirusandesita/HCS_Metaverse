@@ -87,7 +87,13 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
 
 	public void Use()
 	{
-
+		// 設計ミスにより、これでしか家具かどうか判定できません。ごめんちょ
+		if (TryGetComponent(out PlaceableObject placeableObject))
+		{
+			// プレイヤーがGhostを生成
+			var playerPlacing = FindAnyObjectByType<Placing>();
+			playerPlacing.CreateGhost(placeableObject);
+		}
 	}
 
 	public void CleanUp()

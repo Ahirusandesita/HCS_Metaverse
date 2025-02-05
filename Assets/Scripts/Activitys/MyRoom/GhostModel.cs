@@ -159,12 +159,18 @@ public class GhostModel : IEditOnlyGhost
         var mesh = new Mesh();
         mesh.CombineMeshes(combineInstances, true);
         var bounds = mesh.bounds;
-        // 一部モデルのboundsの生成に失敗した場合のハンドリング
+
+        // 一部モデルのboundsの生成に失敗した場合のハンドリング ------------------------------
         // mesh.boundsだとcenterがずれるケースがあったため、renderer.boundsで対応
         if (bounds.extents == Vector3.zero && combineInstances.Length == 1)
         {
             bounds = renderers[0].bounds;
         }
+        else if (bounds.extents != renderers[0].bounds.extents && combineInstances.Length == 1)
+		{
+            bounds = renderers[0].bounds;
+        }
+        // -----------------------------------------------------------------------------
 
         boxCollider.size = bounds.size;
         boxCollider.center = bounds.center;

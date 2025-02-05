@@ -13,6 +13,8 @@ public class Placing : MonoBehaviour, IInputControllable
 	[SerializeField, HideAtPlaying] private PlaceableObject testOrigin;
 	private GhostModel ghostModel = default;
 
+	private int inventoryIndexTest = 0;
+	[SerializeField] private ItemBundleAsset allItemAsset = default;
 
 	[System.Diagnostics.Conditional("UNITY_EDITOR")]
 	private void Reset()
@@ -26,23 +28,65 @@ public class Placing : MonoBehaviour, IInputControllable
 
 	private void Awake()
 	{
-		AAA();
-
-		playerState.PlacingMode.Subscribe(isPlacingMode =>
-		{
-			if (isPlacingMode)
-			{
-				ghostModel.Spawn();
-			}
-			else
-			{
-				ghostModel.Despawn();
-			}
-		});
+		//playerState.PlacingMode.Subscribe(isPlacingMode =>
+		//{
+		//	if (isPlacingMode)
+		//	{
+		//		ghostModel.Spawn();
+		//	}
+		//	else
+		//	{
+		//		ghostModel.Despawn();
+		//	}
+		//});
 	}
 
-	public void AAA()
+#if UNITY_EDITOR
+	private void Update()
 	{
-		ghostModel = new GhostModel().CreateModel(testOrigin, transform);
+		if (Input.GetKeyDown(KeyCode.R))
+		{
+			CreateGhost(testOrigin);
+		}
+		if (Input.GetKeyDown(KeyCode.Keypad4))
+		{
+			TryDestroyGhost();
+			inventoryIndexTest -= inventoryIndexTest == 0 ? 0 : 1;
+			CreateGhost(allItemAsset.GetItemAssetByID(PlayerDontDestroyData.Instance.InventoryToList[inventoryIndexTest].ItemID).DisplayItem.gameObject.GetComponent<PlaceableObject>());
+
+			if (!playerState.PlacingMode.Value)
+			{
+				playerState.ChangePlacingMode();
+			}
+		}
+		if (Input.GetKeyDown(KeyCode.Keypad6))
+		{
+			TryDestroyGhost();
+			inventoryIndexTest += inventoryIndexTest == 19 ? 0 : 1;
+			CreateGhost(allItemAsset.GetItemAssetByID(PlayerDontDestroyData.Instance.InventoryToList[inventoryIndexTest].ItemID).DisplayItem.gameObject.GetComponent<PlaceableObject>());
+			if (!playerState.PlacingMode.Value)
+			{
+				playerState.ChangePlacingMode();
+			}
+		}
+	}
+#endif
+
+	public void CreateGhost(PlaceableObject origin)
+	{
+		ghostModel = new GhostModel().CreateModel(origin, transform);
+		ghostModel.Spawn();
+	}
+
+	public bool TryDestroyGhost()
+	{
+		if (ghostModel != null)
+		{
+			ghostModel.DisposeModel();
+			ghostModel = null;
+			return true;
+		}
+
+		return false;
 	}
 }

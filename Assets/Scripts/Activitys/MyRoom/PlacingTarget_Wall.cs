@@ -120,10 +120,11 @@ public class PlacingTarget_Wall : PlacingTarget
 		bool isHitWall_rd = Physics.Raycast(checkWallRay_rd, out RaycastHit _, rayDistance, Layer.GROUNDWALL);
 		bool isHitWall_ld = Physics.Raycast(checkWallRay_ld, out RaycastHit _, rayDistance, Layer.GROUNDWALL);
 #if UNITY_EDITOR
-		Debug.DrawRay(checkWallRay_ru.origin, checkWallRay_ru.direction * rayDistance, Color.yellow);
-		Debug.DrawRay(checkWallRay_lu.origin, checkWallRay_lu.direction * rayDistance, Color.yellow);
-		Debug.DrawRay(checkWallRay_rd.origin, checkWallRay_rd.direction * rayDistance, Color.yellow);
-		Debug.DrawRay(checkWallRay_ld.origin, checkWallRay_ld.direction * rayDistance, Color.yellow);
+		//Debug.DrawRay(checkWallRay_ru.origin, checkWallRay_ru.direction * rayDistance, Color.yellow);
+		//Debug.DrawRay(checkWallRay_lu.origin, checkWallRay_lu.direction * rayDistance, Color.yellow);
+		//Debug.DrawRay(checkWallRay_rd.origin, checkWallRay_rd.direction * rayDistance, Color.yellow);
+		//Debug.DrawRay(checkWallRay_ld.origin, checkWallRay_ld.direction * rayDistance, Color.yellow);
+		Debug.DrawRay(center, transform.forward, Color.red);
 #endif
 
 		// RayÇ™Ç∑Ç◊ÇƒìñÇΩÇ¡ÇƒÇ¢ÇÈ = ï«Ç™ìrêÿÇÍÇ∏ÅAäÆ‡¯Ç…ê›íuâ¬î\Ç»èÛë‘Ç≈Ç†ÇÈÇ©
