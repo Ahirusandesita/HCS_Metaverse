@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using System.Collections.Generic;
 using UnityEngine;
 using MyRoomEntryData = WebAPIRequester.OnMyRoomEntryData;
 using MyRoomObject = WebAPIRequester.MyRoomObject;
@@ -29,9 +28,10 @@ public class MyRoomLoader : MonoBehaviour
 		}
 		int shopID = myRoomEntryData.ShopID;
 		//-1ÇÕïîâÆÇ…é©îÃã@Ç™Ç»Ç¢èÍçá
-		XDebug.LogWarning($"shopID:{shopID}");
 		if (shopID == -1) { return; }
-		FindObjectOfType<VendingMachine>().Initialize(shopID, PlayerData.PlayerID).Forget();
+		VendingMachine vendingMachine = FindObjectOfType<VendingMachine>();
+		if (vendingMachine == null) { return; }
+		vendingMachine.Initialize(shopID, PlayerData.PlayerID).Forget();
 	}
 
 	public async UniTask UnLoad()
@@ -41,7 +41,6 @@ public class MyRoomLoader : MonoBehaviour
 
 	private void SetRoomObject(MyRoomObject myRoomObject)
 	{
-		myRoomObject.ItemID.PrintWarning();
 		ItemAsset asset = _itemBundleAsset.GetItemAssetByID(myRoomObject.ItemID);
 		GameObject prefab;
 		if (asset.DisplayItem == null)

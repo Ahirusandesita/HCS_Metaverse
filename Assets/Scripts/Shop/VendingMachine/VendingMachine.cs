@@ -13,6 +13,7 @@ public class VendingMachine : SafetyInteractionObject
 	[SerializeField]
 	private Transform _viewTransform;
 	public int ShopID => _shopID;
+	public bool IsAdminPlayer => _roomAdminID == PlayerData.PlayerID;
 
 	public override void Select(SelectArgs selectArgs) { }
 
@@ -30,8 +31,8 @@ public class VendingMachine : SafetyInteractionObject
 		_roomAdminID = roomAdminID;
 		WebAPIRequester webAPIRequester = new WebAPIRequester();
 
-		WebAPIRequester.OnVMEntryData data = await webAPIRequester.PostVMEntry(_shopID);
-		_uiManager.InitBuyUI(data);
+		WebAPIRequester.OnVMProductData data = await webAPIRequester.PostVMEntry(_shopID);
+		_uiManager.InitUI(data);
 		_isOpen = data.Active;
 		if (_isOpen)
 		{
@@ -39,33 +40,28 @@ public class VendingMachine : SafetyInteractionObject
 		}
 		else
 		{
-			//_isOpen = true;
 			_viewTransform.GetComponentInChildren<Renderer>().material.color = Color.black;
 		}
-		XDebug.LogWarning($"IsOpen:{_isOpen}");
+		
 	}
 
 	protected override void SafetyClose()
 	{
-		_uiManager.CloseBuyUI();
-		_uiManager.CloseAdminManuButton();
+		_uiManager.CloseUI();
 	}
 
 	protected override void SafetyOpen()
 	{
 		if (!_isOpen) { return; }
 		_uiManager.OpenBuyUI();
-		if (IsAdminPlayer(PlayerData.PlayerID))
+		_uiManager.OpenNextButton();
+		if (IsAdminPlayer)
 		{
-			_uiManager.OpenAdminManuButton();
+			_uiManager.OpenEditerButtons();
 		}
 		else
 		{
 			_uiManager.OpenBuyButton();
 		}
-	}
-	private bool IsAdminPlayer(int playerID)
-	{
-		return _roomAdminID == playerID;
 	}
 }
