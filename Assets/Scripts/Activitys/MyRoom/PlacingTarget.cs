@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDependencyInformation>, IInputControllable
 {
 	private const float GROUND_OFFSET = 0.01f;
-	protected const float ROTATE_DURATION = 45f;  // 1ïbä‘Ç…âÒì]Ç∑ÇÈäpìxÅiìxêîñ@Åj
+	protected const float ROTATE_DURATION = 60f;  // 1ïbä‘Ç…âÒì]Ç∑ÇÈäpìxÅiìxêîñ@Åj
 	protected const float ROTATE_MAGNITUDE = 15f;
 
 	protected BoxCollider boxCollider = default;
@@ -26,6 +26,7 @@ public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDepend
 	protected Action UpdateAction = default;
 
 	protected bool isDigitalSigned = false;
+	protected bool canPlacing = false;
 
 
 	public virtual PlacingTarget Initialize(IEditOnlyGhost ghostModel, PlaceableObject placeableObject, Transform player)
@@ -65,7 +66,8 @@ public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDepend
 
 	protected virtual void LateUpdate()
 	{
-		ghostModel.SetPlaceableState(PreviewPlacing());
+		canPlacing = PreviewPlacing();
+		ghostModel.SetPlaceableState(canPlacing);
 
 		UpdateAction?.Invoke();
 
@@ -77,6 +79,15 @@ public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDepend
 	protected virtual void OnDestroy()
 	{
 		UpdateAction = null;
+		Inputter.PlacingMode.Signed.performed -= OnSigned;
+		Inputter.PlacingMode.Signed.canceled -= OnSignedCancel;
+		Inputter.PlacingMode.Switch.performed -= OnSwitch;
+		Inputter.PlacingMode.Place.performed -= OnPlacing;
+
+		ghostModel = null;
+		placeableObject = null;
+		player = null;
+		boxCollider = null;
 	}
 
 	/// <summary>
@@ -207,7 +218,12 @@ public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDepend
 	/// </summary>
 	protected virtual void OnPlacing(InputAction.CallbackContext context)
 	{
-		Instantiate(placeableObject, transform.position, transform.rotation);
+		if (!canPlacing)
+		{
+			return;
+		}
+
+		Instantiate(placeableObject, transform.position, Quaternion.Euler(transform.GetChild(0).eulerAngles));
 		Destroy(gameObject);
 	}
 

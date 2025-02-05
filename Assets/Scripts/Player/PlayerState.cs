@@ -38,15 +38,6 @@ public class PlayerState : MonoBehaviour, IInputControllable, IInteractionInfoRe
 		});
 	}
 
-	private void Update()
-	{
-		// 本番環境では、インベントリまたはプレイヤーからの要求があって初めてPlacingModeが変化する
-		if (Input.GetKeyDown(KeyCode.E))
-		{
-			placingMode.Value = !placingMode.Value;
-		}
-	}
-
 	void IInteractionInfoReceiver.SetInfo(IInteraction.InteractionInfo interactionInfo)
 	{
 		// IInteractionから受け取ったクラスがShelf（棚）のものだったら
@@ -57,5 +48,10 @@ public class PlayerState : MonoBehaviour, IInputControllable, IInteractionInfoRe
 			shelfInteractionInfo.OnSafetyOpenAction += data => placingMode.Value = true;
 			shelfInteractionInfo.OnSafetyCloseAction += data => placingMode.Value = false;
 		}
+	}
+
+	public void ChangePlacingMode()
+	{
+		placingMode.Value = !placingMode.Value;
 	}
 }

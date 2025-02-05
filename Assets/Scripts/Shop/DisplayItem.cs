@@ -17,7 +17,7 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
 	[SerializeField]
 	private bool canUseAtStart = false;
 	[SerializeField]
-	private int maxInventoryCapacity;
+	private int maxInventoryCapacity = 1;
 
 	public int MaxInventoryCapacity => maxInventoryCapacity;
 
