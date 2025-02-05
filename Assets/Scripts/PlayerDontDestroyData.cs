@@ -29,7 +29,7 @@ public class PlayerDontDestroyData : MonoBehaviour
 	public static PlayerDontDestroyData Instance => _instance;
 	public int PlayerID { get => _playerID; set => _playerID = value; }
 	public ItemIDAmountPair[] Inventory => _inventory;
-	public List<ItemIDAmountPair> InventoryToList => _inventory.Where(item => item.ItemID <= 0).ToList();
+	public List<ItemIDAmountPair> InventoryToList => _inventory.Where(item => item.ItemID > 0).ToList();
 	public IReadOnlyList<int> CostumeInventory => _costumeInventory;
 	public string PreviousScene { get => _previousScene; set => _previousScene = value; }
 	public int Money
