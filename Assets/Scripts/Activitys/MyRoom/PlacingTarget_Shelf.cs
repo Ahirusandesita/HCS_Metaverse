@@ -26,7 +26,8 @@ public class PlacingTarget_Shelf : PlacingTarget, IInteractionInfoReceiver
 
 	protected override void LateUpdate()
 	{
-		ghostModel.SetPlaceableState(PreviewPlacing());
+		canPlacing = PreviewPlacing();
+		ghostModel.SetPlaceableState(canPlacing);
 
 		UpdateAction?.Invoke();
 
