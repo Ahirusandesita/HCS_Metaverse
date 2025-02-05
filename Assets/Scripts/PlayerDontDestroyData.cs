@@ -4,23 +4,31 @@ using UnityEngine;
 public class PlayerDontDestroyData : MonoBehaviour
 {
 	private static PlayerDontDestroyData _instance = default;
-	[SerializeField,Header("Debug")]
+	[SerializeField]
+	private ItemBundleAsset _allItemAssets = default;
+	private const int _MAX_INVENTORY_COUNT = 20;
+	[SerializeField, Header("Debug")]
 	private int _playerID = 5;
 	[SerializeField]
 	private int _money = 0;
 	[SerializeField]
 	private string _previousScene = "";
-	[SerializeField,Hide]
+	[SerializeField, Hide]
 	private string _token = default;
 	[Space(10)]
 	private readonly object _moneyLockObject = new object();
 	private readonly object _inventoryLockObject = new object();
+	private readonly object _costumeInventoryLockObject = new object();
 
 	//id count
-	private List<ItemIDAmountPair> _inventory = new();
+	[SerializeField]
+	private ItemIDAmountPair[] _inventory = new ItemIDAmountPair[_MAX_INVENTORY_COUNT];
+	private List<int> _costumeInventory = new List<int>();
+
 	public static PlayerDontDestroyData Instance => _instance;
 	public int PlayerID { get => _playerID; set => _playerID = value; }
 	public IReadOnlyList<ItemIDAmountPair> Inventory => _inventory;
+	public IReadOnlyList<int> CostumeInventory => _costumeInventory;
 	public string PreviousScene { get => _previousScene; set => _previousScene = value; }
 	public int Money
 	{
@@ -33,13 +41,86 @@ public class PlayerDontDestroyData : MonoBehaviour
 			}
 		}
 	}
-	public string Token { get => _token; set => _token = value; } 
-
-	public void AddInventory(ItemIDAmountPair itemIDAmountPair)
+	public string Token
 	{
+		get
+		{
+			return _token;
+		}
+		set => _token = value;
+	}
+
+	private async void Awake()
+	{
+		if (_instance == null)
+		{
+			_instance = this;
+		}
+		else
+		{
+			Destroy(_instance.gameObject);
+		}
+		WebAPIRequester webAPIRequester = new();
+#if UNITY_EDITOR
+		await webAPIRequester.PostLogin("User1", "hcs5511");
+#endif
+		WebAPIRequester.OnCatchUserInventory inventoryData = await webAPIRequester.GetInventory();
+		AddInventory(inventoryData.Inventory);
+	}
+
+	public bool AddInventory(ItemIDAmountPair itemIDAmountPair)
+	{
+		ItemAsset itemAsset = _allItemAssets.GetItemAssetByID(itemIDAmountPair.ItemID);
+		if(itemAsset.Genre == ItemGenre.Costume)
+		{
+			lock (_costumeInventoryLockObject)
+			{
+				_costumeInventory.Add(itemAsset.ID);
+			}
+			return true;
+		}
+
+		int index = -1;
+		for(int i = 0;i < _inventory.Length ; i++)
+		{
+			if(_inventory[i].ItemID <= 0)
+			{
+				index = i;
+				break;
+			}
+		}
+
+		if(index <= -1)
+		{
+			return false;
+		}
+
 		lock (_inventoryLockObject)
 		{
-			_inventory.Add(itemIDAmountPair);
+			_inventory[index] = itemIDAmountPair;
+		}
+		return true;
+	}
+
+	public void AddInventory(IReadOnlyList<WebAPIRequester.UserInventoryData> inventoryData)
+	{
+		_inventory = new ItemIDAmountPair[_MAX_INVENTORY_COUNT];
+		foreach (var item in inventoryData)
+		{
+			ItemAsset itemAsset = _allItemAssets.GetItemAssetByID(item.ItemID);
+			if(itemAsset.Genre == ItemGenre.Costume)
+			{
+				lock (_costumeInventoryLockObject)
+				{
+					_costumeInventory.Add(item.ItemID);
+				}
+				continue;
+			}
+			ItemIDAmountPair itemIDPair = new ItemIDAmountPair(item.ItemID, item.Count);
+			lock (_inventoryLockObject)
+			{
+				_inventory[item.UserIndex] = itemIDPair;
+			}
 		}
 	}
 
@@ -50,17 +131,7 @@ public class PlayerDontDestroyData : MonoBehaviour
 		}
 	}
 
-	private void Awake()
-	{
-		if (_instance == null)
-		{
-			_instance = this;
-		}
-		else
-		{
-			Destroy(_instance.gameObject);
-		}
-	}
+
 }
 
 

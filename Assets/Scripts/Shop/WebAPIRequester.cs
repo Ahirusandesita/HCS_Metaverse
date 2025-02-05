@@ -114,7 +114,7 @@ public class WebAPIRequester
 	/// <param name="shopId"></param>
 	/// <returns>・商品ラインナップ
 	/// <br>・自販機のアクティブ状況</br></returns>
-	public async UniTask<OnVMEntryData> PostVMEntry(int shopId)
+	public async UniTask<OnVMProductData> PostVMEntry(int shopId)
 	{
 		WWWForm form = new WWWForm();
 		form.AddField("shopId", shopId);
@@ -130,7 +130,7 @@ public class WebAPIRequester
 			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
 				throw new APIConnectException(request.error);
 		}
-		var onVMEntryData = JsonUtility.FromJson<OnVMEntryData>(request.downloadHandler.text);
+		var onVMEntryData = JsonUtility.FromJson<OnVMProductData>(request.downloadHandler.text);
 		return onVMEntryData;
 	}
 
@@ -170,7 +170,7 @@ public class WebAPIRequester
 	/// 自販機更新時のAPI通信
 	/// </summary>
 	/// <returns>・インベントリ差分</returns>
-	public async UniTask<IReadOnlyList<ItemIDAmountPair>> PostVMUpdate(int shopId, List<VMSalesData> vmSalesData)
+	public async UniTask<OnVMProductData> PostVMUpdate(int shopId, List<VMSalesData> vmSalesData)
 	{
 		var sendVMSalesdata = new SendVMSalesData(shopId, vmSalesData);
 		string jsonData = JsonUtility.ToJson(sendVMSalesdata);
@@ -188,8 +188,8 @@ public class WebAPIRequester
 				throw new APIConnectException(request.error);
 		}
 
-		var onVMUpdateData = JsonUtility.FromJson<OnVMUpdateData>(request.downloadHandler.text);
-		return onVMUpdateData.Inventory;
+		var onVMUpdateData = JsonUtility.FromJson<OnVMProductData>(request.downloadHandler.text);
+		return onVMUpdateData;
 	}
 
 	/// <summary>
@@ -392,9 +392,9 @@ public class WebAPIRequester
 	/// 自販機アクセス時のレスポンスデータ
 	/// </summary>
 	[System.Serializable]
-	public class OnVMEntryData : ResponseData
+	public class OnVMProductData : ResponseData
 	{
-		public OnVMEntryData(Body body)
+		public OnVMProductData(Body body)
 		{
 			this.body = body;
 		}
