@@ -24,6 +24,9 @@ public class ItemAsset : ScriptableObject
 	[Header("Network共有するViewプレハブ")]
 	[SerializeField]
 	private NetworkView networkView = default;
+	[Header("AnimationClip")]
+	[SerializeField]
+	private AnimationClip animation = default;
 	[Space(10)]
 	[Header("データベースから除外する")]
 	[SerializeField]
@@ -49,6 +52,7 @@ public class ItemAsset : ScriptableObject
 	public GameObject Prefab => prefab;
 	public IDisplayItem DisplayItem => displayItem as IDisplayItem;
 	public NetworkView NetworkView => networkView;
+	public AnimationClip Animation => animation;
 	public bool ExcludeDatabase => excludeDatabese;
 
 #if UNITY_EDITOR
