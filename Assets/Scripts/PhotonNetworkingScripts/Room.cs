@@ -10,7 +10,7 @@ public class Room
 	private bool _isEndJoining = default;
 	private PlayerRef _leader = default;
 	private readonly string _nextSessionName = default;
-	private SceneNameType _worldType = default;
+	private string _worldType = default;
 	private List<PlayerRef> _roomPlayers = new();
 	private int _maxParticipantCount = default;
 	public bool IsNonLeader => _isNonLeader;
@@ -18,23 +18,24 @@ public class Room
 	public PlayerRef LeaderPlayerRef => _leader;
 	public bool IsEndJoining { get => _isEndJoining; }
 	public string NextSessionName { get => _nextSessionName; }
-	public SceneNameType SceneNameType { get => _worldType; }
+	public string SceneNameType { get => _worldType; }
 	public List<PlayerRef> JoinRoomPlayer { get => _roomPlayers; }
 
-	public Room(SceneNameType activityType, string nextSessionName)
+	public Room(string activityType, string nextSessionName)
 	{
 		this._worldType = activityType;
 		this._nextSessionName = nextSessionName;
 
-		if (activityType is SceneNameType.KumaKumaTest or SceneNameType.TestPhotonScene)
+		if (activityType == "KumaKumaTest"
+			|| activityType == "TestPhotonScene")
 		{
 			_isNonLeader = true;
 		}
 		_maxParticipantCount = activityType switch
 		{
-			SceneNameType.TestPhotonScene => -1,
-			SceneNameType.CookActivity => -1,
-			SceneNameType.KumaKumaTest => -1,
+			"TestPhotonScene" => -1,
+			"CookActivity" => -1,
+			"KumaKumaTest" => -1,
 			_ => -1,
 		};
 	}

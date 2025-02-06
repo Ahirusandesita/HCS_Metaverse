@@ -9,7 +9,7 @@ namespace HCSMeta.Activity
 		[SerializeField]
 		private GameFrame gameFrame;
 		[SerializeField, Header("移動するアクティビティ(ワールド)")]
-		private SceneNameType _sceneNameType = SceneNameType.CookActivity;
+		private RegisterSceneInInspector _sceneNameType;
 		private MasterServerConect _masterServer;
 		private NetworkRunner NetworkRunner => GateOfFusion.Instance.NetworkRunner;
 		private MasterServerConect MasterServerConect
