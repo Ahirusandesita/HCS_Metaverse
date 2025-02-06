@@ -20,6 +20,11 @@ public static class Inputter
         /// <br>移動、転回、ジャンプ、スプリント</br>
         /// </summary>
         UIControll,
+        /// <summary>
+        /// エモート用のラジアルメニュー用の入力バインド
+        /// <br>ラジアルカーソル、転回</br>
+        /// </summary>
+        Animation,
 	}
 
     private static PlayerInputActions s_inputActions = default;
@@ -37,6 +42,8 @@ public static class Inputter
     public static PlayerInputActions.VRHeadActions VRHead => InputActions.VRHead;
     public static PlayerInputActions.PlacingModeActions PlacingMode => InputActions.PlacingMode;
 
+    public static PlayerInputActions.AnimationActions Animation => InputActions.Animation;
+
     static Inputter()
 	{
         s_inputActions = new PlayerInputActions();
@@ -52,7 +59,9 @@ public static class Inputter
                 UI.Disable();
                 VRHead.Disable();
                 PlacingMode.Disable();
-				break;
+                Animation.Disable();
+                break;
+
 			case InputActionPreset.Placing:
                 PlacingMode.Enable();
                 Player.Move.Enable();
@@ -63,7 +72,9 @@ public static class Inputter
                 Player.Interact.Disable();
                 UI.Disable();
                 VRHead.Disable();
-				break;
+                Animation.Disable();
+                break;
+
             case InputActionPreset.UIControll:
                 Player.Enable();
                 Player.Interact.Disable();
@@ -71,7 +82,16 @@ public static class Inputter
                 UI.Disable();
                 VRHead.Disable();
                 PlacingMode.Disable();
+                Animation.Disable();
                 break;
+
+            case InputActionPreset.Animation:
+                Player.Disable();
+                Player.Look.Enable();
+
+                Animation.Enable();
+                break;
+
 			default:
 				break;
 		}
