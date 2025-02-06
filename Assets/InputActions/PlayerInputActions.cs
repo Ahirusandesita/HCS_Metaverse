@@ -71,6 +71,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Animation"",
+                    ""type"": ""Button"",
+                    ""id"": ""2e2168c5-911a-4f20-ab2d-7a6cc3ebee45"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -209,7 +218,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""49e00cb2-33c2-4d57-a188-7ef8a68ca85d"",
-                    ""path"": ""<XRController>{RightHand}/primaryButton"",
+                    ""path"": ""<XRController>{RightHand}/secondaryButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -269,6 +278,39 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""eb35e631-fedd-4ddd-8f4f-90b5f11ca8a6"",
+                    ""path"": ""<XRController>{LeftHand}/secondaryButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Animation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""73ef5bd8-661c-4e3f-a493-1b285af0f5fe"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Animation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""88032550-1362-452d-ac61-3d2d873ad3e5"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Animation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -600,6 +642,56 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Animation"",
+            ""id"": ""b2594986-21bd-4979-be22-5db929026083"",
+            ""actions"": [
+                {
+                    ""name"": ""RadialCursor"",
+                    ""type"": ""Value"",
+                    ""id"": ""644b6ecf-de56-4d46-bd9b-8f1620332710"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""c13efe2b-3c74-44d7-ab45-4651e8502706"",
+                    ""path"": ""<Pointer>/delta"",
+                    ""interactions"": """",
+                    ""processors"": ""InvertVector2(invertX=false),ScaleVector2(x=0.05,y=0.05)"",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""RadialCursor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""127ffcfd-12ab-4546-b422-b0c4a6520856"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": ""InvertVector2(invertX=false),StickDeadzone,ScaleVector2(x=300,y=300)"",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""RadialCursor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""20c6ea10-ec98-4d43-8107-d97e47c19bb2"",
+                    ""path"": ""<XRController>{LeftHand}/thumbstick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RadialCursor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -659,6 +751,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_SprintOrWarp = m_Player.FindAction("SprintOrWarp", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
+        m_Player_Animation = m_Player.FindAction("Animation", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Chat = m_UI.FindAction("Chat", throwIfNotFound: true);
@@ -673,6 +766,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_PlacingMode_Signed = m_PlacingMode.FindAction("Signed", throwIfNotFound: true);
         m_PlacingMode_NextOrPrevious = m_PlacingMode.FindAction("NextOrPrevious", throwIfNotFound: true);
         m_PlacingMode_Switch = m_PlacingMode.FindAction("Switch", throwIfNotFound: true);
+        // Animation
+        m_Animation = asset.FindActionMap("Animation", throwIfNotFound: true);
+        m_Animation_RadialCursor = m_Animation.FindAction("RadialCursor", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -739,6 +835,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_SprintOrWarp;
     private readonly InputAction m_Player_Interact;
+    private readonly InputAction m_Player_Animation;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -748,6 +845,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @SprintOrWarp => m_Wrapper.m_Player_SprintOrWarp;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        public InputAction @Animation => m_Wrapper.m_Player_Animation;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -772,6 +870,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
+            @Animation.started += instance.OnAnimation;
+            @Animation.performed += instance.OnAnimation;
+            @Animation.canceled += instance.OnAnimation;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -791,6 +892,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
+            @Animation.started -= instance.OnAnimation;
+            @Animation.performed -= instance.OnAnimation;
+            @Animation.canceled -= instance.OnAnimation;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -986,6 +1090,52 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         }
     }
     public PlacingModeActions @PlacingMode => new PlacingModeActions(this);
+
+    // Animation
+    private readonly InputActionMap m_Animation;
+    private List<IAnimationActions> m_AnimationActionsCallbackInterfaces = new List<IAnimationActions>();
+    private readonly InputAction m_Animation_RadialCursor;
+    public struct AnimationActions
+    {
+        private @PlayerInputActions m_Wrapper;
+        public AnimationActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @RadialCursor => m_Wrapper.m_Animation_RadialCursor;
+        public InputActionMap Get() { return m_Wrapper.m_Animation; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(AnimationActions set) { return set.Get(); }
+        public void AddCallbacks(IAnimationActions instance)
+        {
+            if (instance == null || m_Wrapper.m_AnimationActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_AnimationActionsCallbackInterfaces.Add(instance);
+            @RadialCursor.started += instance.OnRadialCursor;
+            @RadialCursor.performed += instance.OnRadialCursor;
+            @RadialCursor.canceled += instance.OnRadialCursor;
+        }
+
+        private void UnregisterCallbacks(IAnimationActions instance)
+        {
+            @RadialCursor.started -= instance.OnRadialCursor;
+            @RadialCursor.performed -= instance.OnRadialCursor;
+            @RadialCursor.canceled -= instance.OnRadialCursor;
+        }
+
+        public void RemoveCallbacks(IAnimationActions instance)
+        {
+            if (m_Wrapper.m_AnimationActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IAnimationActions instance)
+        {
+            foreach (var item in m_Wrapper.m_AnimationActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_AnimationActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public AnimationActions @Animation => new AnimationActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -1029,6 +1179,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnSprintOrWarp(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnAnimation(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
@@ -1046,5 +1197,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnSigned(InputAction.CallbackContext context);
         void OnNextOrPrevious(InputAction.CallbackContext context);
         void OnSwitch(InputAction.CallbackContext context);
+    }
+    public interface IAnimationActions
+    {
+        void OnRadialCursor(InputAction.CallbackContext context);
     }
 }
