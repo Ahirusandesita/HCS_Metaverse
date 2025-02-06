@@ -1,13 +1,67 @@
 using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 using MyRoomEntryData = WebAPIRequester.OnMyRoomEntryData;
 using MyRoomObject = WebAPIRequester.MyRoomObject;
 
 public class MyRoomLoader : MonoBehaviour
 {
+	public class InteriorManager : System.IDisposable
+	{
+		public class NotExistInteriorException : System.Exception
+		{
+			public NotExistInteriorException() : base() { }
+			public NotExistInteriorException(string message) : base(message) { }
+			public NotExistInteriorException(string message, System.Exception innnerException) : base(message, innnerException) { }
+		}
+
+		private List<PlaceableObject> _placedObjects = default;
+		public IReadOnlyList<PlaceableObject> PlacedObjects => _placedObjects;
+
+		public InteriorManager()
+		{
+			_placedObjects = new List<PlaceableObject>();
+		}
+
+		public void AddPlacedObject(PlaceableObject placedObject)
+		{
+			_placedObjects.Add(placedObject);
+		}
+
+		public void UpdatePlacedObject(PlaceableObject placedObject)
+		{
+
+		}
+
+		public void DeletePlacedObject(int housingId)
+		{
+			var deleteTarget = _placedObjects.Where(placedObject => placedObject.HousingID == housingId).FirstOrDefault();
+			if (deleteTarget is null)
+			{
+				throw new NotExistInteriorException($"{nameof(DeletePlacedObject)}()ÇÃà¯êî {nameof(housingId)} Ç™ë∂ç›ÇµÇ‹ÇπÇÒÅB");
+			}
+
+			_placedObjects.Remove(deleteTarget);
+		}
+
+		public void Dispose()
+		{
+			foreach (var item in _placedObjects)
+			{
+				Destroy(item.gameObject);
+			}
+			_placedObjects = null;
+		}
+	}
+
 	[SerializeField]
 	private ItemBundleAsset _itemBundleAsset;
+	private InteriorManager _interiorManager;
+
 	private PlayerDontDestroyData PlayerData => PlayerDontDestroyData.Instance;
+	public InteriorManager InteriorInfo => _interiorManager;
+
 
 	private async void Start()
 	{
@@ -17,7 +71,7 @@ public class MyRoomLoader : MonoBehaviour
 	public async UniTask Load()
 	{
 		WebAPIRequester requester = new WebAPIRequester();
-		if(PlayerDontDestroyData.Instance.Token == "")
+		if (PlayerDontDestroyData.Instance.Token == "")
 		{
 			await requester.PostLogin("User1", "hcs5511");
 		}
@@ -26,6 +80,9 @@ public class MyRoomLoader : MonoBehaviour
 		{
 			SetRoomObject(myRoomObject);
 		}
+
+		_interiorManager = new InteriorManager();
+
 		int shopID = myRoomEntryData.ShopID;
 		//-1ÇÕïîâÆÇ…é©îÃã@Ç™Ç»Ç¢èÍçá
 		if (shopID == -1) { return; }
@@ -36,7 +93,24 @@ public class MyRoomLoader : MonoBehaviour
 
 	public async UniTask UnLoad()
 	{
+		WebAPIRequester requester = new WebAPIRequester();
+		List<WebAPIRequester.MyRoomObjectSaved> myRoomObjectSaves = new List<WebAPIRequester.MyRoomObjectSaved>();
+		foreach (var placedObject in _interiorManager.PlacedObjects)
+		{
+			myRoomObjectSaves.Add(
+				new WebAPIRequester.MyRoomObjectSaved(
+					itemId: placedObject.ItemID,
+					housingId: placedObject.HousingID,
+					position: placedObject.transform.position,
+					eulerRotation: placedObject.transform.eulerAngles,
+					deleteFlg: false
+					)
+				);
+		}
+		await requester.PostMyRoomSave(myRoomObjectSaves);
 
+		_interiorManager.Dispose();
+		_interiorManager = null;
 	}
 
 	private void SetRoomObject(MyRoomObject myRoomObject)

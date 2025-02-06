@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UniRx;
+using UnityEngine.InputSystem;
+using Cysharp.Threading.Tasks;
 
 /// <summary>
 /// プレイヤーの配置モード（ハウジング）
@@ -12,9 +13,14 @@ public class Placing : MonoBehaviour, IInputControllable
 	[Tooltip("設置（ハウジング）モード")]
 	[SerializeField, HideAtPlaying] private PlaceableObject testOrigin;
 	private GhostModel ghostModel = default;
+	private PlaceableObject placeableObject = default;
+	private int placeableObjectID = default;
+	private MyRoomLoader myRoomLoader = default;
 
 	private int inventoryIndexTest = 0;
 	[SerializeField] private ItemBundleAsset allItemAsset = default;
+
+	private List<ItemIDAmountPair> debugData = new List<ItemIDAmountPair>();
 
 	[System.Diagnostics.Conditional("UNITY_EDITOR")]
 	private void Reset()
@@ -28,17 +34,23 @@ public class Placing : MonoBehaviour, IInputControllable
 
 	private void Awake()
 	{
-		//playerState.PlacingMode.Subscribe(isPlacingMode =>
-		//{
-		//	if (isPlacingMode)
-		//	{
-		//		ghostModel.Spawn();
-		//	}
-		//	else
-		//	{
-		//		ghostModel.Despawn();
-		//	}
-		//});
+		Inputter.PlacingMode.Place.performed += OnPlacing;
+		debugData.Add(new ItemIDAmountPair(10001, 1));
+		debugData.Add(new ItemIDAmountPair(10256, 1));
+		debugData.Add(new ItemIDAmountPair(10120, 1));
+		debugData.Add(new ItemIDAmountPair(10096, 1));
+		debugData.Add(new ItemIDAmountPair(10058, 1));
+		debugData.Add(new ItemIDAmountPair(10962, 1));
+	}
+
+	private void Start()
+	{
+		myRoomLoader = FindAnyObjectByType<MyRoomLoader>();
+	}
+
+	private void OnDestroy()
+	{
+		Inputter.PlacingMode.Place.performed -= OnPlacing;
 	}
 
 #if UNITY_EDITOR
@@ -52,7 +64,9 @@ public class Placing : MonoBehaviour, IInputControllable
 		{
 			TryDestroyGhost();
 			inventoryIndexTest -= inventoryIndexTest == 0 ? 0 : 1;
-			CreateGhost(allItemAsset.GetItemAssetByID(PlayerDontDestroyData.Instance.InventoryToList[inventoryIndexTest].ItemID).DisplayItem.gameObject.GetComponent<PlaceableObject>());
+			placeableObjectID = /*PlayerDontDestroyData.Instance.InventoryToList*/debugData[inventoryIndexTest].ItemID;
+			placeableObject = allItemAsset.GetItemAssetByID(placeableObjectID).DisplayItem.gameObject.GetComponent<PlaceableObject>();
+			CreateGhost(placeableObject);
 
 			if (!playerState.PlacingMode.Value)
 			{
@@ -63,11 +77,19 @@ public class Placing : MonoBehaviour, IInputControllable
 		{
 			TryDestroyGhost();
 			inventoryIndexTest += inventoryIndexTest == 19 ? 0 : 1;
-			CreateGhost(allItemAsset.GetItemAssetByID(PlayerDontDestroyData.Instance.InventoryToList[inventoryIndexTest].ItemID).DisplayItem.gameObject.GetComponent<PlaceableObject>());
+			placeableObjectID = /*PlayerDontDestroyData.Instance.InventoryToList*/debugData[inventoryIndexTest].ItemID;
+			placeableObject = allItemAsset.GetItemAssetByID(placeableObjectID).DisplayItem.gameObject.GetComponent<PlaceableObject>();
+			placeableObject.name.Print();
+			CreateGhost(placeableObject);
+
 			if (!playerState.PlacingMode.Value)
 			{
 				playerState.ChangePlacingMode();
 			}
+		}
+		if (Input.GetKeyDown(KeyCode.F1))
+		{
+			myRoomLoader.UnLoad().Forget();
 		}
 	}
 #endif
@@ -88,5 +110,19 @@ public class Placing : MonoBehaviour, IInputControllable
 		}
 
 		return false;
+	}
+
+	private void OnPlacing(InputAction.CallbackContext context)
+	{
+		if (!ghostModel.CanPlace)
+		{
+			return;
+		}
+
+		ghostModel.PlacingTarget.OnPlaced();
+		var placedObject = Instantiate(placeableObject, ghostModel.GetGhostPosition(), ghostModel.GetGhostChildRotation());
+		placedObject.ItemID = placeableObjectID;
+		myRoomLoader.InteriorInfo.AddPlacedObject(placedObject);
+		Destroy(ghostModel.Instance);
 	}
 }
