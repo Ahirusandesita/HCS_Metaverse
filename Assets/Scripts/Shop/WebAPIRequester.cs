@@ -243,9 +243,9 @@ public class WebAPIRequester
 	/// ユーザー場所情報登録時のAPI通信
 	/// </summary>
 	/// <returns>なし</returns>
-	public async UniTask PostUserLocation(int userId, string sessionName, string locationName)
+	public async UniTask PostUserLocation(string sessionName, string locationName)
 	{
-		var sendUserLocationData = new UserLocationData(userId, sessionName, locationName);
+		var sendUserLocationData = new UserLocationData(sessionName, locationName);
 		string jsonData = JsonUtility.ToJson(sendUserLocationData);
 
 		using var request = UnityWebRequest.Post(DETABASE_PATH_USER_LOCATION, jsonData, CONTENT_TYPE);
@@ -637,18 +637,15 @@ public class WebAPIRequester
 	[System.Serializable]
 	public class UserLocationData
 	{
-		public UserLocationData(int userId, string sessionName, string locationName)
+		public UserLocationData(string sessionName, string locationName)
 		{
-			this.userId = userId;
 			this.sessionName = sessionName;
 			this.locationName = locationName;
 		}
 
-		[SerializeField] private int userId = default;
 		[SerializeField] private string sessionName = default;
 		[SerializeField] private string locationName = default;
 
-		public int UserID => userId;
 		public string SessionName => sessionName;
 		public string LocationName => locationName;
 	}
@@ -864,6 +861,7 @@ public class EditorWebAPIRequester
 		var sendIDData = new SendIDData(addDataList);
 		string jsonData = JsonUtility.ToJson(sendIDData);
 		using var request = UnityWebRequest.Post(ID_TRANSFER_ADD, jsonData, CONTENT_TYPE);
+		//request.SetRequestHeader("Authorization", PlayerDontDestroyData.Instance.Token);
 		await request.SendWebRequest();
 		switch (request.result)
 		{
