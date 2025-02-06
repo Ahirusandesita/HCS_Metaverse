@@ -6,6 +6,11 @@ using Cysharp.Threading.Tasks;
 using KumaDebug;
 using System;
 
+/*
+ * ルームに入るときに開始中リストを表示して押したらそこに観戦で入る
+ * 新しいルームも作ることが可能
+ */
+
 public class RoomManager : MonoBehaviour
 {
 	[SerializeField]
@@ -75,7 +80,7 @@ public class RoomManager : MonoBehaviour
 			.FirstOrDefault() != null).Key;
 	}
 
-	public async UniTask<JoinOrCreateResult> JoinOrCreate(SceneNameType sceneNameType, PlayerRef joinPlayer, int roomNumber = -1)
+	public async UniTask<JoinOrCreateResult> JoinOrCreate(String sceneNameType, PlayerRef joinPlayer, int roomNumber = -1)
 	{
 
 		Room myRoom = GetCurrentRoom(joinPlayer);
@@ -92,7 +97,7 @@ public class RoomManager : MonoBehaviour
 		{
 			//入れる部屋があるか
 			roomTemp = _rooms.Values.FirstOrDefault(room => !room.IsEndJoining
-			&& room.SceneNameType == sceneNameType);
+			&& room.SceneNameType.ToString() == sceneNameType);
 			if (roomTemp != null)
 			{
 				XKumaDebugSystem.LogWarning($"{roomTemp.IsEndJoining}:{roomTemp.SceneNameType}");
@@ -110,7 +115,7 @@ public class RoomManager : MonoBehaviour
 			//自動でキーを作る場合
 			if (roomNumber < 0) { roomNumber = 1; }
 			for (; _rooms.ContainsKey(roomNumber); roomNumber++) ;
-			if (sceneNameType is SceneNameType.TestPhotonScene)
+			if (sceneNameType == SceneNameType.TestPhotonScene.ToString())
 			{
 				roomTemp = Create(sceneNameType, 0);
 			}
@@ -228,7 +233,7 @@ public class RoomManager : MonoBehaviour
 		}
 	}
 
-	private Room Create(SceneNameType activityType, int roomNumber)
+	private Room Create(string activityType, int roomNumber)
 	{
 		string nextSessionName = activityType + ":" + roomNumber;
 		_rooms.Add(roomNumber, new Room(activityType, nextSessionName));

@@ -199,7 +199,12 @@ MonoBehaviour:
   _myImage: {fileID: 6205962977220486493}
   _incorrectColor: {r: 1, g: 0, b: 0, a: 1}
   _incorrectShakeTime: 1
-  _incorrectShakeStrength: 1
+  _incorrectShakeStrength: 2
+  _incorrectShakeVibrato: 10
+  _incorrectShakeRandomness: -90
+  _incorrectColorChangeTime: 1
+  _incorrectColorChangeMerginTime: 1
+  _incorrectColorReturnTime: 1
 --- !u!1 &1574983456038573238
 GameObject:
   m_ObjectHideFlags: 0
@@ -641,7 +646,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &167753887716739842
 RectTransform:
   m_ObjectHideFlags: 0

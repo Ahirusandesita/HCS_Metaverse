@@ -181,7 +181,7 @@ public class GateOfFusion
 
 
 		MasterServer.SessionRPCManager.Rpc_RoomStandbyOn();
-		if (currentRoom.SceneNameType is not SceneNameType.KumaKumaTest or SceneNameType.TestPhotonScene)
+		if (currentRoom.SceneNameType != "KumaKumaTest" || currentRoom.SceneNameType != "TestPhotonScene")
 		{
 			_masterServer.SessionRPCManager.Rpc_ExecuteOnActivityConnedted();
 		}

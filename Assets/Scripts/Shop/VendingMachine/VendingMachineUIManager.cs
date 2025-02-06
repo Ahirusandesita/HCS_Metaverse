@@ -174,25 +174,57 @@ public class VendingMachineUIManager : MonoBehaviour
 		}
 	}
 
-	public async UniTaskVoid SaveEditData()
+	public async UniTask SaveEditData(WebAPIRequester webAPIRequester)
 	{
-		WebAPIRequester webAPIRequester = new WebAPIRequester();
 		List<WebAPIRequester.VMSalesData> vmUpdateData = new List<WebAPIRequester.VMSalesData>();
+
 		foreach (VendingMachineUI currentItem in _vendingUIs)
 		{
-			bool isHit = false;
-			foreach(WebAPIRequester.ItemLineup previousItem in _previousItemLineups)
+			WebAPIRequester.ItemLineup itemTemp =
+				_previousItemLineups
+				.Where(previousItem => previousItem.ItemID == currentItem.ID)
+				.FirstOrDefault();
+
+			if (itemTemp.ItemID <= 0)
 			{
-				//削除されずに在庫、値段が更新された場合
-				if(previousItem.ItemID == currentItem.ID && 
-					(previousItem.Stock != currentItem.Stock || previousItem.Price != currentItem.Price))
-				{
-					WebAPIRequester.VMSalesData salesData 
-						= new WebAPIRequester.VMSalesData(currentItem.ID,currentItem.Stock,currentItem.Price,false);
-					vmUpdateData.Add(salesData);
-				}
+				WebAPIRequester.VMSalesData salesData
+						= new WebAPIRequester.VMSalesData(
+							currentItem.ID,
+							currentItem.Stock,
+							currentItem.Price,
+							false
+							);
+				vmUpdateData.Add(salesData);
+			}
+			//削除されずに在庫、値段が更新された場合
+			else if (itemTemp.Stock != currentItem.Stock ||
+				itemTemp.Price != currentItem.Price)
+			{
+				WebAPIRequester.VMSalesData salesData
+					= new WebAPIRequester.VMSalesData(
+						currentItem.ID,
+						itemTemp.Stock - currentItem.Stock,
+						currentItem.Price,
+						false
+					);
+				vmUpdateData.Add(salesData);
 			}
 		}
+		foreach (WebAPIRequester.ItemLineup item in _previousItemLineups)
+		{
+			VendingMachineUI uiTemp = _vendingUIs.Where(ui => ui.ID == item.ItemID).FirstOrDefault();
+			if (uiTemp != null) { continue; }
+			//削除されたもの
+			WebAPIRequester.VMSalesData salesData
+					= new WebAPIRequester.VMSalesData(
+						item.ItemID,
+						item.Stock,
+						item.Price,
+						true
+						);
+			vmUpdateData.Add(salesData);
+		}
+
 		WebAPIRequester.OnVMProductData currentVMInventory
 			= await webAPIRequester.PostVMUpdate(_vendingMachine.ShopID, vmUpdateData);
 		InitUI(currentVMInventory);
@@ -222,7 +254,9 @@ public class VendingMachineUIManager : MonoBehaviour
 			)
 		);
 		WebAPIRequester webAPIRequester = new WebAPIRequester();
-		await webAPIRequester.PostVMUpdate(_vendingMachine.ShopID, vmSales);
+
+		await SaveEditData(webAPIRequester);
+		await PlayerDontDestroyData.Instance.UpdateInventory(webAPIRequester);
 	}
 
 	#region Open関数
@@ -278,17 +312,20 @@ public class VendingMachineUIManager : MonoBehaviour
 		CloseEditterButtons();
 
 		int inventoryCount = 0;
-		IEnumerable<ItemIDAmountPair> containItems =
-			PlayerDontDestroyData.Instance.Inventory.Where(i => i.ItemID > 0);
 		RectTransform prefabRectTranform = _vendingMachineEditUIPrefab.transform as RectTransform;
 		float offsetX = prefabRectTranform.sizeDelta.x + _mergin.x;
 		float offsetY = prefabRectTranform.sizeDelta.y + _mergin.y;
-		int containItemsCount = containItems.Count();
+		int containItemsCount = PlayerDontDestroyData.Instance.InventoryToList.Count;
 		int editMenuRowMax = containItemsCount / _editMenuColMax;
+		if(containItemsCount % _editMenuColMax > 0)
+		{
+			editMenuRowMax++;
+		}
 		_vendingEditUIs.Clear();
-		foreach (ItemIDAmountPair itemIDAmountPair in containItems)
+		foreach (ItemIDAmountPair itemIDAmountPair in PlayerDontDestroyData.Instance.InventoryToList)
 		{
 			ItemAsset itemAsset = _itemBundleAsset.GetItemAssetByID(itemIDAmountPair.ItemID);
+			itemIDAmountPair.ItemID.PrintWarning();
 			VendingMachineEditUI uiEditTemp;
 			uiEditTemp = Instantiate(_vendingMachineEditUIPrefab, _editPanel.transform);
 			uiEditTemp.Init(
@@ -306,7 +343,8 @@ public class VendingMachineUIManager : MonoBehaviour
 				((inventoryCount / editMenuRowMax) * offsetY);
 			inventoryCount++;
 		}
-		float rowCenter = editMenuRowMax / 2;
+		editMenuRowMax--;
+		float rowCenter = editMenuRowMax / 2f;
 		foreach (RectTransform rectTransform in _editPanel.transform as RectTransform)
 		{
 			rectTransform.anchoredPosition +=

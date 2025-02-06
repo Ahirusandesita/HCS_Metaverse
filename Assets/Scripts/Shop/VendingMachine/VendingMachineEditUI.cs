@@ -22,8 +22,6 @@ public class VendingMachineEditUI : MonoBehaviour
 	private int _inventoryHaveCount = default;
 
 	public GameObject Buttons => _buttons;
-	public int Count => _count;
-	public int ID => _id;
 
 	public void Init(int id, string productName
 		, Sprite icon, VendingMachineUIManager vendingMachineUIManager,int inventoryHaveCount)

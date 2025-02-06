@@ -86,7 +86,7 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
 	{
 		canInteract = true;
 		// UI‚ð•\Ž¦
-		NotificationUIManager.Instance.DisplayInteraction();
+		//NotificationUIManager.Instance.DisplayInteraction();
 		return new SafetyInteractionInfo();
 	}
 
@@ -94,7 +94,7 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
 	{
 		canInteract = false;
 		// UI‚ð”ñ•\Ž¦
-		NotificationUIManager.Instance.HideInteraction();
+		//NotificationUIManager.Instance.HideInteraction();
 	}
 
 	/// <summary>

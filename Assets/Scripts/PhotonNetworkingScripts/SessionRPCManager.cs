@@ -18,11 +18,11 @@ public class SessionRPCManager : NetworkBehaviour
 
 			if (FindObjectOfType<MasterServerConect>().IsSolo)
 			{
-				_ = RoomManager.Instance.JoinOrCreate(firstScene, Runner.LocalPlayer);
+				_ = RoomManager.Instance.JoinOrCreate(firstScene.ToString(), Runner.LocalPlayer);
 			}
 			else
 			{
-				Rpc_JoinOrCreateRoom(firstScene, Runner.LocalPlayer);
+				Rpc_JoinOrCreateRoom(firstScene.ToString(), Runner.LocalPlayer);
 			}
 		}
 	}
@@ -54,35 +54,19 @@ public class SessionRPCManager : NetworkBehaviour
 		MasterServerConect masterServer = FindObjectOfType<MasterServerConect>();
 		await masterServer.Disconnect();
 		UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
+		if (PlayerDontDestroyData.Instance != null)
+		{
+			WebAPIRequester webAPIRequester = new WebAPIRequester();
+			await webAPIRequester.PostUserLocation(PlayerDontDestroyData.Instance.PlayerID, sessionName, sceneName);
+		}
 		//é¿çs
 		await masterServer.JoinOrCreateSession(sessionName, rpcTarget);
 	}
 
-	/// <summary>
-	/// ÇŸÇ©ÇÃÇ–Ç∆Ç™éùÇƒÇ»Ç≠Ç»ÇÈÇÊÇ§Ç…Ç∑ÇÈ
-	/// </summary>
-	/// <param name="networkObject"></param>
-	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
-	public void Rpc_GrabStateAuthorityChanged(NetworkObject networkObject)
-	{
-		StateAuthorityData stateAuthorityData = networkObject.GetComponent<StateAuthorityData>();
-		if (!networkObject.HasStateAuthority)
-		{
-			stateAuthorityData.IsGrabbable = false;
-		}
-	}
-
-	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
-	public void Rpc_ReleseStateAuthorityChanged(NetworkObject networkObject)
-	{
-		StateAuthorityData stateAuthorityData = networkObject.GetComponent<StateAuthorityData>();
-		stateAuthorityData.IsGrabbable = true;
-	}
-
 	[Rpc(RpcSources.All, RpcTargets.All)]
-	public async void Rpc_JoinOrCreateRoom(SceneNameType joinWorldType, PlayerRef joinPlayer, int roomNumber = -1)
+	public async void Rpc_JoinOrCreateRoom(string joinWorldType, PlayerRef joinPlayer, int roomNumber = -1)
 	{
-		JoinOrCreateResult result = await RoomManager.Instance.JoinOrCreate(joinWorldType, joinPlayer, roomNumber);
+		JoinOrCreateResult result = await RoomManager.Instance.JoinOrCreate(joinWorldType.ToString(), joinPlayer, roomNumber);
 		string temp = result switch
 		{
 			JoinOrCreateResult.Create => "ÇçÏê¨",
@@ -119,7 +103,7 @@ public class SessionRPCManager : NetworkBehaviour
 
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
 	private async void Rpc_SendRoomData([RpcTarget] PlayerRef rpcTarget
-		, SceneNameType worldType, PlayerRef playerRef, bool isLeader , int roomNumber = -1)
+		, string worldType, PlayerRef playerRef, bool isLeader, int roomNumber = -1)
 	{
 		XKumaDebugSystem.LogWarning($"Rpc_SendRoomData:{worldType}:{playerRef}:{isLeader}", KumaDebugColor.RpcColor);
 		await RoomManager.Instance.JoinOrCreate(worldType, playerRef, roomNumber);
@@ -142,13 +126,13 @@ public class SessionRPCManager : NetworkBehaviour
 	/// <param name="rpcTarget"></param>
 	/// <param name="networkObject"></param>
 	[Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
-	public void Rpc_ReleaseStateAuthority([RpcTarget]PlayerRef rpcTarget,NetworkObject networkObject)
+	public void Rpc_ReleaseStateAuthority([RpcTarget] PlayerRef rpcTarget, NetworkObject networkObject)
 	{
 		XKumaDebugSystem.LogWarning($"{rpcTarget}:{networkObject.name}");
 		networkObject.ReleaseStateAuthority();
 
 	}
-	[Rpc(RpcSources.All,RpcTargets.All)]
+	[Rpc(RpcSources.All, RpcTargets.All)]
 	public void Rpc_ExecuteOnActivityConnedted()
 	{
 		GateOfFusion.Instance.ExecuteOnActivityConnected();
