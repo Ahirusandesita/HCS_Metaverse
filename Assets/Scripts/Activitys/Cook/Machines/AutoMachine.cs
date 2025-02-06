@@ -6,7 +6,7 @@ using Oculus.Interaction;
 public class AutoMachine : Machine
 {
     [SerializeField, Tooltip("オブジェクトの取得範囲を指定するCollider")]
-    private Collider _ProcessingAreaCollider = default;
+    private Collider _processingAreaCollider = default;
 
     private CookActivitySound _sound = default;
 
@@ -37,12 +37,24 @@ public class AutoMachine : Machine
 
         if (_processingIngrodientsView != default)
         {
+            if (_processingAreaCollider.enabled)
+            {
+                _processingAreaCollider.enabled = false;
+            }
+
             ProcessEvent(_processingValue * Time.deltaTime);
 
             if (_seTimer <= 0)
             {
                 _sound.PlayOneShotSE(CookActivitySound.SEName_Cook.bake, transform.position);
                 _seTimer = SE_INTERVAL;
+            }
+        }
+        else
+        {
+            if (!_processingAreaCollider.enabled)
+            {
+                _processingAreaCollider.enabled = true;
             }
         }
     }
