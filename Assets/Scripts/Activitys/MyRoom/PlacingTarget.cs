@@ -54,7 +54,6 @@ public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDepend
 		Inputter.PlacingMode.Signed.performed += OnSigned;
 		Inputter.PlacingMode.Signed.canceled += OnSignedCancel;
 		Inputter.PlacingMode.Switch.performed += OnSwitch;
-		Inputter.PlacingMode.Place.performed += OnPlacing;
 
 		return this;
 	}
@@ -82,7 +81,6 @@ public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDepend
 		Inputter.PlacingMode.Signed.performed -= OnSigned;
 		Inputter.PlacingMode.Signed.canceled -= OnSignedCancel;
 		Inputter.PlacingMode.Switch.performed -= OnSwitch;
-		Inputter.PlacingMode.Place.performed -= OnPlacing;
 
 		ghostModel = null;
 		placeableObject = null;
@@ -216,16 +214,7 @@ public class PlacingTarget : MonoBehaviour, IDependencyInjector<PlayerBodyDepend
 	/// <summary>
 	/// ê›íuäÆóπå„ÇÃèàóù
 	/// </summary>
-	protected virtual void OnPlacing(InputAction.CallbackContext context)
-	{
-		if (!canPlacing)
-		{
-			return;
-		}
-
-		Instantiate(placeableObject, transform.position, Quaternion.Euler(transform.GetChild(0).eulerAngles));
-		Destroy(gameObject);
-	}
+	public virtual void OnPlaced() { }
 
 	protected virtual void OnTriggerEnter(Collider other)
 	{

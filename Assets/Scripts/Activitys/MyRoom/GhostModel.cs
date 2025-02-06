@@ -57,12 +57,15 @@ public class GhostModel : IEditOnlyGhost
     private readonly Color32 incorrectColor = new Color32(255, 31, 15, 255);
 
     private GameObject instance = default;
+    private PlacingTarget placingTarget = default;
     private BoxCollider boxCollider = default;
     private Material material = default;
 
     private bool enablePlacingFunction = false;
     private bool canPlace = false;
 
+    public GameObject Instance => instance;
+    public PlacingTarget PlacingTarget => placingTarget;
 
     public bool CanPlace
     {
@@ -195,15 +198,15 @@ public class GhostModel : IEditOnlyGhost
         switch (placeableObject.PlacingStyle)
         {
             case PlacingStyle.Ground:
-                instance.AddComponent<PlacingTarget>().Initialize(this, placeableObject, player);
+                placingTarget = instance.AddComponent<PlacingTarget>().Initialize(this, placeableObject, player);
                 break;
 
             case PlacingStyle.Wall:
-                instance.AddComponent<PlacingTarget_Wall>().Initialize(this, placeableObject, player);
+                placingTarget = instance.AddComponent<PlacingTarget_Wall>().Initialize(this, placeableObject, player);
                 break;
 
             case PlacingStyle.Shelf:
-                instance.AddComponent<PlacingTarget_Shelf>().Initialize(this, placeableObject, player);
+                placingTarget = instance.AddComponent<PlacingTarget_Shelf>().Initialize(this, placeableObject, player);
                 break;
         }
 
@@ -220,6 +223,11 @@ public class GhostModel : IEditOnlyGhost
     {
         return instance.transform.rotation;
     }
+
+    public Quaternion GetGhostChildRotation()
+	{
+        return instance.transform.GetChild(0).rotation;
+	}
 
     /// <summary>
     /// ÉÇÉfÉãÇ™ë∂ç›Ç∑ÇÈèÍçáÇ…ï\é¶Ç∑ÇÈ
@@ -252,6 +260,7 @@ public class GhostModel : IEditOnlyGhost
     {
         Object.Destroy(instance);
         instance = null;
+        placingTarget = null;
         boxCollider = null;
         material = null;
     }

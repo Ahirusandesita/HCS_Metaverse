@@ -220,9 +220,9 @@ public class WebAPIRequester
 	/// <summary>
 	/// マイルーム退室時のAPI通信
 	/// </summary>
-	public async UniTask PostMyRoomSave(int userId, List<MyRoomObjectSaved> myRoomObjectSaveds)
+	public async UniTask PostMyRoomSave(List<MyRoomObjectSaved> myRoomObjectSaveds)
 	{
-		var sendMyRoomSaveData = new SendMyRoomSaveData(userId, myRoomObjectSaveds);
+		var sendMyRoomSaveData = new SendMyRoomSaveData(myRoomObjectSaveds);
 		string jsonData = JsonUtility.ToJson(sendMyRoomSaveData);
 
 		using var request = UnityWebRequest.Post(DETABASE_PATH_MYROOM_SAVE, jsonData, CONTENT_TYPE);
@@ -619,13 +619,11 @@ public class WebAPIRequester
 	[System.Serializable]
 	private class SendMyRoomSaveData
 	{
-		public SendMyRoomSaveData(int userId, List<MyRoomObjectSaved> objectList)
+		public SendMyRoomSaveData(List<MyRoomObjectSaved> objectList)
 		{
-			this.userId = userId;
 			this.objectList = objectList;
 		}
 
-		[SerializeField] private int userId = default;
 		[SerializeField] private List<MyRoomObjectSaved> objectList = default;
 	}
 	#endregion

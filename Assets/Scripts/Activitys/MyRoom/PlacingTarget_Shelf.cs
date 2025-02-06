@@ -147,9 +147,9 @@ public class PlacingTarget_Shelf : PlacingTarget, IInteractionInfoReceiver
 		zPosition = shelfBoards[focusBoardIndex].bounds.center.z;
 	}
 
-	protected override void OnPlacing(InputAction.CallbackContext context)
+	public override void OnPlaced()
 	{
-		base.OnPlacing(context);
+		base.OnPlaced();
 
 		// 設置完了後、OFFにしたコライダーをすべてONに戻す
 		foreach (var collider in shelfColliders)

@@ -14,12 +14,14 @@ public class PlaceableObject : MonoBehaviour
 	[Tooltip("îzíuâ¬î\èÍèä")]
 	[SerializeField] private GhostModel.PlacingStyle placingStyle = default;
 	[SerializeField] private List<Collider> colliders = default;
-	[Hide] private int housingID = -1;
+	private int itemID = default;
+	private int housingID = -1;
 
 	public GameObject GhostOrigin => ghostOrigin;
 	public GhostModel.PivotType PivotType => pivotType;
 	public GhostModel.PlacingStyle PlacingStyle => placingStyle;
 	public IReadOnlyList<Collider> Colliders => colliders;
+	public int ItemID { get => itemID; set => itemID = value; }
 	public int HousingID { get => housingID; set => housingID = value; }
 
 	[System.Diagnostics.Conditional("UNITY_EDITOR")]
@@ -36,11 +38,14 @@ namespace UnityEditor.HCSMeta
 	public class PlaceableObjectEditor : Editor
 	{
 		private PlaceableObject placeableObject = default;
+		private FieldInfo itemIDInfo = default;
 		private FieldInfo housingIDInfo = default;
 
 		private void OnEnable()
 		{
 			placeableObject = target as PlaceableObject;
+			itemIDInfo = placeableObject.GetType()
+				.GetField("itemID", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 			housingIDInfo = placeableObject.GetType()
 				.GetField("housingID", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 		}
@@ -50,9 +55,11 @@ namespace UnityEditor.HCSMeta
 			base.OnInspectorGUI();
 			if (housingIDInfo != null)
 			{
-				int id = (int)housingIDInfo.GetValue(placeableObject);
+				int itemId = (int)itemIDInfo.GetValue(placeableObject);
+				int housingId = (int)housingIDInfo.GetValue(placeableObject);
 				EditorGUI.BeginDisabledGroup(true);
-				EditorGUILayout.IntField("Housing ID", id);
+				EditorGUILayout.IntField("Item ID", itemId);
+				EditorGUILayout.IntField("Housing ID", housingId);
 				EditorGUI.EndDisabledGroup();
 			}
 		}
