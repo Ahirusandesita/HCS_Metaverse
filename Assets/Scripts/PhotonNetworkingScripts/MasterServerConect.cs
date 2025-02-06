@@ -57,24 +57,11 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		WebAPIRequester requester = new();
 		WebAPIRequester.OnCatchUserLocationData catchUserLocationData
 			= await requester.GetUserLocation();
-		foreach (WebAPIRequester.UserLocationData locationData in catchUserLocationData.SessionList)
-		{
-			XDebug.LogWarning(
-				$"UserID:{locationData.UserID}" +
-				$"SessionName:{locationData.SessionName}" +
-				$"LocationName:{locationData.LocationName}"
-				);
-		}
 
 	}
 	[ContextMenu("adadad")]
 	private void Mainssss()
 	{
-		WebAPIRequester webAPIRequester = new WebAPIRequester();
-		webAPIRequester
-			.PostUserLocation(PlayerDontDestroyData.Instance.PlayerID,"Main01","Main")
-			.Forget();
-
 	}
 
 	[ContextMenu("start")]
