@@ -57,7 +57,7 @@ public class SessionRPCManager : NetworkBehaviour
 		if (PlayerDontDestroyData.Instance != null)
 		{
 			WebAPIRequester webAPIRequester = new WebAPIRequester();
-			await webAPIRequester.PostUserLocation(PlayerDontDestroyData.Instance.PlayerID, sessionName, sceneName);
+			await webAPIRequester.PostUserLocation(sessionName, sceneName);
 		}
 		//é¿çs
 		await masterServer.JoinOrCreateSession(sessionName, rpcTarget);
