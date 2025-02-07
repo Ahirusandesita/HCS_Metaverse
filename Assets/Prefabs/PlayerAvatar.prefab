@@ -389,6 +389,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1790115358132115312}
+  - component: {fileID: 2993386855711029602}
   m_Layer: 0
   m_Name: '#CharacterControl'
   m_TagString: Untagged
@@ -412,6 +413,19 @@ Transform:
   - {fileID: 7302352437427899133}
   m_Father: {fileID: 5158525269730530419}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2993386855711029602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1913549897734844405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2104a82d350174c4cbd577ee0a2e1783, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemBundle: {fileID: 11400000, guid: 4b0a8552cd5992449aab6ed722f30dde, type: 2}
 --- !u!1 &2077543949834533892
 GameObject:
   m_ObjectHideFlags: 0
@@ -10766,9 +10780,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2beed5376eb37ac48b23a24754e4bf6d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 641519544510132043}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2beed5376eb37ac48b23a24754e4bf6d, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 6585725774859527505}
   m_SourcePrefab: {fileID: 100100000, guid: 2beed5376eb37ac48b23a24754e4bf6d, type: 3}
 --- !u!4 &5956024454042010045 stripped
@@ -10791,19 +10802,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 2beed5376eb37ac48b23a24754e4bf6d, type: 3}
   m_PrefabInstance: {fileID: 7124012532366601494}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &641519544510132043
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7934492031104667719}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2104a82d350174c4cbd577ee0a2e1783, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _itemBundle: {fileID: 11400000, guid: 4b0a8552cd5992449aab6ed722f30dde, type: 2}
 --- !u!114 &6585725774859527505
 MonoBehaviour:
   m_ObjectHideFlags: 0
