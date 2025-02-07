@@ -9,7 +9,7 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
     private ItemBundleAsset _itemBundle = default;
 
     private Transform[] _children = default;
-
+    private CharacterControlRPCManager characterControlRPCManager;
     private struct PartsIndex
     {
         public PartsIndex(int defaultValue = -1)
@@ -120,7 +120,7 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
 
     private const int UNWEAR_INDEX = -1;
 
-    private void Start()
+    private async void Start()
     {
         Transform partParent = transform.Find("Parts");
         _children = partParent.GetComponentsInChildren<Transform>(true);
@@ -152,6 +152,10 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
                 _wearingPartsIndex.SetParts(machIndex, i);
             }
         }
+
+        RemoteView remoteView = await FindObjectOfType<LocalRemoteSeparation>().ReceiveRemoteView();
+
+        characterControlRPCManager = remoteView.GetComponentInChildren<CharacterControlRPCManager>();
     }
 
     public void OnDressUp(int id, string name)
@@ -189,8 +193,13 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
                 _children[partsIndex].gameObject.SetActive(false);
             }
 
+            characterControlRPCManager.RPC_ChangeSkins(machIndex,i);
             _wearingPartsIndex.SetParts(machIndex, i);
         }
+    }
+    public void RPCDressUp(int machIndex, int i)
+    {
+        _wearingPartsIndex.SetParts(machIndex, i);
     }
 
     public void TakeOffDress(string name)

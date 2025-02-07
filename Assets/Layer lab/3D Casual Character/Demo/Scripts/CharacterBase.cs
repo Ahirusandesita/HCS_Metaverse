@@ -22,7 +22,7 @@ namespace Layer_lab._3D_Casual_Character
         Body
     }
 
-    public class CharacterBase : MonoBehaviour, ICharacterBase
+    public class CharacterBase : MonoBehaviour
     {
         public List<GameObject> PartsBody { get; set; } = new();
         public List<GameObject> PartsHair { get; set; } = new();

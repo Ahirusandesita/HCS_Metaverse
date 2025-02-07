@@ -84,6 +84,10 @@ public class DressUpViewControl : MonoBehaviour, IDressUpEventVendor
                     itemAssets.Add(allItemBundle.GetItemAssetByID(dressUpInformation.ID));
                     existItemAsset = true;
                 }
+                if(dressUpInformation.Index == -1)
+                {
+                    DressUpViewFrame instance = Instantiate(dressUpViewFrame, content, false);
+                }
             }
 
             if (itemAssets.Count > 0)

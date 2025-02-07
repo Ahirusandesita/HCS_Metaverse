@@ -17,12 +17,12 @@ public class LocalRemoteSeparation : MonoBehaviour
     public async void RemoteViewCreate(NetworkRunner networkRunner, PlayerRef playerRef)
     {
         NetworkObject remoteViewObject
-            =await networkRunner.SpawnAsync(remoteViewObjectPrefab, Vector3.zero, Quaternion.identity);
+            = await networkRunner.SpawnAsync(remoteViewObjectPrefab, Vector3.zero, Quaternion.identity);
         RemoteView remoteView = remoteViewObject.GetComponent<RemoteView>();
 
         if (playerRef == networkRunner.LocalPlayer)
         {
-            RemoteCharacterControll characterController = remoteView.GetComponentInChildren<RemoteCharacterControll>();
+            CharacterControlRPCManager characterController = remoteView.GetComponentInChildren<CharacterControlRPCManager>();
             foreach (Renderer renderer in characterController.GetComponentsInChildren<Renderer>())
             {
                 renderer.gameObject.SetActive(false);

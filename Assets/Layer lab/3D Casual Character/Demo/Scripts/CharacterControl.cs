@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Layer_lab._3D_Casual_Character
 {
-    public class CharacterControl : MonoBehaviour, ICharacterControl
+    public class CharacterControl : MonoBehaviour
     {
         public static CharacterControl Instance;
         public CharacterBase CharacterBase { get; set; }

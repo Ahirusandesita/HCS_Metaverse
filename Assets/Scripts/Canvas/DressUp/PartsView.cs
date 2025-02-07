@@ -4,21 +4,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PartsView : MonoBehaviour
+public class PartsView : DressUpViewBase
 {
-    [SerializeField]
-    private ItemBundleAsset allItemBundleAsset;
-    private List<DressUpInformation> dressUpInformation = new List<DressUpInformation>();
-    private DressUpViewControl dressUpViewControl;
-    public void InjectItemAssetID(List<int> IDs)
+    protected override List<DressUpInformation> CreateDressUpInformation(in List<int> IDs)
     {
-        dressUpViewControl = this.GetComponent<DressUpViewControl>();
+        List<DressUpInformation> dressUpInformations = new List<DressUpInformation>();
 
         Action<PartsType, int, string> action = (partsType, id, partsTypeName) =>
         {
-            if (allItemBundleAsset.GetItemAssetByID(id).Name.Contains(partsTypeName))
+            if (AllItemBundleAsset.GetItemAssetByID(id).Name.Contains(partsTypeName))
             {
-                dressUpInformation.Add(new DressUpInformation((int)partsType, id));
+                dressUpInformations.Add(new DressUpInformation((int)partsType, id));
             }
         };
         foreach (int id in IDs)
@@ -35,6 +31,6 @@ public class PartsView : MonoBehaviour
             action(PartsType.Glove, id, "Glove");
         }
 
-        dressUpViewControl.InjectDressUpInformation(dressUpInformation);
+        return dressUpInformations;
     }
 }
