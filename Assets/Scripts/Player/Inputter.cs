@@ -88,6 +88,7 @@ public static class Inputter
             case InputActionPreset.Animation:
                 Player.Disable();
                 Player.Look.Enable();
+                Player.Animation.Enable();
 
                 Animation.Enable();
                 break;
