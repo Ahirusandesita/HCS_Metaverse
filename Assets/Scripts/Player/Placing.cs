@@ -64,7 +64,7 @@ public class Placing : MonoBehaviour, IInputControllable
 		{
 			TryDestroyGhost();
 			inventoryIndexTest -= inventoryIndexTest == 0 ? 0 : 1;
-			placeableObjectID = /*PlayerDontDestroyData.Instance.InventoryToList*/debugData[inventoryIndexTest].ItemID;
+			placeableObjectID = PlayerDontDestroyData.Instance.InventoryToList[inventoryIndexTest].ItemID;
 			placeableObject = allItemAsset.GetItemAssetByID(placeableObjectID).DisplayItem.gameObject.GetComponent<PlaceableObject>();
 			CreateGhost(placeableObject);
 
@@ -77,7 +77,7 @@ public class Placing : MonoBehaviour, IInputControllable
 		{
 			TryDestroyGhost();
 			inventoryIndexTest += inventoryIndexTest == 19 ? 0 : 1;
-			placeableObjectID = /*PlayerDontDestroyData.Instance.InventoryToList*/debugData[inventoryIndexTest].ItemID;
+			placeableObjectID = PlayerDontDestroyData.Instance.InventoryToList[inventoryIndexTest].ItemID;
 			placeableObject = allItemAsset.GetItemAssetByID(placeableObjectID).DisplayItem.gameObject.GetComponent<PlaceableObject>();
 			placeableObject.name.Print();
 			CreateGhost(placeableObject);
