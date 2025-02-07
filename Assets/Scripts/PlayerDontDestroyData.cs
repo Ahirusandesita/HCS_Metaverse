@@ -58,10 +58,11 @@ public class PlayerDontDestroyData : MonoBehaviour
 		if (_instance == null)
 		{
 			_instance = this;
+			DontDestroyOnLoad(_instance.gameObject);
 		}
 		else
 		{
-			Destroy(_instance.gameObject);
+			Destroy(this.gameObject);
 		}
 		WebAPIRequester webAPIRequester = new();
 #if UNITY_EDITOR
@@ -135,10 +136,13 @@ public class PlayerDontDestroyData : MonoBehaviour
 			{
 				_inventory[item.UserIndex] = itemIDPair;
 
-				// インベントリビューに送信（個数分）
-				for (int i = 0; i < item.Count; i++)
+				if(inventoryManager != null)
 				{
-					inventoryManager.SendItem(item.ItemID);
+					// インベントリビューに送信（個数分）
+					for (int i = 0; i < item.Count; i++)
+					{
+						inventoryManager.SendItem(item.ItemID);
+					}
 				}
 			}
 
