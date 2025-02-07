@@ -64,7 +64,7 @@ public class PlayerDontDestroyData : MonoBehaviour
 		}
 		WebAPIRequester webAPIRequester = new();
 #if UNITY_EDITOR
-		await webAPIRequester.PostLogin("User1", "hcs5511");
+		await webAPIRequester.PostLogin("admin@hcs.ac.jp", "hcs5511");
 #endif
 		await UpdateInventory(webAPIRequester);
 	}
@@ -72,7 +72,7 @@ public class PlayerDontDestroyData : MonoBehaviour
 	public bool AddInventory(ItemIDAmountPair itemIDAmountPair)
 	{
 		ItemAsset itemAsset = _allItemAssets.GetItemAssetByID(itemIDAmountPair.ItemID);
-		if(itemAsset.Genre == ItemGenre.Costume)
+		if (itemAsset.Genre == ItemGenre.Costume)
 		{
 			lock (_costumeInventoryLockObject)
 			{
@@ -82,16 +82,16 @@ public class PlayerDontDestroyData : MonoBehaviour
 		}
 
 		int index = -1;
-		for(int i = 0;i < _inventory.Length ; i++)
+		for (int i = 0; i < _inventory.Length; i++)
 		{
-			if(_inventory[i].ItemID <= 0)
+			if (_inventory[i].ItemID <= 0)
 			{
 				index = i;
 				break;
 			}
 		}
 
-		if(index <= -1)
+		if (index <= -1)
 		{
 			return false;
 		}
@@ -113,10 +113,11 @@ public class PlayerDontDestroyData : MonoBehaviour
 	{
 		WebAPIRequester.OnCatchUserInventory inventoryData = await webAPIRequester.GetInventory();
 		_inventory = new ItemIDAmountPair[_MAX_INVENTORY_COUNT];
+		InventoryManager inventoryManager = FindAnyObjectByType<InventoryManager>();
 		foreach (var item in inventoryData.Inventory)
 		{
 			ItemAsset itemAsset = _allItemAssets.GetItemAssetByID(item.ItemID);
-			if(itemAsset.Genre == ItemGenre.Costume)
+			if (itemAsset.Genre == ItemGenre.Costume)
 			{
 				lock (_costumeInventoryLockObject)
 				{
@@ -128,6 +129,12 @@ public class PlayerDontDestroyData : MonoBehaviour
 			lock (_inventoryLockObject)
 			{
 				_inventory[item.UserIndex] = itemIDPair;
+
+				// インベントリビューに送信（個数分）
+				for (int i = 0; i < item.Count; i++)
+				{
+					inventoryManager.SendItem(item.ItemID);
+				}
 			}
 		}
 	}
