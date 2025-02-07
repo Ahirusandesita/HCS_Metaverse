@@ -64,12 +64,12 @@ public static class Inputter
 
 			case InputActionPreset.Placing:
                 PlacingMode.Enable();
+                Player.Disable();
                 Player.Move.Enable();
                 Player.Look.Enable();
                 Player.Jump.Enable();
                 Player.SprintOrWarp.Enable();
 
-                Player.Interact.Disable();
                 UI.Disable();
                 VRHead.Disable();
                 Animation.Disable();

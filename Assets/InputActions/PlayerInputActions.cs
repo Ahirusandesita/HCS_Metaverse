@@ -80,6 +80,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Options"",
+                    ""type"": ""Button"",
+                    ""id"": ""38b09bd0-3461-4725-a03d-71562c4158b1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -311,6 +320,39 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Animation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""53d1d83a-a40c-4849-8c4e-a59fc795991b"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Options"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a2b0dc7f-4ed9-4ba6-95e1-04459d8fbe2a"",
+                    ""path"": ""<XRController>{LeftHand}/primaryButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Options"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""847e6099-ba05-4801-9983-8ee726bdb910"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Options"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -752,6 +794,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_SprintOrWarp = m_Player.FindAction("SprintOrWarp", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Animation = m_Player.FindAction("Animation", throwIfNotFound: true);
+        m_Player_Options = m_Player.FindAction("Options", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Chat = m_UI.FindAction("Chat", throwIfNotFound: true);
@@ -836,6 +879,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_SprintOrWarp;
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Animation;
+    private readonly InputAction m_Player_Options;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -846,6 +890,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @SprintOrWarp => m_Wrapper.m_Player_SprintOrWarp;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @Animation => m_Wrapper.m_Player_Animation;
+        public InputAction @Options => m_Wrapper.m_Player_Options;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -873,6 +918,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Animation.started += instance.OnAnimation;
             @Animation.performed += instance.OnAnimation;
             @Animation.canceled += instance.OnAnimation;
+            @Options.started += instance.OnOptions;
+            @Options.performed += instance.OnOptions;
+            @Options.canceled += instance.OnOptions;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -895,6 +943,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Animation.started -= instance.OnAnimation;
             @Animation.performed -= instance.OnAnimation;
             @Animation.canceled -= instance.OnAnimation;
+            @Options.started -= instance.OnOptions;
+            @Options.performed -= instance.OnOptions;
+            @Options.canceled -= instance.OnOptions;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1180,6 +1231,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnSprintOrWarp(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnAnimation(InputAction.CallbackContext context);
+        void OnOptions(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
