@@ -93,6 +93,7 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
 			// ƒvƒŒƒCƒ„[‚ªGhost‚ğ¶¬
 			var playerPlacing = FindAnyObjectByType<Placing>();
 			playerPlacing.CreateGhost(placeableObject);
+			Destroy(gameObject);
 		}
 	}
 
