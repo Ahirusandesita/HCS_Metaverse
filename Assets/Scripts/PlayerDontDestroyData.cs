@@ -24,6 +24,7 @@ public class PlayerDontDestroyData : MonoBehaviour
 	//id count
 	[SerializeField]
 	private ItemIDAmountPair[] _inventory = new ItemIDAmountPair[_MAX_INVENTORY_COUNT];
+	[SerializeField]
 	private List<int> _costumeInventory = new List<int>();
 
 	public static PlayerDontDestroyData Instance => _instance;
@@ -66,7 +67,11 @@ public class PlayerDontDestroyData : MonoBehaviour
 #if UNITY_EDITOR
 		await webAPIRequester.PostLogin("admin@hcs.ac.jp", "hcs5511");
 #endif
-		await UpdateInventory(webAPIRequester);
+	}
+
+	private async void Start()
+	{
+		await UpdateInventory();
 	}
 
 	public bool AddInventory(ItemIDAmountPair itemIDAmountPair)
@@ -136,6 +141,7 @@ public class PlayerDontDestroyData : MonoBehaviour
 					inventoryManager.SendItem(item.ItemID);
 				}
 			}
+
 		}
 	}
 }
