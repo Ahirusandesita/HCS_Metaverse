@@ -16,7 +16,7 @@ public class ScrollGameObject : MonoBehaviour, IScrollable, ITransformInjectable
 
     public void UnSubscribe(Action action)
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     void ITransformInjectable.TransformInject(Transform transform)
