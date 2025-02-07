@@ -10,6 +10,8 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
 
     private Transform[] _children = default;
     private CharacterControlRPCManager characterControlRPCManager;
+    [SerializeField]
+    private Transform partsParent;
     private struct PartsIndex
     {
         public PartsIndex(int defaultValue = -1)
@@ -122,10 +124,9 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
 
     private async void Start()
     {
-        Transform partParent = transform.Find("Parts");
-        _children = partParent.GetComponentsInChildren<Transform>(true);
+        _children = partsParent.GetComponentsInChildren<Transform>(true);
 
-        Transform[] wearing = partParent.GetComponentsInChildren<Transform>();
+        Transform[] wearing = partsParent.GetComponentsInChildren<Transform>();
 
         for (int wearingIndex = 0; wearingIndex < wearing.Length; wearingIndex++)
         {
@@ -193,7 +194,7 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
                 _children[partsIndex].gameObject.SetActive(false);
             }
 
-            characterControlRPCManager.RPC_ChangeSkins(machIndex,i);
+            characterControlRPCManager.RPC_ChangeSkins(machIndex, i);
             _wearingPartsIndex.SetParts(machIndex, i);
         }
     }
