@@ -10,7 +10,7 @@ public class InjectCharacter : MonoBehaviour
     private CharacterBase characterBase;
     void Start()
     {
-        FindObjectOfType<LocalCharacterControl>().InjectCanvasCharacterControl(characterControl);
-        FindObjectOfType<LocalCharcterBase>().CanvasCharacterBaseInject(characterBase);
+        //FindObjectOfType<LocalCharacterControl>().InjectCanvasCharacterControl(characterControl);
+        //FindObjectOfType<LocalCharcterBase>().CanvasCharacterBaseInject(characterBase);
     }
 }

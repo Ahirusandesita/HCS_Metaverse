@@ -61,13 +61,13 @@ public class CharacterAnimatorController : MonoBehaviour
         if (inputVector != Vector2.zero)
         {
             _myAnimator.SetBool(_ANIMAITOR_MOVE_FLAG_NAME, true);
-            _characterRPCManager.Rpc_AnimationBoolControl(_myRemoteViewNetworkObject,_ANIMAITOR_MOVE_FLAG_NAME,true);
+            //_characterRPCManager.Rpc_AnimationBoolControl(_myRemoteViewNetworkObject,_ANIMAITOR_MOVE_FLAG_NAME,true);
         }
     }
 
     private void MoveAnimationCancel(InputAction.CallbackContext callbackContext)
     {
         _myAnimator.SetBool(_ANIMAITOR_MOVE_FLAG_NAME, false);
-        _characterRPCManager.Rpc_AnimationBoolControl(_myRemoteViewNetworkObject, _ANIMAITOR_MOVE_FLAG_NAME, false);
+        //_characterRPCManager.Rpc_AnimationBoolControl(_myRemoteViewNetworkObject, _ANIMAITOR_MOVE_FLAG_NAME, false);
     }
 }

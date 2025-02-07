@@ -47,6 +47,10 @@ public class DressUpViewFrame : MonoBehaviour
         icon.sprite = nonExistItemIcon;
         textMesh.text = "Š‚µ‚Ä‚¢‚Ü‚¹‚ñB";
     }
+    public void InjectEmptyAsset(Sprite icon,string name,int id)
+    {
+
+    }
 
     public void Click_Next()
     {

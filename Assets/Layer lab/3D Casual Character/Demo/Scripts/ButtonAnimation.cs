@@ -13,7 +13,7 @@ namespace Layer_lab._3D_Casual_Character
         public void SetButton(AnimationClip clip, Sprite sprite)
         {
             textAnimationName.text = clip.name;
-            button.onClick.AddListener(()=> LocalCharacterControl.Instance.PlayAnimation(clip));
+           // button.onClick.AddListener(()=> LocalCharacterControl.Instance.PlayAnimation(clip));
             imageIcon.sprite = sprite;
             imageIcon.SetNativeSize();
         }
