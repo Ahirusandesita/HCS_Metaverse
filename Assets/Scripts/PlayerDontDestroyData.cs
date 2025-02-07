@@ -118,7 +118,7 @@ public class PlayerDontDestroyData : MonoBehaviour
 	{
 		WebAPIRequester.OnCatchUserInventory inventoryData = await webAPIRequester.GetInventory();
 		_inventory = new ItemIDAmountPair[_MAX_INVENTORY_COUNT];
-		InventoryManager inventoryManager = FindAnyObjectByType<InventoryManager>();
+		InventoryManager inventoryManager = FindObjectOfType<InventoryManager>(true);
 		foreach (var item in inventoryData.Inventory)
 		{
 			ItemAsset itemAsset = _allItemAssets.GetItemAssetByID(item.ItemID);
