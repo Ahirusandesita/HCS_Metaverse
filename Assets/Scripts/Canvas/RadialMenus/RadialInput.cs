@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static OVRInput;
-using UnityEditor.AssetImporters;
 public class RadialInput : MonoBehaviour, IInputControllable
 {
     private Vector2 stickInput;
@@ -63,7 +62,6 @@ public class RadialInput : MonoBehaviour, IInputControllable
             angle = 360f - Mathf.Abs(angle);
         }
 
-        Debug.LogError(angle);
         transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, angle));
         RadialMenu workRadialMenu = radialMenus.AngleMatch(angle);
         if (radialMenu == workRadialMenu)
