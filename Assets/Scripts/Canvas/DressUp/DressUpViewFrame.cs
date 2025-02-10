@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using Layer_lab._3D_Casual_Character;
 
 public class DressUpViewFrame : MonoBehaviour
 {
@@ -14,10 +15,23 @@ public class DressUpViewFrame : MonoBehaviour
     [SerializeField]
     private Sprite nonExistItemIcon;
 
-    private List<ItemAsset> itemAssets;
+    private List<ViewInfo> viewInfos = new List<ViewInfo>();
     private int index;
 
     public event Action<int, string> OnDressUp;
+
+    private class ViewInfo
+    {
+        public readonly Sprite Icon;
+        public readonly string Name;
+        public readonly int ID;
+        public ViewInfo(Sprite icon, string name, int id)
+        {
+            this.Icon = icon;
+            this.Name = name;
+            this.ID = id;
+        }
+    }
 
     private void Awake()
     {
@@ -37,40 +51,43 @@ public class DressUpViewFrame : MonoBehaviour
 
     public void InjectItemAsset(List<ItemAsset> itemAssets)
     {
-        this.itemAssets = itemAssets;
+        foreach (ItemAsset item in itemAssets)
+        {
+            viewInfos.Add(new ViewInfo(item.ItemIcon, item.Name, item.ID));
+        }
 
-        icon.sprite = itemAssets[index].ItemIcon;
-        textMesh.text = itemAssets[index].Name;
+        icon.sprite = viewInfos[index].Icon;
+        textMesh.text = viewInfos[index].Name;
     }
     public void NonExistItemAsset()
     {
         icon.sprite = nonExistItemIcon;
         textMesh.text = "ŠŽ‚µ‚Ä‚¢‚Ü‚¹‚ñB";
     }
-    public void InjectEmptyAsset(Sprite icon,string name,int id)
+    public void InjectEmptyAsset(PartsType partsType, int id)
     {
-
+        viewInfos.Add(new ViewInfo(nonExistItemIcon, partsType.ToString(), id));
     }
 
     public void Click_Next()
     {
-        if (itemAssets == null)
+        if (viewInfos.Count == 0)
         {
             return;
         }
 
         index++;
-        if (index > itemAssets.Count - 1)
+        if (index > viewInfos.Count - 1)
         {
             index = 0;
         }
-        OnDressUp?.Invoke(itemAssets[index].ID, itemAssets[index].Name);
-        icon.sprite = itemAssets[index].ItemIcon;
-        textMesh.text = itemAssets[index].Name;
+        OnDressUp?.Invoke(viewInfos[index].ID, viewInfos[index].Name);
+        icon.sprite = viewInfos[index].Icon;
+        textMesh.text = viewInfos[index].Name;
     }
     public void Click_Previous()
     {
-        if (itemAssets == null)
+        if (viewInfos.Count == 0)
         {
             return;
         }
@@ -78,11 +95,18 @@ public class DressUpViewFrame : MonoBehaviour
         index--;
         if (index < 0)
         {
-            index = itemAssets.Count - 1;
+            index = viewInfos.Count - 1;
         }
-        OnDressUp?.Invoke(itemAssets[index].ID, itemAssets[index].Name);
-        icon.sprite = itemAssets[index].ItemIcon;
-        textMesh.text = itemAssets[index].Name;
+        OnDressUp?.Invoke(viewInfos[index].ID, viewInfos[index].Name);
+        icon.sprite = viewInfos[index].Icon;
+        textMesh.text = viewInfos[index].Name;
+    }
+    public void DefaultDressUp()
+    {
+        if (viewInfos.Count != 0)
+        {
+            OnDressUp?.Invoke(viewInfos[0].ID, viewInfos[0].Name);
+        }
     }
     private void OnDestroy()
     {

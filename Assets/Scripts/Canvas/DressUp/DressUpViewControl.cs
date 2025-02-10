@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using Layer_lab._3D_Casual_Character;
+
 public interface IDressUpEventVendor
 {
     IDisposable SubscribeDressUpEvent(Action<int, string> action);
@@ -56,8 +58,9 @@ public class DressUpViewControl : MonoBehaviour, IDressUpEventVendor
                 maxIndex = dressUpInformations[i].Index;
             }
         }
-
         SpawnFrame();
+
+        transform.root.GetComponentInChildren<DressUpEventPresenter>().SubscribeEvent();
     }
     public IDisposable SubscribeDressUpEvent(Action<int, string> action)
     {
@@ -65,6 +68,7 @@ public class DressUpViewControl : MonoBehaviour, IDressUpEventVendor
         foreach (DressUpViewFrame dressUpViewFrame in dressUpViewFrames)
         {
             dressUpViewFrame.OnDressUp += dressUpEventHelper.action;
+            dressUpViewFrame.DefaultDressUp();
         }
         return dressUpEventHelper;
     }
@@ -75,24 +79,29 @@ public class DressUpViewControl : MonoBehaviour, IDressUpEventVendor
         while (index <= maxIndex)
         {
             bool existItemAsset = false;
+            bool existEmptyItem = false;
 
             List<ItemAsset> itemAssets = new List<ItemAsset>();
             foreach (DressUpInformation dressUpInformation in dressUpInformations)
             {
-                if (dressUpInformation.Index == index)
+                if (dressUpInformation.Index == index && dressUpInformation.ID != -1)
                 {
                     itemAssets.Add(allItemBundle.GetItemAssetByID(dressUpInformation.ID));
                     existItemAsset = true;
                 }
-                if(dressUpInformation.Index == -1)
+                if (dressUpInformation.Index == index && dressUpInformation.ID == -1)
                 {
-                    DressUpViewFrame instance = Instantiate(dressUpViewFrame, content, false);
+                    existEmptyItem = true;
                 }
             }
 
             if (itemAssets.Count > 0)
             {
                 DressUpViewFrame instance = Instantiate(dressUpViewFrame, content, false);
+                if (existEmptyItem)
+                {
+                    instance.InjectEmptyAsset((PartsType)index, -1);
+                }
                 instance.InjectItemAsset(itemAssets);
                 dressUpViewFrames.Add(instance);
             }
