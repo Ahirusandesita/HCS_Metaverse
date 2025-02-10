@@ -12,13 +12,15 @@ public class FlickKeyboardManager : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI textMeshProUGUI;
     //入力されている文字列
-    private string text;
+    private string text = "";
 
     private IFlickKeyEnabledAndDisabled[] flickButtonOpeningAndClosings;
     private IFlickKeyCaseConvertible[] flickButtonCaseConvertibles;
 
     private SendChat sendChat;
     private ISendableMessage sendableMessage;
+
+    public TextMeshProUGUI TextMeshProUGUI { set => textMeshProUGUI = value; }
     private void Awake()
     {
         flickButtonOpeningAndClosings = this.GetComponentsInChildren<IFlickKeyEnabledAndDisabled>(true);
@@ -63,6 +65,7 @@ public class FlickKeyboardManager : MonoBehaviour
             item.Enabled();
         }
     }
+
     /// <summary>
     /// テキスト送信
     /// </summary>

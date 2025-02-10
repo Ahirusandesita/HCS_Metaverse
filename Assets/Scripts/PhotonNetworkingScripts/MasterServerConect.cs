@@ -12,8 +12,6 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	[SerializeField]
 	private NetworkPrefabRef _sessionRPCManagerPrefab;
 	[SerializeField]
-	private CharacterRPCManager _characterRPCManagerPrefab;
-	[SerializeField]
 	private Recorder _recorder;
 	[SerializeField]
 	private NetworkRunner _networkRunnerPrefab;
@@ -73,7 +71,6 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 
 	public void IsRoomStandbyOn()
 	{
-		XKumaDebugSystem.LogError("roomOn");
 		_isRoomStandby = true;
 	}
 	public void IsActivityConnectedON()
@@ -100,24 +97,16 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	public async UniTask<SessionRPCManager> InstanceSessionRPCManagerAsync()
 	{
 		XKumaDebugSystem.LogWarning($"InstanceRpcManager{_networkRunner.IsShutdown}", KumaDebugColor.ErrorColor);
+		SessionRPCManager sessionRPCManager = FindAnyObjectByType<SessionRPCManager>();
+		if(sessionRPCManager != null) { return sessionRPCManager; }
 		NetworkObject networkObjectTemp = await _networkRunner.SpawnAsync(_sessionRPCManagerPrefab);
 		_sessionRPCManager = networkObjectTemp.GetComponent<SessionRPCManager>();
 		return _sessionRPCManager;
 	}
 
-	/// <summary>
-	/// SessionRPCManagerを生成する
-	/// </summary>
-	/// <returns>生成したオブジェクト</returns>
-	public async UniTask<CharacterRPCManager> InstanceCharacterRPCManagerAsync()
-	{
-		return await GateOfFusion.Instance.SpawnAsync(_characterRPCManagerPrefab);
-	}
-
 	private async void Awake()
 	{
-		SceneNameType firstScene = SceneNameType.TestPhotonScene;
-
+		string firstScene = SceneManager.GetActiveScene().name;
 		if (FindObjectsOfType<MasterServerConect>().Length > 1)
 		{
 			Destroy(this.gameObject);
@@ -128,10 +117,10 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		_networkRunner = await InstanceNetworkRunnerAsync();
 		if (!_isUsePhoton)
 		{
-			await RoomManager.Instance.JoinOrCreate(firstScene.ToString(), Runner.LocalPlayer);
+			await RoomManager.Instance.JoinOrCreate(firstScene, Runner.LocalPlayer);
 			return;
 		}
-		await Connect(firstScene.ToString());
+		await Connect(firstScene);
 		_isRoomStandby = true;
 	}
 
@@ -226,7 +215,6 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 			if (Runner.IsSharedModeMasterClient)
 			{
 				await InstanceSessionRPCManagerAsync();
-				await InstanceCharacterRPCManagerAsync();
 			}
 		}
 	}

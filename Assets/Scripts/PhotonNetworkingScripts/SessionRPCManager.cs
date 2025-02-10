@@ -1,6 +1,6 @@
 using Fusion;
 using KumaDebug;
-
+using UnityEngine.SceneManagement;
 public class SessionRPCManager : NetworkBehaviour
 {
 	public override void Spawned()
@@ -11,18 +11,18 @@ public class SessionRPCManager : NetworkBehaviour
 		{
 			Rpc_RequestRoomData(GateOfFusion.Instance.NetworkRunner.LocalPlayer);
 		}
-		Room currentRoom = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
+		Room currentRoom = RoomManager.Instance.FindCurrentRoom(Runner.LocalPlayer);
 		if (currentRoom == null)
 		{
-			SceneNameType firstScene = SceneNameType.KumaKumaTest;
+			string firstScene = SceneManager.GetActiveScene().name;
 
 			if (FindObjectOfType<MasterServerConect>().IsSolo)
 			{
-				_ = RoomManager.Instance.JoinOrCreate(firstScene.ToString(), Runner.LocalPlayer);
+				_ = RoomManager.Instance.JoinOrCreate(firstScene, Runner.LocalPlayer);
 			}
 			else
 			{
-				Rpc_JoinOrCreateRoom(firstScene.ToString(), Runner.LocalPlayer);
+				Rpc_JoinOrCreateRoom(firstScene, Runner.LocalPlayer);
 			}
 		}
 	}
@@ -92,7 +92,7 @@ public class SessionRPCManager : NetworkBehaviour
 	public void Rpc_RequestRoomData(PlayerRef requestPlayer)
 	{
 		XKumaDebugSystem.LogWarning($"Rpc_RequestRoomData:{requestPlayer}", KumaDebugColor.RpcColor);
-		Room roomTemp = RoomManager.Instance.GetCurrentRoom(Runner.LocalPlayer);
+		Room roomTemp = RoomManager.Instance.FindCurrentRoom(Runner.LocalPlayer);
 		if (roomTemp is null) { return; }
 		int roomKey = RoomManager.Instance.GetCurrentRoomKey(roomTemp);
 		XKumaDebugSystem.LogWarning($"{roomTemp.SceneNameType}", KumaDebugColor.ErrorColor);

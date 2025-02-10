@@ -27,13 +27,15 @@ public class VendingMachineUI : MonoBehaviour
     private int _stock = 0;
     [SerializeField, Hide]
     private int _price;
-    public int Stock { get => _stock; set => _stock = value; }
+    public int Stock { get => _stock;}
     public int ID => _id;
     public int Price => _price;
     public bool IsChanging => _isChanging;
     public GameObject BuyButton => _buyButton;
     public GameObject EditterButtons => _editButtons;
-    public void Init(int id,int discountedPrice,VendingMachineUIManager uiManager,Sprite sprite,string name)
+    public void Init(int id,int discountedPrice
+        ,VendingMachineUIManager uiManager,Sprite sprite
+        ,string name,int stock)
 	{
         _id = id;
         _price = discountedPrice;
@@ -43,6 +45,7 @@ public class VendingMachineUI : MonoBehaviour
         _discountedPriceText.text = discountedPrice.ToString("c");
         _soldoutImageObject.SetActive(false);
         _isChanging = false;
+        _stock = stock;
     }
 
     public void SoldOut()

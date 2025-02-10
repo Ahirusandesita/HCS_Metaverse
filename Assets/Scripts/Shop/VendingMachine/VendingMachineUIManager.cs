@@ -28,6 +28,8 @@ public class VendingMachineUIManager : MonoBehaviour
 	[SerializeField]
 	private GameObject _editReturnBuyMenuButton = default;
 	[SerializeField]
+	private GameObject _addButton = default;
+	[SerializeField]
 	private VendingMachineEditPriceUI _vendingMachineEditPriceUI = default;
 	private List<VendingMachineUI> _vendingUIs = new();
 	private List<VendingMachineEditUI> _vendingEditUIs = new();
@@ -45,7 +47,10 @@ public class VendingMachineUIManager : MonoBehaviour
 	[SerializeField]
 	private uint _currentPageCount = 1;
 
-
+	public async UniTask InitUI(WebAPIRequester webAPIRequester)
+	{
+		InitUI(await webAPIRequester.PostVMEntry(_vendingMachine.ShopID));
+	}
 	public void InitUI(WebAPIRequester.OnVMProductData data)
 	{
 		foreach (VendingMachineUI uI in _vendingUIs)
@@ -58,9 +63,8 @@ public class VendingMachineUIManager : MonoBehaviour
 		{
 			int discountedPrice = Mathf.FloorToInt(lineup.Price * (1 - lineup.Discount));
 			VendingMachineUI ui = Instantiate(_vendingMachineUIPrefab, _mainPanel.transform);
-			InitBuyUI(ui, lineup.ItemID, discountedPrice);
+			InitBuyUI(ui, lineup.ItemID, discountedPrice,lineup.Stock);
 			_vendingUIs.Add(ui);
-			ui.Stock = lineup.Stock;
 			UpdateUI(lineup.ItemID, lineup.Stock);
 		}
 		_maxPageCount = _vendingUIs.Count / _displayUICount;
@@ -85,18 +89,15 @@ public class VendingMachineUIManager : MonoBehaviour
 		}
 	}
 
-	private VendingMachineUI InitBuyUI(VendingMachineUI ui, int id, int discountedPrice)
+	private VendingMachineUI InitBuyUI(VendingMachineUI ui, int id, int discountedPrice,int stock)
 	{
-		if (id > 20000)
-		{
-			id += 20000;
-		}
 		ItemAsset itemAsset = _itemBundleAsset.GetItemAssetByID(id);
 		ui.Init(id
 			, discountedPrice
 			, this
 			, itemAsset.ItemIcon
-			, itemAsset.name);
+			, itemAsset.name
+			, stock);
 		return ui;
 	}
 
@@ -104,7 +105,10 @@ public class VendingMachineUIManager : MonoBehaviour
 	{
 		if (stock <= 0)
 		{
-			_vendingUIs[id].SoldOut();
+			VendingMachineUI updateUI = _vendingUIs.
+				Where(ui => ui.ID == id && ui.Stock <= 0).
+				FirstOrDefault(); 
+			updateUI.SoldOut();
 		}
 	}
 
@@ -185,8 +189,10 @@ public class VendingMachineUIManager : MonoBehaviour
 				.Where(previousItem => previousItem.ItemID == currentItem.ID)
 				.FirstOrDefault();
 
+			//í«â¡ÇÃèÍçá
 			if (itemTemp.ItemID <= 0)
 			{
+			currentItem.ID.PrintWarning();
 				WebAPIRequester.VMSalesData salesData
 						= new WebAPIRequester.VMSalesData(
 							currentItem.ID,
@@ -212,6 +218,7 @@ public class VendingMachineUIManager : MonoBehaviour
 		}
 		foreach (WebAPIRequester.ItemLineup item in _previousItemLineups)
 		{
+			item.PrintWarning();
 			VendingMachineUI uiTemp = _vendingUIs.Where(ui => ui.ID == item.ItemID).FirstOrDefault();
 			if (uiTemp != null) { continue; }
 			//çÌèúÇ≥ÇÍÇΩÇ‡ÇÃ
@@ -229,6 +236,7 @@ public class VendingMachineUIManager : MonoBehaviour
 			= await webAPIRequester.PostVMUpdate(_vendingMachine.ShopID, vmUpdateData);
 		InitUI(currentVMInventory);
 		OpenEditerButtons();
+
 	}
 
 	public void DeleteProduct(int id)
@@ -241,22 +249,23 @@ public class VendingMachineUIManager : MonoBehaviour
 		OpenBuyUI();
 	}
 
-	public async UniTask ChangeProduct(int id, int price)
+	public async UniTask UpdateOrAddProduct(int id, int price,int count)
 	{
-		VendingMachineUI changingUI = _vendingUIs.Where(ui => ui.IsChanging).FirstOrDefault();
-		InitBuyUI(changingUI, id, price);
-		List<WebAPIRequester.VMSalesData> vmSales = new();
-		vmSales.Add(new WebAPIRequester.VMSalesData(
-			id,
-			changingUI.Stock,
-			price,
-			false
-			)
-		);
+		VendingMachineUI updateUI = _vendingUIs.Where(ui => ui.IsChanging).FirstOrDefault();
+		if(updateUI == null)
+		{
+			updateUI = Instantiate(_vendingMachineUIPrefab);
+			_vendingUIs.Add(updateUI);
+		}
 		WebAPIRequester webAPIRequester = new WebAPIRequester();
+		InitBuyUI(updateUI,id,price,count);
+		UpdateUI(updateUI.ID, updateUI.Stock);
 
-		await SaveEditData(webAPIRequester);
+		
 		await PlayerDontDestroyData.Instance.UpdateInventory(webAPIRequester);
+		await SaveEditData(webAPIRequester);
+		await InitUI(webAPIRequester);
+
 	}
 
 	#region Openä÷êî
@@ -267,6 +276,11 @@ public class VendingMachineUIManager : MonoBehaviour
 			if (i / _displayUICount == _currentPageCount) { break; }
 			_vendingUIs[i].gameObject.SetActive(true);
 		}
+	}
+
+	public void OpenAddProductButton()
+	{
+		_addButton.SetActive(true);
 	}
 
 	public void OpenBuyButton()
@@ -283,6 +297,7 @@ public class VendingMachineUIManager : MonoBehaviour
 		{
 			ui.EditterButtons.SetActive(true);
 		}
+		OpenAddProductButton();
 	}
 
 	public void OpenEditUIButtons()
@@ -325,7 +340,6 @@ public class VendingMachineUIManager : MonoBehaviour
 		foreach (ItemIDAmountPair itemIDAmountPair in PlayerDontDestroyData.Instance.InventoryToList)
 		{
 			ItemAsset itemAsset = _itemBundleAsset.GetItemAssetByID(itemIDAmountPair.ItemID);
-			itemIDAmountPair.ItemID.PrintWarning();
 			VendingMachineEditUI uiEditTemp;
 			uiEditTemp = Instantiate(_vendingMachineEditUIPrefab, _editPanel.transform);
 			uiEditTemp.Init(
@@ -353,10 +367,10 @@ public class VendingMachineUIManager : MonoBehaviour
 		}
 	}
 
-	public void OpenEditPricePanel(int id)
+	public void OpenEditPricePanel(int id,int count)
 	{
 		_vendingMachineEditPriceUI.gameObject.SetActive(true);
-		_vendingMachineEditPriceUI.Init(id);
+		_vendingMachineEditPriceUI.Init(id,count);
 	}
 
 	public void OpenEditUICountText()
@@ -382,7 +396,15 @@ public class VendingMachineUIManager : MonoBehaviour
 		CloseNextButton();
 		ClosePreciousButton();
 		CloseEditPanel();
+		CloseEditterButtons();
+		CloseEditPricePanel();
 	}
+
+	public void CloseAddProductButton()
+	{
+		_addButton.SetActive(false);
+	}
+
 	public void CloseBuyUI()
 	{
 		foreach (VendingMachineUI ui in _vendingUIs)
@@ -399,6 +421,7 @@ public class VendingMachineUIManager : MonoBehaviour
 		{
 			ui.EditterButtons.SetActive(false);
 		}
+		CloseAddProductButton();
 	}
 
 	public void CloseNextButton()

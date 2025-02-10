@@ -59,6 +59,11 @@ namespace HCSMeta.Activity
 				_ = RoomManager.Instance.JoinOrCreate(
 					_sceneNameType, NetworkRunner.LocalPlayer);
 			}
+			RoomManager roomManager = FindAnyObjectByType<RoomManager>();
+			if (roomManager != null)
+			{
+				roomManager.OpenActivityStartUI();
+			}
 
 			// To Kuma: もしプレイヤーとかにこのタイミングで情報を送りたい場合は、IInteraction.InteractionInfoを継承したクラスを渡す。
 			return new IInteraction.NullInteractionInfo();
