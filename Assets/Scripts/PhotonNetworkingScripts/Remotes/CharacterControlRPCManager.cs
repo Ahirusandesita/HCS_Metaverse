@@ -11,7 +11,7 @@ public class CharacterControlRPCManager : NetworkBehaviour
     {
         skin.RPCDressUp(machIndex, i);
     }
-    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     public void RPC_TakeOffSkins(int partsIndex, int machIndex)
     {
         skin.RPCTakeOff(partsIndex, machIndex);
