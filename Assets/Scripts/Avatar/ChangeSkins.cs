@@ -134,7 +134,7 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
 
             for (int i = 0; i < _children.Length; i++)
             {
-                if (!_children[i].name.Contains(name))
+                if (!_children[i].name.Equals(name))
                 {
                     continue;
                 }
@@ -169,7 +169,7 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
 
         for (int i = 0; i < _children.Length; i++)
         {
-            if (!_children[i].name.Contains(name))
+            if (!_children[i].name.Equals(name))
             {
                 continue;
             }
@@ -234,5 +234,54 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
     {
         _children[partsIndex].gameObject.SetActive(false);
         _wearingPartsIndex.SetParts(machIndex, UNWEAR_INDEX);
+
+        ChangeBody();
+    }
+
+    private string getBodyType
+    {
+        get
+        {
+            if (_wearingPartsIndex.GetParts(5) != UNWEAR_INDEX && _wearingPartsIndex.GetParts(8) != UNWEAR_INDEX)
+            {
+                return "Body_3";
+            }
+            else if (_wearingPartsIndex.GetParts(5) == UNWEAR_INDEX)
+            {
+                if (_wearingPartsIndex.GetParts(8) == UNWEAR_INDEX)
+                {
+                    return "Body_4";
+                }
+                else
+                {
+                    return "Body_2";
+                }
+            }
+            else
+            {
+                return "Body_1";
+            }
+        }
+    }
+
+    private void ChangeBody()
+    {
+        int nowBodyIndex = _wearingPartsIndex.GetParts(0);
+
+        _children[nowBodyIndex].gameObject.SetActive(false);
+
+        string nextBodyIndex = getBodyType;
+
+        for (int i = 0; i < _children.Length; i++)
+        {
+            if (!_children[i].name.Equals(nextBodyIndex))
+            {
+                continue;
+            }
+
+            _children[i].gameObject.SetActive(true);
+
+            _wearingPartsIndex.SetParts(0, i);
+        }
     }
 }

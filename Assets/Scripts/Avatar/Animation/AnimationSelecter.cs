@@ -18,6 +18,14 @@ public class AnimationSelecter : MonoBehaviour, IDressUpEventSubscriber
         characterControl = remoteView.GetComponentInChildren<CharacterControlRPCManager>();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            PlayAnimation(_animationBundleAsset.GetItemAssetByID(50002).Animation);
+        }
+    }
+
     public void PlayAnimation(AnimationClip clip)
     {
         _playerAnimator.CrossFadeInFixedTime(clip.name, 0.25f);
@@ -26,8 +34,6 @@ public class AnimationSelecter : MonoBehaviour, IDressUpEventSubscriber
     public void OnDressUp(int id, string name)
     {
         ItemAsset animationAsset = _animationBundleAsset.GetItemAssetByID(id);
-
-        Debug.LogError($"animationAsset = {animationAsset.Prefab.name} , {animationAsset.Animation.name}, {_playerAnimator.name}");
 
         if (animationAsset.Animation == null)
         {
@@ -43,8 +49,6 @@ public class AnimationSelecter : MonoBehaviour, IDressUpEventSubscriber
     public void RPCDressUP(int id, string name)
     {
         ItemAsset animationAsset = _animationBundleAsset.GetItemAssetByID(id);
-
-        Debug.LogError($"animationAsset = {animationAsset.Prefab.name} , {animationAsset.Animation.name}, {_playerAnimator.name}");
 
         if (animationAsset.Animation == null)
         {
