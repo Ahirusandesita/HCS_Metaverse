@@ -56,6 +56,7 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
 
         public void SetParts(int index, int value)
         {
+            Debug.LogError($"index:{index} , value {value}");
             switch (index)
             {
                 case 0:
@@ -169,6 +170,8 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
 
         for (int i = 0; i < _children.Length; i++)
         {
+            //Debug.LogError($"元：{_children[i].name}   先：{name}    判定結果{_children[i].name.Equals(name)}");
+
             if (!_children[i].name.Equals(name))
             {
                 continue;
@@ -186,6 +189,7 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
                     break;
                 }
             }
+            Debug.LogError($"設定前：パーツ {machIndex}  ,  ID {_wearingPartsIndex.GetParts(machIndex)}");
 
             int partsIndex = _wearingPartsIndex.GetParts(machIndex);
 
@@ -194,13 +198,20 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
                 _children[partsIndex].gameObject.SetActive(false);
             }
 
+
             characterControlRPCManager.RPC_ChangeSkins(machIndex, i);
             _wearingPartsIndex.SetParts(machIndex, i);
+
+            Debug.LogError($"設定後：パーツ {machIndex}  ,  ID {_wearingPartsIndex.GetParts(machIndex)}");
         }
     }
     public void RPCDressUp(int machIndex, int i)
     {
+        Debug.LogError($"NetWork  設定前：パーツ {machIndex}  ,  ID {_wearingPartsIndex.GetParts(machIndex)}");
+
         _wearingPartsIndex.SetParts(machIndex, i);
+
+        Debug.LogError($"Network  設定後：パーツ {machIndex}  ,  ID {_wearingPartsIndex.GetParts(machIndex)}");
     }
 
     public void TakeOffDress(string name)
@@ -232,13 +243,15 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
 
     public void RPCTakeOff(int partsIndex, int machIndex)
     {
+        Debug.LogError($"脱いでいる：{_children[partsIndex].gameObject.name}");
         _children[partsIndex].gameObject.SetActive(false);
+        Debug.LogError($"設定前：パーツ {machIndex}  ,  ID {_wearingPartsIndex.GetParts(machIndex)}");
         _wearingPartsIndex.SetParts(machIndex, UNWEAR_INDEX);
-
-        ChangeBody();
+        Debug.LogError($"設定後：パーツ {machIndex}  ,  ID {_wearingPartsIndex.GetParts(machIndex)}");
+        //ChangeBody();
     }
 
-    private string getBodyType
+    private string getBodyName
     {
         get
         {
@@ -270,16 +283,18 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
 
         _children[nowBodyIndex].gameObject.SetActive(false);
 
-        string nextBodyIndex = getBodyType;
+        string nextBodyName = getBodyName;
 
         for (int i = 0; i < _children.Length; i++)
         {
-            if (!_children[i].name.Equals(nextBodyIndex))
+            if (!_children[i].name.Equals(nextBodyName))
             {
                 continue;
             }
 
             _children[i].gameObject.SetActive(true);
+
+            Debug.LogError($"新しい体{_children[i].gameObject.name}");
 
             _wearingPartsIndex.SetParts(0, i);
         }
