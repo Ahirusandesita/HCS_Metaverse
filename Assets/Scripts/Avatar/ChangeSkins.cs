@@ -8,10 +8,12 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
     [SerializeField]
     private ItemBundleAsset _itemBundle = default;
 
-    private Transform[] _children = default;
+    private Transform[] _partsChildren = default;
     private CharacterControlRPCManager characterControlRPCManager;
     [SerializeField]
-    private Transform partsParent;
+    private Transform _partsParent = default;
+    [SerializeField]
+    private GameObject[] _bodys = new GameObject[4];
     private struct PartsIndex
     {
         public PartsIndex(int defaultValue = -1)
@@ -56,7 +58,6 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
 
         public void SetParts(int index, int value)
         {
-            Debug.LogError($"index:{index} , value {value}");
             switch (index)
             {
                 case 0:
@@ -125,17 +126,17 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
 
     private async void Start()
     {
-        _children = partsParent.GetComponentsInChildren<Transform>(true);
+        _partsChildren = _partsParent.GetComponentsInChildren<Transform>(true);
 
-        Transform[] wearing = partsParent.GetComponentsInChildren<Transform>();
+        Transform[] wearing = _partsParent.GetComponentsInChildren<Transform>();
 
         for (int wearingIndex = 0; wearingIndex < wearing.Length; wearingIndex++)
         {
             string name = wearing[wearingIndex].name;
 
-            for (int i = 0; i < _children.Length; i++)
+            for (int i = 0; i < _partsChildren.Length; i++)
             {
-                if (!_children[i].name.Equals(name))
+                if (!_partsChildren[i].name.Equals(name))
                 {
                     continue;
                 }
@@ -144,7 +145,7 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
 
                 for (int nameIndex = 0; nameIndex < _partsNames.Length; nameIndex++)
                 {
-                    if (_children[i].gameObject.name.Contains(_partsNames[nameIndex]))
+                    if (_partsChildren[i].gameObject.name.Contains(_partsNames[nameIndex]))
                     {
                         machIndex = nameIndex;
                         break;
@@ -158,6 +159,8 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
         RemoteView remoteView = await FindObjectOfType<LocalRemoteSeparation>().ReceiveRemoteView();
 
         characterControlRPCManager = remoteView.GetComponentInChildren<CharacterControlRPCManager>();
+
+        ChangeBody();
     }
 
     public void OnDressUp(int id, string name)
@@ -168,50 +171,41 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
             return;
         }
 
-        for (int i = 0; i < _children.Length; i++)
+        for (int i = 0; i < _partsChildren.Length; i++)
         {
-            //Debug.LogError($"元：{_children[i].name}   先：{name}    判定結果{_children[i].name.Equals(name)}");
-
-            if (!_children[i].name.Equals(name))
+            if (!_partsChildren[i].name.Equals(name))
             {
                 continue;
             }
 
-            _children[i].gameObject.SetActive(true);
+            _partsChildren[i].gameObject.SetActive(true);
 
             int machIndex = UNWEAR_INDEX;
 
             for (int nameIndex = 0; nameIndex < _partsNames.Length; nameIndex++)
             {
-                if (_children[i].gameObject.name.Contains(_partsNames[nameIndex]))
+                if (_partsChildren[i].gameObject.name.Contains(_partsNames[nameIndex]))
                 {
                     machIndex = nameIndex;
                     break;
                 }
             }
-            Debug.LogError($"設定前：パーツ {machIndex}  ,  ID {_wearingPartsIndex.GetParts(machIndex)}");
 
             int partsIndex = _wearingPartsIndex.GetParts(machIndex);
 
             if (partsIndex != UNWEAR_INDEX)
             {
-                _children[partsIndex].gameObject.SetActive(false);
+                _partsChildren[partsIndex].gameObject.SetActive(false);
             }
 
 
             characterControlRPCManager.RPC_ChangeSkins(machIndex, i);
             _wearingPartsIndex.SetParts(machIndex, i);
-
-            Debug.LogError($"設定後：パーツ {machIndex}  ,  ID {_wearingPartsIndex.GetParts(machIndex)}");
         }
     }
     public void RPCDressUp(int machIndex, int i)
     {
-        Debug.LogError($"NetWork  設定前：パーツ {machIndex}  ,  ID {_wearingPartsIndex.GetParts(machIndex)}");
-
         _wearingPartsIndex.SetParts(machIndex, i);
-
-        Debug.LogError($"Network  設定後：パーツ {machIndex}  ,  ID {_wearingPartsIndex.GetParts(machIndex)}");
     }
 
     public void TakeOffDress(string name)
@@ -237,42 +231,42 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
 
         if (partsIndex != UNWEAR_INDEX)
         {
+            _partsChildren[partsIndex].gameObject.SetActive(false);
+            _wearingPartsIndex.SetParts(machIndex, UNWEAR_INDEX);
+            ChangeBody();
             characterControlRPCManager.RPC_TakeOffSkins(partsIndex, machIndex);
         }
     }
 
     public void RPCTakeOff(int partsIndex, int machIndex)
     {
-        Debug.LogError($"脱いでいる：{_children[partsIndex].gameObject.name}");
-        _children[partsIndex].gameObject.SetActive(false);
-        Debug.LogError($"設定前：パーツ {machIndex}  ,  ID {_wearingPartsIndex.GetParts(machIndex)}");
+        _partsChildren[partsIndex].gameObject.SetActive(false);
         _wearingPartsIndex.SetParts(machIndex, UNWEAR_INDEX);
-        Debug.LogError($"設定後：パーツ {machIndex}  ,  ID {_wearingPartsIndex.GetParts(machIndex)}");
-        //ChangeBody();
+        ChangeBody();
     }
 
-    private string getBodyName
+    private int getBodyName
     {
         get
         {
             if (_wearingPartsIndex.GetParts(5) != UNWEAR_INDEX && _wearingPartsIndex.GetParts(8) != UNWEAR_INDEX)
             {
-                return "Body_3";
+                return 2;
             }
             else if (_wearingPartsIndex.GetParts(5) == UNWEAR_INDEX)
             {
                 if (_wearingPartsIndex.GetParts(8) == UNWEAR_INDEX)
                 {
-                    return "Body_4";
+                    return 3;
                 }
                 else
                 {
-                    return "Body_2";
+                    return 1;
                 }
             }
             else
             {
-                return "Body_1";
+                return 0;
             }
         }
     }
@@ -281,22 +275,17 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
     {
         int nowBodyIndex = _wearingPartsIndex.GetParts(0);
 
-        _children[nowBodyIndex].gameObject.SetActive(false);
-
-        string nextBodyName = getBodyName;
-
-        for (int i = 0; i < _children.Length; i++)
+        if (nowBodyIndex != UNWEAR_INDEX)
         {
-            if (!_children[i].name.Equals(nextBodyName))
-            {
-                continue;
-            }
-
-            _children[i].gameObject.SetActive(true);
-
-            Debug.LogError($"新しい体{_children[i].gameObject.name}");
-
-            _wearingPartsIndex.SetParts(0, i);
+            _bodys[nowBodyIndex].gameObject.SetActive(false);
         }
+
+        int nextBodyIndex = getBodyName;
+
+        Debug.LogError($"body => {nextBodyIndex}");
+
+        _bodys[nextBodyIndex].gameObject.SetActive(true);
+
+        _wearingPartsIndex.SetParts(0 ,nextBodyIndex);
     }
 }
