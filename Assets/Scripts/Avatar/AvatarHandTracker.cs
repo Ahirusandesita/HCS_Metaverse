@@ -73,8 +73,6 @@ public class AvatarHandTracker
 
         // 
         _rightHand.transform.localRotation = Quaternion.Euler(controllerTwist);
-
-        Debug.LogError($"トラッキング中：{conrtoller.gameObject.name}");
     }
 
     public void LeftHandTracking(Transform conrtoller)
