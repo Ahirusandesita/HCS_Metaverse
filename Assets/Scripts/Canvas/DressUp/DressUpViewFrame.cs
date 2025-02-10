@@ -64,9 +64,9 @@ public class DressUpViewFrame : MonoBehaviour
         icon.sprite = nonExistItemIcon;
         textMesh.text = "èäéùÇµÇƒÇ¢Ç‹ÇπÇÒÅB";
     }
-    public void InjectEmptyAsset(PartsType partsType, int id)
+    public void InjectEmptyAsset(string name, int id)
     {
-        viewInfos.Add(new ViewInfo(nonExistItemIcon, partsType.ToString(), id));
+        viewInfos.Add(new ViewInfo(nonExistItemIcon, name, id));
     }
 
     public void Click_Next()

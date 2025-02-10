@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
-using Layer_lab._3D_Casual_Character;
 
 public interface IDressUpEventVendor
 {
@@ -13,11 +12,13 @@ public class DressUpInformation
 {
     public readonly int Index;
     public readonly int ID;
+    public readonly string Name;
 
-    public DressUpInformation(int index, int id)
+    public DressUpInformation(int index, int id, string name)
     {
         this.Index = index;
         this.ID = id;
+        this.Name = name;
     }
 }
 public class DressUpViewControl : MonoBehaviour, IDressUpEventVendor
@@ -80,6 +81,7 @@ public class DressUpViewControl : MonoBehaviour, IDressUpEventVendor
         {
             bool existItemAsset = false;
             bool existEmptyItem = false;
+            string name = default;
 
             List<ItemAsset> itemAssets = new List<ItemAsset>();
             foreach (DressUpInformation dressUpInformation in dressUpInformations)
@@ -91,6 +93,7 @@ public class DressUpViewControl : MonoBehaviour, IDressUpEventVendor
                 }
                 if (dressUpInformation.Index == index && dressUpInformation.ID == -1)
                 {
+                    name = dressUpInformation.Name;
                     existEmptyItem = true;
                 }
             }
@@ -100,7 +103,7 @@ public class DressUpViewControl : MonoBehaviour, IDressUpEventVendor
                 DressUpViewFrame instance = Instantiate(dressUpViewFrame, content, false);
                 if (existEmptyItem)
                 {
-                    instance.InjectEmptyAsset((PartsType)index, -1);
+                    instance.InjectEmptyAsset(name, -1);
                 }
                 instance.InjectItemAsset(itemAssets);
                 dressUpViewFrames.Add(instance);
