@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using KumaDebug;
 public class PlayerDontDestroyData : MonoBehaviour
 {
 	private static PlayerDontDestroyData _instance = default;
@@ -20,12 +21,18 @@ public class PlayerDontDestroyData : MonoBehaviour
 	private readonly object _moneyLockObject = new object();
 	private readonly object _inventoryLockObject = new object();
 	private readonly object _costumeInventoryLockObject = new object();
+	private readonly object _wallpaperInventoryLockObject = new object();
+	private readonly object _flooringInventoryLockObject = new object();
 
 	//id count
 	[SerializeField]
 	private ItemIDAmountPair[] _inventory = new ItemIDAmountPair[_MAX_INVENTORY_COUNT];
 	[SerializeField]
 	private List<int> _costumeInventory = new List<int>();
+	[SerializeField]
+	private List<int> _wallpaperInventory = new();
+	[SerializeField]
+	private List<int> _flooringInventory = new();
 
 	public static PlayerDontDestroyData Instance => _instance;
 	public int PlayerID { get => _playerID; set => _playerID = value; }
@@ -123,7 +130,7 @@ public class PlayerDontDestroyData : MonoBehaviour
 		foreach (var item in inventoryData.Inventory)
 		{
 			ItemAsset itemAsset = _allItemAssets.GetItemAssetByID(item.ItemID);
-			if (itemAsset.Genre == ItemGenre.Costume)
+			if (itemAsset.Genre is ItemGenre.Costume)
 			{
 				lock (_costumeInventoryLockObject)
 				{
@@ -131,21 +138,43 @@ public class PlayerDontDestroyData : MonoBehaviour
 				}
 				continue;
 			}
-			ItemIDAmountPair itemIDPair = new ItemIDAmountPair(item.ItemID, item.Count);
-			lock (_inventoryLockObject)
+			else if (itemAsset.Genre is ItemGenre.Flooring)
 			{
-				_inventory[item.UserIndex] = itemIDPair;
-
-				if(inventoryManager != null)
+				lock (_flooringInventoryLockObject)
 				{
-					// インベントリビューに送信（個数分）
-					for (int i = 0; i < item.Count; i++)
+					_flooringInventory.Add(item.ItemID);
+				}
+				continue;
+			}
+			else if (itemAsset.Genre is ItemGenre.Wallpaper)
+			{
+				lock (_wallpaperInventoryLockObject)
+				{
+					_wallpaperInventory.Add(item.ItemID);
+				}
+				continue;
+			}
+			else if (itemAsset.Genre is ItemGenre.Interior or ItemGenre.Usable or ItemGenre.Food)
+			{
+				ItemIDAmountPair itemIDPair = new ItemIDAmountPair(item.ItemID, item.Count);
+				lock (_inventoryLockObject)
+				{
+					_inventory[item.UserIndex] = itemIDPair;
+
+					if (inventoryManager != null)
 					{
-						inventoryManager.SendItem(item.ItemID);
+						// インベントリビューに送信（個数分）
+						for (int i = 0; i < item.Count; i++)
+						{
+							inventoryManager.SendItem(item.ItemID);
+						}
 					}
 				}
 			}
-
+			else
+			{
+				XDebug.LogError($"インベントリに入るはずのないIDが検知されましたID:{item.ItemID}", KumaDebugColor.ErrorColor);
+			}
 		}
 	}
 }
