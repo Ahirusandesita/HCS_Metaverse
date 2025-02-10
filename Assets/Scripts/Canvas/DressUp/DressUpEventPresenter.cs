@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +18,18 @@ public class DressUpEventPresenter : MonoBehaviour
     [SerializeField, InterfaceType(typeof(IDressUpEventSubscriber))]
     private List<UnityEngine.Object> dressUpEventSubscribers = new List<UnityEngine.Object>();
     private List<IDressUpEventSubscriber> DressUpEventSubscribers => dressUpEventSubscribers.OfType<IDressUpEventSubscriber>().ToList();
+    private IDisposable disposable;
 
     public void SubscribeEvent()
     {
         foreach (IDressUpEventSubscriber dressUpEventSubscriber in DressUpEventSubscribers)
         {
-            DressUpEventVendor.SubscribeDressUpEvent(dressUpEventSubscriber.OnDressUp);
+            disposable = DressUpEventVendor.SubscribeDressUpEvent(dressUpEventSubscriber.OnDressUp);
         }
+    }
+
+    private void OnDestroy()
+    {
+        disposable.Dispose();
     }
 }
