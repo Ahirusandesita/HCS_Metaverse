@@ -69,7 +69,7 @@ public class DressUpViewControl : MonoBehaviour, IDressUpEventVendor
         foreach (DressUpViewFrame dressUpViewFrame in dressUpViewFrames)
         {
             dressUpViewFrame.OnDressUp += dressUpEventHelper.action;
-            dressUpViewFrame.DefaultDressUp();
+            //dressUpViewFrame.DefaultDressUp();
         }
         return dressUpEventHelper;
     }

@@ -30,6 +30,6 @@ public class DressUpEventPresenter : MonoBehaviour
 
     private void OnDestroy()
     {
-        disposable.Dispose();
+        //disposable.Dispose();
     }
 }
