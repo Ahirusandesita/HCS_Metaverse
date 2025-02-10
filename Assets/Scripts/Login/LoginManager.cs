@@ -2,39 +2,72 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Cysharp.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
-public class LoginManager : MonoBehaviour, ISendableMessage
+public class LoginManager : MonoBehaviour
 {
 	public enum Inputting
 	{
 		UserName,
 		Password,
 	}
-	private TextMeshProUGUI _textMeshProUGUI;
+	[SerializeField]
+	private TextMeshProUGUI _resultText;
+	[SerializeField]
+	private TextMeshProUGUI _inputNameText;
+	[SerializeField]
+	private TextMeshProUGUI _inputPasswordText;
+	private const string _ERROR_LOGIN = _ERROR_PREFIX + "Login Failed";
+	private const string _ERROR_PREFIX = "Error : ";
+	private const string _ERROR_MESSAGE_OVERFLOW = _ERROR_PREFIX + "Characters Limit(10)";
+	private readonly Color _ERROR_MESSAGE_COLOR = Color.red;
+	private readonly int _MESSAGE_LIMIT = 15;
 	[SerializeField, HideAtPlaying]
-	private string _userName;
+	private string _userName = "";
 	[SerializeField, HideAtPlaying]
-	private string _password;
-	[SerializeField, Hide]
-	private Inputting _currentInputting;
+	private string _password = "";
+	[SerializeField]
+	private RegisterSceneInInspector _nextScene;
 
-	public Inputting CurrentInputting { set => _currentInputting = value; }
-	private async void Start()
+	public async UniTask ExecuteLogin(WebAPIRequester webAPIRequester)
 	{
-		WebAPIRequester webAPIRequester = new WebAPIRequester();
-		await webAPIRequester.PostLogin(_userName, _password);
-		WebAPIRequester.OnCatchUserLocationData data = await webAPIRequester.GetUserLocation();
+		if(_MESSAGE_LIMIT < _inputNameText.text.Length 
+			&& _MESSAGE_LIMIT < _inputPasswordText.text.Length)
+		{
+			_resultText.color = _ERROR_MESSAGE_COLOR;
+			_resultText.text = _ERROR_MESSAGE_OVERFLOW;
+			return;
+		}
+
+		_userName = _inputNameText.text;
+		_password = _inputPasswordText.text;
+
+		bool loginResult = await webAPIRequester.PostLogin(_userName, _password);
+		if (!loginResult)
+		{
+			_resultText.color = _ERROR_MESSAGE_COLOR;
+			_resultText.text = _ERROR_LOGIN;
+			return;
+		}
+		_resultText.text = "Success";
+		_resultText.color = Color.green;
+
+		SceneManager.LoadScene(_nextScene);
 	}
 
-	void ISendableMessage.SendMessage(string message)
+	[ContextMenu("Login")]
+	public async UniTask ExecuteLogin()
 	{
-		if (_currentInputting == Inputting.UserName)
+		WebAPIRequester webAPIRequester = new WebAPIRequester();
+		await ExecuteLogin(webAPIRequester);
+	}
+
+	private async void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.Insert))
 		{
-			_userName = message;
-		}
-		else if (_currentInputting == Inputting.Password)
-		{
-			_password = message;
+			await ExecuteLogin();
 		}
 	}
 }

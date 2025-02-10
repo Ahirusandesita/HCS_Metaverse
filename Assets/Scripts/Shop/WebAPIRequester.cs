@@ -64,16 +64,22 @@ public class WebAPIRequester
 		string jsonData = JsonUtility.ToJson(sendLoginData);
 		using var request = UnityWebRequest.Post(DETABASE_PATH_LOGIN, jsonData, CONTENT_TYPE);
 
-		await request.SendWebRequest();
-
-		switch (request.result)
+		try
 		{
-			case Result.InProgress:
-				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
-
-			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
-				return false;
+			await request.SendWebRequest();
 		}
+		catch
+		{
+			switch (request.result)
+			{
+				case Result.InProgress:
+					throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+				case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+					return false;
+			}
+		}
+
 
 		string token = request.GetResponseHeader(TOKEN_KEY);
 		PlayerDontDestroyData.Instance.Token = token;

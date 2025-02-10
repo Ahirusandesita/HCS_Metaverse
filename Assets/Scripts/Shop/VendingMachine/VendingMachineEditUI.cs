@@ -18,13 +18,13 @@ public class VendingMachineEditUI : MonoBehaviour
 	private int _count;
 	[SerializeField, Hide]
 	private int _id = -1;
-	[SerializeField,Hide]
+	[SerializeField, Hide]
 	private int _inventoryHaveCount = default;
 
 	public GameObject Buttons => _buttons;
 
 	public void Init(int id, string productName
-		, Sprite icon, VendingMachineUIManager vendingMachineUIManager,int inventoryHaveCount)
+		, Sprite icon, VendingMachineUIManager vendingMachineUIManager, int inventoryHaveCount)
 	{
 		_count = 1;
 		_inventoryHaveCount = inventoryHaveCount;
@@ -37,7 +37,7 @@ public class VendingMachineEditUI : MonoBehaviour
 
 	public void AddCount()
 	{
-		if(_inventoryHaveCount <= _count) { return; }
+		if (_inventoryHaveCount <= _count) { return; }
 		_count++;
 		this._countText.text = _count.ToString();
 	}
@@ -51,7 +51,7 @@ public class VendingMachineEditUI : MonoBehaviour
 
 	public void Submit()
 	{
-		_uiManager.OpenEditPricePanel(_id);
+		_uiManager.OpenEditPricePanel(_id,_count);
 		_uiManager.CloseEditUIButtons();
 		_uiManager.CloseEditUICountText();
 		_uiManager.CloseEditReturnBuyMenuButton();

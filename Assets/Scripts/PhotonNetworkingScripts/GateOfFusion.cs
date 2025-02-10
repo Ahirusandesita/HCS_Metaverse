@@ -115,7 +115,7 @@ public class GateOfFusion
 			return;
 		}
 		RoomManager.Instance.DestroyActivityStartUI();
-		Room currentRoom = RoomManager.Instance.GetCurrentRoom(NetworkRunner.LocalPlayer);
+		Room currentRoom = RoomManager.Instance.FindCurrentRoom(NetworkRunner.LocalPlayer);
 		if (currentRoom == null)
 		{
 			XKumaDebugSystem.LogWarning("•”‰®‚ÉŠ‘®‚µ‚Ä‚¢‚Ü‚¹‚ñ", KumaDebugColor.WarningColor);

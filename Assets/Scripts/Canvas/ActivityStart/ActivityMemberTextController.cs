@@ -19,14 +19,14 @@ public class ActivityMemberTextController : MonoBehaviour
 			=> GateOfFusion.Instance.NetworkRunner != null,cancellationToken:destroyCancellationToken)
 			.SuppressCancellationThrow();
 		isCanceled = await UniTask.WaitUntil(()
-			=> RoomManager.Instance.GetCurrentRoom(GateOfFusion.Instance.NetworkRunner.LocalPlayer) != null,
+			=> RoomManager.Instance.FindCurrentRoom(GateOfFusion.Instance.NetworkRunner.LocalPlayer) != null,
 			cancellationToken:destroyCancellationToken).SuppressCancellationThrow();
 		if (isCanceled)
 		{
 			XKumaDebugSystem.LogWarning("ƒLƒƒƒ“ƒZƒ‹‚³‚ê‚Ü‚µ‚½");
 			return;
 		}
-		_currentRoom = RoomManager.Instance.GetCurrentRoom(GateOfFusion.Instance.NetworkRunner.LocalPlayer);
+		_currentRoom = RoomManager.Instance.FindCurrentRoom(GateOfFusion.Instance.NetworkRunner.LocalPlayer);
 		DisplayTextData();
 	}
 

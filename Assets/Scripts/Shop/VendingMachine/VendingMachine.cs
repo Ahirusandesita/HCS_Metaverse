@@ -42,7 +42,7 @@ public class VendingMachine : SafetyInteractionObject
 		{
 			_viewTransform.GetComponentInChildren<Renderer>().material.color = Color.black;
 		}
-		
+		_uiManager.CloseUI();
 	}
 
 	protected override void SafetyClose()

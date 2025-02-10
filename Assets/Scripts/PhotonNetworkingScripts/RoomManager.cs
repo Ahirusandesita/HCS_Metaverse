@@ -56,14 +56,18 @@ public class RoomManager : MonoBehaviour
 		_instance = this;
 	}
 
-	public Room GetCurrentRoom(PlayerRef playerRef)
+	public void OpenActivityStartUI()
+	{
+		if (_activityStartUI != null)
+		{
+			_activityStartUI.SetActive(true);
+		}
+	}
+
+	public Room FindCurrentRoom(PlayerRef playerRef)
 	{
 		if (_rooms.Count < 1) { return null; }
 		Room temp = _rooms.Values.FirstOrDefault(room => room.JoinRoomPlayer.Contains(playerRef));
-		if (temp == null)
-		{
-			XKumaDebugSystem.LogWarning("ルームに参加していません", KumaDebugColor.WarningColor);
-		}
 		return temp;
 	}
 
@@ -83,7 +87,7 @@ public class RoomManager : MonoBehaviour
 	public async UniTask<JoinOrCreateResult> JoinOrCreate(String sceneNameType, PlayerRef joinPlayer, int roomNumber = -1)
 	{
 
-		Room myRoom = GetCurrentRoom(joinPlayer);
+		Room myRoom = FindCurrentRoom(joinPlayer);
 		if (myRoom != null)
 		{
 			XKumaDebugSystem.LogWarning($"{joinPlayer}はすでにルームに参加しています", KumaDebugColor.WarningColor);
@@ -124,11 +128,6 @@ public class RoomManager : MonoBehaviour
 				roomTemp = Create(sceneNameType, roomNumber);
 			}
 
-			if (!roomTemp.IsNonLeader && 
-				joinPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer)
-			{
-				InstantiateLeaderObject();
-			}
 			result = JoinOrCreateResult.Create;
 		}
 		else
@@ -144,6 +143,7 @@ public class RoomManager : MonoBehaviour
 		
 		if (!roomTemp.IsNonLeader && joinPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer)
 		{
+			InstantiateLeaderObject();
 			InstantiateActivityStartUI();
 		}
 		XKumaDebugSystem.LogWarning($"ルームに参加:{sceneNameType}," +
@@ -165,15 +165,16 @@ public class RoomManager : MonoBehaviour
 		_leaderObject = Instantiate(_leaderObjectPrefab);
 	}
 
-	public void InstantiateActivityStartUI(bool isLeader = false)
+	public void InstantiateActivityStartUI()
 	{
 		_activityStartUI = Instantiate(_activityStartUIPrefab);
-		Room room = GetCurrentRoom(GateOfFusion.Instance.NetworkRunner.LocalPlayer);
+		Room room = FindCurrentRoom(GateOfFusion.Instance.NetworkRunner.LocalPlayer);
 		XKumaDebugSystem.LogWarning($"{room}:{_activityStartUI},Player:{GateOfFusion.Instance.NetworkRunner.LocalPlayer}", KumaDebugColor.RpcColor);
-		if (room.LeaderPlayerRef != GateOfFusion.Instance.NetworkRunner.LocalPlayer || isLeader)
+		if (room.LeaderPlayerRef != GateOfFusion.Instance.NetworkRunner.LocalPlayer)
 		{
 			Destroy(FindObjectOfType<ActivityStartButton>().gameObject);
 		}
+		_activityStartUI.SetActive(false);
 		XKumaDebugSystem.LogWarning($"リーダーUI生成", KumaDebugColor.InformationColor);
 	}
 
@@ -210,7 +211,7 @@ public class RoomManager : MonoBehaviour
 	/// <param name="playerRef">退出するプレイヤー情報</param>
 	public async UniTask LeftOrClose(PlayerRef playerRef)
 	{
-		Room joinedRoom = GetCurrentRoom(playerRef);
+		Room joinedRoom = FindCurrentRoom(playerRef);
 		if (joinedRoom is null) { return; }
 		if (joinedRoom.IsLeader(playerRef))
 		{
@@ -242,7 +243,7 @@ public class RoomManager : MonoBehaviour
 
 	public void ChangeSessionName(PlayerRef playerRef, string currentSessionName)
 	{
-		Room room = GetCurrentRoom(playerRef);
+		Room room = FindCurrentRoom(playerRef);
 		if (room == null)
 		{
 			XKumaDebugSystem.LogWarning("ルームが見つかりませんでした", KumaDebugColor.ErrorColor);
@@ -254,7 +255,7 @@ public class RoomManager : MonoBehaviour
 	public async void LeaderChange(PlayerRef nextLeaderPlayer)
 	{
 		XKumaDebugSystem.LogWarning($"新リーダー{nextLeaderPlayer}", KumaDebugColor.SuccessColor);
-		Room roomTemp = GetCurrentRoom(nextLeaderPlayer);
+		Room roomTemp = FindCurrentRoom(nextLeaderPlayer);
 
 		await UniTask.WaitUntil(() => MasterServerConect.Runner.ActivePlayers.Contains(nextLeaderPlayer));
 
@@ -264,15 +265,15 @@ public class RoomManager : MonoBehaviour
 		}
 		//前のリーダーのリーダーオブジェクトを破棄する
 		bool isLeader = nextLeaderPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer;
+		if (roomTemp.IsNonLeader) { return; }
+		roomTemp.ChangeLeader(nextLeaderPlayer);
 		if (isLeader)
 		{
 			DestroyActivityStartUI();
 			DestroyLeaderObject();
 			InstantiateLeaderObject();
-			InstantiateActivityStartUI(true);
+			InstantiateActivityStartUI();
 		}
-		if (roomTemp.IsNonLeader) { return; }
-		roomTemp.ChangeLeader(nextLeaderPlayer);
 
 	}
 
@@ -282,7 +283,7 @@ public class RoomManager : MonoBehaviour
 	public void Initialize(PlayerRef myPlayerRef)
 	{
 		XKumaDebugSystem.LogWarning($"ルームマネージャー初期化", KumaDebugColor.SuccessColor);
-		Room myRoom = GetCurrentRoom(myPlayerRef);
+		Room myRoom = FindCurrentRoom(myPlayerRef);
 		int myRoomKey = GetCurrentRoomKey(myRoom);
 		XKumaDebugSystem.LogWarning($"{myRoom}:{myPlayerRef}:", KumaDebugColor.MessageColor);
 		bool isLeader = myRoom.LeaderPlayerRef == myPlayerRef;

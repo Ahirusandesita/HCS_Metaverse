@@ -24,13 +24,16 @@ public class PutCanvasInHand : MonoBehaviour
 	[SerializeField]
 	private HandType startHandType;
 
-	[SerializeField]
 	private MasterServerConect masterServerConect;
 
 	private void Awake()
 	{
 		handType = startHandType;
 		PutCanvas(handType);
+	}
+	private void Start()
+	{
+		masterServerConect = FindAnyObjectByType<MasterServerConect>();
 	}
 
 	public void CangeHandType(HandType handType)
