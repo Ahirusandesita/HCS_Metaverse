@@ -8,6 +8,31 @@ public class FloorWallSelecter : MonoBehaviour, IDressUpEventSubscriber
 
 	void IDressUpEventSubscriber.OnDressUp(int id, string name)
 	{
+		if (name == "Floor")
+		{
+
+		}
+		else
+		{
+
+		}
+
+		// 選択が初期値（-1）の場合
+		if (name == "Wall")
+		{
+			foreach (var wall in wallRenderers)
+			{
+				wall.enabled = false;
+			}
+		}
+		else if (!wallRenderers[0].enabled)
+		{
+			foreach (var wall in wallRenderers)
+			{
+				wall.enabled = true;
+			}
+		}
+
 		ItemAsset itemAsset = allItemAsset.GetItemAssetByID(id);
 		if (itemAsset.Genre == ItemGenre.Flooring)
 		{

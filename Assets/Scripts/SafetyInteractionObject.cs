@@ -64,6 +64,7 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
 	}
 
 	protected bool canInteract = false;
+	protected bool canInteractLooking = false;
 
 	ISelectedNotification IInteraction.SelectedNotification => this;
 	private PlayerInputActions.PlayerActions Player => Inputter.Player;
@@ -74,10 +75,13 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
 		// Interact入力の購読
 		Player.Interact.performed += _ =>
 		{
-			XDebug.Log(canInteract, "magenta");
 			if (canInteract)
 			{
 				SafetyOpen();
+			}
+			if (canInteractLooking)
+			{
+				SafetyOpenLooking();
 			}
 		};
 	}
@@ -90,11 +94,18 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
 		return new SafetyInteractionInfo();
 	}
 
+	public virtual IInteraction.InteractionInfo OpenLooking()
+	{
+		canInteractLooking = true;
+		NotificationUIManager.Instance.DisplayInteraction();
+		return new SafetyInteractionInfo();
+	}
+
 	public virtual void Close()
 	{
 		canInteract = false;
 		// UIを非表示
-		//NotificationUIManager.Instance.HideInteraction();
+		NotificationUIManager.Instance.HideInteraction();
 	}
 
 	/// <summary>
@@ -102,6 +113,7 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
 	/// <br>プレイヤーがオブジェクトの範囲上で入力をしたときに呼ばれる</br>
 	/// </summary>
 	protected abstract void SafetyOpen();
+	protected virtual void SafetyOpenLooking() { }
 	/// <summary>
 	/// オブジェクトのインタラクト状態から離れるときに呼ばれる処理
 	/// <br>プレイヤーがオブジェクトの範囲上で入力をしたときに呼ばれる</br>
