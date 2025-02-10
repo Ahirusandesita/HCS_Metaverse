@@ -18,7 +18,7 @@ public class DressUpEventPresenter : MonoBehaviour
     private List<UnityEngine.Object> dressUpEventSubscribers = new List<UnityEngine.Object>();
     private List<IDressUpEventSubscriber> DressUpEventSubscribers => dressUpEventSubscribers.OfType<IDressUpEventSubscriber>().ToList();
 
-    private void Start()
+    public void SubscribeEvent()
     {
         foreach (IDressUpEventSubscriber dressUpEventSubscriber in DressUpEventSubscribers)
         {
