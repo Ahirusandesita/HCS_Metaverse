@@ -73,6 +73,8 @@ public enum ItemGenre
 	Usable = 3,
 	Food = 4,
 	Animation = 5,
+	Flooring = 6,
+	Wallpaper = 7,
 }
 
 #if UNITY_EDITOR
