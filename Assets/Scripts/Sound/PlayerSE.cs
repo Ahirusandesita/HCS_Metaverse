@@ -62,6 +62,5 @@ public class PlayerSE : MonoBehaviour
     public void PlayFootStep()
     {
         AudioSource.PlayClipAtPoint(GetRandomFootsteps, transform.position);
-        Debug.LogError($"ë´âπÅF{gameObject.name}");
     }
 }
