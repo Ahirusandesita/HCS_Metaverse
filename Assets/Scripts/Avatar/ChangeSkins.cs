@@ -216,12 +216,23 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
             }
         }
 
+        if (machIndex == UNWEAR_INDEX)
+        {
+            Debug.LogError($"{gameObject.name} : スキンのパーツ名が一致しないため脱げない");
+            return;
+        }
+
         int partsIndex = _wearingPartsIndex.GetParts(machIndex);
 
         if (partsIndex != UNWEAR_INDEX)
         {
-            _children[partsIndex].gameObject.SetActive(false);
-            _wearingPartsIndex.SetParts(machIndex, UNWEAR_INDEX);
+            characterControlRPCManager.RPC_TakeOffSkins(partsIndex, machIndex);
         }
+    }
+
+    public void RPCTakeOff(int partsIndex, int machIndex)
+    {
+        _children[partsIndex].gameObject.SetActive(false);
+        _wearingPartsIndex.SetParts(machIndex, UNWEAR_INDEX);
     }
 }
