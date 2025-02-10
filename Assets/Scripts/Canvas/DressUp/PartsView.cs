@@ -12,15 +12,15 @@ public class PartsView : DressUpViewBase
 
         Action<PartsType, int, string> action = (partsType, id, partsTypeName) =>
         {
-            if(id == -1)
+            if (id == -1)
             {
-                dressUpInformations.Add(new DressUpInformation((int)partsType, id));
+                dressUpInformations.Add(new DressUpInformation((int)partsType, id, partsTypeName));
                 return;
             }
 
             if (AllItemBundleAsset.GetItemAssetByID(id).Name.Contains(partsTypeName))
             {
-                dressUpInformations.Add(new DressUpInformation((int)partsType, id));
+                dressUpInformations.Add(new DressUpInformation((int)partsType, id, partsTypeName));
             }
         };
         action(PartsType.Headgear, -1, "Headgear");
