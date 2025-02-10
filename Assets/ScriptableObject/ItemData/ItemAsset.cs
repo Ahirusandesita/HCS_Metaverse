@@ -27,6 +27,9 @@ public class ItemAsset : ScriptableObject
 	[Header("AnimationClip")]
 	[SerializeField]
 	private AnimationClip animation = default;
+	[Header("フローリングと壁紙用のMaterial")]
+	[SerializeField]
+	private Material material = default;
 	[Space(10)]
 	[Header("データベースから除外する")]
 	[SerializeField]
@@ -53,6 +56,7 @@ public class ItemAsset : ScriptableObject
 	public IDisplayItem DisplayItem => displayItem as IDisplayItem;
 	public NetworkView NetworkView => networkView;
 	public AnimationClip Animation => animation;
+	public Material Material => material;
 	public bool ExcludeDatabase => excludeDatabese;
 
 #if UNITY_EDITOR
