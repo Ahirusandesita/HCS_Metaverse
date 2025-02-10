@@ -13,18 +13,14 @@ public class FloorWallSelecter : MonoBehaviour, IDressUpEventSubscriber
 		{
 			foreach (var mr in floorRenderers)
 			{
-				mr.sharedMaterial = itemAsset.Prefab != null
-					? itemAsset.Prefab.GetComponent<MeshRenderer>().sharedMaterial
-					: itemAsset.DisplayItem.gameObject.GetComponent<MeshRenderer>().sharedMaterial;
+				mr.sharedMaterial = itemAsset.Material;
 			}
 		}
 		else if (itemAsset.Genre == ItemGenre.Wallpaper)
 		{
 			foreach (var mr in wallRenderers)
 			{
-				mr.sharedMaterial = itemAsset.Prefab != null
-					? itemAsset.Prefab.GetComponent<MeshRenderer>().sharedMaterial
-					: itemAsset.DisplayItem.gameObject.GetComponent<MeshRenderer>().sharedMaterial;
+				mr.sharedMaterial = itemAsset.Material;
 			}
 		}
 	}

@@ -71,11 +71,15 @@ namespace UnityEditor.HCSMeta
 				StringBuilder sb3 = new StringBuilder(EditorSaveSystem.Load(PATH));
 				StringBuilder sb4 = new StringBuilder(EditorSaveSystem.Load(PATH));
 				StringBuilder sb5 = new StringBuilder(EditorSaveSystem.Load(PATH));
-				int id1 = int.Parse(sb1.Remove(5, 24).ToString());
-				int id2 = int.Parse(sb2.Remove(0, 6).Remove(5, 18).ToString());
-				int id3 = int.Parse(sb3.Remove(0, 12).Remove(5, 12).ToString());
-				int id4 = int.Parse(sb4.Remove(0, 18).Remove(5, 6).ToString());
-				int id5 = int.Parse(sb5.Remove(0, 24).ToString());
+				StringBuilder sb6 = new StringBuilder(EditorSaveSystem.Load(PATH));
+				StringBuilder sb7 = new StringBuilder(EditorSaveSystem.Load(PATH));
+				int id1 = int.Parse(sb1.Remove(5, 36).ToString());
+				int id2 = int.Parse(sb2.Remove(0, 6).Remove(5, 30).ToString());
+				int id3 = int.Parse(sb3.Remove(0, 12).Remove(5, 24).ToString());
+				int id4 = int.Parse(sb4.Remove(0, 18).Remove(5, 18).ToString());
+				int id5 = int.Parse(sb5.Remove(0, 24).Remove(5, 12).ToString());
+				int id6 = int.Parse(sb6.Remove(0, 30).Remove(5, 6).ToString());
+				int id7 = int.Parse(sb7.Remove(0, 36).ToString());
 
 				foreach (var itemAsset in itemBundleAsset.Items)
 				{
@@ -110,6 +114,16 @@ namespace UnityEditor.HCSMeta
 								id5++;
 								break;
 
+							case ItemGenre.Flooring:
+								itemIDInfo.SetValue(itemAsset, id6);
+								id6++;
+								break;
+
+							case ItemGenre.Wallpaper:
+								itemIDInfo.SetValue(itemAsset, id7);
+								id7++;
+								break;
+
 							default:
 								throw new System.InvalidOperationException();
 						}
@@ -118,7 +132,7 @@ namespace UnityEditor.HCSMeta
 					}
 				}
 
-				EditorSaveSystem.Save(PATH, $"{id1}/{id2}/{id3}/{id4}/{id5}");
+				EditorSaveSystem.Save(PATH, $"{id1}/{id2}/{id3}/{id4}/{id5}/{id6}/{id7}");
 			}
 
 			EditorGUILayout.Space(12f);
