@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class InteractionScopeChecker : MonoBehaviour
 {
-	[SerializeField]
-	private Transform centerEye = default;
 	private bool isFiredTriggerStay = false;
 
 	private readonly Subject<IInteraction> onInteractionEnter = new Subject<IInteraction>();
@@ -36,10 +34,10 @@ public class InteractionScopeChecker : MonoBehaviour
 	{
 		if (other.TryGetComponent(out IInteraction interaction))
 		{
-			Vector3 tempDir = other.transform.position - centerEye.position;
+			Vector3 tempDir = other.transform.position - transform.position;
 			Vector3 targetDir = new Vector3(tempDir.x, 0f, tempDir.z);
 			float cosHalf = Mathf.Cos(90f / 2 * Mathf.Deg2Rad);
-			float innerProduct = Vector3.Dot(centerEye.forward, targetDir.normalized);
+			float innerProduct = Vector3.Dot(transform.forward, targetDir.normalized);
 			if (innerProduct > cosHalf)
 			{
 				if (isFiredTriggerStay)
