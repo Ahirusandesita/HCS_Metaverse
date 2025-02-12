@@ -10,6 +10,7 @@ using Result = UnityEngine.Networking.UnityWebRequest.Result;
 public class WebAPIRequester
 {
 	private const string DETABASE_PATH_BASE = "http://10.11.33.228:8080/api/";
+	private const string DETABASE_PATH_COOK_SCORE = DETABASE_PATH_BASE + "score"; 
 	private const string DETABASE_PATH_JOIN_WORLD = DETABASE_PATH_BASE + "world";
 	private const string DETABASE_PATH_SHOP_ENTRY = DETABASE_PATH_BASE + "shop/entry";
 	private const string DETABASE_PATH_SHOP_BUY = DETABASE_PATH_BASE + "shop/buy";
@@ -26,6 +27,26 @@ public class WebAPIRequester
 	private const string TOKEN_KEY = "Authorization";
 
 	#region Post/Get メソッド
+
+	public async UniTask PostScore(int score)
+	{
+		WWWForm form = new WWWForm();
+		form.AddField("score", score);
+		score.PrintWarning();
+		using var request = UnityWebRequest.Post(DETABASE_PATH_COOK_SCORE, form);
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
+		await request.SendWebRequest();
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				XDebug.LogError(request.result, "red");
+				throw new APIConnectException(request.error);
+		}
+	}
+
 	/// <summary>
 	/// ショップ入店時のAPI通信
 	/// </summary>
