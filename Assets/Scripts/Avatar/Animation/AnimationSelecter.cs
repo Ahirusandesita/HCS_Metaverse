@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
-using UnityEditor;
-using UnityEngine.Animations;
 
 public class AnimationSelecter : MonoBehaviour, IDressUpEventSubscriber
 {
@@ -11,24 +8,57 @@ public class AnimationSelecter : MonoBehaviour, IDressUpEventSubscriber
 
     private Animator _playerAnimator = default;
     private CharacterControlRPCManager characterControl;
+
+    private string _playingAnimationName = default;
+    private bool _isPlaying = false;
+
+    public event Action animationStart;
+    public event Action animationEnd;
+
     private async void Start()
     {
         _playerAnimator = GetComponentInChildren<Animator>();
         RemoteView remoteView = await FindObjectOfType<LocalRemoteSeparation>().ReceiveRemoteView();
         characterControl = remoteView.GetComponentInChildren<CharacterControlRPCManager>();
+        Inputter.Player.Move.started += dir =>
+        {
+            _playerAnimator.SetBool("Walk", true);
+        };
+
+        Inputter.Player.Move.canceled += dir =>
+        {
+            _playerAnimator.SetBool("Walk", false);
+        };
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.J))
         {
-            PlayAnimation(_animationBundleAsset.GetItemAssetByID(50002).Animation);
+            _playerAnimator.SetBool("Walk", true);
+        }
+
+        if (!_isPlaying)
+        {
+            return;
+        }
+
+        AnimatorStateInfo animationInfo = _playerAnimator.GetCurrentAnimatorStateInfo(0);
+
+        if (animationInfo.IsName(_playingAnimationName) && animationInfo.normalizedTime >= 0.95f)
+        {
+            _isPlaying = false;
+            _playingAnimationName = default;
+
+            animationEnd?.Invoke();
         }
     }
 
     public void PlayAnimation(AnimationClip clip)
     {
-        _playerAnimator.CrossFadeInFixedTime(clip.name, 0.25f);
+        _playerAnimator.Play(clip.name);
+        _playingAnimationName = clip.name;
+        _isPlaying = true;
     }
 
     public void OnDressUp(int id, string name)
@@ -44,6 +74,7 @@ public class AnimationSelecter : MonoBehaviour, IDressUpEventSubscriber
         AnimationClip clip = animationAsset.Animation;
 
         PlayAnimation(clip);
+        animationStart?.Invoke();
         characterControl.RPC_AnimationSelect(id, name);
     }
     public void RPCDressUP(int id, string name)
@@ -59,5 +90,6 @@ public class AnimationSelecter : MonoBehaviour, IDressUpEventSubscriber
         AnimationClip clip = animationAsset.Animation;
 
         PlayAnimation(clip);
+        animationStart?.Invoke();
     }
 }

@@ -12269,7 +12269,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _itemBundle: {fileID: 11400000, guid: 4b0a8552cd5992449aab6ed722f30dde, type: 2}
-  partsParent: {fileID: 8968244637345477277}
+  _partsParent: {fileID: 8968244637345477277}
+  _bodys:
+  - {fileID: 1046622196630572533}
+  - {fileID: 5051648853528758902}
+  - {fileID: 4695333274735988797}
+  - {fileID: 3298007692990259598}
 --- !u!1 &3103306576017983598
 GameObject:
   m_ObjectHideFlags: 0
@@ -26297,6 +26302,7 @@ MonoBehaviour:
   _rightHand: {fileID: 3811584019518556360}
   _leftShoulder: {fileID: 2746813565632266896}
   _leftHand: {fileID: 4651640519967465853}
+  _animationSelecter: {fileID: 73345451790211016}
 --- !u!114 &6239254122608754491
 MonoBehaviour:
   m_ObjectHideFlags: 0

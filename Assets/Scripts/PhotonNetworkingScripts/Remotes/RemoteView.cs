@@ -15,7 +15,10 @@ public class RemoteView : NetworkBehaviour,IDependencyInjector<PlayerBodyDepende
     [SerializeField]
 	private NetworkObject _leftHand;
 
-	private Transform _playerTransform;
+	[SerializeField]
+    private AnimationSelecter _animationSelecter;
+
+    private Transform _playerTransform;
 	private Transform _viewTransform;
 	private Vector2 _inputDirection;
 	private float _footstepsInterval;
@@ -76,6 +79,6 @@ public class RemoteView : NetworkBehaviour,IDependencyInjector<PlayerBodyDepende
 
 	public AvatarHandTracker GetNewAvatarHandTracker()
     {
-		return new AvatarHandTracker(_rightShoulder, _rightHand, _leftShoulder, _leftHand);
+		return new AvatarHandTracker(_rightShoulder, _rightHand, _leftShoulder, _leftHand, _animationSelecter);
 	}
 }
