@@ -36,13 +36,27 @@ public class InteractionScopeChecker : MonoBehaviour
 	{
 		if (other.TryGetComponent(out IInteraction interaction))
 		{
-			Vector3 targetDir = other.transform.position - centerEye.forward;
-			float cosHalf = Mathf.Cos(45f / 2 * Mathf.Deg2Rad);
+			Vector3 tempDir = other.bounds.center - centerEye.position;
+			Vector3 targetDir = new Vector3(tempDir.x, 0f, tempDir.z);
+			float cosHalf = Mathf.Cos(90f / 2 * Mathf.Deg2Rad);
 			float innerProduct = Vector3.Dot(centerEye.forward, targetDir.normalized);
-			if (!isFiredTriggerStay && innerProduct > cosHalf)
+			if (innerProduct > cosHalf)
 			{
+				if (isFiredTriggerStay)
+				{
+					return;
+				}
 				isFiredTriggerStay = true;
-				onInteractionEnter.OnNext(interaction);
+				onInteractionEnterLooking.OnNext(interaction);
+			}
+			else
+			{
+				if (!isFiredTriggerStay)
+				{
+					return;
+				}
+				isFiredTriggerStay = false;
+				onInteractionExit.OnNext(Unit.Default);
 			}
 		}
 	}

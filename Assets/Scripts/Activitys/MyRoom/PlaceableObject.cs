@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// ワールドに配置可能なオブジェクト
 /// </summary>
-public class PlaceableObject : MonoBehaviour
+public class PlaceableObject : SafetyInteractionObject
 {
 	[Tooltip("rootを推奨")]
 	[SerializeField] private GameObject ghostOrigin = default;
@@ -29,6 +29,19 @@ public class PlaceableObject : MonoBehaviour
 	{
 		ghostOrigin = transform.root.gameObject;
 	}
+
+	public override IInteraction.InteractionInfo OpenLooking()
+	{
+		return base.OpenLooking();
+	}
+
+	public override void Select(SelectArgs selectArgs) { }
+
+	public override void Unselect(SelectArgs selectArgs) { }
+
+	protected override void SafetyClose() { }
+
+	protected override void SafetyOpen() { }
 }
 
 #if UNITY_EDITOR
