@@ -296,3 +296,52 @@ public class GhostModel : IEditOnlyGhost
             $"許可するには {nameof(CreateModelSimple)} ではなく {nameof(CreateModel)} を実行してください。");
     }
 }
+
+public static partial class GameObjectExtension
+{
+    public static Bounds GetBounds(this GameObject gameObject)
+	{
+        var renderers = gameObject.GetComponentsInChildren<MeshRenderer>();
+        var filters = gameObject.GetComponentsInChildren<MeshFilter>();
+
+        // MeshFilterが付いていないオブジェクトは例外を投げる
+        if (filters.Length == 0)
+        {
+            throw new System.ArgumentException($"Meshが存在しないオブジェクトから {nameof(GetBounds)} にアクセスしようとしています。", nameof(gameObject));
+        }
+
+        // Mesh結合のための構造体
+        var combineInstances = new CombineInstance[filters.Length];
+        for (int i = 0; i < combineInstances.Length; i++)
+        {
+            // CombineInstance構造体にデータをセット -----------------------------------------
+            combineInstances[i].mesh = filters[i].sharedMesh;
+            var transform = filters[i].transform;
+            // Transform情報からMatrix4x4型に変換する（Scaleは絶対Scaleを用いる）
+            combineInstances[i].transform = Matrix4x4.TRS(transform.position, transform.rotation, transform.lossyScale);
+            // ----------------------------------------------------------------------------
+        }
+
+        // Mesh結合
+        // BoxColliderのためのBoundsでのみ使用するので、新しく作られたMesh自体は破棄
+        // 結合したMeshを使ってもよいが、MeshRendererは元のモデルと同じ数用意したい（Textureが違う可能性を考慮）ので、
+        // MeshFilterも同じく元モデルと同じように使用している
+        var mesh = new Mesh();
+        mesh.CombineMeshes(combineInstances, true);
+        var bounds = mesh.bounds;
+
+        // 一部モデルのboundsの生成に失敗した場合のハンドリング ------------------------------
+        // mesh.boundsだとcenterがずれるケースがあったため、renderer.boundsで対応
+        if (bounds.extents == Vector3.zero && combineInstances.Length == 1)
+        {
+            bounds = renderers[0].bounds;
+        }
+        else if (bounds.extents != renderers[0].bounds.extents && combineInstances.Length == 1)
+        {
+            bounds = renderers[0].bounds;
+        }
+        // -----------------------------------------------------------------------------
+
+        return bounds;
+    }
+}
