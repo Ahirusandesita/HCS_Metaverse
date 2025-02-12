@@ -5,7 +5,7 @@ using Fusion;
 
 public class AvatarHandTracker
 {
-    public AvatarHandTracker(NetworkObject rightShoulder, NetworkObject rightHand, NetworkObject leftShoulder, NetworkObject leftHand)
+    public AvatarHandTracker(NetworkObject rightShoulder, NetworkObject rightHand, NetworkObject leftShoulder, NetworkObject leftHand, AnimationSelecter animationSelecter)
     {
         // 
         _rightShoulder = rightShoulder;
@@ -16,6 +16,19 @@ public class AvatarHandTracker
         // 
         _rightShoulderOriginRotatioin = _rightShoulder.transform.localRotation;
         _leftShoulderOriginRotatioin = _leftShoulder.transform.localRotation;
+
+        // 
+        animationSelecter.animationStart += () =>
+        {
+            _doTrack = false;
+            Debug.LogError("Start");
+        };
+
+        animationSelecter.animationEnd += () =>
+        {
+            _doTrack = true;
+            Debug.LogError("End");
+        };
     }
 
     // 
@@ -39,10 +52,13 @@ public class AvatarHandTracker
     // 
     private float _handComplementAngle = -90;
 
+    // 
+    private bool _doTrack = true;
+
     public void RightHandTracking(Transform conrtoller)
     {
         // 
-        if (_rightShoulder == null)
+        if (_rightShoulder == null || !_doTrack)
         {
             return;
         }
@@ -78,7 +94,7 @@ public class AvatarHandTracker
     public void LeftHandTracking(Transform conrtoller)
     {
         // 
-        if (_leftShoulder == null)
+        if (_leftShoulder == null || !_doTrack)
         {
             return;
         }
