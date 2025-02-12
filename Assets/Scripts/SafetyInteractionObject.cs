@@ -104,6 +104,7 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
 	public virtual void Close()
 	{
 		canInteract = false;
+		canInteractLooking = false;
 		// UIを非表示
 		//NotificationUIManager.Instance.HideInteraction();
 	}
@@ -112,7 +113,7 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
 	/// オブジェクトがインタラクトされたときに呼ばれる処理
 	/// <br>プレイヤーがオブジェクトの範囲上で入力をしたときに呼ばれる</br>
 	/// </summary>
-	protected abstract void SafetyOpen();
+	protected virtual void SafetyOpen() { }
 	protected virtual void SafetyOpenLooking() { }
 	/// <summary>
 	/// オブジェクトのインタラクト状態から離れるときに呼ばれる処理
@@ -121,8 +122,8 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
 	/// </summary>
 	protected abstract void SafetyClose();
 
-	public abstract void Select(SelectArgs selectArgs);
-	public abstract void Unselect(SelectArgs selectArgs);
+	public virtual void Select(SelectArgs selectArgs) { }
+	public virtual void Unselect(SelectArgs selectArgs) { }
 
 	public virtual void Hover(SelectArgs selectArgs) { }
 	public virtual void Unhover(SelectArgs selectArgs) { }
