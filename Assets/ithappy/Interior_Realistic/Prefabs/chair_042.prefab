@@ -96,6 +96,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2a1f3e783141d1644b66132c64582e82, type: 3}
       insertIndex: -1
       addedObject: {fileID: -3027343469504354616}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2a1f3e783141d1644b66132c64582e82, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4770204884261944096}
   m_SourcePrefab: {fileID: 100100000, guid: 2a1f3e783141d1644b66132c64582e82, type: 3}
 --- !u!1 &2545489009319294110 stripped
 GameObject:
@@ -328,6 +331,27 @@ MonoBehaviour:
   registerSceneInInspectors:
   - name: Shop
     selectedIndex: 6
+--- !u!65 &4770204884261944096
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2545489009319294110}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.7406076, y: 1.7145514, z: 0.89657056}
+  m_Center: {x: -0.0000025704503, y: 0.57151717, z: -0.000000074505806}
 --- !u!23 &4058755589168993611 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 2a1f3e783141d1644b66132c64582e82, type: 3}
