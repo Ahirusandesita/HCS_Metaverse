@@ -33,7 +33,7 @@ public class PlayerInteraction : MonoBehaviour
     private void Awake()
     {
         interactionScopeChecker.OnInteractionEnter.Subscribe(interaction => InteractionInject(interaction));
-        interactionScopeChecker.OnInteractionEnterLooking.Subscribe(interaction => InteractionInject(interaction));
+        interactionScopeChecker.OnInteractionEnterLooking.Subscribe(interaction => InteractionLookingInject(interaction));
         interactionScopeChecker.OnInteractionExit.Subscribe(unit => InteractionCloseInject(new NullInteraction()));
     }
 
