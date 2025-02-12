@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using System.Linq;
 
 /// <summary>
 /// ワールドに配置可能なオブジェクト
@@ -16,6 +17,8 @@ public class PlaceableObject : SafetyInteractionObject
 	[SerializeField] private List<Collider> colliders = default;
 	private int itemID = default;
 	private int housingID = -1;
+	private Component[] disableComponents = default;
+	private Placing placing = default;
 
 	public GameObject GhostOrigin => ghostOrigin;
 	public GhostModel.PivotType PivotType => pivotType;
@@ -30,18 +33,43 @@ public class PlaceableObject : SafetyInteractionObject
 		ghostOrigin = transform.root.gameObject;
 	}
 
+	protected void Start()
+	{
+		disableComponents = GetComponentsInChildren<Component>(true);
+		placing = FindAnyObjectByType<Placing>();
+	}
+
 	public override IInteraction.InteractionInfo OpenLooking()
 	{
 		return base.OpenLooking();
 	}
 
-	public override void Select(SelectArgs selectArgs) { }
+	protected override void SafetyOpenLooking()
+	{
+		foreach (var component in disableComponents)
+		{
+			if (component is Behaviour behaviour)
+			{
+				behaviour.enabled = false;
+			}
+			else if (component is Collider collider)
+			{
+				collider.enabled = false;
+			}
+			else if (component is Renderer renderer)
+			{
+				renderer.enabled = false;
+			}
+		}
 
-	public override void Unselect(SelectArgs selectArgs) { }
+		placing.CreateGhost(this);
+	}
 
-	protected override void SafetyClose() { }
-
-	protected override void SafetyOpen() { }
+	public override void Close()
+	{
+		base.Close();
+		gameObject.SetActive(true);
+	}
 }
 
 #if UNITY_EDITOR
