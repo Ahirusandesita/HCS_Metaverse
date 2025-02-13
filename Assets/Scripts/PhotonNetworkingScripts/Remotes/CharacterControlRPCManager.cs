@@ -17,6 +17,11 @@ public class CharacterControlRPCManager : NetworkBehaviour
         skin.RPCTakeOff(partsIndex, machIndex);
     }
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
+    public void RPC_ChangeBody()
+    {
+        skin.ChangeBody();
+    }
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     public void RPC_AnimationSelect(int id,string name)
     {
         anim.RPCDressUP(id, name);

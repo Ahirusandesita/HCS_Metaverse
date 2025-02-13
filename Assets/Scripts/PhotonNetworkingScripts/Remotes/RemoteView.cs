@@ -24,7 +24,7 @@ public class RemoteView : NetworkBehaviour,IDependencyInjector<PlayerBodyDepende
 	private float _footstepsInterval;
 	private const float FOOTSTEPS_INTERVAL = 0.8f;
 	private PlayerBodyDependencyInformation _information;
-	private PlayerSE _playerSE;
+	private RemoteAvatarSE _playerSE;
 
 	public override void Spawned()
 	{
@@ -33,7 +33,7 @@ public class RemoteView : NetworkBehaviour,IDependencyInjector<PlayerBodyDepende
 		_playerTransform = FindObjectOfType<VRPlayerController>().transform;
 		_viewTransform = transform;
 
-		_playerSE = GetComponentInChildren<PlayerSE>();
+		_playerSE = GetComponentInChildren<RemoteAvatarSE>();
 
 		Inputter.Player.Move.performed += dir =>
 		{
@@ -67,7 +67,7 @@ public class RemoteView : NetworkBehaviour,IDependencyInjector<PlayerBodyDepende
 
         if (_inputDirection != Vector2.zero)
         {
-			_playerSE.PlayFootStep();
+			_playerSE.RPC_PlayFootStep();
 			_footstepsInterval = FOOTSTEPS_INTERVAL;
 		}
     }

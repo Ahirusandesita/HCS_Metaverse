@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Fusion;
 
 public class CookActivitySound : MonoBehaviour
 {
@@ -41,7 +42,8 @@ public class CookActivitySound : MonoBehaviour
         }
     }
 
-    public void PlayOneShotSE(SEName_Cook name, Vector3 position)
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
+    public void RPC_PlayOneShotSE(SEName_Cook name, Vector3 position)
     {
         AudioClip clip = SelectClip(name);
 
