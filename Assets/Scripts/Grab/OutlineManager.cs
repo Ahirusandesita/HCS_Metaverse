@@ -16,7 +16,7 @@ public class OutlineManager : MonoBehaviour, IDependencyInjector<PlayerBodyDepen
     public Outline Outline => outline;
 
 
-    private void Awake()
+    private void Start()
     {
         myTransform = transform;
 
