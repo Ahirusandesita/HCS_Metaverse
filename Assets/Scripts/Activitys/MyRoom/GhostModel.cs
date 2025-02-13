@@ -85,6 +85,7 @@ public class GhostModel : IEditOnlyGhost
     public GhostModel()
     {
         instance = new GameObject(nameof(GhostModel));
+        XDebug.Log(instance.transform.position);
         boxCollider = instance.AddComponent<BoxCollider>();
         var rigidbody = instance.AddComponent<Rigidbody>();
         // 「Ghost」Materialをロード
@@ -100,7 +101,7 @@ public class GhostModel : IEditOnlyGhost
     /// </summary>
     /// <param name="ghostOrigin"></param>
     /// <param name="defaultColor"></param>
-    public GhostModel CreateModelSimple(GameObject ghostOrigin, Color? defaultColor = null)
+    public GhostModel CreateModelSimple(GameObject ghostOrigin, Color? defaultColor = null, bool updateMode = false)
     {
         var filters = ghostOrigin.GetComponentsInChildren<MeshFilter>();
         var renderers = ghostOrigin.GetComponentsInChildren<MeshRenderer>();
@@ -150,8 +151,12 @@ public class GhostModel : IEditOnlyGhost
             }
             // -----------------------------------------------------------------------------
 
+            Vector3 position = updateMode
+                ? Vector3.zero
+                : filters[i].transform.position;
+
             // Transform情報をコピー（Scaleは絶対Scaleを用いる）
-            child.transform.SetPositionAndRotation(filters[i].transform.position, filters[i].transform.rotation);
+            child.transform.SetPositionAndRotation(position, filters[i].transform.rotation);
             child.transform.localScale = filters[i].transform.lossyScale;
         }
 
@@ -192,9 +197,9 @@ public class GhostModel : IEditOnlyGhost
     /// <param name="placeableObject"></param>
     /// <param name="player">追従対象のオブジェクト（多くの場合プレイヤー）</param>
     /// <param name="defaultColor"></param>
-    public GhostModel CreateModel(PlaceableObject placeableObject, Transform player, Color? defaultColor = null)
+    public GhostModel CreateModel(PlaceableObject placeableObject, Transform player, Color? defaultColor = null, bool updateMode = false)
     {
-        CreateModelSimple(placeableObject.GhostOrigin, defaultColor);
+        CreateModelSimple(placeableObject.GhostOrigin, defaultColor, updateMode);
         switch (placeableObject.PlacingStyle)
         {
             case PlacingStyle.Ground:
@@ -227,18 +232,6 @@ public class GhostModel : IEditOnlyGhost
     public Quaternion GetGhostChildRotation()
 	{
         return instance.transform.GetChild(0).rotation;
-	}
-
-    public GhostModel SetGhostPosition(Vector3 position)
-	{
-        instance.transform.position = position;
-        return this;
-	}
-
-    public GhostModel SetGhostRotation(Quaternion rotation)
-	{
-        instance.transform.rotation = rotation;
-        return this;
 	}
 
     /// <summary>
