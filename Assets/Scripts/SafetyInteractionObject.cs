@@ -120,7 +120,7 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
 	/// <br>プレイヤーがオブジェクトの範囲上で入力をしたときに呼ばれる</br>
 	/// <br>※各自継承先で呼び出すこと</br>
 	/// </summary>
-	protected abstract void SafetyClose();
+	protected virtual void SafetyClose() { }
 
 	public virtual void Select(SelectArgs selectArgs) { }
 	public virtual void Unselect(SelectArgs selectArgs) { }
