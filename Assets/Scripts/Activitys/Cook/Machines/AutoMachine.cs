@@ -46,7 +46,7 @@ public class AutoMachine : Machine
 
             if (_seTimer <= 0)
             {
-                _sound.PlayOneShotSE(CookActivitySound.SEName_Cook.bake, transform.position);
+                _sound.RPC_PlayOneShotSE(CookActivitySound.SEName_Cook.bake, transform.position);
                 _seTimer = SE_INTERVAL;
             }
         }

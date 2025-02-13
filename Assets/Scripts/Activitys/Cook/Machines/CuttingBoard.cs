@@ -62,7 +62,7 @@ public class CuttingBoard : Machine
                         Debug.LogWarning($"<color=blue>•ï’š“–‚½‚Á‚½‚æ‚ñ</color>");
                         ProcessEvent(_processingValue);
                         _hittingKnife = knife;
-                        _sound.PlayOneShotSE(CookActivitySound.SEName_Cook.cut, transform.position);
+                        _sound.RPC_PlayOneShotSE(CookActivitySound.SEName_Cook.cut, transform.position);
                     }
                     else
                     {

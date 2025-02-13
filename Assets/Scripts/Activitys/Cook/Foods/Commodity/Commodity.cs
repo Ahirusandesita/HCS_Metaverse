@@ -165,7 +165,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
                     // ‘g‚Ý‡‚í‚¹Œã‚ÌCommodity‚ª‘¶Ý‚µ‚½ê‡‚Ì‚ÝŽÀs
                     if (!(mixCommodity is null))
                     {
-                        _sound.PlayOneShotSE(CookActivitySound.SEName_Cook.mix, transform.position);
+                        _sound.RPC_PlayOneShotSE(CookActivitySound.SEName_Cook.mix, transform.position);
 
                         // commodityFactory
                         CommodityFactory commodityFactory = GameObject.FindObjectOfType<CommodityFactory>();

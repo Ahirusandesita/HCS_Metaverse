@@ -160,7 +160,7 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
 
         characterControlRPCManager = remoteView.GetComponentInChildren<CharacterControlRPCManager>();
 
-        ChangeBody();
+        characterControlRPCManager.RPC_ChangeBody();
     }
 
     public void OnDressUp(int id, string name)
@@ -178,8 +178,6 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
                 continue;
             }
 
-            _partsChildren[i].gameObject.SetActive(true);
-
             int machIndex = UNWEAR_INDEX;
 
             for (int nameIndex = 0; nameIndex < _partsNames.Length; nameIndex++)
@@ -191,20 +189,21 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
                 }
             }
 
-            int partsIndex = _wearingPartsIndex.GetParts(machIndex);
-
-            if (partsIndex != UNWEAR_INDEX)
-            {
-                _partsChildren[partsIndex].gameObject.SetActive(false);
-            }
-
-
             characterControlRPCManager.RPC_ChangeSkins(machIndex, i);
             _wearingPartsIndex.SetParts(machIndex, i);
         }
     }
     public void RPCDressUp(int machIndex, int i)
     {
+        _partsChildren[i].gameObject.SetActive(true);
+
+        int partsIndex = _wearingPartsIndex.GetParts(machIndex);
+
+        if (partsIndex != UNWEAR_INDEX)
+        {
+            _partsChildren[partsIndex].gameObject.SetActive(false);
+        }
+
         _wearingPartsIndex.SetParts(machIndex, i);
     }
 
@@ -233,8 +232,8 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
         {
             _partsChildren[partsIndex].gameObject.SetActive(false);
             _wearingPartsIndex.SetParts(machIndex, UNWEAR_INDEX);
-            ChangeBody();
             characterControlRPCManager.RPC_TakeOffSkins(partsIndex, machIndex);
+            characterControlRPCManager.RPC_ChangeBody();
         }
     }
 
@@ -242,10 +241,9 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
     {
         _partsChildren[partsIndex].gameObject.SetActive(false);
         _wearingPartsIndex.SetParts(machIndex, UNWEAR_INDEX);
-        ChangeBody();
     }
 
-    private int getBodyName
+    private int getBodyIndex
     {
         get
         {
@@ -271,7 +269,7 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
         }
     }
 
-    private void ChangeBody()
+    public void ChangeBody()
     {
         int nowBodyIndex = _wearingPartsIndex.GetParts(0);
 
@@ -280,9 +278,7 @@ public class ChangeSkins : MonoBehaviour, IDressUpEventSubscriber
             _bodys[nowBodyIndex].gameObject.SetActive(false);
         }
 
-        int nextBodyIndex = getBodyName;
-
-        Debug.LogError($"body => {nextBodyIndex}");
+        int nextBodyIndex = getBodyIndex;
 
         _bodys[nextBodyIndex].gameObject.SetActive(true);
 
