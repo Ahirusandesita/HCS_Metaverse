@@ -51,38 +51,31 @@ public class ShopCart : MonoBehaviour
 	{
 		foreach (var item in _inCarts)
 		{
-			ItemIDAmountPair stockTemp 
+			ItemIDAmountPair stockTemp
 				= new ItemIDAmountPair(item.Key, item.Value);
 			itemStocks.Add(stockTemp);
 		}
 
 	}
 
-	public async void Buy()
+	public async UniTaskVoid Buy()
 	{
 		WebAPIRequester requester = new WebAPIRequester();
 		List<ItemIDAmountPair> buyItemStocks = new List<ItemIDAmountPair>();
 		toItemStockList(buyItemStocks);
-		_visualShop.Buy();
-
-		foreach (KeyValuePair<int, int> pair in _inCarts)
+		InventoryManager inventoryManager = FindObjectOfType<InventoryManager>();
+		if (inventoryManager != null)
 		{
-			for (int i = 0; i < pair.Value; i++)
+			foreach (KeyValuePair<int, int> pair in _inCarts)
 			{
-				FindObjectOfType<InventoryManager>().SendItem(pair.Key);
+				for (int i = 0; i < pair.Value; i++)
+				{
+					inventoryManager.SendItem(pair.Key);
+				}
 			}
 		}
-		//データベースにリクエストをとばす
-		var data = await requester.PostShopPayment(buyItemStocks, 0, 0);
-
-		try
-		{
-			//XDebug.LogError(buyItemStocks.Count);
-		}
-		catch
-		{
-
-		}
+		await requester.PostShopPayment(buyItemStocks, _visualShop.ShopID);
+		await PlayerDontDestroyData.Instance.UpdateInventory(requester);
 		_inCarts.Clear();
 	}
 }

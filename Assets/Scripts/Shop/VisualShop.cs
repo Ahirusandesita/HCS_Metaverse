@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using KumaDebug;
+using Cysharp.Threading.Tasks;
 
 public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjector<PlayerBodyDependencyInformation>
 {
@@ -13,10 +13,21 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 	[SerializeField, HideAtPlaying] private List<ShopViewPosition> recommendViewPoints = new();
 	[SerializeField] private ShopCart shopCart = default;
 	[SerializeField] private ShopCartUIManager uiManager = default;
+	[SerializeField] private int productId = 10962;
 	private Dictionary<int, int> prices = new();
 	private List<GameObject> displayedItems = new();
 	private IReadonlyPositionAdapter positionAdapter = default;
 	private int _shopID = 2;
+
+	public int ShopID => _shopID;
+
+	private void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.Tab))
+		{
+			shopCart.AddCart(productId);
+		}
+	}
 
 	public int GetPrice(int id)
 	{
@@ -24,6 +35,11 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		if (prices.Keys.Contains(id))
 		{
 			return prices[id];
+		}
+
+		if(id == 10962)
+		{
+			return 500;
 		}
 
 		XDebug.LogWarning($"{id}:そのidは見つかりませんでした");
@@ -78,22 +94,6 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		DestroyShop();
 	}
 
-	/// <summary>
-	/// カートに入っているものを買う
-	/// </summary>
-	public void Buy()
-	{
-		WebAPIRequester webAPIRequester = new();
-
-		//お金を減らす
-		//店の収益にプラス？
-		//所有権を移動
-		foreach (KeyValuePair<int, int> pair in shopCart.InCarts)
-		{
-			
-		}
-	}
-
 	private async void InstanceShop()
 	{
 		//生成
@@ -109,6 +109,7 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 			InstantiateShopObject(data.GetBody.ItemList[i], ref smallItemCounter, ref largeItemCounter);
 		}
 		var dataRecommend = await webAPIRequester.PostShopRecommend(_shopID);
+		XDebug.LogWarning(dataRecommend.GetBody.ItemList.Count + ":aaa");
 		for (int i = 0; i < dataRecommend.GetBody.ItemList.Count; i++)
 		{
 			InstantiateRecommendShopObject(dataRecommend.GetBody.ItemList[i], ref recommendCounter);

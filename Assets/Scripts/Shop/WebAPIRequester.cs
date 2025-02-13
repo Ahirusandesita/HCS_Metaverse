@@ -134,9 +134,9 @@ public class WebAPIRequester
 	/// <br>・購入後の金額</br>
 	/// <br>・ショップの在庫リスト</br>
 	/// <br>・ユーザーID</br></returns>
-	public async UniTask<OnShopPaymentData> PostShopPayment(List<ItemIDAmountPair> inventory, int shopId, int userId)
+	public async UniTask<OnShopPaymentData> PostShopPayment(List<ItemIDAmountPair> inventory, int shopId)
 	{
-		var sendShopPaymentData = new SendPaymentData(inventory, shopId, userId);
+		var sendShopPaymentData = new SendPaymentData(inventory, shopId);
 		string jsonData = JsonUtility.ToJson(sendShopPaymentData);
 
 		using var request = UnityWebRequest.Post(DATABASE_PATH_SHOP_BUY, jsonData, CONTENT_TYPE);
@@ -189,11 +189,11 @@ public class WebAPIRequester
 	/// <br>・自販機の在庫リスト</br>
 	/// <br>・ユーザーID</br>
 	/// <br>・自販機のアップデートフラグ</br></returns>
-	public async UniTask<OnVMPaymentData> PostVMPayment(int itemId, int shopId, int userId)
+	public async UniTask<OnVMPaymentData> PostVMPayment(int itemId, int shopId)
 	{
 		var itemList = new List<ItemIDAmountPair>();
 		itemList.Add(new ItemIDAmountPair(itemId, 1));
-		var sendPaymentData = new SendPaymentData(itemList, shopId, userId);
+		var sendPaymentData = new SendPaymentData(itemList, shopId);
 		string jsonData = JsonUtility.ToJson(sendPaymentData);
 
 		using var request = UnityWebRequest.Post(DATABASE_PATH_VENDINGMACHINE_BUY, jsonData, CONTENT_TYPE);
@@ -618,16 +618,14 @@ public class WebAPIRequester
 	[System.Serializable]
 	private class SendPaymentData
 	{
-		public SendPaymentData(List<ItemIDAmountPair> itemList, int shopId, int userId)
+		public SendPaymentData(List<ItemIDAmountPair> itemList, int shopId)
 		{
 			this.itemList = itemList;
 			this.shopId = shopId;
-			this.userId = userId;
 		}
 
 		[SerializeField] private List<ItemIDAmountPair> itemList = default;
 		[SerializeField] private int shopId = default;
-		[SerializeField] private int userId = default;
 	}
 
 	[System.Serializable]
