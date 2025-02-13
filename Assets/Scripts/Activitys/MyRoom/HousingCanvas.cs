@@ -7,6 +7,7 @@ public class HousingCanvas : MonoBehaviour, IPointerClickRegistrable, IInteracti
 {
 	[SerializeField] private GameObject displayedContent = default;
 
+	public bool IsFiredTriggerStay { get; set; }
 	ISelectedNotification IInteraction.SelectedNotification => throw new System.NotImplementedException();
 
 	void IPointerClickRegistrable.OnPointerClick(PointerEventData data)

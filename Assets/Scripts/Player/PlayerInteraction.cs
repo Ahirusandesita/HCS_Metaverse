@@ -16,6 +16,7 @@ public class PlayerInteraction : MonoBehaviour
 
     public class NullInteraction : IInteraction
     {
+        public bool IsFiredTriggerStay { get; set; }
         public ISelectedNotification SelectedNotification => new NullSelectedNotification();
 
         public GameObject gameObject => throw new NotImplementedException();

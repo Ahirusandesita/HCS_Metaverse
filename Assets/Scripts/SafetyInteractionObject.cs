@@ -66,6 +66,7 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
 	protected bool canInteract = false;
 	protected bool canInteractLooking = false;
 
+	public bool IsFiredTriggerStay { get; set; }
 	ISelectedNotification IInteraction.SelectedNotification => this;
 	private PlayerInputActions.PlayerActions Player => Inputter.Player;
 

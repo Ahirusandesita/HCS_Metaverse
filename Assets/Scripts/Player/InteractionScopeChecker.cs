@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class InteractionScopeChecker : MonoBehaviour
 {
-	private bool isFiredTriggerStay = false;
-
 	private readonly Subject<IInteraction> onInteractionEnter = new Subject<IInteraction>();
 	private readonly Subject<IInteraction> onInteractionEnterLooking = new Subject<IInteraction>();
 	private readonly Subject<Unit> onInteractionExit = new Subject<Unit>();
@@ -40,20 +38,20 @@ public class InteractionScopeChecker : MonoBehaviour
 			float innerProduct = Vector3.Dot(transform.forward, targetDir.normalized);
 			if (innerProduct > cosHalf)
 			{
-				if (isFiredTriggerStay)
+				if (interaction.IsFiredTriggerStay)
 				{
 					return;
 				}
-				isFiredTriggerStay = true;
+				interaction.IsFiredTriggerStay = true;
 				onInteractionEnterLooking.OnNext(interaction);
 			}
 			else
 			{
-				if (!isFiredTriggerStay)
+				if (!interaction.IsFiredTriggerStay)
 				{
 					return;
 				}
-				isFiredTriggerStay = false;
+				interaction.IsFiredTriggerStay = false;
 				onInteractionExit.OnNext(Unit.Default);
 			}
 		}
@@ -61,9 +59,9 @@ public class InteractionScopeChecker : MonoBehaviour
 
 	private void OnTriggerExit(Collider other)
 	{
-		if (other.TryGetComponent(out IInteraction _))
+		if (other.TryGetComponent(out IInteraction interaction))
 		{
-			isFiredTriggerStay = false;
+			interaction.IsFiredTriggerStay = false;
 			onInteractionExit.OnNext(Unit.Default);
 		}
 	}
