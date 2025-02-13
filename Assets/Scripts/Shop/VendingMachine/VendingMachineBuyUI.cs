@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-public class VendingMachineUI : MonoBehaviour
+public class VendingMachineBuyUI : MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI _discountedPriceText;
@@ -17,7 +17,10 @@ public class VendingMachineUI : MonoBehaviour
     [SerializeField]
     private GameObject _buyButton;
     [SerializeField]
-    private GameObject _editButtons;
+    private GameObject _editChangeProductButton;
+    [SerializeField]
+    private GameObject _editDeleteButton;
+
     private VendingMachineUIManager _uiManager;
     [SerializeField,Hide]
     private int _id = -1;
@@ -32,7 +35,6 @@ public class VendingMachineUI : MonoBehaviour
     public int Price => _price;
     public bool IsChanging => _isChanging;
     public GameObject BuyButton => _buyButton;
-    public GameObject EditterButtons => _editButtons;
     public void Init(int id,int discountedPrice
         ,VendingMachineUIManager uiManager,Sprite sprite
         ,string name,int stock)
@@ -70,4 +72,24 @@ public class VendingMachineUI : MonoBehaviour
 	{
         _uiManager.Buy(_id);
 	}
+
+    public void OpenChangeProductButton()
+	{
+        _editChangeProductButton.SetActive(true);
+	}
+
+    public void OpenDeleteButton()
+	{
+        _editDeleteButton.SetActive(true);
+	}
+
+    public void CloseChangeProductButton()
+	{
+        _editChangeProductButton.SetActive(false);
+    }
+
+    public void CloseDeleteButton()
+    {
+        _editDeleteButton.SetActive(false);
+    }
 }

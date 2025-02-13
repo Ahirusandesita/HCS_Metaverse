@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class VendingMachineDeleteButton : MonoBehaviour, IPointerClickRegistrable
 {
 	[SerializeField]
-	private VendingMachineUI _vendingMachineUI;
+	private VendingMachineBuyUI _vendingMachineUI;
 	public void OnPointerClick(PointerEventData data)
 	{
 		_vendingMachineUI.DeleteProduct();
