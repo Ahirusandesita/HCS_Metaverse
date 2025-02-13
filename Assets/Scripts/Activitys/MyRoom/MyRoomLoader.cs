@@ -34,12 +34,12 @@ public class MyRoomLoader : MonoBehaviour
 
 		}
 
-		public void DeletePlacedObject(int housingId)
+		public void DeletePlacedObject(PlaceableObject deleteObject)
 		{
-			var deleteTarget = _placedObjects.Where(placedObject => placedObject.HousingID == housingId).FirstOrDefault();
+			var deleteTarget = _placedObjects.Where(placedObject => placedObject == deleteObject).FirstOrDefault();
 			if (deleteTarget is null)
 			{
-				throw new NotExistInteriorException($"{nameof(DeletePlacedObject)}()‚Ìˆø” {nameof(housingId)} ‚ª‘¶İ‚µ‚Ü‚¹‚ñB");
+				return;
 			}
 
 			_placedObjects.Remove(deleteTarget);

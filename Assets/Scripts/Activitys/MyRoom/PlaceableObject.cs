@@ -36,7 +36,9 @@ public class PlaceableObject : SafetyInteractionObject
 	protected void Start()
 	{
 		disableComponents = GetComponentsInChildren<Component>(true);
+		SetActiveNotIncludeThis(true);
 		placing = FindAnyObjectByType<Placing>();
+		XDebug.Log(disableComponents.Length);
 	}
 
 	public override IInteraction.InteractionInfo OpenLooking()
@@ -46,30 +48,43 @@ public class PlaceableObject : SafetyInteractionObject
 
 	protected override void SafetyOpenLooking()
 	{
-		// このスクリプト以外のすべてのコンポーネントを非表示
-		foreach (var component in disableComponents)
-		{
-			if (component is Behaviour behaviour)
-			{
-				behaviour.enabled = false;
-			}
-			else if (component is Collider collider)
-			{
-				collider.enabled = false;
-			}
-			else if (component is Renderer renderer)
-			{
-				renderer.enabled = false;
-			}
-		}
-
+		SetActiveNotIncludeThis(false);
 		placing.CreateGhost(this, true);
 	}
 
 	public override void Close()
 	{
 		base.Close();
-		gameObject.SetActive(true);
+		SetActiveNotIncludeThis(true);
+	}
+
+	private void SetActiveNotIncludeThis(bool value)
+	{
+		// このスクリプト以外のすべてのコンポーネントを非表示
+		foreach (var component in disableComponents)
+		{
+			if (component == this)
+			{
+				continue;
+			}
+
+			if (component is Outline _)
+			{
+				continue;
+			}
+			else if (component is Behaviour behaviour)
+			{
+				behaviour.enabled = value;
+			}
+			else if (component is Collider collider)
+			{
+				collider.enabled = value;
+			}
+			else if (component is Renderer renderer)
+			{
+				renderer.enabled = value;
+			}
+		}
 	}
 }
 

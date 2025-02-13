@@ -14,7 +14,7 @@ public class Placing : MonoBehaviour, IInputControllable
 	[SerializeField, HideAtPlaying] private PlaceableObject testOrigin;
 	private GhostModel ghostModel = default;
 	private PlaceableObject placeableObject = default;
-	private int placeableObjectID = default;
+	private PlaceableObject deleteObject = default;
 	private MyRoomLoader myRoomLoader = default;
 
 	private int inventoryIndexTest = 0;
@@ -64,27 +64,19 @@ public class Placing : MonoBehaviour, IInputControllable
 		{
 			TryDestroyGhost();
 			inventoryIndexTest -= inventoryIndexTest == 0 ? 0 : 1;
-			placeableObjectID = PlayerDontDestroyData.Instance.InventoryToList[inventoryIndexTest].ItemID;
+			int placeableObjectID = PlayerDontDestroyData.Instance.InventoryToList[inventoryIndexTest].ItemID;
 			placeableObject = allItemAsset.GetItemAssetByID(placeableObjectID).DisplayItem.gameObject.GetComponent<PlaceableObject>();
+			placeableObject.ItemID = placeableObjectID;
 			CreateGhost(placeableObject);
-
-			if (!playerState.PlacingMode.Value)
-			{
-				playerState.ChangePlacingMode();
-			}
 		}
 		if (Input.GetKeyDown(KeyCode.Keypad6))
 		{
 			TryDestroyGhost();
 			inventoryIndexTest += inventoryIndexTest == 19 ? 0 : 1;
-			placeableObjectID = PlayerDontDestroyData.Instance.InventoryToList[inventoryIndexTest].ItemID;
+			int placeableObjectID = PlayerDontDestroyData.Instance.InventoryToList[inventoryIndexTest].ItemID;
 			placeableObject = allItemAsset.GetItemAssetByID(placeableObjectID).DisplayItem.gameObject.GetComponent<PlaceableObject>();
+			placeableObject.ItemID = placeableObjectID;
 			CreateGhost(placeableObject);
-
-			if (!playerState.PlacingMode.Value)
-			{
-				playerState.ChangePlacingMode();
-			}
 		}
 		if (Input.GetKeyDown(KeyCode.F1))
 		{
@@ -95,7 +87,14 @@ public class Placing : MonoBehaviour, IInputControllable
 
 	public void CreateGhost(PlaceableObject origin, bool updateMode = false)
 	{
-		ghostModel = new GhostModel().CreateModel(origin, transform, null, updateMode);
+		if (!playerState.PlacingMode.Value)
+		{
+			playerState.ChangePlacingMode();
+		}
+		deleteObject = origin;
+		placeableObject = allItemAsset.GetItemAssetByID(origin.ItemID).DisplayItem.gameObject.GetComponent<PlaceableObject>();
+		placeableObject.ItemID = origin.ItemID;
+		ghostModel = new GhostModel().CreateModel(placeableObject, transform, null, false);
 		ghostModel.Spawn();
 	}
 
@@ -118,10 +117,22 @@ public class Placing : MonoBehaviour, IInputControllable
 			return;
 		}
 
+		if (playerState.PlacingMode.Value)
+		{
+			playerState.ChangePlacingMode();
+		}
 		ghostModel.PlacingTarget.OnPlaced();
 		var placedObject = Instantiate(placeableObject, ghostModel.GetGhostPosition(), ghostModel.GetGhostChildRotation());
-		placedObject.ItemID = placeableObjectID;
+		placedObject.gameObject.SetActive(true);
+		placedObject.ItemID = placeableObject.ItemID;
 		myRoomLoader.InteriorInfo.AddPlacedObject(placedObject);
-		Destroy(ghostModel.Instance);
+		TryDestroyGhost();
+		if (deleteObject.gameObject.activeInHierarchy)
+		{
+			deleteObject.Close();
+			myRoomLoader.InteriorInfo.DeletePlacedObject(deleteObject);
+			Destroy(deleteObject.gameObject);
+		}
+		placeableObject = placedObject;
 	}
 }

@@ -85,7 +85,6 @@ public class GhostModel : IEditOnlyGhost
     public GhostModel()
     {
         instance = new GameObject(nameof(GhostModel));
-        XDebug.Log(instance.transform.position);
         boxCollider = instance.AddComponent<BoxCollider>();
         var rigidbody = instance.AddComponent<Rigidbody>();
         // 「Ghost」Materialをロード
@@ -181,7 +180,9 @@ public class GhostModel : IEditOnlyGhost
         // -----------------------------------------------------------------------------
 
         boxCollider.size = bounds.size;
-        boxCollider.center = bounds.center;
+        boxCollider.center = updateMode
+            ? new Vector3(0f, bounds.center.y, 0f)
+            : bounds.center;
         if (boxCollider.size == Vector3.zero && boxCollider.center == Vector3.zero)
         {
             Debug.LogError("PlaceableObject のMesh情報にアクセスできません。" +
