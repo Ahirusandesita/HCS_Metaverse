@@ -8,24 +8,16 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 	//カートクラスを作る
 	[SerializeField] private ItemBundleAsset allItemAsset = default;
 	[SerializeField] private BuyArea buyArea = default;
-	[SerializeField] private List<Transform> smallViewPoints = default;
-	[SerializeField] private List<Transform> largeViewPoints = default;
+	[SerializeField, HideAtPlaying] private List<ShopViewPosition> smallViewPoints = new();
+	[SerializeField, HideAtPlaying] private List<ShopViewPosition> largeViewPoints = new();
+	[SerializeField, HideAtPlaying] private List<ShopViewPosition> recommendViewPoints = new();
 	[SerializeField] private ShopCart shopCart = default;
 	[SerializeField] private ShopCartUIManager uiManager = default;
 	private Dictionary<int, int> prices = new();
 	private List<GameObject> displayedItems = new();
 	private IReadonlyPositionAdapter positionAdapter = default;
-	[SerializeField]
-	private int id = 20004;
-	private void Update()
-	{
+	private int _shopID = 2;
 
-		if (Input.GetKeyDown(KeyCode.N))
-		{
-			shopCart.AddCart(id);
-			id++;
-		}
-	}
 	public int GetPrice(int id)
 	{
 
@@ -34,7 +26,7 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 			return prices[id];
 		}
 
-		XKumaDebugSystem.LogWarning($"{id}:そのidは見つかりませんでした");
+		XDebug.LogWarning($"{id}:そのidは見つかりませんでした");
 		return -1;
 	}
 
@@ -53,14 +45,36 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 
 	private void Awake()
 	{
-		//NotificationUIManager.Instance.DisplayInteraction();
 		PlayerInitialize.ConsignmentInject_static(this);
+	}
+	private void Start()
+	{
+		ShopViewPosition[] shopViewPositions
+			= FindObjectsByType<ShopViewPosition>(FindObjectsSortMode.None);
+
+		foreach (ShopViewPosition viewPosition in shopViewPositions)
+		{
+			if (viewPosition.IsRecommend)
+			{
+				recommendViewPoints.Add(viewPosition);
+				continue;
+			}
+			if (viewPosition.ItemSize == ItemAsset.ItemSize.Small)
+			{
+				smallViewPoints.Add(viewPosition);
+				continue;
+			}
+			else if (viewPosition.ItemSize == ItemAsset.ItemSize.Large)
+			{
+				largeViewPoints.Add(viewPosition);
+				continue;
+			}
+		}
 		InstanceShop();
 	}
 
 	private void OnDisable()
 	{
-		//NotificationUIManager.Instance.HideInteraction();
 		DestroyShop();
 	}
 
@@ -69,12 +83,14 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 	/// </summary>
 	public void Buy()
 	{
+		WebAPIRequester webAPIRequester = new();
+
 		//お金を減らす
 		//店の収益にプラス？
 		//所有権を移動
 		foreach (KeyValuePair<int, int> pair in shopCart.InCarts)
 		{
-			XDebug.Log($"id:{pair.Key} count:{pair.Value}");
+			
 		}
 	}
 
@@ -84,43 +100,93 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		displayedItems = new List<GameObject>();
 		WebAPIRequester webAPIRequester = new WebAPIRequester();
 
-		var data = await webAPIRequester.PostShopEntry(0);
+		var data = await webAPIRequester.PostShopEntry(_shopID);
 		int smallItemCounter = 0;
 		int largeItemCounter = 0;
+		int recommendCounter = 0;
 		for (int i = 0; i < data.GetBody.ItemList.Count; i++)
 		{
-			var asset = allItemAsset.GetItemAssetByID(data.GetBody.ItemList[i].ItemID);
-
-			int discountedPrice = Mathf.FloorToInt(data.GetBody.ItemList[i].Price
-				- (data.GetBody.ItemList[i].Price * data.GetBody.ItemList[i].Discount));
-
-			int stock = data.GetBody.ItemList[i].Stock;
-			Vector3 position = default;
-			if (data.GetBody.ItemList[i].Size == 0)
-			{
-				position = smallViewPoints[smallItemCounter].position;
-				smallItemCounter++;
-			}
-			//ほかのサイズが追加される可能性があるためelse ifにしてる
-			else if (data.GetBody.ItemList[i].Size == 1)
-			{
-				position = largeViewPoints[largeItemCounter].position;
-				largeItemCounter++;
-			}
-			var item = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
-			displayedItems.Add(item.gameObject);
-			uiManager.AddProductUI(
-				data.GetBody.ItemList[i].ItemID,
-				data.GetBody.ItemList[i].Price,
-				discountedPrice,
-				stock,
-				data.GetBody.ItemList[i].Discount,
-				position);
-			prices.Add(data.GetBody.ItemList[i].ItemID, discountedPrice);
+			InstantiateShopObject(data.GetBody.ItemList[i], ref smallItemCounter, ref largeItemCounter);
+		}
+		var dataRecommend = await webAPIRequester.PostShopRecommend(_shopID);
+		for (int i = 0; i < dataRecommend.GetBody.ItemList.Count; i++)
+		{
+			InstantiateRecommendShopObject(dataRecommend.GetBody.ItemList[i], ref recommendCounter);
 		}
 	}
 
+	private void InstantiateRecommendShopObject(
+		WebAPIRequester.ItemLineup itemLineup,
+		ref int recommendCounter)
+	{
+		var asset = allItemAsset.GetItemAssetByID(itemLineup.ItemID);
 
+		int discountedPrice = Mathf.FloorToInt(itemLineup.Price
+			- (itemLineup.Price * itemLineup.Discount));
+
+		int stock = itemLineup.Stock;
+		ShopViewPosition shopViewPosition = recommendViewPoints[recommendCounter];
+		recommendCounter++;
+
+		var item = IDisplayItem.Instantiate(asset, shopViewPosition.Postion, Quaternion.Euler(shopViewPosition.Direction), this);
+		displayedItems.Add(item.gameObject);
+		if (!prices.Keys.Contains(itemLineup.ItemID))
+		{
+			uiManager.AddProductUI(
+			itemLineup.ItemID,
+			itemLineup.Price,
+			discountedPrice,
+			stock,
+			itemLineup.Discount,
+			shopViewPosition.Postion);
+			prices.Add(itemLineup.ItemID, discountedPrice);
+		}
+
+		Bounds bounds = item.gameObject.GetBounds();
+		Vector3 underCenter = bounds.center - bounds.extents.y * Vector3.up;
+		item.gameObject.transform.position += item.gameObject.transform.position - underCenter;
+	}
+
+	private void InstantiateShopObject(
+		WebAPIRequester.ItemLineup itemLineup,
+		ref int smallItemCounter,
+		ref int largeItemCounter)
+	{
+		var asset = allItemAsset.GetItemAssetByID(itemLineup.ItemID);
+
+		int discountedPrice = Mathf.FloorToInt(itemLineup.Price
+			- (itemLineup.Price * itemLineup.Discount));
+
+		int stock = itemLineup.Stock;
+		ShopViewPosition shopViewPosition = default;
+		if (itemLineup.Size == 1)
+		{
+			shopViewPosition = smallViewPoints[smallItemCounter];
+			smallItemCounter++;
+		}
+		//ほかのサイズが追加される可能性があるためelse ifにしてる
+		else if (itemLineup.Size == 0)
+		{
+			shopViewPosition = largeViewPoints[largeItemCounter];
+			largeItemCounter++;
+		}
+		var item = IDisplayItem.Instantiate(asset, shopViewPosition.Postion, Quaternion.Euler(shopViewPosition.Direction), this);
+		displayedItems.Add(item.gameObject);
+		if (!prices.Keys.Contains(itemLineup.ItemID))
+		{
+			uiManager.AddProductUI(
+			itemLineup.ItemID,
+			itemLineup.Price,
+			discountedPrice,
+			stock,
+			itemLineup.Discount,
+			shopViewPosition.Postion);
+			prices.Add(itemLineup.ItemID, discountedPrice);
+		}
+		Bounds bounds = item.gameObject.GetBounds();
+		Vector3 underCenter = bounds.center - bounds.extents.y * Vector3.up;
+		item.gameObject.transform.position += item.gameObject.transform.position - underCenter;
+	}
 
 	private void DestroyShop()
 	{

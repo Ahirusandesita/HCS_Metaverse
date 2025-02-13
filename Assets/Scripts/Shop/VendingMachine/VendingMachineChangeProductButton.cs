@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class VendingMachineChangeProductButton : MonoBehaviour, IPointerClickRegistrable
 {
 	[SerializeField]
-	private VendingMachineUI _vendingMachineBuyUI;
+	private VendingMachineBuyUI _vendingMachineBuyUI;
 	public void OnPointerClick(PointerEventData data)
 	{
 		_vendingMachineBuyUI.OpenProductChangeMode();

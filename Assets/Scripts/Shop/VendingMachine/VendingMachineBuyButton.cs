@@ -6,7 +6,7 @@ public class VendingMachineBuyButton : MonoBehaviour
     [SerializeField]
     private EventTrigger eventTrigger;
     [SerializeField]
-    private VendingMachineUI vendingMachineUI;
+    private VendingMachineBuyUI vendingMachineUI;
     private void Awake()
     {
         EventTrigger.Entry entryPointerUp = new EventTrigger.Entry();

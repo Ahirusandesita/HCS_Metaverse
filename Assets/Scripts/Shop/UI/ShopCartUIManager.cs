@@ -42,7 +42,6 @@ public class ShopCartUIManager : MonoBehaviour
     private Vector3 _priceCardPositionOffset = default;
     private Dictionary<int, ProductUI> _productUIs = new();
     private List<CartUIInfo> cartUIInfos = new List<CartUIInfo>();
-    private int _yPosition = -1;
     private float _offsetX = 100;
     private float _offsetY = 100;
     private int _horizontalLimit = 2;
@@ -55,7 +54,6 @@ public class ShopCartUIManager : MonoBehaviour
         _offsetX = iconTransform.sizeDelta.x;
 
         _offsetY = iconTransform.sizeDelta.y;
-        //_horizontalLimit = Mathf.FloatToHalf((_shopUIParent.transform as RectTransform).sizeDelta.x / _offsetX);
     }
 
     public void AddProductUI(int id, int price, int discountedPrice, int stock, float discount, Vector3 position)

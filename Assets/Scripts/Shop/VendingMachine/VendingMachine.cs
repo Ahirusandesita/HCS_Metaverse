@@ -15,7 +15,9 @@ public class VendingMachine : SafetyInteractionObject
 	public int ShopID => _shopID;
 	public bool IsAdminPlayer => _roomAdminID == PlayerData.PlayerID;
 
-	public override void Select(SelectArgs selectArgs) { }
+	public override void Select(SelectArgs selectArgs)
+	{
+	}
 
 	public override void Unselect(SelectArgs selectArgs) { }
 
@@ -50,11 +52,11 @@ public class VendingMachine : SafetyInteractionObject
 		_uiManager.CloseUI();
 	}
 
-	protected override void SafetyOpen()
+	protected override void SafetyOpenLooking()
 	{
 		if (!_isOpen) { return; }
 		_uiManager.OpenBuyUI();
-		_uiManager.OpenNextButton();
+		_uiManager.OpenPageControlButton();
 		if (IsAdminPlayer)
 		{
 			_uiManager.OpenEditerButtons();
@@ -63,5 +65,10 @@ public class VendingMachine : SafetyInteractionObject
 		{
 			_uiManager.OpenBuyButton();
 		}
+	}
+
+	protected override void SafetyOpen()
+	{
+
 	}
 }

@@ -10,7 +10,7 @@ public class VendingMachineUIManager : MonoBehaviour
 	[SerializeField]
 	private ItemBundleAsset _itemBundleAsset = default;
 	[SerializeField]
-	private VendingMachineUI _vendingMachineUIPrefab = default;
+	private VendingMachineBuyUI _vendingMachineUIPrefab = default;
 	[SerializeField]
 	private VendingMachineEditUI _vendingMachineEditUIPrefab = default;
 	[SerializeField]
@@ -31,7 +31,7 @@ public class VendingMachineUIManager : MonoBehaviour
 	private GameObject _addButton = default;
 	[SerializeField]
 	private VendingMachineEditPriceUI _vendingMachineEditPriceUI = default;
-	private List<VendingMachineUI> _vendingUIs = new();
+	private List<VendingMachineBuyUI> _vendingUIs = new();
 	private List<VendingMachineEditUI> _vendingEditUIs = new();
 	private List<WebAPIRequester.ItemLineup> _previousItemLineups = new List<WebAPIRequester.ItemLineup>();
 	private int _maxPageCount = 0;
@@ -53,7 +53,7 @@ public class VendingMachineUIManager : MonoBehaviour
 	}
 	public void InitUI(WebAPIRequester.OnVMProductData data)
 	{
-		foreach (VendingMachineUI uI in _vendingUIs)
+		foreach (VendingMachineBuyUI uI in _vendingUIs)
 		{
 			Destroy(uI.gameObject);
 		}
@@ -62,8 +62,8 @@ public class VendingMachineUIManager : MonoBehaviour
 		foreach (WebAPIRequester.ItemLineup lineup in data.ItemList)
 		{
 			int discountedPrice = Mathf.FloorToInt(lineup.Price * (1 - lineup.Discount));
-			VendingMachineUI ui = Instantiate(_vendingMachineUIPrefab, _mainPanel.transform);
-			InitBuyUI(ui, lineup.ItemID, discountedPrice,lineup.Stock);
+			VendingMachineBuyUI ui = Instantiate(_vendingMachineUIPrefab, _mainPanel.transform);
+			InitBuyUI(ui, lineup.ItemID, discountedPrice, lineup.Stock);
 			_vendingUIs.Add(ui);
 			UpdateUI(lineup.ItemID, lineup.Stock);
 		}
@@ -89,7 +89,7 @@ public class VendingMachineUIManager : MonoBehaviour
 		}
 	}
 
-	private VendingMachineUI InitBuyUI(VendingMachineUI ui, int id, int discountedPrice,int stock)
+	private VendingMachineBuyUI InitBuyUI(VendingMachineBuyUI ui, int id, int discountedPrice, int stock)
 	{
 		ItemAsset itemAsset = _itemBundleAsset.GetItemAssetByID(id);
 		ui.Init(id
@@ -105,9 +105,9 @@ public class VendingMachineUIManager : MonoBehaviour
 	{
 		if (stock <= 0)
 		{
-			VendingMachineUI updateUI = _vendingUIs.
+			VendingMachineBuyUI updateUI = _vendingUIs.
 				Where(ui => ui.ID == id && ui.Stock <= 0).
-				FirstOrDefault(); 
+				FirstOrDefault();
 			updateUI.SoldOut();
 		}
 	}
@@ -182,7 +182,7 @@ public class VendingMachineUIManager : MonoBehaviour
 	{
 		List<WebAPIRequester.VMSalesData> vmUpdateData = new List<WebAPIRequester.VMSalesData>();
 
-		foreach (VendingMachineUI currentItem in _vendingUIs)
+		foreach (VendingMachineBuyUI currentItem in _vendingUIs)
 		{
 			WebAPIRequester.ItemLineup itemTemp =
 				_previousItemLineups
@@ -192,7 +192,7 @@ public class VendingMachineUIManager : MonoBehaviour
 			//í«â¡ÇÃèÍçá
 			if (itemTemp.ItemID <= 0)
 			{
-			currentItem.ID.PrintWarning();
+				currentItem.ID.PrintWarning();
 				WebAPIRequester.VMSalesData salesData
 						= new WebAPIRequester.VMSalesData(
 							currentItem.ID,
@@ -219,7 +219,7 @@ public class VendingMachineUIManager : MonoBehaviour
 		foreach (WebAPIRequester.ItemLineup item in _previousItemLineups)
 		{
 			item.PrintWarning();
-			VendingMachineUI uiTemp = _vendingUIs.Where(ui => ui.ID == item.ItemID).FirstOrDefault();
+			VendingMachineBuyUI uiTemp = _vendingUIs.Where(ui => ui.ID == item.ItemID).FirstOrDefault();
 			if (uiTemp != null) { continue; }
 			//çÌèúÇ≥ÇÍÇΩÇ‡ÇÃ
 			WebAPIRequester.VMSalesData salesData
@@ -241,7 +241,7 @@ public class VendingMachineUIManager : MonoBehaviour
 
 	public void DeleteProduct(int id)
 	{
-		VendingMachineUI deleteUI = _vendingUIs
+		VendingMachineBuyUI deleteUI = _vendingUIs
 			.Where(vendingUI => vendingUI.ID == id)
 			.FirstOrDefault();
 		_vendingUIs.Remove(deleteUI);
@@ -249,19 +249,19 @@ public class VendingMachineUIManager : MonoBehaviour
 		OpenBuyUI();
 	}
 
-	public async UniTask UpdateOrAddProduct(int id, int price,int count)
+	public async UniTask UpdateOrAddProduct(int id, int price, int count)
 	{
-		VendingMachineUI updateUI = _vendingUIs.Where(ui => ui.IsChanging).FirstOrDefault();
-		if(updateUI == null)
+		VendingMachineBuyUI updateUI = _vendingUIs.Where(ui => ui.IsChanging).FirstOrDefault();
+		if (updateUI == null)
 		{
 			updateUI = Instantiate(_vendingMachineUIPrefab);
 			_vendingUIs.Add(updateUI);
 		}
 		WebAPIRequester webAPIRequester = new WebAPIRequester();
-		InitBuyUI(updateUI,id,price,count);
+		InitBuyUI(updateUI, id, price, count);
 		UpdateUI(updateUI.ID, updateUI.Stock);
 
-		
+
 		await PlayerDontDestroyData.Instance.UpdateInventory(webAPIRequester);
 		await SaveEditData(webAPIRequester);
 		await InitUI(webAPIRequester);
@@ -269,6 +269,28 @@ public class VendingMachineUIManager : MonoBehaviour
 	}
 
 	#region Openä÷êî
+	public void OpenPageControlButton()
+	{
+		if (_currentPageCount <= 1)
+		{
+			ClosePreciousButton();
+		}
+		if (_currentPageCount >= _maxPageCount)
+		{
+			CloseNextButton();
+		}
+		CloseBuyUI();
+		OpenBuyUI();
+		if (_vendingMachine.IsAdminPlayer)
+		{
+			OpenEditerButtons();
+		}
+		else
+		{
+			OpenBuyButton();
+		}
+	}
+
 	public void OpenBuyUI()
 	{
 		for (int i = ((int)_currentPageCount - 1) * _displayUICount; i < _vendingUIs.Count; i++)
@@ -285,7 +307,7 @@ public class VendingMachineUIManager : MonoBehaviour
 
 	public void OpenBuyButton()
 	{
-		foreach (VendingMachineUI ui in _vendingUIs)
+		foreach (VendingMachineBuyUI ui in _vendingUIs)
 		{
 			ui.BuyButton.SetActive(true);
 		}
@@ -293,11 +315,20 @@ public class VendingMachineUIManager : MonoBehaviour
 
 	public void OpenEditerButtons()
 	{
-		foreach (VendingMachineUI ui in _vendingUIs)
+		foreach (VendingMachineBuyUI ui in _vendingUIs)
 		{
-			ui.EditterButtons.SetActive(true);
+			ui.OpenChangeProductButton();
+			ui.OpenDeleteButton();
 		}
 		OpenAddProductButton();
+	}
+
+	public void OpenDeleteButtons()
+	{
+		foreach (VendingMachineBuyUI ui in _vendingUIs)
+		{
+			ui.OpenDeleteButton();
+		}
 	}
 
 	public void OpenEditUIButtons()
@@ -308,12 +339,12 @@ public class VendingMachineUIManager : MonoBehaviour
 		}
 	}
 
-	public void OpenNextButton()
+	private void OpenNextButton()
 	{
 		_nextButton.SetActive(true);
 	}
 
-	public void OpenPreviousButton()
+	private void OpenPreviousButton()
 	{
 		_previousButton.SetActive(true);
 	}
@@ -321,6 +352,7 @@ public class VendingMachineUIManager : MonoBehaviour
 	public void OpenEditPanel()
 	{
 		_editPanel.SetActive(true);
+
 		OpenEditReturnBuyMenuButton();
 		CloseNextButton();
 		ClosePreciousButton();
@@ -332,7 +364,7 @@ public class VendingMachineUIManager : MonoBehaviour
 		float offsetY = prefabRectTranform.sizeDelta.y + _mergin.y;
 		int containItemsCount = PlayerDontDestroyData.Instance.InventoryToList.Count;
 		int editMenuRowMax = containItemsCount / _editMenuColMax;
-		if(containItemsCount % _editMenuColMax > 0)
+		if (containItemsCount % _editMenuColMax > 0)
 		{
 			editMenuRowMax++;
 		}
@@ -367,10 +399,10 @@ public class VendingMachineUIManager : MonoBehaviour
 		}
 	}
 
-	public void OpenEditPricePanel(int id,int count)
+	public void OpenEditPricePanel(int id, int count)
 	{
 		_vendingMachineEditPriceUI.gameObject.SetActive(true);
-		_vendingMachineEditPriceUI.Init(id,count);
+		_vendingMachineEditPriceUI.Init(id, count);
 	}
 
 	public void OpenEditUICountText()
@@ -407,29 +439,38 @@ public class VendingMachineUIManager : MonoBehaviour
 
 	public void CloseBuyUI()
 	{
-		foreach (VendingMachineUI ui in _vendingUIs)
+		foreach (VendingMachineBuyUI ui in _vendingUIs)
 		{
 			ui.gameObject.SetActive(false);
 			ui.BuyButton.SetActive(false);
-			ui.EditterButtons.SetActive(false);
+			ui.CloseChangeProductButton();
+			ui.CloseDeleteButton();
 		}
 	}
 
 	public void CloseEditterButtons()
 	{
-		foreach (VendingMachineUI ui in _vendingUIs)
+		foreach (VendingMachineBuyUI ui in _vendingUIs)
 		{
-			ui.EditterButtons.SetActive(false);
+			ui.CloseDeleteButton();
+			ui.CloseChangeProductButton();
 		}
 		CloseAddProductButton();
 	}
 
-	public void CloseNextButton()
+	public void ClosePageControlButton()
 	{
+		CloseNextButton();
+		ClosePreciousButton();
+	}
+
+	private void CloseNextButton()
+	{
+		if(_nextButton == null) { return; }
 		_nextButton.SetActive(false);
 	}
 
-	public void ClosePreciousButton()
+	private void ClosePreciousButton()
 	{
 		_previousButton.SetActive(false);
 	}
