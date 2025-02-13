@@ -79,7 +79,6 @@ public class Placing : MonoBehaviour, IInputControllable
 			inventoryIndexTest += inventoryIndexTest == 19 ? 0 : 1;
 			placeableObjectID = PlayerDontDestroyData.Instance.InventoryToList[inventoryIndexTest].ItemID;
 			placeableObject = allItemAsset.GetItemAssetByID(placeableObjectID).DisplayItem.gameObject.GetComponent<PlaceableObject>();
-			placeableObject.name.Print();
 			CreateGhost(placeableObject);
 
 			if (!playerState.PlacingMode.Value)
@@ -94,9 +93,9 @@ public class Placing : MonoBehaviour, IInputControllable
 	}
 #endif
 
-	public void CreateGhost(PlaceableObject origin)
+	public void CreateGhost(PlaceableObject origin, bool updateMode = false)
 	{
-		ghostModel = new GhostModel().CreateModel(origin, transform);
+		ghostModel = new GhostModel().CreateModel(origin, transform, null, updateMode);
 		ghostModel.Spawn();
 	}
 

@@ -63,7 +63,7 @@ public class PlaceableObject : SafetyInteractionObject
 			}
 		}
 
-		placing.CreateGhost(this);
+		placing.CreateGhost(this, true);
 	}
 
 	public override void Close()
