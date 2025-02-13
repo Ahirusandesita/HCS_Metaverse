@@ -27,6 +27,7 @@ public class ScoreManager : MonoBehaviour, IScoreProperty, IScoreCalculator
 
     // スコア表示の固定部分
     private const string SCORE_PREAMBLE = "SCORE : ";
+    private ActivityProgressManagement progressManagement;
 
     private void Awake()
     {

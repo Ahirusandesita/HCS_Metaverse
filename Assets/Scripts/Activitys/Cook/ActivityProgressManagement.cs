@@ -117,6 +117,8 @@ public class ActivityProgressManagement : MonoBehaviour
             OnWaitFinish?.GetInvocationList()
                .OfType<WaitWithHandler>()
                .Select(async (OnAysncEvent) => await OnAysncEvent.Invoke()));
+        WebAPIRequester webAPIRequester = new WebAPIRequester();
+        //webAPIRequester.PostScore()
 
         GateOfFusion.Instance.ReturnMainRoom();
     }
