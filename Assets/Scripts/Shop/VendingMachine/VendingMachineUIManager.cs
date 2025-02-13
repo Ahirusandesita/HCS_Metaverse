@@ -118,7 +118,7 @@ public class VendingMachineUIManager : MonoBehaviour
 		WebAPIRequester.OnVMPaymentData result;
 		try
 		{
-			result = await webAPIRequester.PostVMPayment(id, int.MaxValue, _vendingMachine.ShopID);
+			result = await webAPIRequester.PostVMPayment(id, _vendingMachine.ShopID);
 			if (result.GetBody.UpdateFlg)
 			{
 				WebAPIRequester.OnVMProductData entryData =

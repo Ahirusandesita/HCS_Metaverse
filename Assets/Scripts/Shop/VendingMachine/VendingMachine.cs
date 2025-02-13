@@ -1,7 +1,8 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
-public class VendingMachine : SafetyInteractionObject
+public class VendingMachine : SafetyInteractionObject, IGrabbableActiveChangeRequester
 {
 	private int _shopID = -1;
 	private int _roomAdminID = -1;
@@ -12,6 +13,9 @@ public class VendingMachine : SafetyInteractionObject
 	private VendingMachineUIManager _uiManager = default;
 	[SerializeField]
 	private Transform _viewTransform;
+	[SerializeField]
+	private RegisterSceneInInspector _grabbableScene;
+	private ISwitchableGrabbableActive _switchableGrabbableActive;
 	public int ShopID => _shopID;
 	public bool IsAdminPlayer => _roomAdminID == PlayerData.PlayerID;
 
@@ -29,6 +33,22 @@ public class VendingMachine : SafetyInteractionObject
 
 	public async UniTaskVoid Initialize(int shopID, int roomAdminID)
 	{
+		_switchableGrabbableActive = GetComponent<ISwitchableGrabbableActive>();
+		if (_switchableGrabbableActive == null)
+		{
+			Debug.LogError($"ISwitchableGrabbableActiveがアタッチされていません" + this.gameObject.name);
+			return;
+		}
+		_switchableGrabbableActive.Regist(this);
+		if (SceneManager.GetActiveScene().name == _grabbableScene)
+		{
+			_switchableGrabbableActive.Active(this);
+		}
+		else
+		{
+			_switchableGrabbableActive.Inactive(this);
+		}
+
 		_shopID = shopID;
 		_roomAdminID = roomAdminID;
 		WebAPIRequester webAPIRequester = new WebAPIRequester();

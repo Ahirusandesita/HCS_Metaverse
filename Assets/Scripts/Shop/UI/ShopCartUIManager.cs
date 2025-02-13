@@ -148,7 +148,7 @@ public class ShopCartUIManager : MonoBehaviour
     public void BuyButtonPush()
     {
         Clear();
-        _shopCart.Buy();
+        _shopCart.Buy().Forget();
     }
     private void Clear()
     {
