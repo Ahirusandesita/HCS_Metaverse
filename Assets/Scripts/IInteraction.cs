@@ -15,6 +15,7 @@ public interface IInteraction
     public class NullInteractionInfo : InteractionInfo { }
 
     GameObject gameObject { get; }
+    bool IsFiredTriggerStay { get; set; }
     ISelectedNotification SelectedNotification { get; }
     /// <summary>
     /// オブジェクトがインタラクトされたときに呼ばれる処理

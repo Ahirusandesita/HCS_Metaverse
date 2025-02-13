@@ -46,6 +46,7 @@ public class PlaceableObject : SafetyInteractionObject
 
 	protected override void SafetyOpenLooking()
 	{
+		// このスクリプト以外のすべてのコンポーネントを非表示
 		foreach (var component in disableComponents)
 		{
 			if (component is Behaviour behaviour)

@@ -229,6 +229,18 @@ public class GhostModel : IEditOnlyGhost
         return instance.transform.GetChild(0).rotation;
 	}
 
+    public GhostModel SetGhostPosition(Vector3 position)
+	{
+        instance.transform.position = position;
+        return this;
+	}
+
+    public GhostModel SetGhostRotation(Quaternion rotation)
+	{
+        instance.transform.rotation = rotation;
+        return this;
+	}
+
     /// <summary>
     /// ƒ‚ƒfƒ‹‚ª‘¶İ‚·‚éê‡‚É•\¦‚·‚é
     /// </summary>

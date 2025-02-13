@@ -5,6 +5,7 @@ namespace HCSMeta.Activity
 {
 	public class TestGameZone : MonoBehaviour, IInteraction, ISelectedNotification
 	{
+		public bool IsFiredTriggerStay { get; set; }
 		public ISelectedNotification SelectedNotification => this;
 		[SerializeField]
 		private GameFrame gameFrame;
