@@ -3,7 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ItemData", menuName = "ScriptableObjects/ItemAsset/Item")]
 public class ItemAsset : ScriptableObject
 {
-	private enum ItemSize
+	public enum ItemSize
 	{
 		Large = 0,
 		Small = 1
