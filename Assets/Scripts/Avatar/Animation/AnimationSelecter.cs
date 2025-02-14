@@ -22,22 +22,23 @@ public class AnimationSelecter : MonoBehaviour, IDressUpEventSubscriber
         characterControl = remoteView.GetComponentInChildren<CharacterControlRPCManager>();
         Inputter.Player.Move.started += dir =>
         {
-            _playerAnimator.SetBool("Walk", true);
+            if (_playerAnimator != null)
+            {
+                _playerAnimator.SetBool("Walk", true);
+            }
         };
 
         Inputter.Player.Move.canceled += dir =>
         {
-            _playerAnimator.SetBool("Walk", false);
+            if (_playerAnimator != null)
+            {
+                _playerAnimator.SetBool("Walk", false);
+            }
         };
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            _playerAnimator.SetBool("Walk", true);
-        }
-
         if (!_isPlaying)
         {
             return;
