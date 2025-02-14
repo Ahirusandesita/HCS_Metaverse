@@ -12,6 +12,7 @@ public class WebAPIRequester
 	private const string DATABASE_PATH_BASE = "http://10.11.33.228:8080/api/";
 	private const string DATABASE_PATH_COOK_SCORE = DATABASE_PATH_BASE + "score"; 
 	private const string DATABASE_PATH_JOIN_WORLD = DATABASE_PATH_BASE + "world";
+	private const string DATABASE_PATH_MONEY = DATABASE_PATH_BASE + "money";
 	private const string DATABASE_PATH_SHOP_RECOMMEND = DATABASE_PATH_BASE + "shop/recommend";
 	private const string DATABASE_PATH_SHOP_ENTRY = DATABASE_PATH_BASE + "shop/entry";
 	private const string DATABASE_PATH_SHOP_BUY = DATABASE_PATH_BASE + "shop/buy";
@@ -45,6 +46,24 @@ public class WebAPIRequester
 				XDebug.LogError(request.result, "red");
 				throw new APIConnectException(request.error);
 		}
+	}
+
+	public async UniTask<int> GetMoney()
+	{
+		using var request = UnityWebRequest.Post(DATABASE_PATH_MONEY, new WWWForm());
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
+		await request.SendWebRequest();
+
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				throw new APIConnectException(request.error);
+		}
+		var money = JsonUtility.FromJson<OnGetMoneyData>(request.downloadHandler.text);
+		return money.Money;
 	}
 
 	public async UniTask<OnShopEntryData> PostShopRecommend(int shopId)
@@ -367,6 +386,31 @@ public class WebAPIRequester
 
 		public string ResponseCode => responseCode;
 		public string Message => message;
+	}
+
+	[System.Serializable]
+	public class OnGetMoneyData : ResponseData
+	{
+		public OnGetMoneyData(Body body)
+		{
+			this.body = body;
+		}
+
+		[SerializeField] private Body body = default;
+
+		public int Money => body.Money;
+
+		[System.Serializable]
+		public class Body
+		{
+			public Body(int money)
+			{
+				this.money = money;
+			}
+
+			[SerializeField] private int money = default;
+			public int Money => money;
+		}
 	}
 
 	/// <summary>

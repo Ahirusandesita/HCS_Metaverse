@@ -201,7 +201,7 @@ public class GateOfFusion
 			return;
 		}
 
-		string sceneName = SceneNameType.TestPhotonScene.ToString();
+		string sceneName = "MainCityScene";
 		if (SceneManager.GetActiveScene().name == sceneName)
 		{
 			XKumaDebugSystem.LogWarning("åªç›Ç¢ÇÈÉVÅ[ÉìÇ≈Ç∑", KumaDebugColor.WarningColor);

@@ -80,6 +80,7 @@ public class PlayerDontDestroyData : MonoBehaviour
 	private async void Start()
 	{
 		await UpdateInventory();
+		await UpdateMoney();
 	}
 
 	public bool AddInventory(ItemIDAmountPair itemIDAmountPair)
@@ -176,6 +177,17 @@ public class PlayerDontDestroyData : MonoBehaviour
 				XDebug.LogError($"インベントリに入るはずのないIDが検知されましたID:{item.ItemID}", KumaDebugColor.ErrorColor);
 			}
 		}
+	}
+
+	public async UniTask UpdateMoney()
+	{
+		WebAPIRequester webAPIRequester = new WebAPIRequester();
+		await UpdateMoney(webAPIRequester);
+	}
+
+	public async UniTask UpdateMoney(WebAPIRequester webAPIRequester)
+	{
+		_money = await webAPIRequester.GetMoney();
 	}
 }
 
