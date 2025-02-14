@@ -63,6 +63,9 @@ public class RemoteView : NetworkBehaviour, IDependencyInjector<PlayerBodyDepend
         rotation.y = _information.Head.Rotation.eulerAngles.y;
         _viewTransform.rotation = Quaternion.Euler(rotation);
 
+    }
+    private void FixedUpdate()
+    {
         if (_footstepsInterval > 0) return;
 
         if (_inputDirection != Vector2.zero)
@@ -71,7 +74,6 @@ public class RemoteView : NetworkBehaviour, IDependencyInjector<PlayerBodyDepend
             _footstepsInterval = FOOTSTEPS_INTERVAL;
         }
     }
-
     void Update()
     {
         _footstepsInterval -= Time.deltaTime;
