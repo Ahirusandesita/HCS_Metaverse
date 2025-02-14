@@ -63,8 +63,6 @@ public class RemoteView : NetworkBehaviour, IDependencyInjector<PlayerBodyDepend
         rotation.y = _information.Head.Rotation.eulerAngles.y;
         _viewTransform.rotation = Quaternion.Euler(rotation);
 
-        _footstepsInterval -= Time.deltaTime;
-
         if (_footstepsInterval > 0) return;
 
         if (_inputDirection != Vector2.zero)
@@ -72,6 +70,11 @@ public class RemoteView : NetworkBehaviour, IDependencyInjector<PlayerBodyDepend
             _playerSE.RPC_PlayFootStep();
             _footstepsInterval = FOOTSTEPS_INTERVAL;
         }
+    }
+
+    void Update()
+    {
+        _footstepsInterval -= Time.deltaTime;
     }
 
     public void Inject(PlayerBodyDependencyInformation information)
@@ -84,7 +87,7 @@ public class RemoteView : NetworkBehaviour, IDependencyInjector<PlayerBodyDepend
         return new AvatarHandTracker(_rightShoulder, _rightHand, _leftShoulder, _leftHand, _animationSelecter);
     }
 
-    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     public void RPC_Walk(Vector2 direction)
     {
         _inputDirection = direction;
