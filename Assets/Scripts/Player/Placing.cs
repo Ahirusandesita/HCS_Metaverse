@@ -35,8 +35,8 @@ public class Placing : MonoBehaviour, IInputControllable
 	private void Awake()
 	{
 		Inputter.PlacingMode.Place.performed += OnPlacing;
-		debugData.Add(new ItemIDAmountPair(10001, 1));
-		debugData.Add(new ItemIDAmountPair(10256, 1));
+		debugData.Add(new ItemIDAmountPair(10093, 1));
+		debugData.Add(new ItemIDAmountPair(10540, 1));
 		debugData.Add(new ItemIDAmountPair(10120, 1));
 		debugData.Add(new ItemIDAmountPair(10096, 1));
 		debugData.Add(new ItemIDAmountPair(10058, 1));
@@ -64,7 +64,7 @@ public class Placing : MonoBehaviour, IInputControllable
 		{
 			TryDestroyGhost();
 			inventoryIndexTest -= inventoryIndexTest == 0 ? 0 : 1;
-			int placeableObjectID = PlayerDontDestroyData.Instance.InventoryToList[inventoryIndexTest].ItemID;
+			int placeableObjectID = /*PlayerDontDestroyData.Instance.InventoryToList*/debugData[inventoryIndexTest].ItemID;
 			placeableObject = allItemAsset.GetItemAssetByID(placeableObjectID).DisplayItem.gameObject.GetComponent<PlaceableObject>();
 			placeableObject.ItemID = placeableObjectID;
 			CreateGhost(placeableObject);
@@ -73,7 +73,7 @@ public class Placing : MonoBehaviour, IInputControllable
 		{
 			TryDestroyGhost();
 			inventoryIndexTest += inventoryIndexTest == 19 ? 0 : 1;
-			int placeableObjectID = PlayerDontDestroyData.Instance.InventoryToList[inventoryIndexTest].ItemID;
+			int placeableObjectID = /*PlayerDontDestroyData.Instance.InventoryToList*/debugData[inventoryIndexTest].ItemID;
 			placeableObject = allItemAsset.GetItemAssetByID(placeableObjectID).DisplayItem.gameObject.GetComponent<PlaceableObject>();
 			placeableObject.ItemID = placeableObjectID;
 			CreateGhost(placeableObject);
@@ -85,7 +85,7 @@ public class Placing : MonoBehaviour, IInputControllable
 	}
 #endif
 
-	public void CreateGhost(PlaceableObject origin, bool updateMode = false)
+	public void CreateGhost(PlaceableObject origin)
 	{
 		if (!playerState.PlacingMode.Value)
 		{
@@ -94,7 +94,7 @@ public class Placing : MonoBehaviour, IInputControllable
 		deleteObject = origin;
 		placeableObject = allItemAsset.GetItemAssetByID(origin.ItemID).DisplayItem.gameObject.GetComponent<PlaceableObject>();
 		placeableObject.ItemID = origin.ItemID;
-		ghostModel = new GhostModel().CreateModel(placeableObject, transform, null, false);
+		ghostModel = new GhostModel().CreateModel(placeableObject, transform, null);
 		ghostModel.Spawn();
 	}
 

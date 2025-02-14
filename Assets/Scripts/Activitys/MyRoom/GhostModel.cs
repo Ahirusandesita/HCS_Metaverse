@@ -100,7 +100,7 @@ public class GhostModel : IEditOnlyGhost
     /// </summary>
     /// <param name="ghostOrigin"></param>
     /// <param name="defaultColor"></param>
-    public GhostModel CreateModelSimple(GameObject ghostOrigin, Color? defaultColor = null, bool updateMode = false)
+    public GhostModel CreateModelSimple(GameObject ghostOrigin, Color? defaultColor = null)
     {
         var filters = ghostOrigin.GetComponentsInChildren<MeshFilter>();
         var renderers = ghostOrigin.GetComponentsInChildren<MeshRenderer>();
@@ -150,12 +150,8 @@ public class GhostModel : IEditOnlyGhost
             }
             // -----------------------------------------------------------------------------
 
-            Vector3 position = updateMode
-                ? Vector3.zero
-                : filters[i].transform.position;
-
             // Transform情報をコピー（Scaleは絶対Scaleを用いる）
-            child.transform.SetPositionAndRotation(position, filters[i].transform.rotation);
+            child.transform.SetPositionAndRotation(filters[i].transform.position, filters[i].transform.rotation);
             child.transform.localScale = filters[i].transform.lossyScale;
         }
 
@@ -180,9 +176,7 @@ public class GhostModel : IEditOnlyGhost
         // -----------------------------------------------------------------------------
 
         boxCollider.size = bounds.size;
-        boxCollider.center = updateMode
-            ? new Vector3(0f, bounds.center.y, 0f)
-            : bounds.center;
+        boxCollider.center = bounds.center;
         if (boxCollider.size == Vector3.zero && boxCollider.center == Vector3.zero)
         {
             Debug.LogError("PlaceableObject のMesh情報にアクセスできません。" +
@@ -198,9 +192,9 @@ public class GhostModel : IEditOnlyGhost
     /// <param name="placeableObject"></param>
     /// <param name="player">追従対象のオブジェクト（多くの場合プレイヤー）</param>
     /// <param name="defaultColor"></param>
-    public GhostModel CreateModel(PlaceableObject placeableObject, Transform player, Color? defaultColor = null, bool updateMode = false)
+    public GhostModel CreateModel(PlaceableObject placeableObject, Transform player, Color? defaultColor = null)
     {
-        CreateModelSimple(placeableObject.GhostOrigin, defaultColor, updateMode);
+        CreateModelSimple(placeableObject.GhostOrigin, defaultColor);
         switch (placeableObject.PlacingStyle)
         {
             case PlacingStyle.Ground:

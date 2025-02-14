@@ -38,7 +38,6 @@ public class PlaceableObject : SafetyInteractionObject
 		disableComponents = GetComponentsInChildren<Component>(true);
 		SetActiveNotIncludeThis(true);
 		placing = FindAnyObjectByType<Placing>();
-		XDebug.Log(disableComponents.Length);
 	}
 
 	public override IInteraction.InteractionInfo OpenLooking()
@@ -49,7 +48,7 @@ public class PlaceableObject : SafetyInteractionObject
 	protected override void SafetyOpenLooking()
 	{
 		SetActiveNotIncludeThis(false);
-		placing.CreateGhost(this, true);
+		placing.CreateGhost(this);
 	}
 
 	public override void Close()

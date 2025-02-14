@@ -67,7 +67,6 @@ public static class Inputter
                 Player.Disable();
                 Player.Move.Enable();
                 Player.Look.Enable();
-                Player.Jump.Enable();
                 Player.SprintOrWarp.Enable();
 
                 UI.Disable();
