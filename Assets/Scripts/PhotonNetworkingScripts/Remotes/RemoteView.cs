@@ -1,84 +1,102 @@
 using UnityEngine;
 using Fusion;
 
-public class RemoteView : NetworkBehaviour,IDependencyInjector<PlayerBodyDependencyInformation>
+public class RemoteView : NetworkBehaviour, IDependencyInjector<PlayerBodyDependencyInformation>
 {
-	[SerializeField]
-	private NetworkObject _rightShoulder;
+    [SerializeField]
+    private NetworkObject _rightShoulder;
 
     [SerializeField]
     private NetworkObject _rightHand;
 
-	[SerializeField]
-	private NetworkObject _leftShoulder;
+    [SerializeField]
+    private NetworkObject _leftShoulder;
 
     [SerializeField]
-	private NetworkObject _leftHand;
+    private NetworkObject _leftHand;
 
-	[SerializeField]
+    [SerializeField]
     private AnimationSelecter _animationSelecter;
 
     private Transform _playerTransform;
-	private Transform _viewTransform;
-	private Vector2 _inputDirection;
-	private float _footstepsInterval;
-	private const float FOOTSTEPS_INTERVAL = 0.8f;
-	private PlayerBodyDependencyInformation _information;
-	private RemoteAvatarSE _playerSE;
+    private Transform _viewTransform;
+    private Vector2 _inputDirection;
+    private float _footstepsInterval;
+    private const float FOOTSTEPS_INTERVAL = 0.8f;
+    private PlayerBodyDependencyInformation _information;
+    private RemoteAvatarSE _playerSE;
+    private AnimationSelecter animationSelecter;
 
-	public override void Spawned()
-	{
-		Debug.Log($"Spawnd:RemoteView");
-		base.Spawned();
-		_playerTransform = FindObjectOfType<VRPlayerController>().transform;
-		_viewTransform = transform;
 
-		_playerSE = GetComponentInChildren<RemoteAvatarSE>();
+    public override void Spawned()
+    {
+        Debug.Log($"Spawnd:RemoteView");
+        base.Spawned();
+        _playerTransform = FindObjectOfType<VRPlayerController>().transform;
+        _viewTransform = transform;
 
-		Inputter.Player.Move.performed += dir =>
-		{
-			_inputDirection = dir.ReadValue<Vector2>();
-		};
+        _playerSE = GetComponentInChildren<RemoteAvatarSE>();
 
-		Inputter.Player.Move.canceled += dir =>
-		{
-			_inputDirection = Vector2.zero;
-		};
+        Inputter.Player.Move.performed += dir =>
+        {
+            _inputDirection = dir.ReadValue<Vector2>();
+        };
 
-		PlayerInitialize.ConsignmentInject_static(this);
-	}
+        Inputter.Player.Move.canceled += dir =>
+        {
+            _inputDirection = Vector2.zero;
+        };
 
-	public override void FixedUpdateNetwork()
-	{
-		base.FixedUpdateNetwork();
-		Vector3 viewPosition = _information.Head.Position;
-		viewPosition.y = _playerTransform.position.y;
-		_viewTransform.position = viewPosition;
+        PlayerInitialize.ConsignmentInject_static(this);
 
-		Vector3 rotation = _viewTransform.rotation.eulerAngles;
+        animationSelecter = GetComponentInChildren<AnimationSelecter>();
+    }
+
+    public override void FixedUpdateNetwork()
+    {
+        base.FixedUpdateNetwork();
+        Vector3 viewPosition = _information.Head.Position;
+        viewPosition.y = _playerTransform.position.y;
+        _viewTransform.position = viewPosition;
+
+        Vector3 rotation = _viewTransform.rotation.eulerAngles;
         rotation.y = _information.Head.Rotation.eulerAngles.y;
         _viewTransform.rotation = Quaternion.Euler(rotation);
 
-		if (!GateOfFusion.Instance.NetworkRunner.IsSharedModeMasterClient) return;
+        _footstepsInterval -= Time.deltaTime;
 
-		_footstepsInterval -= Time.deltaTime;
-
-		if (_footstepsInterval > 0) return;
+        if (_footstepsInterval > 0) return;
 
         if (_inputDirection != Vector2.zero)
         {
-			_playerSE.RPC_PlayFootStep();
-			_footstepsInterval = FOOTSTEPS_INTERVAL;
-		}
+            _playerSE.RPC_PlayFootStep();
+            _footstepsInterval = FOOTSTEPS_INTERVAL;
+        }
     }
 
     public void Inject(PlayerBodyDependencyInformation information)
     {
-		this._information = information;
+        this._information = information;
     }
 
-	public AvatarHandTracker GetNewAvatarHandTracker()
+    public AvatarHandTracker GetNewAvatarHandTracker()
     {
-		return new AvatarHandTracker(_rightShoulder, _rightHand, _leftShoulder, _leftHand, _animationSelecter);
-	}
+        return new AvatarHandTracker(_rightShoulder, _rightHand, _leftShoulder, _leftHand, _animationSelecter);
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
+    public void RPC_Walk(Vector2 direction)
+    {
+        _inputDirection = direction;
+    }
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
+    public void RPC_MoveStart()
+    {
+        animationSelecter.StartedMove();
+    }
+    [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
+    public void RPC_End()
+    {
+        animationSelecter.EndMove();
+    }
 }
