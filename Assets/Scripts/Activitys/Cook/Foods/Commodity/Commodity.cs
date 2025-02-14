@@ -8,6 +8,8 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
 {
     [SerializeField]
     private CommodityAsset commodityAsset;
+    [SerializeField]
+    private GameObject mixParticle;
     public CommodityAsset CommodityAsset => this.commodityAsset;
 
     private IPutableOnDish putableOnDish = new NullPutableOnDish();
@@ -203,6 +205,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
         foodSpawnManagerRPC.RPC_CommoditySpawn(commodityID, transform.rotation.eulerAngles, transform.position);
         foodSpawnManagerRPC.RPC_Despawn(networkObject);
         foodSpawnManagerRPC.RPC_Despawn(hitObject);
+        Instantiate(mixParticle, transform.position, transform.rotation);
     }
 
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
