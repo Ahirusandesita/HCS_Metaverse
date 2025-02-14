@@ -5,7 +5,7 @@ using Fusion;
 
 public class AvatarHandTracker
 {
-    public AvatarHandTracker(NetworkObject rightShoulder, NetworkObject rightHand, NetworkObject leftShoulder, NetworkObject leftHand, AnimationSelecter animationSelecter)
+    public AvatarHandTracker(GameObject rightShoulder, GameObject rightHand, GameObject leftShoulder, GameObject leftHand, AnimationSelecter animationSelecter)
     {
         // 
         _rightShoulder = rightShoulder;
@@ -32,16 +32,16 @@ public class AvatarHandTracker
     }
 
     // 
-    private NetworkObject _rightShoulder = default;
+    private GameObject _rightShoulder = default;
 
     // 
-    private NetworkObject _leftShoulder = default;
+    private GameObject _leftShoulder = default;
 
     // 
-    private NetworkObject _rightHand = default;
+    private GameObject _rightHand = default;
 
     // 
-    private NetworkObject _leftHand = default;
+    private GameObject _leftHand = default;
 
     // 
     private Quaternion _rightShoulderOriginRotatioin = default;
@@ -58,8 +58,9 @@ public class AvatarHandTracker
     public void RightHandTracking(Transform conrtoller)
     {
         // 
-        if (_rightShoulder == null || !_doTrack)
+        if (_rightShoulder == null)
         {
+            Debug.LogError($"˜r‚ªnull");
             return;
         }
 
@@ -89,12 +90,14 @@ public class AvatarHandTracker
 
         // 
         _rightHand.transform.localRotation = Quaternion.Euler(controllerTwist);
+
+        Debug.LogError($"{_rightShoulder.transform.localRotation.eulerAngles}");
     }
 
     public void LeftHandTracking(Transform conrtoller)
     {
         // 
-        if (_leftShoulder == null || !_doTrack)
+        if (_leftShoulder == null)
         {
             return;
         }

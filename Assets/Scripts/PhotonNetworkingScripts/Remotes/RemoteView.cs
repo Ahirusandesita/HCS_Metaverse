@@ -4,16 +4,16 @@ using Fusion;
 public class RemoteView : NetworkBehaviour, IDependencyInjector<PlayerBodyDependencyInformation>
 {
     [SerializeField]
-    private NetworkObject _rightShoulder;
+    private GameObject _rightShoulder;
 
     [SerializeField]
-    private NetworkObject _rightHand;
+    private GameObject _rightHand;
 
     [SerializeField]
-    private NetworkObject _leftShoulder;
+    private GameObject _leftShoulder;
 
     [SerializeField]
-    private NetworkObject _leftHand;
+    private GameObject _leftHand;
 
     [SerializeField]
     private AnimationSelecter _animationSelecter;
