@@ -29,7 +29,6 @@ public class LoginManager : MonoBehaviour
 	private string _password = "";
 	[SerializeField]
 	private RegisterSceneInInspector _nextScene;
-
 	public async UniTask ExecuteLogin(WebAPIRequester webAPIRequester)
 	{
 		if(_MESSAGE_LIMIT < _inputNameText.text.Length 
@@ -65,7 +64,7 @@ public class LoginManager : MonoBehaviour
 
 	private async void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Insert))
+		if (Input.GetKeyDown(KeyCode.RightShift))
 		{
 			await ExecuteLogin();
 		}

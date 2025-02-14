@@ -60,7 +60,7 @@ public class PutCanvasInHand : MonoBehaviour
 
 	private void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Slash) && SceneManager.GetActiveScene().name != "CookActivity")
+		if (Input.GetKeyDown(KeyCode.Slash))
 		{
 			GateOfFusion.Instance.ActivityStart();
 		}

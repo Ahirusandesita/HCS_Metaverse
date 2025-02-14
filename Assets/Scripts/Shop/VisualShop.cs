@@ -109,7 +109,6 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 			InstantiateShopObject(data.GetBody.ItemList[i], ref smallItemCounter, ref largeItemCounter);
 		}
 		var dataRecommend = await webAPIRequester.PostShopRecommend(_shopID);
-		XDebug.LogWarning(dataRecommend.GetBody.ItemList.Count + ":aaa");
 		for (int i = 0; i < dataRecommend.GetBody.ItemList.Count; i++)
 		{
 			InstantiateRecommendShopObject(dataRecommend.GetBody.ItemList[i], ref recommendCounter);

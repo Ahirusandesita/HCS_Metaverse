@@ -63,19 +63,11 @@ public class ShopCart : MonoBehaviour
 		WebAPIRequester requester = new WebAPIRequester();
 		List<ItemIDAmountPair> buyItemStocks = new List<ItemIDAmountPair>();
 		toItemStockList(buyItemStocks);
-		InventoryManager inventoryManager = FindObjectOfType<InventoryManager>();
-		if (inventoryManager != null)
-		{
-			foreach (KeyValuePair<int, int> pair in _inCarts)
-			{
-				for (int i = 0; i < pair.Value; i++)
-				{
-					inventoryManager.SendItem(pair.Key);
-				}
-			}
-		}
+
 		await requester.PostShopPayment(buyItemStocks, _visualShop.ShopID);
 		await PlayerDontDestroyData.Instance.UpdateInventory(requester);
+		await PlayerDontDestroyData.Instance.UpdateMoney(requester);
+
 		_inCarts.Clear();
 	}
 }
