@@ -4310,6 +4310,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2027578825396851780}
+  - component: {fileID: 2357793006502045713}
   m_Layer: 7
   m_Name: QuickRigCharacter2_RightHand
   m_TagString: Untagged
@@ -4332,6 +4333,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1622743349036823974}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2357793006502045713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1197944193572435863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
 --- !u!1 &1207384333854263435
 GameObject:
   m_ObjectHideFlags: 0
@@ -8505,6 +8522,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 853367535363838641}
   - {fileID: 1052649165538217793}
+  - {fileID: 5872082325070439007}
 --- !u!114 &853367535363838641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14134,6 +14152,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3274299037605919501}
+  - component: {fileID: 4941529548158024416}
   m_Layer: 7
   m_Name: QuickRigCharacter2_LeftShoulder
   m_TagString: Untagged
@@ -14157,6 +14176,22 @@ Transform:
   - {fileID: 2036008216938055722}
   m_Father: {fileID: 4521255050955096875}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4941529548158024416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3509572664719043992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
 --- !u!1 &3554487897038626245
 GameObject:
   m_ObjectHideFlags: 0
@@ -22691,6 +22726,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2729847536568835907}
+  - component: {fileID: 1309823242715826517}
   m_Layer: 7
   m_Name: QuickRigCharacter2_RightShoulder
   m_TagString: Untagged
@@ -22714,6 +22750,22 @@ Transform:
   - {fileID: 2866358460817072254}
   m_Father: {fileID: 4521255050955096875}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1309823242715826517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6227431924218717550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
 --- !u!1 &6246458129630798823
 GameObject:
   m_ObjectHideFlags: 0
@@ -23004,6 +23056,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5515342181636478252}
+  - component: {fileID: 5872082325070439007}
   m_Layer: 7
   m_Name: QuickRigCharacter2_LeftHand
   m_TagString: Untagged
@@ -23026,6 +23079,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8186328590121741678}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5872082325070439007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6281525507170690405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
 --- !u!1 &6290137567258704596
 GameObject:
   m_ObjectHideFlags: 0
@@ -26158,6 +26227,9 @@ MonoBehaviour:
   - {fileID: 347929714470228871}
   - {fileID: 6239254122608754491}
   - {fileID: 6700031535564558819}
+  - {fileID: 4941529548158024416}
+  - {fileID: 1309823242715826517}
+  - {fileID: 2357793006502045713}
 --- !u!114 &347929714470228871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26188,7 +26260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SyncScale: 0
-  SyncParent: 1
+  SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 1
 --- !u!114 &2530973977426181308
