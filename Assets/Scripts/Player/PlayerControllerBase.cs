@@ -254,6 +254,8 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour, IInputControl
 		if (moveDir != Vector2.zero)
 		{
 			inputDirection = followTransform.right * moveDir.x + followTransform.forward * moveDir.y;
+			// VR用にy成分を抜く
+			inputDirection = new Vector3(inputDirection.x, 0f, inputDirection.z);
 		}
 
 		// プレイヤーを移動させる
