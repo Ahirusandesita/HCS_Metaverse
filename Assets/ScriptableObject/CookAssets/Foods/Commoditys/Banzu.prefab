@@ -778,7 +778,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   commodityAsset: {fileID: 11400000, guid: 0dd14e3f21bf7214daf9ff1118a1d0d6, type: 2}
-  stateAuthority: {fileID: 0}
+  mixParticle: {fileID: 3739955148306264242, guid: 522a0394585e36f49ac7897a7c0dfe2f, type: 3}
+  _stateAuthority: {fileID: 0}
 --- !u!54 &5489733624676822107
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -854,7 +855,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   onGrabbed: {fileID: 9126033889526914314}
-  availableScenes: 0200000001000000
+  availableScenes: []
   canUseAtStart: 1
   maxInventoryCapacity: 0
 --- !u!114 &-2633399300126738297

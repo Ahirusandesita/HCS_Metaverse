@@ -340,6 +340,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsGrabed: 0
+  processParticle: {fileID: 3739955148306264242, guid: 522a0394585e36f49ac7897a7c0dfe2f, type: 3}
   ingrodientsAsset: {fileID: 11400000, guid: 1cd9e73d4d6bf434cb8fc98d237716b4, type: 2}
   _collider: {fileID: 4158260235328978040}
 --- !u!54 &4950398040786217830
@@ -417,7 +418,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   onGrabbed: {fileID: 1967698168634235113}
-  availableScenes: 
+  availableScenes: []
   canUseAtStart: 0
   maxInventoryCapacity: 0
 --- !u!114 &5117516924593553268

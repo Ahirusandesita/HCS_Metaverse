@@ -200,12 +200,12 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     public void RPC_MixCommodity(NetworkObject hitObject, int commodityID)
     {
+        Instantiate(mixParticle, transform.position, transform.rotation);
         FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
         NetworkObject networkObject = GetComponent<LocalView>().NetworkView.GetComponent<NetworkObject>();
         foodSpawnManagerRPC.RPC_CommoditySpawn(commodityID, transform.rotation.eulerAngles, transform.position);
         foodSpawnManagerRPC.RPC_Despawn(networkObject);
         foodSpawnManagerRPC.RPC_Despawn(hitObject);
-        Instantiate(mixParticle, transform.position, transform.rotation);
     }
 
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
