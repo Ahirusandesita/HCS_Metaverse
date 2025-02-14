@@ -32,6 +32,11 @@ public class LocalRemoteSeparation : MonoBehaviour
 
             FindObjectOfType<LocalAvatarLogic>().setAvatarHandTracker = avatarHandTracker;
         }
+        if(localGameObject == null)
+        {
+            localGameObject = FindObjectOfType<LocalAvatarLogic>().gameObject;
+        }
+
         Instantiate(separationLifetimeScope).SeparationSetup(localGameObject, remoteView).Build();
         remoteViewInstance = remoteView;
     }

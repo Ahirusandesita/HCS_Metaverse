@@ -25,13 +25,13 @@ public class LocalAvatarLogic : MonoBehaviour
         position.z -= 1f;
         remoteView.transform.position = position;
 
-        remoteView.GetComponent<MeshRenderer>().enabled = false;
+        //remoteView.GetComponent<MeshRenderer>().enabled = false;
 
         Debug.Log($"<color=green>LAL:Inject</color>");
 
         //action += () => remoteView.SetController(_rightControllerTransform, _leftControllerTransform);
 
-
+        Debug.LogError("‰Šú‰»");
         Inputter.Player.Move.performed += dir =>
         {
             remoteView.RPC_Walk(dir.ReadValue<Vector2>());
