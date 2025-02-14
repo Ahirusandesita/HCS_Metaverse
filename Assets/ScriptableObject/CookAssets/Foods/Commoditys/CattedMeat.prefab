@@ -577,7 +577,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   commodityAsset: {fileID: 11400000, guid: dbb1af87c5a4f164d8aed7297d99341f, type: 2}
-  stateAuthority: {fileID: 0}
+  mixParticle: {fileID: 3739955148306264242, guid: 522a0394585e36f49ac7897a7c0dfe2f, type: 3}
+  _stateAuthority: {fileID: 0}
 --- !u!114 &5110485631245268766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -591,6 +592,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsGrabed: 0
+  processParticle: {fileID: 3739955148306264242, guid: 522a0394585e36f49ac7897a7c0dfe2f, type: 3}
   ingrodientsAsset: {fileID: 11400000, guid: 920b689f58524b4489a33fb761b2db8a, type: 2}
   _collider: {fileID: 7579871666590981847}
 --- !u!54 &4523506480872104023

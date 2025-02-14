@@ -21,6 +21,9 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
     private ConnectionChecker _connectionChecker = new ConnectionChecker();
 
     [SerializeField]
+    private GameObject processParticle;
+
+    [SerializeField]
     private IngrodientsAsset ingrodientsAsset;
     private List<IngrodientsDetailInformation> ingrodientsDetailInformations = new List<IngrodientsDetailInformation>();
     public IngrodientsAsset IngrodientsAsset => ingrodientsAsset;
@@ -121,6 +124,7 @@ public class Ingrodients : MonoBehaviour, IIngrodientsModerator, IInject<ISwitch
         FoodSpawnManagerRPC foodSpawnManagerRPC = GameObject.FindObjectOfType<FoodSpawnManagerRPC>();
         NetworkObject networkObject = GetComponent<LocalView>().NetworkView.GetComponent<NetworkObject>();
         foodSpawnManagerRPC.RPC_CommoditySpawn(commodityFactory.CommodityIndex(commodityFactory.Generate(this, processingType)), machineTransform.rotation.eulerAngles, machineTransform.position, _hitMachine.MachineID);
+        Instantiate(processParticle, transform.position, transform.rotation);
         foodSpawnManagerRPC.RPC_Despawn(networkObject);
     }
 
