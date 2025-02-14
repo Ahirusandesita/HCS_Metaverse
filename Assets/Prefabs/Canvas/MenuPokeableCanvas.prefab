@@ -661,7 +661,6 @@ GameObject:
   - component: {fileID: 3062466117016676700}
   - component: {fileID: 2937776548850685274}
   - component: {fileID: 7897185784644918343}
-  - component: {fileID: 5468079852882396292}
   m_Layer: 0
   m_Name: Inventory
   m_TagString: Untagged
@@ -752,18 +751,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   detailMenus:
   - {fileID: 9153625484816484818}
---- !u!114 &5468079852882396292
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3503909076077849246}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 725b70ac985a32449b2493354b2d0826, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3541324912485527652
 GameObject:
   m_ObjectHideFlags: 0
@@ -1701,6 +1688,7 @@ GameObject:
   - component: {fileID: 5078601564090828201}
   - component: {fileID: 1481190839838904040}
   - component: {fileID: 957726386678925022}
+  - component: {fileID: 4458059327921269208}
   m_Layer: 0
   m_Name: MenuPokeableCanvas
   m_TagString: Untagged
@@ -1716,7 +1704,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7243880739630394747}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.212, y: 1.728, z: 0.204}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1948,6 +1936,19 @@ MonoBehaviour:
   _selectSurface: {fileID: 0}
   _movementProvider: {fileID: 0}
   _tiebreakerScore: 0
+--- !u!114 &4458059327921269208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7243880739630394747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 588a8ff46099fcb4ab5dd00dfa16973c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MenuBar: {fileID: 7566047507585123648}
 --- !u!1 &7566047507585123648
 GameObject:
   m_ObjectHideFlags: 0
@@ -2882,6 +2883,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2706012380556539734}
     m_Modifications:
+    - target: {fileID: 3947057612237969308, guid: e74e59c4a8e455b4388e98b4999f0a79, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 3947057612237969308, guid: e74e59c4a8e455b4388e98b4999f0a79, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 7579470435630129906, guid: e74e59c4a8e455b4388e98b4999f0a79, type: 3}
       propertyPath: m_Name
       value: DetailInventory
@@ -3160,7 +3169,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8157570219086196450, guid: fa321b1f951dcb343862b04695478405, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2069234618284206964, guid: fa321b1f951dcb343862b04695478405, type: 3}
