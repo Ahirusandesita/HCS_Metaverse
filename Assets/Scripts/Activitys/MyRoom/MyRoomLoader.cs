@@ -65,6 +65,8 @@ public class MyRoomLoader : MonoBehaviour
 
 	private async void Start()
 	{
+		// Debug
+		_interiorManager = new InteriorManager();
 		await Load();
 	}
 
