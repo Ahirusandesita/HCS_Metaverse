@@ -54,4 +54,13 @@ public class MenuBar : MonoBehaviour, IMenuManager
         activeMenu = menuButton;
 
     }
+
+    public void Close()
+    {
+        foreach(MenuButton menuButton in menuButtons)
+        {
+            menuButton.EndMenu();
+            activeMenu = null;
+        }
+    }
 }
