@@ -20,23 +20,22 @@ public class AnimationSelecter : MonoBehaviour, IDressUpEventSubscriber
         _playerAnimator = GetComponentInChildren<Animator>();
         RemoteView remoteView = await FindObjectOfType<LocalRemoteSeparation>().ReceiveRemoteView();
         characterControl = remoteView.GetComponentInChildren<CharacterControlRPCManager>();
-        Inputter.Player.Move.started += dir =>
-        {
-            if (_playerAnimator != null)
-            {
-                _playerAnimator.SetBool("Walk", true);
-            }
-        };
 
-        Inputter.Player.Move.canceled += dir =>
-        {
-            if (_playerAnimator != null)
-            {
-                _playerAnimator.SetBool("Walk", false);
-            }
-        };
     }
-
+    public void StartedMove()
+    {
+        if (_playerAnimator != null)
+        {
+            _playerAnimator.SetBool("Walk", true);
+        }
+    }
+    public void EndMove()
+    {
+        if (_playerAnimator != null)
+        {
+            _playerAnimator.SetBool("Walk", false);
+        }
+    }
     private void Update()
     {
         if (!_isPlaying)
@@ -93,4 +92,5 @@ public class AnimationSelecter : MonoBehaviour, IDressUpEventSubscriber
         PlayAnimation(clip);
         animationStart?.Invoke();
     }
+
 }

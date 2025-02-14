@@ -30,6 +30,23 @@ public class LocalAvatarLogic : MonoBehaviour
         Debug.Log($"<color=green>LAL:Inject</color>");
 
         //action += () => remoteView.SetController(_rightControllerTransform, _leftControllerTransform);
+
+
+        Inputter.Player.Move.performed += dir =>
+        {
+            remoteView.RPC_Walk(dir.ReadValue<Vector2>());
+        };
+
+        Inputter.Player.Move.started += _ =>
+        {
+            remoteView.RPC_MoveStart();
+        };
+        Inputter.Player.Move.canceled += _ =>
+        {
+            remoteView.RPC_Walk(Vector2.zero);
+
+            remoteView.RPC_End();
+        };
     }
 
     private void HandTracking()
