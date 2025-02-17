@@ -21,6 +21,15 @@ public class AnimationSelecter : MonoBehaviour, IDressUpEventSubscriber
         RemoteView remoteView = await FindObjectOfType<LocalRemoteSeparation>().ReceiveRemoteView();
         characterControl = remoteView.GetComponentInChildren<CharacterControlRPCManager>();
 
+        animationStart += () =>
+        {
+            _playerAnimator.enabled = true;
+        };
+
+        animationEnd += () =>
+        {
+            _playerAnimator.enabled = false;
+        };
     }
     public void StartedMove()
     {
@@ -73,8 +82,8 @@ public class AnimationSelecter : MonoBehaviour, IDressUpEventSubscriber
 
         AnimationClip clip = animationAsset.Animation;
 
-        PlayAnimation(clip);
         animationStart?.Invoke();
+        PlayAnimation(clip);
         characterControl.RPC_AnimationSelect(id, name);
     }
     public void RPCDressUP(int id, string name)
@@ -89,8 +98,8 @@ public class AnimationSelecter : MonoBehaviour, IDressUpEventSubscriber
 
         AnimationClip clip = animationAsset.Animation;
 
-        PlayAnimation(clip);
         animationStart?.Invoke();
+        PlayAnimation(clip);
     }
 
 }
