@@ -92,19 +92,16 @@ public class RemoteView : NetworkBehaviour, IDependencyInjector<PlayerBodyDepend
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = false)]
     public void RPC_Walk(Vector2 direction)
     {
-        Debug.LogError("Move");
         _inputDirection = direction;
     }
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     public void RPC_MoveStart()
     {
-        Debug.LogError("MoveStart");
         animationSelecter.StartedMove();
     }
     [Rpc(RpcSources.All, RpcTargets.All, InvokeLocal = true)]
     public void RPC_End()
     {
-        Debug.LogError("MoveEnd");
         animationSelecter.EndMove();
     }
 }
