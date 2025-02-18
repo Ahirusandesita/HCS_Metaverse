@@ -22,19 +22,25 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 	[SerializeField, HideForMoveType(nameof(moveTypeEditor), VRMoveType.Natural)]
 	private WarpPointer warpPointer = default;
 
-
 	[SerializeField, HideInInspector]
 	private VRMoveType moveTypeEditor = default;
+
+	[SerializeField, CustomField("Rotate Type", CustomFieldAttribute.DisplayType.Replace)]
+	private RotateTypeReactiveProperty rotateTypeRP = default;
 
 	[Tooltip("左右どちらに回転するか")]
 	private FloatReactiveProperty lookDirX_RP = default;
 	private bool canWarp = default;
+
+	[Tooltip("カメラの勾配（垂直方向の角度）")]
+	private float cinemachineTargetPitch = default;
 
 	private Transform leftHand = default;
 	private Vector3 warpPos = default;
 	private IDisposable isMovingDisposable = default;
 
 	public IReadOnlyReactiveProperty<VRMoveType> MoveTypeRP => moveTypeRP;
+	public IReadOnlyReactiveProperty<VRRotateType> RotateTypeRP => rotateTypeRP;
 
 
 	protected override void Reset()
@@ -60,6 +66,7 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 		// Subscribe
 		lookDirX_RP = new FloatReactiveProperty().AddTo(this);
 		lookDirX_RP
+			.Where(value => rotateTypeRP.Value == VRRotateType.Degital)
 			// Filter: LookActionの左右いずれかが入力されたとき（Nuetralは弾く）
 			.Where(value => value != 0f)
 			// プレイヤーを回転させる
@@ -95,6 +102,7 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 					.AddTo(this);
 				}
 			});
+		rotateTypeRP.AddTo(this);
 	}
 
 	protected override void Update()
@@ -176,7 +184,7 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 		// そのままのWarpPosだと地面に埋まっちゃうので、足元に来るよう補正
 		// 衝突判定を一時的にOFFにするために、最後にその場ワープ
 		characterController.enabled = false;
-        Vector3 correctedWarpPos = warpPos + Vector3.up * (characterController.height / 2 + characterController.skinWidth);
+		Vector3 correctedWarpPos = warpPos + Vector3.up * (characterController.height / 2 + characterController.skinWidth);
 		transform.position = correctedWarpPos;
 		characterController.enabled = true;
 		// ワープ後に衝突判定が欲しいため、その場に移動
@@ -190,6 +198,42 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 	private void OnRotate(float leftOrRight)
 	{
 		myTransform.Rotate(Vector3.up * (playerDataAsset.RotateAngle * leftOrRight));
+	}
+
+	protected override void CameraRotation()
+	{
+		if (rotateTypeRP.Value == VRRotateType.Degital)
+		{
+			return;
+		}
+
+		// Inputがない場合、処理を終了
+		if (lookDir == Vector2.zero)
+		{
+			return;
+		}
+
+		// マウスの入力にはTime.deltaTimeを掛けない
+		float deltaTimeMultiplier = lastLookedDevice == DeviceType.Mouse
+			? 1.0f
+			: Time.deltaTime;
+
+		// y軸の入力量に応じて、カメラの勾配（垂直方向の角度）を加算する
+		cinemachineTargetPitch += lookDir.y * playerDataAsset.RotationSpeed * deltaTimeMultiplier;
+		// カメラの勾配をクランプする
+		cinemachineTargetPitch = ClampAngle(cinemachineTargetPitch, playerDataAsset.VerticalMinAngle, playerDataAsset.VerticalMaxAngle);
+
+		// x軸の入力方向への回転を取得
+		float rotationVelocity = lookDir.x * playerDataAsset.RotationSpeed * deltaTimeMultiplier;
+
+		if (lastLookedDevice == DeviceType.Mouse)
+		{
+			// CinemachineCameraのtargetの回転を更新
+			centerEyeTransform.localRotation = Quaternion.Euler(cinemachineTargetPitch, 0f, 0f);
+		}
+
+		// プレイヤーを左右に回転させる
+		myTransform.Rotate(Vector3.up * rotationVelocity);
 	}
 
 	protected override void OnSprintOrWarp(InputAction.CallbackContext context)
@@ -229,9 +273,9 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 }
 public static class VRPlayerControllerExtens
 {
-	public static async UniTask Warp(this VRPlayerController VRPlayerController,Vector3 position,Quaternion rotation)
-    {
+	public static async UniTask Warp(this VRPlayerController VRPlayerController, Vector3 position, Quaternion rotation)
+	{
 		VRPlayerController.transform.rotation = rotation;
 		await VRPlayerController.Warp(position);
-    }
+	}
 }

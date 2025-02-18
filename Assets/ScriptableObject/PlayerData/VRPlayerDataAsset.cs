@@ -6,7 +6,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "VRPlayerData", menuName = "ScriptableObjects/PlayerDataAsset/VR")]
 public class VRPlayerDataAsset : PlayerDataAssetBase
 {
-    [Header("Camera")]
     [Tooltip("‰ñ“]Šp[‹]")]
     [SerializeField] private float rotateAngle = 30f;
 

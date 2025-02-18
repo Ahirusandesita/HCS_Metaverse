@@ -13,3 +13,18 @@ public enum VRMoveType
     /// </summary>
     Warp,
 }
+
+/// <summary>
+/// VRのプレイヤーの転回方式
+/// </summary>
+public enum VRRotateType
+{
+    /// <summary>
+    /// スムーズな転回方式。スティックを倒した方向に連続的に転回する。（TunnelingVignetの有効化をおすすめ）
+    /// </summary>
+    Analog,
+    /// <summary>
+    /// 酔い対策に有効な転回方式。スティックを倒した方向に離散的に転回する。
+    /// </summary>
+    Degital,
+}
