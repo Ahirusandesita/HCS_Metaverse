@@ -1090,7 +1090,6 @@ GameObject:
   - component: {fileID: 759429551}
   - component: {fileID: 759429550}
   - component: {fileID: 759429552}
-  - component: {fileID: 759429553}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1208,18 +1207,6 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!114 &759429553
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 759429548}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f9138a652eb75a4fbc940bb9d7e0ea7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &817975349
 GameObject:
   m_ObjectHideFlags: 0
@@ -5538,7 +5525,7 @@ GameObject:
   - component: {fileID: 3935660633329655012}
   - component: {fileID: 4757791477085145049}
   m_Layer: 0
-  m_Name: ActivityStartPokeableCanvas
+  m_Name: ReturnMainCityPokeableCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7112,6 +7099,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ea8fffad7740c644bef1b76955602c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _myRoomLoader: {fileID: 433944463}
 --- !u!33 &7464793967380157284
 MeshFilter:
   m_ObjectHideFlags: 0

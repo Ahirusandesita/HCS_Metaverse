@@ -229,10 +229,10 @@ public class WebAPIRequester
 	/// <br>・自販機の在庫リスト</br>
 	/// <br>・ユーザーID</br>
 	/// <br>・自販機のアップデートフラグ</br></returns>
-	public async UniTask<OnVMPaymentData> PostVMPayment(int itemId,int price, int shopId)
+	public async UniTask<OnVMPaymentData> PostVMPayment(int itemId, int price, int shopId)
 	{
 		var itemList = new List<ItemIDAmountPricePair>();
-		itemList.Add(new ItemIDAmountPricePair(itemId,price, 1));
+		itemList.Add(new ItemIDAmountPricePair(itemId, price, 1));
 		var sendPaymentData = new SendPaymentData(itemList, shopId);
 		string jsonData = JsonUtility.ToJson(sendPaymentData);
 
@@ -284,9 +284,10 @@ public class WebAPIRequester
 	/// </summary>
 	/// <returns>・オブジェクトリスト
 	/// <br>・ショップID（自販機）</br></returns>
-	public async UniTask<OnMyRoomEntryData> PostMyRoomEntry()
+	public async UniTask<OnMyRoomEntryData> PostMyRoomEntry(int userId)
 	{
 		WWWForm form = new WWWForm();
+		form.AddField("userId", userId);
 		using var request = UnityWebRequest.Post(DATABASE_PATH_MYROOM_ENTRY, form);
 		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
 
@@ -300,8 +301,8 @@ public class WebAPIRequester
 			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
 				throw new APIConnectException(request.error);
 		}
-		var onMyroomEntryData = JsonUtility.FromJson<OnMyRoomEntryData>(request.downloadHandler.text);
-		return onMyroomEntryData;
+		var onMyRoomEntryData = JsonUtility.FromJson<OnMyRoomEntryData>(request.downloadHandler.text);
+		return onMyRoomEntryData;
 	}
 
 	/// <summary>
@@ -669,7 +670,7 @@ public class WebAPIRequester
 	#region 送信データ
 	public struct ItemIDAmountPricePair
 	{
-		public ItemIDAmountPricePair(int itemId,int amount,int price)
+		public ItemIDAmountPricePair(int itemId, int amount, int price)
 		{
 			this.itemId = itemId;
 			this.amount = amount;

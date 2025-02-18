@@ -74,7 +74,8 @@ public class PlayerDontDestroyData : MonoBehaviour
 		}
 		WebAPIRequester webAPIRequester = new();
 #if UNITY_EDITOR
-		await webAPIRequester.PostLogin("admin@hcs.ac.jp", "hcs5511");
+		var result = await webAPIRequester.PostLogin("admin@hcs.ac.jp", "hcs5511");
+		XDebug.LogWarning(result,Color.cyan);
 #endif
 	}
 
