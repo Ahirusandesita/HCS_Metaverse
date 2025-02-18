@@ -1920,6 +1920,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 31562253}
     - target: {fileID: 3706694218168684489, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+      propertyPath: rotateType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3706694218168684489, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: moveTypeEditor
       value: 0
       objectReference: {fileID: 0}
@@ -1933,11 +1937,11 @@ PrefabInstance:
       objectReference: {fileID: 5631746211732447871}
     - target: {fileID: 4642946354581435811, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: enabledOnMoving
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4642946354581435811, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: enabledOnJumping
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5086691826065662159, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
       propertyPath: _syntheticHand

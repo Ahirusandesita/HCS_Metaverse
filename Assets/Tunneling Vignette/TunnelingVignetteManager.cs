@@ -46,6 +46,12 @@ namespace HCSMeta.Player.View
         [SerializeField, Min(0f)] private float easeInDurationOnJumping = 0.10f;
         [Tooltip("ジャンプ時のEaseOutの所要時間[s]")]
         [SerializeField, Min(0f)] private float easeOutDurationOnJumping = 0.10f;
+        [Tooltip("転回時にTunnelingVignetteを有効化するかどうか")]
+        [SerializeField] private bool enabledOnRotate = true;
+        [Tooltip("転回時のEaseinの所要時間[s]")]
+        [SerializeField, Min(0f)] private float easeInDurationOnRotate = 0.15f;
+        [Tooltip("転回時のEaseOutの所要時間[s]")]
+        [SerializeField, Min(0f)] private float easeOutDurationOnRotate = 0.15f;
 
         private MeshRenderer meshRenderer = default;
         private MaterialPropertyBlock vignettePropertyBlock = default;
@@ -78,7 +84,7 @@ namespace HCSMeta.Player.View
                 // 初期代入時の発行は無視
                 .Skip(1)
                 // Filter: 有効化設定がされている かつ ジャンプ中でない
-                .Where(isMoving => enabledOnMoving && !VRPC.IsJumpingRP.Value)
+                .Where(isMoving => enabledOnMoving && !VRPC.IsJumpingRP.Value && !VRPC.IsRotateRP.Value)
                 .Subscribe(isMoving =>
                 {
                 // 移動開始時はEaseIn
@@ -98,7 +104,7 @@ namespace HCSMeta.Player.View
                 // 初期代入時の発行は無視
                 .Skip(1)
                 // Filter: 有効化設定がされている かつ 移動中でない
-                .Where(isJumping => enabledOnJumping && !VRPC.IsMovingRP.Value)
+                .Where(isJumping => enabledOnJumping && !VRPC.IsMovingRP.Value && !VRPC.IsRotateRP.Value)
                 .Subscribe(isJumping =>
                 {
                 // ジャンプ開始時はEaseIn
@@ -113,6 +119,25 @@ namespace HCSMeta.Player.View
                     }
                 })
                 .AddTo(this);
+            VRPC.IsRotateRP
+            // 初期代入時の発行は無視
+            .Skip(1)
+            // Filter: 有効化設定がされている かつ ジャンプ中でない
+            .Where(isRotate => enabledOnRotate && !VRPC.IsJumpingRP.Value && !VRPC.IsMovingRP.Value)
+            .Subscribe(isRotate =>
+            {
+                // 転回開始時はEaseIn
+                if (isRotate)
+                {
+                    EaseInTunnelingVignette(easeInDurationOnRotate);
+                }
+                // 転回終了時はEaseOut
+                else
+                {
+                    EaseOutTunnelingVignette(easeOutDurationOnRotate);
+                }
+            })
+            .AddTo(this);
 
             VRPC.MoveTypeRP.Subscribe(moveType =>
             {
@@ -123,6 +148,20 @@ namespace HCSMeta.Player.View
                         break;
 
                     case VRMoveType.Warp:
+                        meshRenderer.enabled = false;
+                        break;
+                }
+            });
+
+            VRPC.RotateTypeRP.Subscribe(rotateType =>
+            {
+                switch (rotateType)
+                {
+                    case VRRotateType.Analog:
+                        meshRenderer.enabled = true;
+                        break;
+
+                    case VRRotateType.Degital:
                         meshRenderer.enabled = false;
                         break;
                 }

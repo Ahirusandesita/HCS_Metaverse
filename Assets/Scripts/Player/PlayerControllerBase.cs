@@ -58,6 +58,8 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour, IInputControl
 	protected readonly ReactiveProperty<bool> isMovingRP = new ReactiveProperty<bool>(false);
 	[Tooltip("ジャンプ中かどうか")]
 	protected readonly ReactiveProperty<bool> isJumpingRP = new ReactiveProperty<bool>(false);
+	[Tooltip("転回中かどうか")]
+	protected readonly ReactiveProperty<bool> isRotateRP = new ReactiveProperty<bool>();
 
 	private const float TERMINAL_VELOCITY = 53f;
 	private const float VERTICAL_VELOCITY_COEFFICIENT = -2f;
@@ -70,6 +72,7 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour, IInputControl
 
 	public IReadOnlyReactiveProperty<bool> IsMovingRP => isMovingRP;
 	public IReadOnlyReactiveProperty<bool> IsJumpingRP => isJumpingRP;
+	public IReadOnlyReactiveProperty<bool> IsRotateRP => isRotateRP;
 
 
 	[System.Diagnostics.Conditional("UNITY_EDITOR")]
@@ -96,6 +99,7 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour, IInputControl
 		#region Subscribe
 		isMovingRP.AddTo(this);
 		isJumpingRP.AddTo(this);
+		isRotateRP.AddTo(this);
 
 		// ジャンプ入力を購読
 		PlayerActions.Jump.performed += _ =>
@@ -125,6 +129,10 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour, IInputControl
 		PlayerActions.SprintOrWarp.performed += OnSprintOrWarp;
 		PlayerActions.SprintOrWarp.canceled += OnSprintOrWarpCancel;
 
+		PlayerActions.Look.started += _ =>
+		{
+			isRotateRP.Value = true;
+		};
 		PlayerActions.Look.performed += context =>
 		{
 			lookDir = context.ReadValue<Vector2>();
@@ -148,6 +156,7 @@ public abstract class PlayerControllerBase<TData> : MonoBehaviour, IInputControl
 		PlayerActions.Look.canceled += _ =>
 		{
 			lookDir = Vector2.zero;
+			isRotateRP.Value = false;
 		};
 
 		// 着地したときを購読

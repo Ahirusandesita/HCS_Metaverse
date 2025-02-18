@@ -25,6 +25,14 @@ public abstract class PlayerDataAssetBase : ScriptableObject
     [Tooltip("地面として使用しているレイヤー")]
     [SerializeField] private LayerMask groundLayers;
 
+    [Header("Camera")]
+    [Tooltip("プレイヤーの回転速度")]
+    [SerializeField] private float rotationSpeed = 1.0f;
+    [Tooltip("カメラの上限角度")]
+    [SerializeField] private float verticalMaxAngle = 90.0f;
+    [Tooltip("カメラの下限角度")]
+    [SerializeField] private float verticalMinAngle = -90.0f;
+
     /// <summary>
     /// プレイヤーの歩行速度[m/s]
     /// </summary>
@@ -53,4 +61,16 @@ public abstract class PlayerDataAssetBase : ScriptableObject
     /// 地面として使用しているレイヤー
     /// </summary>
     public LayerMask GroundLayers => groundLayers;
+    /// <summary>
+    /// プレイヤーの回転速度
+    /// </summary>
+    public float RotationSpeed => rotationSpeed;
+    /// <summary>
+    /// カメラの上限角度
+    /// </summary>
+    public float VerticalMaxAngle => verticalMaxAngle;
+    /// <summary>
+    /// カメラの下限角度
+    /// </summary>
+    public float VerticalMinAngle => verticalMinAngle;
 }
