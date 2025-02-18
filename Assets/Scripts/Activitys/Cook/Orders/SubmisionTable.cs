@@ -28,7 +28,7 @@ public class SubmisionTable : MonoBehaviour
         int orderIndex = Random.Range(0, orderAsset.OrderDetailInformations.Count - 1);
 
         //OrderTicket orderTicket = orderManager.Inquiry();
-       // orderTicket.Orderable.Order(orderAsset.OrderDetailInformations[orderIndex].CommodityAsset, orderTicket.CustomerInformation);
+        // orderTicket.Orderable.Order(orderAsset.OrderDetailInformations[orderIndex].CommodityAsset, orderTicket.CustomerInformation);
     }
     private void Update()
     {
@@ -66,6 +66,10 @@ public class SubmisionTable : MonoBehaviour
         if (orderManager.CanSubmit(commodity))
         {
             orderManager.Submission(commodity);
+        }
+        else
+        {
+            orderManager.CantSumbit();
         }
     }
 
