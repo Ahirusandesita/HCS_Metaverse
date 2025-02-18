@@ -67,13 +67,13 @@ public class MyRoomLoader : MonoBehaviour
 	{
 		// Debug
 		_interiorManager = new InteriorManager();
-		await Load();
+		await Load(PlayerDontDestroyData.Instance.PlayerID);
 	}
 
-	public async UniTask Load()
+	public async UniTask Load(int myRoomAdminPlayerID)
 	{
 		WebAPIRequester requester = new WebAPIRequester();
-		MyRoomEntryData myRoomEntryData = await requester.PostMyRoomEntry();
+		MyRoomEntryData myRoomEntryData = await requester.PostMyRoomEntry(myRoomAdminPlayerID);
 		foreach (MyRoomObject myRoomObject in myRoomEntryData.ObjectList)
 		{
 			SetRoomObject(myRoomObject);
@@ -86,7 +86,7 @@ public class MyRoomLoader : MonoBehaviour
 		if (shopID == -1) { return; }
 		VendingMachine vendingMachine = FindObjectOfType<VendingMachine>();
 		if (vendingMachine == null) { return; }
-		vendingMachine.Initialize(shopID, PlayerData.PlayerID).Forget();
+		vendingMachine.Initialize(shopID, myRoomAdminPlayerID).Forget();
 	}
 
 	public async UniTask UnLoad()
