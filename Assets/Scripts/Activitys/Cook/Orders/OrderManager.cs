@@ -47,6 +47,8 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     private RemoteOrder remoteOrder;
     private RemoteOrder instance;
 
+    private SubmisionSE submisionSE;
+
     private void Awake()
     {
 
@@ -85,6 +87,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
     {
         OnOrderInitialize?.Invoke(new OrderInitializeEventArgs(orderValue));
         customer.InjectOrderAsset(orderAsset);
+        submisionSE = GetComponent<SubmisionSE>();
     }
 
     public OrderTicket Inquiry(float orderWaitingTime, OrderWaitingType orderWaitingType)
@@ -134,6 +137,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
         {
             return;
         }
+
         for (int i = 0; i < commodityAssets.Length; i++)
         {
             if (commodityAssets[i] == null)
@@ -150,10 +154,12 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
                 if (i == 0)
                 {
                     chainValue++;
+                    submisionSE.RPC_Chain();
                 }
                 else
                 {
                     chainValue = 0;
+                    submisionSE.RPC_Success();
                 }
                 //Score
                 scoreCalculator.GetScoreCalculator.ScoreCalucuration(commodity.CommodityAsset.Score, chainValue);
@@ -161,6 +167,7 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
                 break;
             }
         }
+
         //GateOfFusion.Instance.NetworkRunner.Despawn(commodity.GetComponent<Fusion.NetworkObject>());
 
 
@@ -245,6 +252,12 @@ public class OrderManager : MonoBehaviour, IOrderable, ISubmitable
             commodityInformations[i] = new CommodityInformation(commodityAssets[i], customers[i]);
         }
         OnResetOrder?.Invoke(new ResetOrderArrayEventArgs(commodityInformations));
+    }
+
+    public void CantSumbit()
+    {
+        submisionSE.RPC_Miss();
+        scoreCalculator.GetScoreCalculator.ScoreCalucuration(0, 0);
     }
 
     private int SearchVacantSeatOrder()

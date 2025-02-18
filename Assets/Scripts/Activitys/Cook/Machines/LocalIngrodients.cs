@@ -64,8 +64,7 @@ public class LocalIngrodients : Ingrodients, IGrabbableActiveChangeRequester
     public void PutMachine(int machineID)
     {
         _hitMachine = FindObjectOfType<MachineIDManager>().GetMachine(machineID);
-
-        _hitMachine.SetProcessingIngrodient(GetComponent<LocalView>());
+        _hitMachine.SetProcessingIngrodient(_localView);
 
         // 
         ISwitchableGrabbableActive grabbableActiveSwicher = GetComponent<ISwitchableGrabbableActive>();
