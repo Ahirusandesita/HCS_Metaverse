@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using TMPro;
+using Kuma;
 public class CartUIInfo
 {
     public int row;
@@ -29,8 +30,6 @@ public class ShopCartUIManager : MonoBehaviour
     [SerializeField]
     private ProductUI _productUIPrefab;
     [SerializeField]
-    private Transform _productParent;
-    [SerializeField]
     private TextMeshProUGUI _totalPriceText;
     [SerializeField]
     private RectTransform _startPositionTransform;
@@ -56,13 +55,18 @@ public class ShopCartUIManager : MonoBehaviour
         _offsetY = iconTransform.sizeDelta.y;
     }
 
-    public void AddProductUI(int id, int price, int discountedPrice, int stock, float discount, Vector3 position)
+    public void AddProductUI(int id, int price, int discountedPrice, 
+        int stock, float discount, TransformGetter transformGetter,Vector3 center)
     {
-        ProductUI productUITemp = Instantiate(_productUIPrefab, _productParent);
+        ProductUI productUITemp = Instantiate(_productUIPrefab, this.transform);
         productUITemp.Init(price, discountedPrice, discount, stock);
         _productUIs.Add(id, productUITemp);
 
-        productUITemp.transform.position = position + _priceCardPositionOffset;
+        productUITemp.transform.position = center - center.y * Vector3.up
+            + transformGetter.RightDirection * _priceCardPositionOffset.x
+            + transformGetter.UpDirection * _priceCardPositionOffset.y
+            + transformGetter.ForwardDirection * _priceCardPositionOffset.z;
+        productUITemp.transform.rotation = Quaternion.LookRotation(transformGetter.ForwardDirection * -1);
     }
 
     public void AddCartUI(int id)
@@ -110,18 +114,8 @@ public class ShopCartUIManager : MonoBehaviour
                 nowPosition = popAnchoredPosition;
             }
             uiIconTemp.Init(itemAsset.ItemIcon, this, popAnchoredPosition, id, _dragSystem, _scrollTransformInject, currentYPosition, nowPosition);
-            //////
             cartUIInfos.Add(new CartUIInfo(cartUIInfos.Count / _horizontalLimit, cartUIInfos.Count % _horizontalLimit, uiIconTemp));
 
-            //////
-            //if (cartUIInfos.Count % (_horizontalLimit + 1) == 0)
-            //{
-            //    foreach (CartUIInfo item in cartUIInfos)
-            //    {
-            //        item.inCartItemUI.UpdateLimit(_offsetY);
-            //    }
-            //    //_yPosition = currentYPosition;
-            //}
             int s = 0;
             if(cartUIInfos[cartUIInfos.Count - 1].row + 1 - _horizontalLimit > 0)
             {

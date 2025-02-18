@@ -98,10 +98,8 @@ public class MyRoomLoader : MonoBehaviour
 			myRoomObjectSaves.Add(
 				new WebAPIRequester.MyRoomObjectSaved(
 					itemId: placedObject.ItemID,
-					housingId: placedObject.HousingID,
 					position: placedObject.transform.position,
-					eulerRotation: placedObject.transform.eulerAngles,
-					deleteFlg: false
+					eulerRotation: placedObject.transform.eulerAngles
 					)
 				);
 		}

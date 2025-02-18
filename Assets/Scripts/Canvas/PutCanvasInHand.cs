@@ -66,7 +66,7 @@ public class PutCanvasInHand : MonoBehaviour
 		}
 		else if (Input.GetKeyDown(KeyCode.Backslash))
 		{
-			GateOfFusion.Instance.ReturnMainRoom();
+			GateOfFusion.Instance.ReturnMainCity();
 		}
 
 	}

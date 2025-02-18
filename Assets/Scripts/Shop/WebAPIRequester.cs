@@ -10,7 +10,7 @@ using Result = UnityEngine.Networking.UnityWebRequest.Result;
 public class WebAPIRequester
 {
 	private const string DATABASE_PATH_BASE = "http://10.11.33.228:8080/api/";
-	private const string DATABASE_PATH_COOK_SCORE = DATABASE_PATH_BASE + "score"; 
+	private const string DATABASE_PATH_COOK_SCORE = DATABASE_PATH_BASE + "score";
 	private const string DATABASE_PATH_JOIN_WORLD = DATABASE_PATH_BASE + "world";
 	private const string DATABASE_PATH_MONEY = DATABASE_PATH_BASE + "money";
 	private const string DATABASE_PATH_SHOP_RECOMMEND = DATABASE_PATH_BASE + "shop/recommend";
@@ -48,6 +48,27 @@ public class WebAPIRequester
 		}
 	}
 
+	public async UniTask<ResponseData> PostInventoryUpdate(int itemId, int userIndex)
+	{
+		var sendInventoryUpdateData = new SendInventoryUpdateData(itemId, userIndex);
+		string jsonData = JsonUtility.ToJson(sendInventoryUpdateData);
+
+		using var request = UnityWebRequest.Post(DATABASE_PATH_SHOP_BUY, jsonData, CONTENT_TYPE);
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
+		await request.SendWebRequest();
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				throw new APIConnectException(request.error);
+		}
+
+		var responseData = JsonUtility.FromJson<ResponseData>(request.downloadHandler.text);
+		return responseData;
+	}
+
 	public async UniTask<int> GetMoney()
 	{
 		using var request = UnityWebRequest.Post(DATABASE_PATH_MONEY, new WWWForm());
@@ -66,7 +87,7 @@ public class WebAPIRequester
 		return money.Money;
 	}
 
-	public async UniTask<OnShopEntryData> PostShopRecommend(int shopId)
+	public async UniTask<OnShopProductData> PostShopRecommend(int shopId)
 	{
 		WWWForm form = new WWWForm();
 		form.AddField("shopId", shopId);
@@ -82,7 +103,7 @@ public class WebAPIRequester
 				XDebug.LogError(request.result, "red");
 				throw new APIConnectException(request.error);
 		}
-		var onShopEntryData = JsonUtility.FromJson<OnShopEntryData>(request.downloadHandler.text);
+		var onShopEntryData = JsonUtility.FromJson<OnShopProductData>(request.downloadHandler.text);
 		return onShopEntryData;
 	}
 
@@ -90,7 +111,7 @@ public class WebAPIRequester
 	/// ショップ入店時のAPI通信
 	/// </summary>
 	/// <returns>・商品ラインナップ</returns>
-	public async UniTask<OnShopEntryData> PostShopEntry(int shopId)
+	public async UniTask<OnShopProductData> PostShopEntry(int shopId)
 	{
 
 		WWWForm form = new WWWForm();
@@ -108,7 +129,7 @@ public class WebAPIRequester
 				throw new APIConnectException(request.error);
 		}
 
-		var onShopEntryData = JsonUtility.FromJson<OnShopEntryData>(request.downloadHandler.text);
+		var onShopEntryData = JsonUtility.FromJson<OnShopProductData>(request.downloadHandler.text);
 		return onShopEntryData;
 	}
 
@@ -153,7 +174,7 @@ public class WebAPIRequester
 	/// <br>・購入後の金額</br>
 	/// <br>・ショップの在庫リスト</br>
 	/// <br>・ユーザーID</br></returns>
-	public async UniTask<OnShopPaymentData> PostShopPayment(List<ItemIDAmountPair> inventory, int shopId)
+	public async UniTask<OnShopProductData> PostShopPayment(List<ItemIDAmountPricePair> inventory, int shopId)
 	{
 		var sendShopPaymentData = new SendPaymentData(inventory, shopId);
 		string jsonData = JsonUtility.ToJson(sendShopPaymentData);
@@ -170,7 +191,7 @@ public class WebAPIRequester
 				throw new APIConnectException(request.error);
 		}
 
-		var onShopPaymentData = JsonUtility.FromJson<OnShopPaymentData>(request.downloadHandler.text);
+		var onShopPaymentData = JsonUtility.FromJson<OnShopProductData>(request.downloadHandler.text);
 		return onShopPaymentData;
 	}
 
@@ -208,10 +229,10 @@ public class WebAPIRequester
 	/// <br>・自販機の在庫リスト</br>
 	/// <br>・ユーザーID</br>
 	/// <br>・自販機のアップデートフラグ</br></returns>
-	public async UniTask<OnVMPaymentData> PostVMPayment(int itemId, int shopId)
+	public async UniTask<OnVMPaymentData> PostVMPayment(int itemId,int price, int shopId)
 	{
-		var itemList = new List<ItemIDAmountPair>();
-		itemList.Add(new ItemIDAmountPair(itemId, 1));
+		var itemList = new List<ItemIDAmountPricePair>();
+		itemList.Add(new ItemIDAmountPricePair(itemId,price, 1));
 		var sendPaymentData = new SendPaymentData(itemList, shopId);
 		string jsonData = JsonUtility.ToJson(sendPaymentData);
 
@@ -413,20 +434,47 @@ public class WebAPIRequester
 		}
 	}
 
+	[System.Serializable]
+	public class SendInventoryUpdateData
+	{
+		public SendInventoryUpdateData(int itemId, int userIndex)
+		{
+			this.body = new Body(itemId, userIndex);
+		}
+
+		[SerializeField] private Body body = default;
+
+		[System.Serializable]
+		public class Body
+		{
+			public Body(int itemId, int userIndex)
+			{
+				this.itemId = itemId;
+				this.userIndex = userIndex;
+			}
+
+			[SerializeField] private int itemId = default;
+			[SerializeField] private int userIndex = default;
+		}
+	}
+
+
+
 	/// <summary>
 	/// ショップ入店時のレスポンスデータ
 	/// </summary>
 	[System.Serializable]
-	public class OnShopEntryData : ResponseData
+	public class OnShopProductData : ResponseData
 	{
-		public OnShopEntryData(Body body)
+		public OnShopProductData(Body body)
 		{
 			this.body = body;
 		}
 
 		[SerializeField] private Body body = default;
 
-		public Body GetBody => body;
+		public IReadOnlyList<ItemLineup> ItemList => body.ItemList;
+
 
 		[System.Serializable]
 		public class Body
@@ -441,43 +489,6 @@ public class WebAPIRequester
 		}
 	}
 
-	/// <summary>
-	/// ショップ購入時のレスポンスデータ
-	/// </summary>
-	[System.Serializable]
-	public class OnShopPaymentData : ResponseData
-	{
-		public OnShopPaymentData(Body body)
-		{
-			this.body = body;
-		}
-
-		[SerializeField] private Body body = default;
-
-		public Body GetBody => body;
-
-		[System.Serializable]
-		public class Body
-		{
-			public Body(List<ItemIDAmountPair> inventory, int money, List<ItemIDAmountPair> stockData, int userId)
-			{
-				this.inventory = inventory;
-				this.money = money;
-				this.stockData = stockData;
-				this.userId = userId;
-			}
-
-			[SerializeField] private List<ItemIDAmountPair> inventory = default;
-			[SerializeField] private int money = default;
-			[SerializeField] private List<ItemIDAmountPair> stockData = default;
-			[SerializeField] private int userId = default;
-
-			public IReadOnlyList<ItemIDAmountPair> Inventory => inventory;
-			public int Money => money;
-			public IReadOnlyList<ItemIDAmountPair> StockData => stockData;
-			public int UserID => userId;
-		}
-	}
 
 	/// <summary>
 	/// 自販機アクセス時のレスポンスデータ
@@ -656,19 +667,31 @@ public class WebAPIRequester
 	#endregion
 
 	#region 送信データ
+	public struct ItemIDAmountPricePair
+	{
+		public ItemIDAmountPricePair(int itemId,int amount,int price)
+		{
+			this.itemId = itemId;
+			this.amount = amount;
+			this.price = price;
+		}
+		[SerializeField] private int itemId;
+		[SerializeField] private int amount;
+		[SerializeField] private int price;
+	}
 	/// <summary>
 	/// 購入時の送信データ（内部パースに使用）
 	/// </summary>
 	[System.Serializable]
 	private class SendPaymentData
 	{
-		public SendPaymentData(List<ItemIDAmountPair> itemList, int shopId)
+		public SendPaymentData(List<ItemIDAmountPricePair> itemList, int shopId)
 		{
 			this.itemList = itemList;
 			this.shopId = shopId;
 		}
 
-		[SerializeField] private List<ItemIDAmountPair> itemList = default;
+		[SerializeField] private List<ItemIDAmountPricePair> itemList = default;
 		[SerializeField] private int shopId = default;
 	}
 
@@ -754,7 +777,7 @@ public class WebAPIRequester
 		public int ItemID => itemId;
 		public string ItemName => itemName;
 		public int UserIndex => userIndex;
-		public int Count => quantity;
+		public int Amount => quantity;
 	}
 
 
@@ -871,7 +894,6 @@ public class WebAPIRequester
 
 	/// <summary>
 	/// ・アイテムID
-	/// <br>・ハウジングID</br>
 	/// <br>・絶対座標</br>
 	/// <br>・EulerRotation</br>
 	/// <br>・削除フラグ</br>
@@ -879,31 +901,26 @@ public class WebAPIRequester
 	[System.Serializable]
 	public struct MyRoomObjectSaved
 	{
-		public MyRoomObjectSaved(int itemId, int housingId, Vector3 position, Vector3 eulerRotation, bool deleteFlg)
+		public MyRoomObjectSaved(int itemId, Vector3 position, Vector3 eulerRotation)
 		{
 			this.itemId = itemId;
-			this.housingId = housingId;
 			positionX = position.x;
 			positionY = position.y;
 			positionZ = position.z;
 			directionX = eulerRotation.x;
 			directionY = eulerRotation.y;
 			directionZ = eulerRotation.z;
-			this.deleteFlg = deleteFlg;
 		}
 
 		[SerializeField] private int itemId;
-		[SerializeField] private int housingId;
 		[SerializeField] private float positionX;
 		[SerializeField] private float positionY;
 		[SerializeField] private float positionZ;
 		[SerializeField] private float directionX;
 		[SerializeField] private float directionY;
 		[SerializeField] private float directionZ;
-		[SerializeField] private bool deleteFlg;
 
 		public int ItemID => itemId;
-		public int HousingID => housingId;
 		public Vector3 Position
 		{
 			get
@@ -912,7 +929,6 @@ public class WebAPIRequester
 			}
 		}
 		public Vector3 EulerRotation => new Vector3(directionX, directionY, directionZ);
-		public bool DeleteFlg => deleteFlg;
 	}
 	#endregion
 

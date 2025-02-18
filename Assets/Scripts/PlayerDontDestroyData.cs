@@ -131,10 +131,6 @@ public class PlayerDontDestroyData : MonoBehaviour
 		InventoryManager inventoryManager = FindObjectOfType<InventoryManager>(true);
 		foreach (var item in inventoryData.Inventory)
 		{
-			XDebug.LogWarning(item.UserIndex);
-		}
-		foreach (var item in inventoryData.Inventory)
-		{
 			ItemAsset itemAsset = _allItemAssets.GetItemAssetByID(item.ItemID);
 			if (itemAsset.Genre is ItemGenre.Costume)
 			{
@@ -165,7 +161,12 @@ public class PlayerDontDestroyData : MonoBehaviour
 				ItemIDAmountPair itemIDPair = new ItemIDAmountPair(item.ItemID, item.Amount);
 				lock (_inventoryLockObject)
 				{
-					if (item.UserIndex < _inventory.Length)
+					if (item.UserIndex < 0)
+					{
+						_itemBoxInventory.Add(itemIDPair);
+						
+					}
+					else if(item.UserIndex < _inventory.Length)
 					{
 						_inventory[item.UserIndex] = itemIDPair;
 
@@ -180,6 +181,7 @@ public class PlayerDontDestroyData : MonoBehaviour
 					}
 					else
 					{
+						XDebug.LogWarning("aaa");
 						_itemBoxInventory.Add(itemIDPair);
 					}
 				}
