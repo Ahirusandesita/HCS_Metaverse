@@ -120,7 +120,7 @@ public class ActivityProgressManagement : MonoBehaviour
         WebAPIRequester webAPIRequester = new WebAPIRequester();
         //webAPIRequester.PostScore()
 
-        GateOfFusion.Instance.ReturnMainRoom();
+        GateOfFusion.Instance.ReturnMainCity();
     }
 
     public void RPC_ReadyInjectable(TimeNetwork timeNetwork)

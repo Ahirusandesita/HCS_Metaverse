@@ -118,7 +118,17 @@ public class VendingMachineUIManager : MonoBehaviour
 		WebAPIRequester.OnVMPaymentData result;
 		try
 		{
-			result = await webAPIRequester.PostVMPayment(id, _vendingMachine.ShopID);
+			int price = -1;
+			foreach (var item in _vendingUIs)
+			{
+				if (item.ID != id) { continue; }
+				price = item.Price;
+			}
+			if (price < 0)
+			{
+				XDebug.LogError("ƒvƒ‰ƒCƒX‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½");
+			}
+			result = await webAPIRequester.PostVMPayment(id, price, _vendingMachine.ShopID);
 			if (result.GetBody.UpdateFlg)
 			{
 				WebAPIRequester.OnVMProductData entryData =
@@ -466,7 +476,7 @@ public class VendingMachineUIManager : MonoBehaviour
 
 	private void CloseNextButton()
 	{
-		if(_nextButton == null) { return; }
+		if (_nextButton == null) { return; }
 		_nextButton.SetActive(false);
 	}
 

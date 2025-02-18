@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using Kuma;
 
 public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjector<PlayerBodyDependencyInformation>
 {
@@ -23,10 +24,12 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 
 	private void Update()
 	{
+#if UNITY_EDITOR
 		if (Input.GetKeyDown(KeyCode.Tab))
 		{
 			shopCart.AddCart(productId);
 		}
+#endif
 	}
 
 	public int GetPrice(int id)
@@ -37,7 +40,7 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 			return prices[id];
 		}
 
-		if(id == 10962)
+		if (id == 10962)
 		{
 			return 500;
 		}
@@ -104,14 +107,14 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		int smallItemCounter = 0;
 		int largeItemCounter = 0;
 		int recommendCounter = 0;
-		for (int i = 0; i < data.GetBody.ItemList.Count; i++)
+		for (int i = 0; i < data.ItemList.Count; i++)
 		{
-			InstantiateShopObject(data.GetBody.ItemList[i], ref smallItemCounter, ref largeItemCounter);
+			InstantiateShopObject(data.ItemList[i], ref smallItemCounter, ref largeItemCounter);
 		}
 		var dataRecommend = await webAPIRequester.PostShopRecommend(_shopID);
-		for (int i = 0; i < dataRecommend.GetBody.ItemList.Count; i++)
+		for (int i = 0; i < dataRecommend.ItemList.Count; i++)
 		{
-			InstantiateRecommendShopObject(dataRecommend.GetBody.ItemList[i], ref recommendCounter);
+			InstantiateRecommendShopObject(dataRecommend.ItemList[i], ref recommendCounter);
 		}
 	}
 
@@ -128,7 +131,11 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		ShopViewPosition shopViewPosition = recommendViewPoints[recommendCounter];
 		recommendCounter++;
 
-		var item = IDisplayItem.Instantiate(asset, shopViewPosition.Postion, Quaternion.Euler(shopViewPosition.Direction), this);
+		var item = IDisplayItem.Instantiate(
+			asset,
+			shopViewPosition.TransformGetter.Position,
+			Quaternion.Euler(shopViewPosition.TransformGetter.ForwardDirection),
+			this);
 		displayedItems.Add(item.gameObject);
 		if (!prices.Keys.Contains(itemLineup.ItemID))
 		{
@@ -138,7 +145,9 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 			discountedPrice,
 			stock,
 			itemLineup.Discount,
-			shopViewPosition.Postion);
+			shopViewPosition.TransformGetter,
+			item.gameObject.GetBounds().center
+			);
 			prices.Add(itemLineup.ItemID, discountedPrice);
 		}
 
@@ -170,8 +179,12 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 			shopViewPosition = largeViewPoints[largeItemCounter];
 			largeItemCounter++;
 		}
-		var item = IDisplayItem.Instantiate(asset, shopViewPosition.Postion, Quaternion.Euler(shopViewPosition.Direction), this);
+		var item = IDisplayItem.Instantiate(asset,
+			shopViewPosition.TransformGetter.Position,
+			Quaternion.LookRotation(shopViewPosition.TransformGetter.ForwardDirection),
+			this);
 		displayedItems.Add(item.gameObject);
+		item.gameObject.layer = Layer.ITEM_LAYER_NUM;
 		if (!prices.Keys.Contains(itemLineup.ItemID))
 		{
 			uiManager.AddProductUI(
@@ -180,12 +193,15 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 			discountedPrice,
 			stock,
 			itemLineup.Discount,
-			shopViewPosition.Postion);
+			shopViewPosition.TransformGetter,
+			item.gameObject.GetBounds().center
+			);
 			prices.Add(itemLineup.ItemID, discountedPrice);
 		}
 		Bounds bounds = item.gameObject.GetBounds();
 		Vector3 underCenter = bounds.center - bounds.extents.y * Vector3.up;
 		item.gameObject.transform.position += item.gameObject.transform.position - underCenter;
+		buyArea.Display(bounds.center,new TransformGetter(item.gameObject.transform));
 	}
 
 	private void DestroyShop()
@@ -207,9 +223,10 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		// 選択されたアイテムと同じものを生成する（コピーを表現）
 		var item = IDisplayItem.Instantiate(asset, position, Quaternion.identity, this);
 		displayedItems.Add(item.gameObject);
+		item.gameObject.layer = Layer.ITEM;
 
 		//かごの表示
-		buyArea.Display(positionAdapter.Position);
+		buyArea.Display(item.gameObject.GetBounds().center, new TransformGetter(item.gameObject.transform));
 	}
 
 	public void Unselect(SelectArgs selectArgs)
@@ -221,8 +238,6 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		// 掴んだアイテムを離したポイントが、購入エリアだったら購入
 		if (buyArea.IsExist(unselectedPosition))
 		{
-			// Buy
-			Debug.Log("BuyArea");
 			//カートに入れる
 			shopCart.AddCart(itemSelectArgs.id);
 		}

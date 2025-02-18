@@ -5,9 +5,9 @@ using Cysharp.Threading.Tasks;
 
 public class ShopCart : MonoBehaviour
 {
-	private Dictionary<int, int> _inCarts = new();
 	//ID,å¬êî
-	public Dictionary<int, int> InCarts { get => _inCarts; }
+	private Dictionary<int, int> _inCartsAmount = new();
+	public Dictionary<int, int> InCarts { get => _inCartsAmount; }
 	[SerializeField]
 	private ShopCartUIManager _shopCartUIManager = default;
 	[SerializeField]
@@ -15,20 +15,20 @@ public class ShopCart : MonoBehaviour
 
 	public void AddCart(int id)
 	{
-		if (_inCarts.ContainsKey(id))
+		if (_inCartsAmount.ContainsKey(id))
 		{
-			_inCarts[id]++;
+			_inCartsAmount[id]++;
 		}
 		else
 		{
-			_inCarts.Add(id, 1);
+			_inCartsAmount.Add(id, 1);
 		}
 		_shopCartUIManager.AddCartUI(id);
 	}
 	public int ClacTotalPrice()
 	{
 		int ans = 0;
-		foreach (KeyValuePair<int, int> pair in _inCarts)
+		foreach (KeyValuePair<int, int> pair in _inCartsAmount)
 		{
 			ans += _visualShop.GetPrice(pair.Key) * pair.Value;
 		}
@@ -36,23 +36,23 @@ public class ShopCart : MonoBehaviour
 	}
 	public void RemoveCart(int id)
 	{
-		if (_inCarts[id] <= 1)
+		if (_inCartsAmount[id] <= 1)
 		{
-			_inCarts.Remove(id);
-			_inCarts.TrimExcess();
+			_inCartsAmount.Remove(id);
+			_inCartsAmount.TrimExcess();
 		}
 		else
 		{
-			_inCarts[id]--;
+			_inCartsAmount[id]--;
 		}
 	}
 
-	private void toItemStockList(List<ItemIDAmountPair> itemStocks)
+	private void toItemStockList(List<WebAPIRequester.ItemIDAmountPricePair> itemStocks)
 	{
-		foreach (var item in _inCarts)
+		foreach (var item in _inCartsAmount)
 		{
-			ItemIDAmountPair stockTemp
-				= new ItemIDAmountPair(item.Key, item.Value);
+			WebAPIRequester.ItemIDAmountPricePair stockTemp
+				= new WebAPIRequester.ItemIDAmountPricePair(item.Key, item.Value,_visualShop.GetPrice(item.Key));
 			itemStocks.Add(stockTemp);
 		}
 
@@ -61,13 +61,13 @@ public class ShopCart : MonoBehaviour
 	public async UniTaskVoid Buy()
 	{
 		WebAPIRequester requester = new WebAPIRequester();
-		List<ItemIDAmountPair> buyItemStocks = new List<ItemIDAmountPair>();
+		List<WebAPIRequester.ItemIDAmountPricePair> buyItemStocks = new List<WebAPIRequester.ItemIDAmountPricePair>();
 		toItemStockList(buyItemStocks);
 
 		await requester.PostShopPayment(buyItemStocks, _visualShop.ShopID);
 		await PlayerDontDestroyData.Instance.UpdateInventory(requester);
 		await PlayerDontDestroyData.Instance.UpdateMoney(requester);
 
-		_inCarts.Clear();
+		_inCartsAmount.Clear();
 	}
 }

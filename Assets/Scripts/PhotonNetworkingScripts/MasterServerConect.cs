@@ -49,25 +49,6 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	public bool IsKumaDebug => _isKumaDebug;
 #endif
 	#endregion
-	[ContextMenu("aaaa")]
-	private async void getTes()
-	{
-		WebAPIRequester requester = new();
-		WebAPIRequester.OnCatchUserLocationData catchUserLocationData
-			= await requester.GetUserLocation();
-
-	}
-	[ContextMenu("adadad")]
-	private void Mainssss()
-	{
-	}
-
-	[ContextMenu("start")]
-	private void ActivityS()
-	{
-		//testObj.ReleaseStateAuthority();
-		GateOfFusion.Instance.ActivityStart();
-	}
 
 	public void IsRoomStandbyOn()
 	{
@@ -113,6 +94,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 			return;
 		}
 		GateOfFusion.Instance.MasterServerConect = this;
+		GateOfFusion.Instance.Init();
 		DontDestroyOnLoad(this.gameObject);
 		_networkRunner = await InstanceNetworkRunnerAsync();
 		if (!_isUsePhoton)
@@ -126,7 +108,6 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 
 	public async UniTask Disconnect()
 	{
-		XKumaDebugSystem.LogError("room:disc");
 		_isRoomStandby = false;
 		OnShutdownEvent?.Invoke();
 		XKumaDebugSystem.LogWarning($"Disconnect", KumaDebugColor.SuccessColor);

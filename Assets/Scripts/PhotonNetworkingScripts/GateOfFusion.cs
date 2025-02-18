@@ -17,10 +17,6 @@ public class GateOfFusion
 	public event System.Action OnActivityConnected;
 	public event System.Action OnShutdown;
 	public MasterServerConect MasterServerConect { set => _masterServer = value; }
-	private GateOfFusion()
-	{
-		
-	}
 	private MasterServerConect MasterServer => _masterServer;
 	public bool IsUsePhoton { get => MasterServer.IsUsePhoton; }
 	public NetworkRunner NetworkRunner
@@ -38,7 +34,7 @@ public class GateOfFusion
 			_networkRunner = value;
 		}
 	}
-
+	private GateOfFusion(){}
 	public void Init()
 	{
 		MasterServer.OnConnect += () => OnConnect?.Invoke();
@@ -77,7 +73,7 @@ public class GateOfFusion
 		}
 		else
 		{
-			XKumaDebugSystem.LogError("NetworkObjectが取得できませんでした。なのでInstantiateします。", KumaDebugColor.ErrorColor);
+			XDebug.LogError("NetworkObjectが取得できませんでした。なのでInstantiateします。", KumaDebugColor.ErrorColor);
 			temp = Object.Instantiate(prefab, position, quaternion);
 		}
 		temp.transform.SetParent(parent);
@@ -192,7 +188,7 @@ public class GateOfFusion
 		MasterServer.IsActivityConnectedON();
 	}
 
-	public async void ReturnMainRoom()
+	public async void ReturnMainCity()
 	{
 		XKumaDebugSystem.LogWarning("アクティビティスタート", KumaDebugColor.MessageColor);
 		if (_syncResult != SyncResult.Complete)
