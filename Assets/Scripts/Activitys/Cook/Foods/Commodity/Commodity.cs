@@ -182,6 +182,7 @@ public class Commodity : MonoBehaviour, ICommodityModerator, IInject<ISwitchable
         if (collision.gameObject.TryGetComponent<SubmisionTable>(out SubmisionTable table))
         {
             table.Submit(this);
+            _localView.NetworkView.GetComponent<NetworkCommodity>().RPC_Despawn();
         }
         
 
