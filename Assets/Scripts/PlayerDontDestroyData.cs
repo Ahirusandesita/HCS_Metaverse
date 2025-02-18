@@ -33,7 +33,8 @@ public class PlayerDontDestroyData : MonoBehaviour
 	private List<int> _wallpaperInventory = new();
 	[SerializeField]
 	private List<int> _flooringInventory = new();
-
+	[SerializeField]
+	private List<ItemIDAmountPair> _itemBoxInventory = new List<ItemIDAmountPair>();
 	public static PlayerDontDestroyData Instance => _instance;
 	public int PlayerID { get => _playerID; set => _playerID = value; }
 	public ItemIDAmountPair[] Inventory => _inventory;
@@ -130,6 +131,10 @@ public class PlayerDontDestroyData : MonoBehaviour
 		InventoryManager inventoryManager = FindObjectOfType<InventoryManager>(true);
 		foreach (var item in inventoryData.Inventory)
 		{
+			XDebug.LogWarning(item.UserIndex);
+		}
+		foreach (var item in inventoryData.Inventory)
+		{
 			ItemAsset itemAsset = _allItemAssets.GetItemAssetByID(item.ItemID);
 			if (itemAsset.Genre is ItemGenre.Costume)
 			{
@@ -157,18 +162,25 @@ public class PlayerDontDestroyData : MonoBehaviour
 			}
 			else if (itemAsset.Genre is ItemGenre.Interior or ItemGenre.Usable or ItemGenre.Food)
 			{
-				ItemIDAmountPair itemIDPair = new ItemIDAmountPair(item.ItemID, item.Count);
+				ItemIDAmountPair itemIDPair = new ItemIDAmountPair(item.ItemID, item.Amount);
 				lock (_inventoryLockObject)
 				{
-					_inventory[item.UserIndex] = itemIDPair;
-
-					if (inventoryManager != null)
+					if (item.UserIndex < _inventory.Length)
 					{
-						// インベントリビューに送信（個数分）
-						for (int i = 0; i < item.Count; i++)
+						_inventory[item.UserIndex] = itemIDPair;
+
+						if (inventoryManager != null)
 						{
-							inventoryManager.SendItem(item.ItemID);
+							// インベントリビューに送信（個数分）
+							for (int i = 0; i < item.Amount; i++)
+							{
+								inventoryManager.SendItem(item.ItemID);
+							}
 						}
+					}
+					else
+					{
+						_itemBoxInventory.Add(itemIDPair);
 					}
 				}
 			}
