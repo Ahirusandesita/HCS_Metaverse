@@ -274,7 +274,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   onGrabbed: {fileID: 5663110209944071694}
-  availableScenes: []
+  availableScenes:
+  - name: MyRoom
+    selectedIndex: 3
   canUseAtStart: 1
   maxInventoryCapacity: 1
 --- !u!114 &3517551370285982410
@@ -330,7 +332,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   registerSceneInInspectors:
   - name: Shop
-    selectedIndex: 6
+    selectedIndex: 2
 --- !u!65 &-5421418181723808704
 BoxCollider:
   m_ObjectHideFlags: 0
