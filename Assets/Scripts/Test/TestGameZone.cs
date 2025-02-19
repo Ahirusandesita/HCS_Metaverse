@@ -12,6 +12,8 @@ namespace HCSMeta.Activity
 		[SerializeField, Header("移動するアクティビティ(ワールド)")]
 		private RegisterSceneInInspector _sceneNameType;
 		private MasterServerConect _masterServer;
+		[SerializeField]
+		private GameObject _roomSelecter;
 		private NetworkRunner NetworkRunner => GateOfFusion.Instance.NetworkRunner;
 		private MasterServerConect MasterServerConect
 		{
@@ -30,11 +32,17 @@ namespace HCSMeta.Activity
 		public void Close()
 		{
 			gameFrame.Close();
+			if (_sceneNameType == "MyRoom")
+			{
+				_roomSelecter.SetActive(false);
+				return;
+			}
 			MasterServerConect.SessionRPCManager.Rpc_LeftOrCloseRoom(NetworkRunner.LocalPlayer);
 		}
 
 		private void Update()
 		{
+#if UNITY_EDITOR
 			if (Input.GetKeyDown(KeyCode.P))
 			{
 				Open();
@@ -43,12 +51,20 @@ namespace HCSMeta.Activity
 			{
 				Close();
 			}
+#endif
 		}
 
 		[ContextMenu("Open")]
 		public IInteraction.InteractionInfo Open()
 		{
 			gameFrame.GameStart();
+
+			if(_sceneNameType == "MyRoom")
+			{
+				_roomSelecter ??= FindObjectOfType<MyRoomSelector>().gameObject;
+				_roomSelecter.SetActive(true);
+				return new IInteraction.NullInteractionInfo();
+			}
 
 			//ルームに参加する
 			if (MasterServerConect.IsUsePhoton && NetworkRunner.SessionInfo.PlayerCount > 1)

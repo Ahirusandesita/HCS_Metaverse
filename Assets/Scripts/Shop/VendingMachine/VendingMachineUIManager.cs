@@ -5,7 +5,7 @@ using System.Linq;
 using KumaDebug;
 using UnityEngine;
 
-public class VendingMachineUIManager : MonoBehaviour
+public class VendingMachineUIManager : MonoBehaviour,IPageController
 {
 	[SerializeField]
 	private ItemBundleAsset _itemBundleAsset = default;

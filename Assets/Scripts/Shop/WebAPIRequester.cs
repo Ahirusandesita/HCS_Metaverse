@@ -25,10 +25,82 @@ public class WebAPIRequester
 	private const string DATABASE_PATH_VENDINGMACHINE_UPDATE = DATABASE_PATH_BASE + "salesmachine/update";
 	private const string DATABASE_PATH_LOGIN = "http://10.11.33.228:8080/login";
 	private const string DATABASE_PATH_INVENTORY_CATCH = DATABASE_PATH_BASE + "inventory/catch";
+	private const string DATABASE_PATH_INVENTORY_SAVE = DATABASE_PATH_BASE + "inventory/save";
 	private const string CONTENT_TYPE = "application/json";
 	private const string TOKEN_KEY = "Authorization";
 
+	public async UniTaskVoid Test()
+	{
+		int score = 100;
+		int itemID = 10962;
+		int userIndex = 0;
+		int shopID = 2;
+		int userID = 1;
+
+		var loginResult = await PostLogin("user1@hcs.ac.jp", "hcs5511");
+		Debug.LogWarning($"LoginResult:{loginResult}");
+
+		var joinWorldResult = await GetJoinWorldData();
+		string temp = "";
+		foreach (var item in joinWorldResult.ShopList)
+		{
+			temp += item + ":";
+		}
+		Debug.LogWarning($"AllShopID:{temp}");
+		temp = "";
+		foreach (var item in joinWorldResult.UserList)
+		{
+			temp += item.UserID + ":" + item.UserName + " ,";
+		}
+		Debug.LogWarning($"AllUser:{temp}");
+
+
+		await PostScore(score);
+
+		var data = new List<SendInventoryUpdateData>();
+		data.Add(new SendInventoryUpdateData(itemID,1,1));
+		await PostInventoryUpdate(data);
+
+		await GetMoney();
+
+		await PostShopRecommend(shopID);
+
+		var result = await PostShopEntry(shopID);
+		foreach(var item in result.ItemList)
+		{
+			XDebug.LogWarning(item.ItemID + ":" + item.Stock);
+		}
+
+
+		List<ItemIDAmountPricePair> a = new();
+		a.Add(new ItemIDAmountPricePair(result.ItemList[0].ItemID, 1, 0));
+		XDebug.LogWarning(a[0].ItemID);
+		await PostShopPayment(a, shopID);
+
+		await PostVMEntry(userID);
+	}
+
+
 	#region Post/Get メソッド
+
+	public async UniTask<OnGetWorldData> GetJoinWorldData()
+	{
+		WWWForm form = new WWWForm();
+		using var request = UnityWebRequest.Post(DATABASE_PATH_JOIN_WORLD, form);
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
+		await request.SendWebRequest();
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				XDebug.LogError(request.result, "red");
+				throw new APIConnectException(request.error);
+		}
+		var responseData = JsonUtility.FromJson<OnGetWorldData>(request.downloadHandler.text);
+		return responseData;
+	}
 
 	public async UniTask PostScore(int score)
 	{
@@ -48,27 +120,6 @@ public class WebAPIRequester
 		}
 	}
 
-	public async UniTask<ResponseData> PostInventoryUpdate(int itemId, int userIndex)
-	{
-		var sendInventoryUpdateData = new SendInventoryUpdateData(itemId, userIndex);
-		string jsonData = JsonUtility.ToJson(sendInventoryUpdateData);
-
-		using var request = UnityWebRequest.Post(DATABASE_PATH_SHOP_BUY, jsonData, CONTENT_TYPE);
-		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
-		await request.SendWebRequest();
-		switch (request.result)
-		{
-			case Result.InProgress:
-				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
-
-			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
-				throw new APIConnectException(request.error);
-		}
-
-		var responseData = JsonUtility.FromJson<ResponseData>(request.downloadHandler.text);
-		return responseData;
-	}
-
 	public async UniTask<int> GetMoney()
 	{
 		using var request = UnityWebRequest.Post(DATABASE_PATH_MONEY, new WWWForm());
@@ -85,6 +136,26 @@ public class WebAPIRequester
 		}
 		var money = JsonUtility.FromJson<OnGetMoneyData>(request.downloadHandler.text);
 		return money.Money;
+	}
+
+	public async UniTask<ResponseData> PostInventoryUpdate(List<SendInventoryUpdateData> data)
+	{	
+		string jsonData = JsonUtility.ToJson(data);
+
+		using var request = UnityWebRequest.Post(DATABASE_PATH_INVENTORY_SAVE, jsonData, CONTENT_TYPE);
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
+		await request.SendWebRequest();
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				throw new APIConnectException(request.error);
+		}
+
+		var responseData = JsonUtility.FromJson<ResponseData>(request.downloadHandler.text);
+		return responseData;
 	}
 
 	public async UniTask<OnShopProductData> PostShopRecommend(int shopId)
@@ -161,7 +232,6 @@ public class WebAPIRequester
 			}
 		}
 
-
 		string token = request.GetResponseHeader(TOKEN_KEY);
 		PlayerDontDestroyData.Instance.Token = token;
 		return true;
@@ -174,11 +244,11 @@ public class WebAPIRequester
 	/// <br>・購入後の金額</br>
 	/// <br>・ショップの在庫リスト</br>
 	/// <br>・ユーザーID</br></returns>
-	public async UniTask<OnShopProductData> PostShopPayment(List<ItemIDAmountPricePair> inventory, int shopId)
+	public async UniTask<OnShopProductData> PostShopPayment(List<ItemIDAmountPricePair> buyItemList, int shopId)
 	{
-		var sendShopPaymentData = new SendPaymentData(inventory, shopId);
+		var sendShopPaymentData = new SendPaymentData(buyItemList, shopId);
 		string jsonData = JsonUtility.ToJson(sendShopPaymentData);
-
+		XDebug.LogWarning(jsonData);
 		using var request = UnityWebRequest.Post(DATABASE_PATH_SHOP_BUY, jsonData, CONTENT_TYPE);
 		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
 		await request.SendWebRequest();
@@ -198,13 +268,13 @@ public class WebAPIRequester
 	/// <summary>
 	/// 自販機アクセス時（マイルーム入室時の初期化など更新したいとき）のAPI通信
 	/// </summary>
-	/// <param name="shopId"></param>
+	/// <param name="userId"></param>
 	/// <returns>・商品ラインナップ
 	/// <br>・自販機のアクティブ状況</br></returns>
-	public async UniTask<OnVMProductData> PostVMEntry(int shopId)
+	public async UniTask<OnVMProductData> PostVMEntry(int userId)
 	{
 		WWWForm form = new WWWForm();
-		form.AddField("shopId", shopId);
+		form.AddField("shopId", userId);
 		using var request = UnityWebRequest.Post(DATABASE_PATH_VENDINGMACHINE_ENTRY, form);
 		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
 		await request.SendWebRequest();
@@ -411,6 +481,22 @@ public class WebAPIRequester
 	}
 
 	[System.Serializable]
+	public class OnGetWorldData : ResponseData
+	{
+		[SerializeField] private Body body = default;
+		public int[] ShopList => body.ShopList;
+		public UserIDNamePair[] UserList => body.UserList;
+		[System.Serializable]
+		private class Body
+		{
+			[SerializeField] private List<int> shopList;
+			[SerializeField] private UserIDNamePair[] userList;
+			public int[] ShopList => shopList.ToArray();
+			public UserIDNamePair[] UserList => userList;
+		}
+	}
+
+	[System.Serializable]
 	public class OnGetMoneyData : ResponseData
 	{
 		public OnGetMoneyData(Body body)
@@ -438,25 +524,15 @@ public class WebAPIRequester
 	[System.Serializable]
 	public class SendInventoryUpdateData
 	{
-		public SendInventoryUpdateData(int itemId, int userIndex)
+		public SendInventoryUpdateData(int itemId, int userIndex, int amount)
 		{
-			this.body = new Body(itemId, userIndex);
+			this.itemId = itemId;
+			this.userIndex = userIndex;
+			this.amount = amount;
 		}
-
-		[SerializeField] private Body body = default;
-
-		[System.Serializable]
-		public class Body
-		{
-			public Body(int itemId, int userIndex)
-			{
-				this.itemId = itemId;
-				this.userIndex = userIndex;
-			}
-
-			[SerializeField] private int itemId = default;
-			[SerializeField] private int userIndex = default;
-		}
+		[SerializeField] private int itemId = default;
+		[SerializeField] private int userIndex = default;
+		[SerializeField] private int amount = default;
 	}
 
 
@@ -668,6 +744,7 @@ public class WebAPIRequester
 	#endregion
 
 	#region 送信データ
+	[System.Serializable]
 	public struct ItemIDAmountPricePair
 	{
 		public ItemIDAmountPricePair(int itemId, int amount, int price)
@@ -679,6 +756,7 @@ public class WebAPIRequester
 		[SerializeField] private int itemId;
 		[SerializeField] private int amount;
 		[SerializeField] private int price;
+		public int ItemID => itemId;
 	}
 	/// <summary>
 	/// 購入時の送信データ（内部パースに使用）
@@ -759,6 +837,15 @@ public class WebAPIRequester
 
 		public string SessionName => sessionName;
 		public string LocationName => locationName;
+	}
+	[System.Serializable]
+	public struct UserIDNamePair
+	{
+		[SerializeField] private int userId;
+		[SerializeField] private string userName;
+
+		public int UserID => userId;
+		public string UserName => userName;
 	}
 
 	[System.Serializable]
