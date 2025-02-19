@@ -57,6 +57,13 @@ namespace HCSMeta.Player.View
         private MaterialPropertyBlock vignettePropertyBlock = default;
         private float initialApertureSize = default;
 
+        public void SetEnableVignette(bool value)
+		{
+            enabledOnMoving = value;
+            enabledOnJumping = value;
+            enabledOnRotate = value;
+		}
+
 
         [Conditional("UNITY_EDITOR")]
         private void Reset()
