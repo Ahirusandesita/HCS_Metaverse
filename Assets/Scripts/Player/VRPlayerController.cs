@@ -42,6 +42,16 @@ public class VRPlayerController : PlayerControllerBase<VRPlayerDataAsset>, IDepe
 	public IReadOnlyReactiveProperty<VRMoveType> MoveTypeRP => moveTypeRP;
 	public IReadOnlyReactiveProperty<VRRotateType> RotateTypeRP => rotateTypeRP;
 
+	public void ChangeMoveType(VRMoveType moveType)
+	{
+		moveTypeRP.Value = moveType;
+	}
+
+	public void ChangeRotateType(VRRotateType rotateType)
+	{
+		rotateTypeRP.Value = rotateType;
+	}
+
 
 	protected override void Reset()
 	{
