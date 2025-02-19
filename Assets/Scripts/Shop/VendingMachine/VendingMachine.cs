@@ -75,6 +75,7 @@ public class VendingMachine : SafetyInteractionObject, IGrabbableActiveChangeReq
 	protected override void SafetyOpenLooking()
 	{
 		if (!_isOpen) { return; }
+
 		_uiManager.OpenBuyUI();
 		_uiManager.OpenPageControlButton();
 		if (IsAdminPlayer)

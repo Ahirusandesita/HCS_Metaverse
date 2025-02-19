@@ -5,7 +5,7 @@ using UnityEngine;
 public class ActivityStartUIController : MonoBehaviour
 {
 	[SerializeField]
-	private float _offsetZ = default;
+	private float _offsetZ = 0.5f;
 	[SerializeField]
 	private bool _isFollow = true;
 	private Transform _myTransform = default;
