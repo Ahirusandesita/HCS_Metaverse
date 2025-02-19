@@ -355,8 +355,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d402cacfd88ec4bb5244a466a7ec39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _image: {fileID: 0}
   _mode: 1
-  _vendingMachineUIManager: {fileID: 8156630285032323337}
+  _pageController: {fileID: 8156630285032323337}
 --- !u!1 &2080237200047373556
 GameObject:
   m_ObjectHideFlags: 0
@@ -1097,6 +1098,7 @@ GameObject:
   - component: {fileID: 1138417482996429490}
   - component: {fileID: -605536248111207972}
   - component: {fileID: -8693166651072414563}
+  - component: {fileID: 3204880441317879320}
   m_Layer: 0
   m_Name: VendingMachine
   m_TagString: Untagged
@@ -1508,7 +1510,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   onGrabbed: {fileID: 6222026906499234249}
-  availableScenes: []
+  availableScenes:
+  - name: MyRoom
+    selectedIndex: 3
   canUseAtStart: 0
   maxInventoryCapacity: 1
 --- !u!114 &5395267972295693976
@@ -1565,6 +1569,21 @@ MonoBehaviour:
   pivotType: 0
   placingStyle: 0
   colliders: []
+--- !u!114 &3204880441317879320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8143487531245822645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41947717757c60444b61b1fe23f74628, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  registerSceneInInspectors:
+  - name: Shop
+    selectedIndex: 2
 --- !u!1 &8390853165873801394
 GameObject:
   m_ObjectHideFlags: 0
@@ -1653,8 +1672,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d402cacfd88ec4bb5244a466a7ec39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _image: {fileID: 0}
   _mode: 0
-  _vendingMachineUIManager: {fileID: 8156630285032323337}
+  _pageController: {fileID: 8156630285032323337}
 --- !u!1 &8744819046674943671
 GameObject:
   m_ObjectHideFlags: 0

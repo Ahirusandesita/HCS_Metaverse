@@ -17,6 +17,11 @@ public class PlayerDontDestroyData : MonoBehaviour
 	private string _previousScene = "";
 	[SerializeField, Hide]
 	private string _token = default;
+	private Dictionary<int, string> _allPlayerNames = new();
+	[SerializeField, Hide]
+	private int[] _shopIDs;
+	[SerializeField,Hide]
+	private int? _movableMyRoomUserID = null;
 	[Space(10)]
 	private readonly object _moneyLockObject = new object();
 	private readonly object _inventoryLockObject = new object();
@@ -60,6 +65,25 @@ public class PlayerDontDestroyData : MonoBehaviour
 		}
 		set => _token = value;
 	}
+	public IReadOnlyDictionary<int, string> AllPlayerNames => _allPlayerNames;
+	public int[] ShopIDs => _shopIDs;
+	/// <summary>
+	/// ˆê“xŽæ“¾‚·‚é‚ÆŽŸ“ü‚é‚Ü‚Ånull‚ð•Ô‚·
+	/// </summary>
+	public int? MovableMyRoomUserID
+	{
+		get
+		{
+			int? returnValue = _movableMyRoomUserID;
+			_movableMyRoomUserID = null;
+			return returnValue;
+		}
+		set
+		{
+			_movableMyRoomUserID = value;
+		}
+	}
+
 
 	private async void Awake()
 	{
@@ -74,15 +98,33 @@ public class PlayerDontDestroyData : MonoBehaviour
 		}
 		WebAPIRequester webAPIRequester = new();
 #if UNITY_EDITOR
-		var result = await webAPIRequester.PostLogin("admin@hcs.ac.jp", "hcs5511");
-		XDebug.LogWarning(result,Color.cyan);
+		var result = await webAPIRequester.PostLogin("user1@hcs.ac.jp", "hcs5511");
+		XDebug.LogWarning(result, Color.cyan);
 #endif
+		MovableMyRoomUserID = PlayerDontDestroyData.Instance.PlayerID;
 	}
 
 	private async void Start()
 	{
-		await UpdateInventory();
-		await UpdateMoney();
+		WebAPIRequester webAPIRequester = new WebAPIRequester();
+		await UpdateInventory(webAPIRequester);
+		await UpdateMoney(webAPIRequester);
+		await UpdateJoinData(webAPIRequester);
+	}
+
+	public async UniTask UpdateJoinData()
+	{
+		WebAPIRequester webAPIRequester = new WebAPIRequester();
+		await UpdateJoinData(webAPIRequester);
+	}
+	public async UniTask UpdateJoinData(WebAPIRequester webAPIRequester)
+	{
+		var result = await webAPIRequester.GetJoinWorldData();
+		foreach (var item in result.UserList)
+		{
+			_allPlayerNames.Add(item.UserID, item.UserName);
+		}
+		_shopIDs = result.ShopList;
 	}
 
 	public bool AddInventory(ItemIDAmountPair itemIDAmountPair)
@@ -165,9 +207,9 @@ public class PlayerDontDestroyData : MonoBehaviour
 					if (item.UserIndex < 0)
 					{
 						_itemBoxInventory.Add(itemIDPair);
-						
+
 					}
-					else if(item.UserIndex < _inventory.Length)
+					else if (item.UserIndex < _inventory.Length)
 					{
 						_inventory[item.UserIndex] = itemIDPair;
 
