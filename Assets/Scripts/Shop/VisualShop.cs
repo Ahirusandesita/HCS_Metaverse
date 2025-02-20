@@ -14,7 +14,6 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 	[SerializeField, HideAtPlaying] private List<ShopViewPosition> recommendViewPoints = new();
 	[SerializeField] private ShopCart shopCart = default;
 	[SerializeField] private ShopCartUIManager uiManager = default;
-	[SerializeField] private int productId = 10962;
 	private Dictionary<int, int> prices = new();
 	private List<GameObject> displayedItems = new();
 	private IReadonlyPositionAdapter positionAdapter = default;
@@ -54,12 +53,14 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 	private void Start()
 	{
 		int? shopID = PlayerDontDestroyData.Instance.MovableShopID;
-		if(shopID == null) 
+		if (shopID == null)
 		{
 			XDebug.LogError("ShopID‚ª‚ ‚è‚Ü‚¹‚ñ");
-			return; 
 		}
-		_shopID = (int)shopID;
+		else
+		{
+			_shopID = (int)shopID;
+		}
 		ShopViewPosition[] shopViewPositions
 			= FindObjectsByType<ShopViewPosition>(FindObjectsSortMode.None);
 
@@ -82,6 +83,12 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 			}
 		}
 		InstanceShop();
+	}
+
+	[ContextMenu("Test")]
+	private void test()
+	{
+		shopCart.AddCart(10962);
 	}
 
 	private void OnDisable()
@@ -193,7 +200,6 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		Bounds bounds = item.gameObject.GetBounds();
 		Vector3 underCenter = bounds.center - bounds.extents.y * Vector3.up;
 		item.gameObject.transform.position += item.gameObject.transform.position - underCenter;
-		buyArea.Display(bounds.center,new TransformGetter(item.gameObject.transform));
 	}
 
 	private void DestroyShop()
