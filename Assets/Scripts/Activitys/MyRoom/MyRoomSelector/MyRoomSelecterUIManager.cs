@@ -60,7 +60,6 @@ public class MyRoomSelecterUIManager : MonoBehaviour,IPageController
 	public void NextPage()
 	{
 		if (_currentPage > _buttons.Count / (_rowMax * _colMax)) { return; }
-		XDebug.LogWarning("next");
 		_currentPage++;
 		ClosePage();
 		UpdatePage();
@@ -87,7 +86,6 @@ public class MyRoomSelecterUIManager : MonoBehaviour,IPageController
 	public void PreviousPage()
 	{
 		if(_currentPage <= 1) { return; }
-		XDebug.LogWarning("previous");
 		_currentPage--;
 		ClosePage();
 		UpdatePage();
