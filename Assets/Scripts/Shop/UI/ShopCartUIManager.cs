@@ -38,6 +38,8 @@ public class ShopCartUIManager : MonoBehaviour
     [SerializeField]
     private ScrollTransformInject _scrollTransformInject = default;
     [SerializeField]
+    private TextMeshProUGUI _currentMoneyText;
+    [SerializeField]
     private Vector3 _priceCardPositionOffset = default;
     private Dictionary<int, ProductUI> _productUIs = new();
     private List<CartUIInfo> cartUIInfos = new List<CartUIInfo>();
@@ -50,6 +52,8 @@ public class ShopCartUIManager : MonoBehaviour
     {
         RectTransform iconTransform = _itemIconPrefab.transform as RectTransform;
         TatalPriceDisplay();
+        _currentMoneyText.text = "Current:";
+        _currentMoneyText.text += PlayerDontDestroyData.Instance.Money.ToString("c");
         _offsetX = iconTransform.sizeDelta.x;
 
         _offsetY = iconTransform.sizeDelta.y;
@@ -143,6 +147,8 @@ public class ShopCartUIManager : MonoBehaviour
     {
         Clear();
         _shopCart.Buy().Forget();
+        _currentMoneyText.text = "Current:";
+        _currentMoneyText.text += PlayerDontDestroyData.Instance.Money.ToString("c");
     }
     private void Clear()
     {
@@ -160,35 +166,7 @@ public class ShopCartUIManager : MonoBehaviour
         if (!_shopCart.InCarts.Keys.Contains(id))
         {
             cartUIInfos.Where(info => info.inCartItemUI.ID == id).First().inCartItemUI.UpdateCount(0);
-            //Ž„//
-            int index = cartUIInfos.IndexOf(cartUIInfos.Where(info => info.inCartItemUI.ID == id).First());
-            //if (test_inCartItemUIs.Count > index)
-            //{
-            //    for (int i = 0; i < index; i++)
-            //    {
-            //        test_inCartItemUIs[i].UpdateLimit(-_offsetX);
-            //    }
-            //    for (int i = index; i < test_inCartItemUIs.Count; i++)
-            //    {
-            //        test_inCartItemUIs[i].UpdateDownLimit(_offsetY);
-            //    }
-            //    for (int i = test_inCartItemUIs.Count - 1; i > index; i--)
-            //    {
-            //        test_inCartItemUIs[i].GetComponent<RectTransform>().anchoredPosition = test_inCartItemUIs[i - 1].GetComponent<RectTransform>().anchoredPosition;
-            //    }
-            //}
-            //test_inCartItemUIs.Remove(_itemIcons[id]);
-            //////////
-            //_itemIcons.Remove(id);
-
-            //if (0 >= _shopCart.InCarts.Keys.Count)
-            //{
-            //    _shopCanvasObject.SetActive(false);
-            //}
-        }
-        else
-        {
-            //_itemIcons[id].UpdateCount(_shopCart.InCarts[id]);
+            int index = cartUIInfos.IndexOf(cartUIInfos.Where(info => info.inCartItemUI.ID == id).First());  
         }
     }
 }
