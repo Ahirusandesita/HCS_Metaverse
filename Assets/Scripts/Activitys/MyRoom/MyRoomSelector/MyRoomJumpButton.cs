@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Cysharp.Threading.Tasks;
 
 public class MyRoomJumpButton : MonoBehaviour, IPointerClickHandler
 {
@@ -19,6 +20,14 @@ public class MyRoomJumpButton : MonoBehaviour, IPointerClickHandler
 	}
 	public void OnPointerClick(PointerEventData data)
 	{
+		PlayerDontDestroyData.Instance.MovableMyRoomUserID = _playerID;
 
+		RoomManager.Instance.JoinOrCreate(
+			"MyRoom",
+			GateOfFusion.Instance.NetworkRunner.LocalPlayer,
+			_playerID)
+			.Forget();
+
+		GateOfFusion.Instance.ActivityStart();
 	}
 }

@@ -67,7 +67,13 @@ public class MyRoomLoader : MonoBehaviour
 	{
 		// Debug
 		_interiorManager = new InteriorManager();
-		await Load(PlayerDontDestroyData.Instance.PlayerID);
+		int? roomID = PlayerData.MovableMyRoomUserID;
+		if (roomID == null)
+		{
+			XDebug.LogError("RoomID‚ª‚ ‚è‚Ü‚¹‚ñ");
+			return;
+		}
+		await Load((int)roomID);
 	}
 
 	public async UniTask Load(int myRoomAdminPlayerID)
