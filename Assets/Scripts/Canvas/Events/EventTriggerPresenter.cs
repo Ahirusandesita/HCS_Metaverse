@@ -101,4 +101,26 @@ public class EventTriggerPresenter : MonoBehaviour
         eventTrigger.triggers.Add(entryPointerDrag);
         eventTrigger.triggers.Add(entryDragToParent);
     }
+    public void Add(IPointerClickRegistrable registrable)
+    {
+        EventTrigger.Entry entryPointerClick = new EventTrigger.Entry();
+        entryPointerClick.eventID = EventTriggerType.PointerClick;
+        entryPointerClick.callback.AddListener((data) =>
+        {
+
+            registrable.OnPointerClick((PointerEventData)data);
+
+        }
+        );
+
+        eventTrigger.triggers.Add(entryPointerClick);
+    }
+}
+
+public static class EventRegisterExtends
+{
+    public static void Retister(this IPointerClickRegistrable registrable, MonoBehaviour me)
+    {
+        me.transform.root.GetComponentInChildren<EventTriggerPresenter>().Add(registrable);
+    }
 }
