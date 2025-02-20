@@ -11,8 +11,8 @@ public class ScrollObject : MonoBehaviour, IScrollable,ITransformInjectable
     }
     public void Scroll(Vector2 moveValue, float sensitivity)
     {
-        rectTransform.localPosition -= canvasTransform.right * moveValue.x / (1500f / sensitivity);
-        rectTransform.localPosition -= canvasTransform.up * moveValue.y
+        rectTransform.localPosition -= Vector3.right * moveValue.x / (1500f / sensitivity);
+        rectTransform.localPosition -= Vector3.up * moveValue.y
             / (1500f / sensitivity);
     }
 
