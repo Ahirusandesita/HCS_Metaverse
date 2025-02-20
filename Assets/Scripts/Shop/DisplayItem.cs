@@ -21,7 +21,7 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
 
 	public int MaxInventoryCapacity => maxInventoryCapacity;
 
-	public bool CanUseAtStart { get; set; }
+	public bool CanUseAtStart => canUseAtStart;
 
 	public bool IsAvailable()
 	{
@@ -90,6 +90,8 @@ public class DisplayItem : MonoBehaviour, IDisplayItem
 		// 設計ミスにより、これでしか家具かどうか判定できません。ごめんちょ
 		if (TryGetComponent(out PlaceableObject placeableObject))
 		{
+			FindAnyObjectByType<MenuBarStart>().Hide();
+			FindAnyObjectByType<GoldViewer>().OnOptions(default);
 			// プレイヤーがGhostを生成
 			var playerPlacing = FindAnyObjectByType<Placing>();
 			playerPlacing.CreateGhost(placeableObject);

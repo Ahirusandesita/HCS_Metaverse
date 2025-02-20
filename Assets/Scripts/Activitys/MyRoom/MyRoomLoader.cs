@@ -133,5 +133,6 @@ public class MyRoomLoader : MonoBehaviour
 		PlaceableObject placeableObject = instance.GetComponentInChildren<PlaceableObject>();
 		placeableObject.ItemID = myRoomObject.ItemID;
 		placeableObject.HousingID = myRoomObject.HousingID;
+		_interiorManager.AddPlacedObject(placeableObject);
 	}
 }

@@ -23,7 +23,7 @@ public class GoldViewer : MonoBehaviour
 		gameObject.SetActive(false);
 	}
 
-	private void OnOptions(InputAction.CallbackContext context)
+	public void OnOptions(InputAction.CallbackContext context)
 	{
 		isOpen = !isOpen;
 		gameObject.SetActive(isOpen);
