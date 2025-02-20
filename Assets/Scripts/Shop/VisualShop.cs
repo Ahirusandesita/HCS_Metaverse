@@ -17,7 +17,7 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 	private Dictionary<int, int> prices = new();
 	private List<GameObject> displayedItems = new();
 	private IReadonlyPositionAdapter positionAdapter = default;
-	private int _shopID = 2;
+	private int _shopID = 3;
 
 	public int ShopID => _shopID;
 
@@ -85,12 +85,6 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		InstanceShop();
 	}
 
-	[ContextMenu("Test")]
-	private void test()
-	{
-		shopCart.AddCart(10962);
-	}
-
 	private void OnDisable()
 	{
 		DestroyShop();
@@ -103,6 +97,7 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		WebAPIRequester webAPIRequester = new WebAPIRequester();
 
 		var data = await webAPIRequester.PostShopEntry(_shopID);
+
 		int smallItemCounter = 0;
 		int largeItemCounter = 0;
 		int recommendCounter = 0;
@@ -129,12 +124,12 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		int stock = itemLineup.Stock;
 		ShopViewPosition shopViewPosition = recommendViewPoints[recommendCounter];
 		recommendCounter++;
-
-		var item = IDisplayItem.Instantiate(
-			asset,
+		GameObject item = Instantiate(
+			asset.Prefab,
 			shopViewPosition.TransformGetter.Position,
-			Quaternion.Euler(shopViewPosition.TransformGetter.ForwardDirection),
-			this);
+			Quaternion.Euler(shopViewPosition.TransformGetter.ForwardDirection)
+		);
+
 		displayedItems.Add(item.gameObject);
 		if (!prices.Keys.Contains(itemLineup.ItemID))
 		{
@@ -167,7 +162,21 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 
 		int stock = itemLineup.Stock;
 		ShopViewPosition shopViewPosition = default;
-		if (itemLineup.Size == 1)
+		var assets = allItemAsset.GetItemAssetByID(itemLineup.ItemID);
+		if (assets.Genre == ItemGenre.Costume)
+		{
+			if (smallViewPoints.Count <= smallItemCounter -1)
+			{
+				shopViewPosition = largeViewPoints[largeItemCounter];
+				largeItemCounter++;
+			}
+			else
+			{
+				shopViewPosition = smallViewPoints[smallItemCounter];
+				smallItemCounter++;
+			}
+		}
+		else if (itemLineup.Size == 1)
 		{
 			shopViewPosition = smallViewPoints[smallItemCounter];
 			smallItemCounter++;
@@ -178,10 +187,12 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 			shopViewPosition = largeViewPoints[largeItemCounter];
 			largeItemCounter++;
 		}
-		var item = IDisplayItem.Instantiate(asset,
+		XDebug.LogWarning(asset.Prefab);
+		GameObject item = Instantiate(
+			asset.Prefab,
 			shopViewPosition.TransformGetter.Position,
-			Quaternion.LookRotation(shopViewPosition.TransformGetter.ForwardDirection),
-			this);
+			Quaternion.Euler(shopViewPosition.TransformGetter.ForwardDirection)
+		);
 		displayedItems.Add(item.gameObject);
 		item.gameObject.layer = Layer.ITEM_LAYER_NUM;
 		if (!prices.Keys.Contains(itemLineup.ItemID))
