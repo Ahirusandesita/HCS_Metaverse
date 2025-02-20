@@ -59,12 +59,12 @@ namespace HCSMeta.Activity
 		{
 			gameFrame.GameStart();
 
-			if(_sceneNameType == "MyRoom")
-			{
-				_roomSelecter ??= FindObjectOfType<MyRoomSelector>().gameObject;
-				_roomSelecter.SetActive(true);
-				return new IInteraction.NullInteractionInfo();
-			}
+			//if(_sceneNameType == "MyRoom")
+			//{
+			//	_roomSelecter ??= FindObjectOfType<MyRoomSelector>().gameObject;
+			//	_roomSelecter.SetActive(true);
+			//	return new IInteraction.NullInteractionInfo();
+			//}
 
 			//ƒ‹[ƒ€‚ÉŽQ‰Á‚·‚é
 			if (MasterServerConect.IsUsePhoton && NetworkRunner.SessionInfo.PlayerCount > 1)
