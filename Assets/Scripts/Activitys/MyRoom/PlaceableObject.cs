@@ -37,13 +37,6 @@ public class PlaceableObject : SafetyInteractionObject
 		ghostOrigin = transform.root.gameObject;
 	}
 
-	protected override void Awake()
-	{
-		base.Awake();
-		Inputter.PlacingMode.Cancel.performed += OnCancel;
-		Inputter.PlacingMode.Cancel.canceled += OnCancelCancel;
-	}
-
 	protected void Start()
 	{
 		disableComponents = GetComponentsInChildren<Component>(true);
@@ -74,6 +67,8 @@ public class PlaceableObject : SafetyInteractionObject
 		placing.CreateGhost(this);
 		defaultPosition = transform.position;
 		defaultRotation = transform.rotation;
+		Inputter.PlacingMode.Cancel.performed += OnCancel;
+		Inputter.PlacingMode.Cancel.canceled += OnCancelCancel;
 	}
 
 	public override void Close()
@@ -140,6 +135,8 @@ public class PlaceableObject : SafetyInteractionObject
 
 		canceledTime = 0f;
 		UpdateAction = null;
+		Inputter.PlacingMode.Cancel.performed -= OnCancel;
+		Inputter.PlacingMode.Cancel.canceled -= OnCancelCancel;
 	}
 }
 
