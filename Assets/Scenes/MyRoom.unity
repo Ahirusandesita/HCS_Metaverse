@@ -1396,9 +1396,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6497003857773521873, guid: 27a51ad69642cfe468480a141d63044f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1822897114}
-    - targetCorrespondingSourceObject: {fileID: 6497003857773521873, guid: 27a51ad69642cfe468480a141d63044f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1535956032}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 993402964168130797, guid: 27a51ad69642cfe468480a141d63044f, type: 3}
       insertIndex: -1
@@ -2078,81 +2075,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &1535956031
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1535956032}
-  - component: {fileID: 1535956034}
-  - component: {fileID: 1535956033}
-  m_Layer: 0
-  m_Name: Image
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1535956032
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1535956031}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1121387436}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.6, y: -0.6}
-  m_SizeDelta: {x: 189.1, y: 47.9}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1535956033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1535956031}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &1535956034
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1535956031}
-  m_CullTransparentMesh: 1
 --- !u!4 &1557907639 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6508186075653536544, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
@@ -2319,8 +2241,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 4.7, y: -0.0000066757}
+  m_SizeDelta: {x: 258.97, y: 171.21}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1822897115
 MonoBehaviour:
@@ -2342,7 +2264,27 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Housing Mode
+  m_text: 'Housing Input
+
+    Grip (L/R) : Rotate Object
+
+    Secondary (L) : Switch
+    Rotate Mode
+
+    Trigger (R) : Placing
+
+
+    Replace Input
+
+    Trigger (R) :
+    Replace Mode (need near)
+
+    Trigger (L) : Cancel Replace
+
+    Trigger Hold
+    (L) : Delete Object
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dc2cc93475f76427c86a8262bee36b88, type: 2}
   m_sharedMaterial: {fileID: 2269793554123077917, guid: dc2cc93475f76427c86a8262bee36b88, type: 2}
@@ -2369,15 +2311,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
-  m_fontSizeBase: 32
+  m_fontSize: 14
+  m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -2476,8 +2418,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 6.3538017, y: 3.75, z: 3.9539685}
-  m_Center: {x: 0.85899734, y: 0, z: 1.9769843}
+  m_Size: {x: 6.372966, y: 3.75, z: 4.1148047}
+  m_Center: {x: 0.8685794, y: 0, z: 1.8965662}
 --- !u!114 &1929541927
 MonoBehaviour:
   m_ObjectHideFlags: 0
