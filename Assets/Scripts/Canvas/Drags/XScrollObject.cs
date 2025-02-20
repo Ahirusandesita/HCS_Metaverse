@@ -26,8 +26,8 @@ public class XScrollObject : MonoBehaviour, IHorizontalOnlyScrollable, ITransfor
     public void Scroll(Vector2 moveValue, float sensitivity)
     {
         Vector3 nextPos = rectTransform.localPosition;
-        nextPos.x -= (canvasTransform.right * moveValue / sensitivity).x;
-        nextPos.y -= (canvasTransform.right * moveValue / sensitivity).y;
+        nextPos.x -= (Vector3.right * moveValue / sensitivity).x;
+        nextPos.y -= (Vector3.right * moveValue / sensitivity).y;
 
         if (leftLimit.isUseLimit && leftLimit.limit > nextPos.x)
         {
@@ -46,7 +46,7 @@ public class XScrollObject : MonoBehaviour, IHorizontalOnlyScrollable, ITransfor
             return;
         }
 
-        rectTransform.localPosition -= canvasTransform.right * moveValue.x / sensitivity;
+        rectTransform.localPosition -= /*canvasTransform.right*/Vector3.right * moveValue.x / sensitivity;
     }
 
     void ITransformInjectable.TransformInject(Transform transform)
