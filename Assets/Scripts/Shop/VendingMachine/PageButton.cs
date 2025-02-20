@@ -30,6 +30,8 @@ public class PageButton : MonoBehaviour, IPointerClickHandler
 			_image.transform.rotation = Quaternion.Euler(0, 0, 180);
 		}
 	}
+
+
 	public void OnPointerClick(PointerEventData eventData)
 	{
 		if (_mode == PageButtonMode.Next)

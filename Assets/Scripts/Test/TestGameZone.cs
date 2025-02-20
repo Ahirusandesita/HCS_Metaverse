@@ -1,5 +1,6 @@
 using UnityEngine;
 using Fusion;
+using Cysharp.Threading.Tasks;
 
 namespace HCSMeta.Activity
 {
@@ -20,7 +21,7 @@ namespace HCSMeta.Activity
 		private RegisterSceneInInspector _sceneNameType;
 		private MasterServerConect _masterServer;
 		[SerializeField]
-		private GameObject _roomSelecter;
+		private MyRoomSelector _roomSelecter;
 		private NetworkRunner NetworkRunner => GateOfFusion.Instance.NetworkRunner;
 		private MasterServerConect MasterServerConect
 		{
@@ -41,7 +42,7 @@ namespace HCSMeta.Activity
 			gameFrame.Close();
 			if (_sceneNameType == "MyRoom")
 			{
-				_roomSelecter.SetActive(false);
+				_roomSelecter.gameObject.SetActive(false);
 				return;
 			}
 			MasterServerConect.SessionRPCManager.Rpc_LeftOrCloseRoom(NetworkRunner.LocalPlayer);
@@ -68,8 +69,9 @@ namespace HCSMeta.Activity
 
 			if (_sceneNameType == "MyRoom")
 			{
-				_roomSelecter ??= FindObjectOfType<MyRoomSelector>().gameObject;
-				_roomSelecter.SetActive(true);
+				_roomSelecter ??= FindAnyObjectByType<MyRoomSelector>(FindObjectsInactive.Include);
+				_roomSelecter.gameObject.SetActive(true);
+				_roomSelecter.Init();
 				return new IInteraction.NullInteractionInfo();
 			}
 

@@ -23,6 +23,7 @@ public class MyRoomSelector : MonoBehaviour
 		MyTransform.position = _playerHeadTransform.forward * _offsetZ
 			+ _playerHeadTransform.position;
 		MyTransform.rotation = _playerHeadTransform.rotation;
+		if (Input.GetKeyDown(KeyCode.L)) { Init(); }
 	}
 	[ContextMenu("init")]
 	public void Init()
