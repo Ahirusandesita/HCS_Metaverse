@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class BuyButton : MonoBehaviour,IPointerClickRegistrable
+public class BuyButton : MonoBehaviour,IPointerClickHandler
 {
     [SerializeField]
     private ShopCartUIManager _shopCartUIManager = default;

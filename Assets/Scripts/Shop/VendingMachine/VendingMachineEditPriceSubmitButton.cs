@@ -8,7 +8,7 @@ using UnityEngine.UI;
 using System.Threading;
 using System;
 
-public class VendingMachineEditPriceSubmitButton : MonoBehaviour, IPointerClickRegistrable
+public class VendingMachineEditPriceSubmitButton : MonoBehaviour, IPointerClickHandler
 {
 	[SerializeField]
 	private VendingMachineEditPriceUI _vendingMachineEditPriceUI;

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Cysharp.Threading.Tasks;
 
-public class ReturnMainCityButton : MonoBehaviour,IPointerClickRegistrable
+public class ReturnMainCityButton : MonoBehaviour,IPointerClickHandler
 {
 	[SerializeField]
 	private MyRoomLoader _myRoomLoader;

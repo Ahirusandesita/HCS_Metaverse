@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class VendingMachineEditReturnButton : MonoBehaviour, IPointerClickRegistrable
+public class VendingMachineEditReturnButton : MonoBehaviour, IPointerClickHandler
 {
 	[SerializeField]
 	private VendingMachineUIManager _vendingMachineUIManager = default;

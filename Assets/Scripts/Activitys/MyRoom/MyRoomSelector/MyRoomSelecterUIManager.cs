@@ -34,8 +34,8 @@ public class MyRoomSelecterUIManager : MonoBehaviour
 			button.Init(item.Key, item.Value);
 			RectTransform rectTransform = button.transform as RectTransform;
 			rectTransform.localPosition = new Vector2(
-				(count % _rowMax) * offset.x,
-				(count / _colMax) * offset.y
+				(count % _rowMax) * offset.x + _initPosition.anchoredPosition.x,
+				(count / _colMax) * offset.y + _initPosition.anchoredPosition.y
 			);
 		}
 	}
