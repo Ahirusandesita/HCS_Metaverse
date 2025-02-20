@@ -145,4 +145,14 @@ public class Placing : MonoBehaviour, IInputControllable
 		}
 		placeableObject = placedObject;
 	}
+
+	public void Cancel()
+	{
+		if (playerState.PlacingMode.Value)
+		{
+			playerState.ChangePlacingMode();
+		}
+		deleteObject = null;
+		placeableObject = null;
+	}
 }

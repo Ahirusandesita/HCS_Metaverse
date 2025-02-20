@@ -510,18 +510,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""NextOrPrevious"",
-                    ""type"": ""Value"",
-                    ""id"": ""abebfef6-d814-4f3f-a114-c882360fd792"",
-                    ""expectedControlType"": ""Axis"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
                     ""name"": ""Switch"",
                     ""type"": ""Button"",
                     ""id"": ""d73b684e-66b1-4245-80cd-b0d25e5af8b4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Cancel"",
+                    ""type"": ""Button"",
+                    ""id"": ""3c5f6b4a-0567-4b19-803e-9ff87d192f8a"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -618,61 +618,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""XR"",
-                    ""id"": ""e32f50ea-6265-466b-b32e-002239561b07"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""NextOrPrevious"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""Negative"",
-                    ""id"": ""d43775c7-f8e4-4c7c-816d-76a3a7634ce9"",
-                    ""path"": ""<OculusTouchController>{RightHand}/thumbstick/y"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""NextOrPrevious"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Negative"",
-                    ""id"": ""fd7356c6-ffa5-4962-95cf-030afe434481"",
-                    ""path"": ""<OculusTouchController>{RightHand}/thumbstick/x"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""NextOrPrevious"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Positive"",
-                    ""id"": ""c6dba79a-f607-4ffa-9fd7-86dfd46203c9"",
-                    ""path"": ""<OculusTouchController>{RightHand}/thumbstick/y"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""NextOrPrevious"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Positive"",
-                    ""id"": ""17169a59-4850-499e-a076-144022af0041"",
-                    ""path"": ""<OculusTouchController>{RightHand}/thumbstick/x"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""NextOrPrevious"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
                     ""name"": """",
                     ""id"": ""fd540cc7-e91d-4277-8d86-681a1a0276f3"",
                     ""path"": ""<XRController>{LeftHand}/primaryButton"",
@@ -680,6 +625,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Switch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cd9054b6-ef7a-4aaf-ad0e-588b34fb0b5c"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e31cd598-81f5-4d2b-a526-6605db7e87a5"",
+                    ""path"": ""<XRController>{LeftHand}/triggerPressed"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Cancel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -807,8 +774,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_PlacingMode = asset.FindActionMap("PlacingMode", throwIfNotFound: true);
         m_PlacingMode_Place = m_PlacingMode.FindAction("Place", throwIfNotFound: true);
         m_PlacingMode_Signed = m_PlacingMode.FindAction("Signed", throwIfNotFound: true);
-        m_PlacingMode_NextOrPrevious = m_PlacingMode.FindAction("NextOrPrevious", throwIfNotFound: true);
         m_PlacingMode_Switch = m_PlacingMode.FindAction("Switch", throwIfNotFound: true);
+        m_PlacingMode_Cancel = m_PlacingMode.FindAction("Cancel", throwIfNotFound: true);
         // Animation
         m_Animation = asset.FindActionMap("Animation", throwIfNotFound: true);
         m_Animation_RadialCursor = m_Animation.FindAction("RadialCursor", throwIfNotFound: true);
@@ -1077,16 +1044,16 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private List<IPlacingModeActions> m_PlacingModeActionsCallbackInterfaces = new List<IPlacingModeActions>();
     private readonly InputAction m_PlacingMode_Place;
     private readonly InputAction m_PlacingMode_Signed;
-    private readonly InputAction m_PlacingMode_NextOrPrevious;
     private readonly InputAction m_PlacingMode_Switch;
+    private readonly InputAction m_PlacingMode_Cancel;
     public struct PlacingModeActions
     {
         private @PlayerInputActions m_Wrapper;
         public PlacingModeActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Place => m_Wrapper.m_PlacingMode_Place;
         public InputAction @Signed => m_Wrapper.m_PlacingMode_Signed;
-        public InputAction @NextOrPrevious => m_Wrapper.m_PlacingMode_NextOrPrevious;
         public InputAction @Switch => m_Wrapper.m_PlacingMode_Switch;
+        public InputAction @Cancel => m_Wrapper.m_PlacingMode_Cancel;
         public InputActionMap Get() { return m_Wrapper.m_PlacingMode; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1102,12 +1069,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Signed.started += instance.OnSigned;
             @Signed.performed += instance.OnSigned;
             @Signed.canceled += instance.OnSigned;
-            @NextOrPrevious.started += instance.OnNextOrPrevious;
-            @NextOrPrevious.performed += instance.OnNextOrPrevious;
-            @NextOrPrevious.canceled += instance.OnNextOrPrevious;
             @Switch.started += instance.OnSwitch;
             @Switch.performed += instance.OnSwitch;
             @Switch.canceled += instance.OnSwitch;
+            @Cancel.started += instance.OnCancel;
+            @Cancel.performed += instance.OnCancel;
+            @Cancel.canceled += instance.OnCancel;
         }
 
         private void UnregisterCallbacks(IPlacingModeActions instance)
@@ -1118,12 +1085,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Signed.started -= instance.OnSigned;
             @Signed.performed -= instance.OnSigned;
             @Signed.canceled -= instance.OnSigned;
-            @NextOrPrevious.started -= instance.OnNextOrPrevious;
-            @NextOrPrevious.performed -= instance.OnNextOrPrevious;
-            @NextOrPrevious.canceled -= instance.OnNextOrPrevious;
             @Switch.started -= instance.OnSwitch;
             @Switch.performed -= instance.OnSwitch;
             @Switch.canceled -= instance.OnSwitch;
+            @Cancel.started -= instance.OnCancel;
+            @Cancel.performed -= instance.OnCancel;
+            @Cancel.canceled -= instance.OnCancel;
         }
 
         public void RemoveCallbacks(IPlacingModeActions instance)
@@ -1247,8 +1214,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     {
         void OnPlace(InputAction.CallbackContext context);
         void OnSigned(InputAction.CallbackContext context);
-        void OnNextOrPrevious(InputAction.CallbackContext context);
         void OnSwitch(InputAction.CallbackContext context);
+        void OnCancel(InputAction.CallbackContext context);
     }
     public interface IAnimationActions
     {

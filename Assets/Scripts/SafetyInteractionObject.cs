@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// 二重のインタラクトを実装するオブジェクトの基底クラス
@@ -74,17 +75,13 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
 	protected virtual void Awake()
 	{
 		// Interact入力の購読
-		Player.Interact.performed += _ =>
-		{
-			if (canInteract)
-			{
-				SafetyOpen();
-			}
-			if (canInteractLooking)
-			{
-				SafetyOpenLooking();
-			}
-		};
+		Player.Interact.performed += OnInteract;
+	}
+
+	protected virtual void OnDestroy()
+	{
+		// Interact入力の購読解除
+		Player.Interact.performed -= OnInteract;
 	}
 
 	public virtual IInteraction.InteractionInfo Open()
@@ -128,4 +125,16 @@ public abstract class SafetyInteractionObject : MonoBehaviour, IInteraction, ISe
 
 	public virtual void Hover(SelectArgs selectArgs) { }
 	public virtual void Unhover(SelectArgs selectArgs) { }
+
+	private void OnInteract(InputAction.CallbackContext context)
+	{
+		if (canInteract)
+		{
+			SafetyOpen();
+		}
+		if (canInteractLooking)
+		{
+			SafetyOpenLooking();
+		}
+	}
 }
