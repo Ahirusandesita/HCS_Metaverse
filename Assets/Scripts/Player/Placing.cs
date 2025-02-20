@@ -1,8 +1,7 @@
-using System.Collections;
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Cysharp.Threading.Tasks;
 
 /// <summary>
 /// プレイヤーの配置モード（ハウジング）
@@ -17,10 +16,12 @@ public class Placing : MonoBehaviour, IInputControllable
 	private PlaceableObject deleteObject = default;
 	private MyRoomLoader myRoomLoader = default;
 
-	private int inventoryIndexTest = 0;
 	[SerializeField] private ItemBundleAsset allItemAsset = default;
 
+#if UNITY_EDITOR
+	private int inventoryIndexTest = 0;
 	private List<ItemIDAmountPair> debugData = new List<ItemIDAmountPair>();
+#endif
 
 	[System.Diagnostics.Conditional("UNITY_EDITOR")]
 	private void Reset()
@@ -35,12 +36,14 @@ public class Placing : MonoBehaviour, IInputControllable
 	private void Awake()
 	{
 		Inputter.PlacingMode.Place.performed += OnPlacing;
+#if UNITY_EDITOR
 		debugData.Add(new ItemIDAmountPair(10093, 1));
 		debugData.Add(new ItemIDAmountPair(10540, 1));
 		debugData.Add(new ItemIDAmountPair(10120, 1));
 		debugData.Add(new ItemIDAmountPair(10096, 1));
 		debugData.Add(new ItemIDAmountPair(10058, 1));
 		debugData.Add(new ItemIDAmountPair(10962, 1));
+#endif
 	}
 
 	private void Start()
@@ -121,12 +124,19 @@ public class Placing : MonoBehaviour, IInputControllable
 		{
 			playerState.ChangePlacingMode();
 		}
+
 		ghostModel.PlacingTarget.OnPlaced();
+
+		// Ghostから実体を生成
 		var placedObject = Instantiate(placeableObject, ghostModel.GetGhostPosition(), ghostModel.GetGhostChildRotation());
 		placedObject.gameObject.SetActive(true);
+		// ItemIDを渡しておく
 		placedObject.ItemID = placeableObject.ItemID;
+		// セーブAPI用にリストに追加しておく
 		myRoomLoader.InteriorInfo.AddPlacedObject(placedObject);
+		// Ghostを消す
 		TryDestroyGhost();
+		// もしオブジェクトを移動させていたら、残置オブジェクトを消しとく
 		if (deleteObject.gameObject.activeInHierarchy)
 		{
 			deleteObject.Close();

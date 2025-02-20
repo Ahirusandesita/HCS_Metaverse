@@ -55,6 +55,9 @@ public class ActivityProgressManagement : MonoBehaviour
     [SerializeField]
     private AllSpawn test;
 
+    [SerializeField]
+    private ScoreManager scoreManager;
+
     private void Awake()
     {
         //leader‚Ì‚Ý
@@ -117,8 +120,10 @@ public class ActivityProgressManagement : MonoBehaviour
             OnWaitFinish?.GetInvocationList()
                .OfType<WaitWithHandler>()
                .Select(async (OnAysncEvent) => await OnAysncEvent.Invoke()));
+
+
         WebAPIRequester webAPIRequester = new WebAPIRequester();
-        //webAPIRequester.PostScore()
+        await webAPIRequester.PostScore(scoreManager.ScoreSetter);
 
         GateOfFusion.Instance.ReturnMainCity();
     }

@@ -29,11 +29,6 @@ public class MyRoomLoader : MonoBehaviour
 			_placedObjects.Add(placedObject);
 		}
 
-		public void UpdatePlacedObject(PlaceableObject placedObject)
-		{
-
-		}
-
 		public void DeletePlacedObject(PlaceableObject deleteObject)
 		{
 			var deleteTarget = _placedObjects.Where(placedObject => placedObject == deleteObject).FirstOrDefault();
@@ -65,15 +60,18 @@ public class MyRoomLoader : MonoBehaviour
 
 	private async void Start()
 	{
+#if UNITY_EDITOR
 		// Debug
 		_interiorManager = new InteriorManager();
+
 		int? roomID = PlayerData.MovableMyRoomUserID;
 		if (roomID == null)
 		{
-			XDebug.LogError("RoomID‚ª‚ ‚è‚Ü‚¹‚ñ");
+			XDebug.LogError("RoomIDãŒã‚ã‚Šã¾ã›ã‚“");
 			return;
 		}
 		await Load((int)roomID);
+
 	}
 
 	public async UniTask Load(int myRoomAdminPlayerID)
@@ -88,7 +86,7 @@ public class MyRoomLoader : MonoBehaviour
 		_interiorManager = new InteriorManager();
 
 		int shopID = myRoomEntryData.ShopID;
-		//-1‚Í•”‰®‚É©”Ì‹@‚ª‚È‚¢ê‡
+		//-1ã¯éƒ¨å±‹ã«è‡ªè²©æ©ŸãŒãªã„å ´åˆ
 		if (shopID == -1) { return; }
 		VendingMachine vendingMachine = FindObjectOfType<VendingMachine>();
 		if (vendingMachine == null) { return; }
