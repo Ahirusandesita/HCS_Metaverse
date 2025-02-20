@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
-using System.Linq;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// ワールドに配置可能なオブジェクト
@@ -19,6 +19,10 @@ public class PlaceableObject : SafetyInteractionObject
 	private int housingID = -1;
 	private Component[] disableComponents = default;
 	private Placing placing = default;
+	private float canceledTime = default;
+	private System.Action UpdateAction = default;
+	private Vector3 defaultPosition = default;
+	private Quaternion defaultRotation = default;
 
 	public GameObject GhostOrigin => ghostOrigin;
 	public GhostModel.PivotType PivotType => pivotType;
@@ -33,11 +37,30 @@ public class PlaceableObject : SafetyInteractionObject
 		ghostOrigin = transform.root.gameObject;
 	}
 
+	protected override void Awake()
+	{
+		base.Awake();
+		Inputter.PlacingMode.Cancel.performed += OnCancel;
+		Inputter.PlacingMode.Cancel.canceled += OnCancelCancel;
+	}
+
 	protected void Start()
 	{
 		disableComponents = GetComponentsInChildren<Component>(true);
 		SetActiveNotIncludeThis(true);
 		placing = FindAnyObjectByType<Placing>();
+	}
+
+	private void Update()
+	{
+		UpdateAction?.Invoke();
+	}
+
+	protected override void OnDestroy()
+	{
+		base.OnDestroy();
+		Inputter.PlacingMode.Cancel.performed -= OnCancel;
+		Inputter.PlacingMode.Cancel.canceled -= OnCancelCancel;
 	}
 
 	public override IInteraction.InteractionInfo OpenLooking()
@@ -49,6 +72,8 @@ public class PlaceableObject : SafetyInteractionObject
 	{
 		SetActiveNotIncludeThis(false);
 		placing.CreateGhost(this);
+		defaultPosition = transform.position;
+		defaultRotation = transform.rotation;
 	}
 
 	public override void Close()
@@ -84,6 +109,37 @@ public class PlaceableObject : SafetyInteractionObject
 				renderer.enabled = value;
 			}
 		}
+	}
+
+	private void OnCancel(InputAction.CallbackContext context)
+	{
+		UpdateAction += () => canceledTime += Time.deltaTime;
+	}
+
+	private void OnCancelCancel(InputAction.CallbackContext context)
+	{
+		// Cancel
+		if (canceledTime < 1.5f)
+		{
+			transform.position = defaultPosition;
+			transform.rotation = defaultRotation;
+			Close();
+			placing.TryDestroyGhost();
+			placing.Cancel();
+			// キャンセルした後にまたOpenLookingが呼ばれるよう、再チェック可能に
+			IsFiredTriggerStay = false;
+		}
+		// Delete
+		else
+		{
+			PlayerDontDestroyData.Instance.AddInventory(new ItemIDAmountPair(itemID, 1));
+			placing.TryDestroyGhost();
+			placing.Cancel();
+			Destroy(gameObject);
+		}
+
+		canceledTime = 0f;
+		UpdateAction = null;
 	}
 }
 
