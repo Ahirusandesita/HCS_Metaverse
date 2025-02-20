@@ -7,6 +7,13 @@ namespace HCSMeta.Activity
 	{
 		public bool IsFiredTriggerStay { get; set; }
 		public ISelectedNotification SelectedNotification => this;
+		public enum ShopType
+		{
+			InteriorShop = 0,
+			CostumeShop = 1
+		}
+		[SerializeField]
+		private ShopType _shopType;
 		[SerializeField]
 		private GameFrame gameFrame;
 		[SerializeField, Header("移動するアクティビティ(ワールド)")]
@@ -59,12 +66,12 @@ namespace HCSMeta.Activity
 		{
 			gameFrame.GameStart();
 
-			//if(_sceneNameType == "MyRoom")
-			//{
-			//	_roomSelecter ??= FindObjectOfType<MyRoomSelector>().gameObject;
-			//	_roomSelecter.SetActive(true);
-			//	return new IInteraction.NullInteractionInfo();
-			//}
+			if (_sceneNameType == "MyRoom")
+			{
+				_roomSelecter ??= FindObjectOfType<MyRoomSelector>().gameObject;
+				_roomSelecter.SetActive(true);
+				return new IInteraction.NullInteractionInfo();
+			}
 
 			//ルームに参加する
 			if (MasterServerConect.IsUsePhoton && NetworkRunner.SessionInfo.PlayerCount > 1)
