@@ -3,6 +3,9 @@ using UnityEngine;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using KumaDebug;
+using UnityEngine.SceneManagement;
+using UniRx;
+
 public class PlayerDontDestroyData : MonoBehaviour
 {
 	private static PlayerDontDestroyData _instance = default;
@@ -12,7 +15,7 @@ public class PlayerDontDestroyData : MonoBehaviour
 	[SerializeField, Header("Debug")]
 	private int _playerID = 5;
 	[SerializeField]
-	private int _money = 0;
+	private IntReactiveProperty _moneyRP = new IntReactiveProperty();
 	[SerializeField]
 	private string _previousScene = "";
 	[SerializeField, Hide]
@@ -40,6 +43,7 @@ public class PlayerDontDestroyData : MonoBehaviour
 	private List<int> _flooringInventory = new();
 	[SerializeField]
 	private List<ItemIDAmountPair> _itemBoxInventory = new List<ItemIDAmountPair>();
+
 	public static PlayerDontDestroyData Instance => _instance;
 	public int PlayerID { get => _playerID; set => _playerID = value; }
 	public ItemIDAmountPair[] Inventory => _inventory;
@@ -48,15 +52,16 @@ public class PlayerDontDestroyData : MonoBehaviour
 	public string PreviousScene { get => _previousScene; set => _previousScene = value; }
 	public int Money
 	{
-		get => _money;
+		get => _moneyRP.Value;
 		set
 		{
 			lock (_moneyLockObject)
 			{
-				_money = value;
+				_moneyRP.Value = value;
 			}
 		}
 	}
+	public IReadOnlyReactiveProperty<int> MoneyRP => _moneyRP;
 	public string Token
 	{
 		get
@@ -119,6 +124,13 @@ public class PlayerDontDestroyData : MonoBehaviour
 		XDebug.LogWarning(result, Color.cyan);
 #endif
 		MovableMyRoomUserID = PlayerDontDestroyData.Instance.PlayerID;
+
+		SceneManager.sceneLoaded += OnSceneLoaded;
+		async void OnSceneLoaded(Scene nextScene, LoadSceneMode mode)
+		{
+			await UpdateInventory(webAPIRequester);
+			await UpdateMoney(webAPIRequester);
+		}
 	}
 
 	private async void Start()
@@ -261,7 +273,7 @@ public class PlayerDontDestroyData : MonoBehaviour
 
 	public async UniTask UpdateMoney(WebAPIRequester webAPIRequester)
 	{
-		_money = await webAPIRequester.GetMoney();
+		_moneyRP.Value = await webAPIRequester.GetMoney();
 	}
 }
 
