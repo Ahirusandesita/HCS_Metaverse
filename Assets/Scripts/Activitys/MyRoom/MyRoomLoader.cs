@@ -75,14 +75,14 @@ public class MyRoomLoader : MonoBehaviour
 
 	public async UniTask Load(int myRoomAdminPlayerID)
 	{
+		_interiorManager = new InteriorManager();
+
 		WebAPIRequester requester = new WebAPIRequester();
 		MyRoomEntryData myRoomEntryData = await requester.PostMyRoomEntry(myRoomAdminPlayerID);
 		foreach (MyRoomObject myRoomObject in myRoomEntryData.ObjectList)
 		{
 			SetRoomObject(myRoomObject);
 		}
-
-		_interiorManager = new InteriorManager();
 
 		int shopID = myRoomEntryData.ShopID;
 		//-1は部屋に自販機がない場合

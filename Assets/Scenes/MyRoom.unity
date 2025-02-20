@@ -354,6 +354,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &66100175 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5671115918361860096, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+  m_PrefabInstance: {fileID: 418584719}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73cba56b57b24a04fa46374ca2c5a766, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &86192409
 GameObject:
   m_ObjectHideFlags: 0
@@ -1795,6 +1806,17 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4199616580603030205, guid: d1194f39fec653f43a29ffefff235470, type: 3}
+--- !u!114 &1318163438 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4025533044892575554, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+  m_PrefabInstance: {fileID: 418584719}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f451ba95654f5d40ae778a117edabd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1349218035 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1412274098826957283, guid: 27a51ad69642cfe468480a141d63044f, type: 3}
@@ -1946,6 +1968,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1509343545 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 769282333720105791, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+  m_PrefabInstance: {fileID: 418584719}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f451ba95654f5d40ae778a117edabd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1510744142
 GameObject:
   m_ObjectHideFlags: 0
@@ -2371,6 +2404,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   displayedContent: {fileID: 1349218035}
+--- !u!114 &1934502290 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3179331219875569769, guid: 919027dc740a1e74e8821ac6603a671c, type: 3}
+  m_PrefabInstance: {fileID: 418584719}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8705caac8114262478ed13ebe30f47af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1993446103
 GameObject:
   m_ObjectHideFlags: 0
@@ -2544,19 +2588,19 @@ PrefabInstance:
     - target: {fileID: 5404462492477205967, guid: 52079ba9aabf0e84db1c2561119385ce, type: 3}
       propertyPath: PokeableCanvasInHandDependencyProvider
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1934502290}
     - target: {fileID: 6834759851099962894, guid: 52079ba9aabf0e84db1c2561119385ce, type: 3}
       propertyPath: ReticleDependencyProvider
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1509343545}
     - target: {fileID: 7905050200948115168, guid: 52079ba9aabf0e84db1c2561119385ce, type: 3}
       propertyPath: ReticleDependencyProvider
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1318163438}
     - target: {fileID: 8711644213049088254, guid: 52079ba9aabf0e84db1c2561119385ce, type: 3}
       propertyPath: playerProvider
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 66100175}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
