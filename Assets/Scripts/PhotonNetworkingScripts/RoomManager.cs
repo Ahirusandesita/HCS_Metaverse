@@ -84,7 +84,7 @@ public class RoomManager : MonoBehaviour
 			.FirstOrDefault() != null).Key;
 	}
 
-	public async UniTask<JoinOrCreateResult> JoinOrCreate(String sceneNameType, PlayerRef joinPlayer, int roomNumber = -1)
+	public async UniTask<JoinOrCreateResult> JoinOrCreate(string sceneNameType, PlayerRef joinPlayer, int roomNumber = -1)
 	{
 
 		Room myRoom = FindCurrentRoom(joinPlayer);
@@ -101,16 +101,11 @@ public class RoomManager : MonoBehaviour
 		{
 			//“ü‚ê‚é•”‰®‚ª‚ ‚é‚©
 			roomTemp = _rooms.Values.FirstOrDefault(room => !room.IsEndJoining
-			&& room.SceneNameType.ToString() == sceneNameType);
+			&& room.SceneNameType == sceneNameType);
 			if (roomTemp != null)
 			{
 				XKumaDebugSystem.LogWarning($"{roomTemp.IsEndJoining}:{roomTemp.SceneNameType}");
 			}
-		}
-		else if (_rooms.ContainsKey(roomNumber))
-		{
-			XKumaDebugSystem.LogWarning($"containconosnons{roomNumber}");
-			roomTemp = _rooms[roomNumber];
 		}
 
 		//“ü‚ê‚é•”‰®‚ª‚È‚¢‚½‚ßì¬‚·‚é

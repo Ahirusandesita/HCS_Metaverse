@@ -18,7 +18,20 @@ public class MyRoomJumpButton : MonoBehaviour, IPointerClickHandler
 		this._playerName = playerName;
 		_playerNameText.text = playerName;
 	}
-	public void OnPointerClick(PointerEventData data)
+	public async void OnPointerClick(PointerEventData data)
+	{
+		PlayerDontDestroyData.Instance.MovableMyRoomUserID = _playerID;
+
+		await RoomManager.Instance.JoinOrCreate(
+			"MyRoom",
+			GateOfFusion.Instance.NetworkRunner.LocalPlayer,
+			_playerID);
+
+		GateOfFusion.Instance.ActivityStart();
+	}
+
+	[ContextMenu("Click")]
+	private void Test()
 	{
 		PlayerDontDestroyData.Instance.MovableMyRoomUserID = _playerID;
 
