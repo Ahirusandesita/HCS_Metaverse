@@ -131,6 +131,7 @@ public class MyRoomLoader : MonoBehaviour
 			Quaternion.Euler(myRoomObject.EulerRotation)
 			);
 		PlaceableObject placeableObject = instance.GetComponentInChildren<PlaceableObject>();
+		placeableObject.ItemID = myRoomObject.ItemID;
 		placeableObject.HousingID = myRoomObject.HousingID;
 	}
 }
