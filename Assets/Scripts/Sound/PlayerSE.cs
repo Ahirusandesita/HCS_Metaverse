@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using System;
 
 public class PlayerSE : MonoBehaviour
 {
@@ -22,7 +24,7 @@ public class PlayerSE : MonoBehaviour
 
     private const float FOOTSTEPS_INTERVAL = 0.8f;
 
-    private AudioClip GetRandomFootsteps => Random.Range(1, 7) switch
+    private AudioClip GetRandomFootsteps => UnityEngine.Random.Range(1, 7) switch
     {
         1 => _footsteps.footsteps_1,
         2 => _footsteps.footsteps_2,
@@ -35,15 +37,9 @@ public class PlayerSE : MonoBehaviour
 
     private void Start()
     {
-        Inputter.Player.Move.performed += dir =>
-        {
-            _direction = dir.ReadValue<Vector2>();
-        };
+        Inputter.Player.Move.performed += PaformedAction;
 
-        Inputter.Player.Move.canceled += dir =>
-        {
-            _direction = Vector2.zero;
-        };
+        Inputter.Player.Move.canceled += CanseledAction;
     }
 
     private void Update()
@@ -62,5 +58,22 @@ public class PlayerSE : MonoBehaviour
     public void PlayFootStep()
     {
         AudioSource.PlayClipAtPoint(GetRandomFootsteps, transform.position);
+    }
+
+    private void OnDestroy()
+    {
+        Inputter.Player.Move.performed -= PaformedAction;
+
+        Inputter.Player.Move.canceled -= CanseledAction;
+    }
+
+    private void PaformedAction(InputAction.CallbackContext dir)
+    {
+        _direction = dir.ReadValue<Vector3>();
+    }
+
+    private void CanseledAction(InputAction.CallbackContext dir)
+    {
+        _direction = Vector2.zero;
     }
 }
