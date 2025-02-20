@@ -53,4 +53,5 @@ public class ActivityManagementRPC : NetworkBehaviour, IPlayerJoined
     {
         FindObjectOfType<ActivityProgressManagement>().RPC_RPCInstance(this);
     }
+
 }
