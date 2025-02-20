@@ -74,6 +74,17 @@ namespace HCSMeta.Activity
 				_roomSelecter.Init();
 				return new IInteraction.NullInteractionInfo();
 			}
+			else if (_sceneNameType == "Shop")
+			{
+				if (_shopType == ShopType.InteriorShop)
+				{
+					PlayerDontDestroyData.Instance.MovableShopID = PlayerDontDestroyData.Instance.ShopIDs[0];
+				}
+				else if (_shopType == ShopType.CostumeShop)
+				{
+					PlayerDontDestroyData.Instance.MovableShopID = PlayerDontDestroyData.Instance.ShopIDs[1];
+				}
+			}
 
 			//ƒ‹[ƒ€‚ÉŽQ‰Á‚·‚é
 			if (MasterServerConect.IsUsePhoton && NetworkRunner.SessionInfo.PlayerCount > 1)

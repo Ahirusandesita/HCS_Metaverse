@@ -22,27 +22,12 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 
 	public int ShopID => _shopID;
 
-	private void Update()
-	{
-#if UNITY_EDITOR
-		if (Input.GetKeyDown(KeyCode.Tab))
-		{
-			shopCart.AddCart(productId);
-		}
-#endif
-	}
-
 	public int GetPrice(int id)
 	{
 
 		if (prices.Keys.Contains(id))
 		{
 			return prices[id];
-		}
-
-		if (id == 10962)
-		{
-			return 500;
 		}
 
 		XDebug.LogWarning($"{id}:‚»‚Ìid‚ÍŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½");
@@ -68,6 +53,13 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 	}
 	private void Start()
 	{
+		int? shopID = PlayerDontDestroyData.Instance.MovableShopID;
+		if(shopID == null) 
+		{
+			XDebug.LogError("ShopID‚ª‚ ‚è‚Ü‚¹‚ñ");
+			return; 
+		}
+		_shopID = (int)shopID;
 		ShopViewPosition[] shopViewPositions
 			= FindObjectsByType<ShopViewPosition>(FindObjectsSortMode.None);
 
