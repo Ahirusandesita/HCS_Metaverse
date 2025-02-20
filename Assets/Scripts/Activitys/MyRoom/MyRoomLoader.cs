@@ -29,11 +29,6 @@ public class MyRoomLoader : MonoBehaviour
 			_placedObjects.Add(placedObject);
 		}
 
-		public void UpdatePlacedObject(PlaceableObject placedObject)
-		{
-
-		}
-
 		public void DeletePlacedObject(PlaceableObject deleteObject)
 		{
 			var deleteTarget = _placedObjects.Where(placedObject => placedObject == deleteObject).FirstOrDefault();
@@ -65,8 +60,10 @@ public class MyRoomLoader : MonoBehaviour
 
 	private async void Start()
 	{
+#if UNITY_EDITOR
 		// Debug
 		_interiorManager = new InteriorManager();
+#endif
 		await Load(PlayerDontDestroyData.Instance.PlayerID);
 	}
 

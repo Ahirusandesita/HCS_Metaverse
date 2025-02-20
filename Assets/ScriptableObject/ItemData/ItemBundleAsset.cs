@@ -42,6 +42,9 @@ namespace UnityEditor.HCSMeta
 
 			EditorGUILayout.Space(12f);
 
+			// このプロジェクト内にあるすべてのItemAssetをリストにAddするボタン
+			// 基本的にはこれを押してから以下のボタンを押す
+			// たとえローカルでのみ使うオブジェクトでも、ローカルDBには持っておくべき
 			if (GUILayout.Button("Auto Set"))
 			{
 				try
@@ -63,6 +66,10 @@ namespace UnityEditor.HCSMeta
 
 			EditorGUILayout.Space(12f);
 
+			// IDを自動で振る機能
+			// IDはジャンルごとに先頭の数字が違って、自動採番をしている（Interiorは10000番台）
+			// LastIDDataっていうテキストファイルで最後の番号を管理
+			// テキストファイルの成形はマジックナンバーですすまん！
 			if (GUILayout.Button("Allocate ID"))
 			{
 				var itemBundleAsset = target as ItemBundleAsset;
@@ -137,6 +144,8 @@ namespace UnityEditor.HCSMeta
 
 			EditorGUILayout.Space(12f);
 
+			// DBにInsertするAPI通信を飛ばす
+			// このクラスのリストにあるItemAssetかつ、ExcludeDatabaseがtrueじゃないやつをAdd
 			if (GUILayout.Button("Register ID in the Database (API Connecting)"))
 			{
 				var itemBundleAsset = target as ItemBundleAsset;
