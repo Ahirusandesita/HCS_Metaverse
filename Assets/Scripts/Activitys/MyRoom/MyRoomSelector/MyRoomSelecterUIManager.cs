@@ -18,6 +18,8 @@ public class MyRoomSelecterUIManager : MonoBehaviour,IPageController
 	private int _colMax;
 	[SerializeField]
 	private Vector2 _mergin;
+	private int _currentPage = 1;
+	private List<MyRoomJumpButton> _buttons;
 
 	public void Init()
 	{
@@ -31,9 +33,11 @@ public class MyRoomSelecterUIManager : MonoBehaviour,IPageController
 				prefabRectTransform.sizeDelta.x,
 				prefabRectTransform.sizeDelta.y
 				);
+		_buttons = new();
 		foreach (var item in PlayerDontDestroyData.Instance.AllPlayerNames)
 		{
 			MyRoomJumpButton button = Instantiate(_jumpButtonPrefab, _parent);
+			_buttons.Add(button);
 			button.Init(item.Key, item.Value);
 			RectTransform rectTransform = button.transform as RectTransform;
 			rectTransform.anchoredPosition = new Vector2(
@@ -41,25 +45,51 @@ public class MyRoomSelecterUIManager : MonoBehaviour,IPageController
 				-(count / _rowMax) * offset.y + _initPosition.anchoredPosition.y
 			);
 			count++;
-			if (count > displayUILimit)
-			{
-				isLimitOver = true;
-				count = 0;
-			}
 			if (isLimitOver)
 			{
 				button.gameObject.SetActive(false);
+			}
+			if (count >= displayUILimit)
+			{
+				isLimitOver = true;
+				count = 0;
 			}
 		}
 	}
 
 	public void NextPage()
 	{
-		throw new System.NotImplementedException();
+		if (_currentPage > _buttons.Count / (_rowMax * _colMax)) { return; }
+		XDebug.LogWarning("next");
+		_currentPage++;
+		ClosePage();
+		UpdatePage();
+	}
+
+	private void UpdatePage()
+	{
+		int displayCount = _rowMax * _colMax;
+		for (int i = ((int)_currentPage - 1) * displayCount; i < _buttons.Count; i++)
+		{
+			if (i / displayCount == _currentPage) { break; }
+			_buttons[i].gameObject.SetActive(true);
+		}
+	}
+
+	private void ClosePage()
+	{
+		foreach(var item in _buttons)
+		{
+			item.gameObject.SetActive(false);
+		}
 	}
 
 	public void PreviousPage()
 	{
-		throw new System.NotImplementedException();
+		if(_currentPage <= 1) { return; }
+		XDebug.LogWarning("previous");
+		_currentPage--;
+		ClosePage();
+		UpdatePage();
 	}
 }
