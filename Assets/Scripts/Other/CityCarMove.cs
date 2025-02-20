@@ -33,13 +33,11 @@ public class CityCarMove : MonoBehaviour
             {
                 case CityCarCheckPoint.pointType.load:
                     NextPoint(point.getNextPoint);
-                    Debug.LogError($"Ç¬Ç¨Å[");
                     break;
                 case CityCarCheckPoint.pointType.end:
                     Destroy(gameObject);
                     break;
                 default:
-                    Debug.LogError($"Ç≠ÇÈÇ‹ÇŒÇÆÇ¡ÇΩÅ[");
                     return;
             }
         }

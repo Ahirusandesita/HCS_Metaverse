@@ -31,7 +31,6 @@ public class LocalAvatarLogic : MonoBehaviour
 
         //action += () => remoteView.SetController(_rightControllerTransform, _leftControllerTransform);
 
-        Debug.LogError("‰Šú‰»");
         Inputter.Player.Move.performed += dir =>
         {
             remoteView.RPC_Walk(dir.ReadValue<Vector2>());

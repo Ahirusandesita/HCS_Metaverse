@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class LoginInputZone : MonoBehaviour,IPointerClickRegistrable
+public class LoginInputZone : MonoBehaviour,IPointerClickHandler
 {
 	[SerializeField]
 	private FlickKeyboardManager _flickKeyboardManager;
