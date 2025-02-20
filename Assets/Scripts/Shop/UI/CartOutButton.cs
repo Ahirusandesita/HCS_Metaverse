@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class CartOutButton : MonoBehaviour,IPointerClickRegistrable
+public class CartOutButton : MonoBehaviour,IPointerClickHandler
 {
     [SerializeField]
     private InCartItemUI uiIconController = default;

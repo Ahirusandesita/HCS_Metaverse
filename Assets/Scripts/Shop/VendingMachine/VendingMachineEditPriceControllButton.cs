@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class VendingMachineEditPriceControllButton : MonoBehaviour, IPointerClickRegistrable
+public class VendingMachineEditPriceControllButton : MonoBehaviour, IPointerClickHandler
 {
 	private enum Sign
 	{

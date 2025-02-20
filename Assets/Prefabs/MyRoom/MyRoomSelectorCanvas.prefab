@@ -199,8 +199,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _jumpButtonPrefab: {fileID: 8769325939335172497, guid: 469d4e03acf91b84d94290340e0523f3, type: 3}
+  _pageButtonPrefab: {fileID: 8484028156797861573, guid: 0e7a472f4f1b91c4d937476fc20488f7, type: 3}
   _parent: {fileID: 6966121835484584524}
   _initPosition: {fileID: 1521413816039476038}
+  _rowMax: 2
+  _colMax: 3
+  _mergin: {x: 10, y: 10}
 --- !u!1 &6978696862834908888
 GameObject:
   m_ObjectHideFlags: 0
@@ -230,7 +234,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6978696862834908888}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

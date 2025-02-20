@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class VendingMachineDeleteButton : MonoBehaviour, IPointerClickRegistrable
+public class VendingMachineDeleteButton : MonoBehaviour, IPointerClickHandler
 {
 	[SerializeField]
 	private VendingMachineBuyUI _vendingMachineUI;

@@ -3,18 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class HousingCanvas : MonoBehaviour, IPointerClickRegistrable, IInteraction
+public class HousingCanvas : MonoBehaviour, IInteraction
 {
 	[SerializeField] private GameObject displayedContent = default;
 
 	public bool IsFiredTriggerStay { get; set; }
 	ISelectedNotification IInteraction.SelectedNotification => throw new System.NotImplementedException();
-
-	void IPointerClickRegistrable.OnPointerClick(PointerEventData data)
-	{
-		var player = FindAnyObjectByType<PlayerState>();
-		player.ChangePlacingMode();
-	}
 
 	IInteraction.InteractionInfo IInteraction.Open()
 	{
