@@ -60,7 +60,6 @@ public class MyRoomLoader : MonoBehaviour
 
 	private async void Start()
 	{
-#if UNITY_EDITOR
 		// Debug
 		_interiorManager = new InteriorManager();
 
