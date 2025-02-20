@@ -20,8 +20,8 @@ public class PlayerDontDestroyData : MonoBehaviour
 	private Dictionary<int, string> _allPlayerNames = new();
 	[SerializeField, Hide]
 	private int[] _shopIDs;
-	[SerializeField,Hide]
 	private int? _movableMyRoomUserID = null;
+	private int? _movableShopID = null;
 	[Space(10)]
 	private readonly object _moneyLockObject = new object();
 	private readonly object _inventoryLockObject = new object();
@@ -81,6 +81,23 @@ public class PlayerDontDestroyData : MonoBehaviour
 		set
 		{
 			_movableMyRoomUserID = value;
+		}
+	}
+
+	/// <summary>
+	/// ˆê“xŽæ“¾‚·‚é‚ÆŽŸ“ü‚é‚Ü‚Ånull‚ð•Ô‚·
+	/// </summary>
+	public int? MovableShopID
+	{
+		get
+		{
+			int? returnValue = _movableShopID;
+			_movableShopID = null;
+			return returnValue;
+		}
+		set
+		{
+			_movableShopID = value;
 		}
 	}
 
