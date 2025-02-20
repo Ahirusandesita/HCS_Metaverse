@@ -71,7 +71,6 @@ namespace HCSMeta.Activity
 			{
 				_roomSelecter ??= FindAnyObjectByType<MyRoomSelector>(FindObjectsInactive.Include);
 				_roomSelecter.gameObject.SetActive(true);
-				_roomSelecter.Init();
 				return new IInteraction.NullInteractionInfo();
 			}
 			else if (_sceneNameType == "Shop")
