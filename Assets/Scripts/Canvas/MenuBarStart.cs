@@ -31,4 +31,10 @@ public class MenuBarStart : MonoBehaviour, IInputControllable
             MenuBar.SetActive(false);
         }
     }
+
+    public void Hide()
+	{
+        isDeplo = false;
+        Dep();
+    }
 }

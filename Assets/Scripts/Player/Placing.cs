@@ -136,13 +136,17 @@ public class Placing : MonoBehaviour, IInputControllable
 		myRoomLoader.InteriorInfo.AddPlacedObject(placedObject);
 		// Ghostを消す
 		TryDestroyGhost();
-		// もしオブジェクトを移動させていたら、残置オブジェクトを消しとく
-		if (deleteObject.gameObject.activeInHierarchy)
+		try
 		{
-			deleteObject.Close();
-			myRoomLoader.InteriorInfo.DeletePlacedObject(deleteObject);
-			Destroy(deleteObject.gameObject);
+			// もしオブジェクトを移動させていたら、残置オブジェクトを消しとく
+			if (deleteObject.gameObject.activeInHierarchy)
+			{
+				deleteObject.Close();
+				myRoomLoader.InteriorInfo.DeletePlacedObject(deleteObject);
+				Destroy(deleteObject.gameObject);
+			}
 		}
+		catch (MissingReferenceException) { }
 		placeableObject = placedObject;
 	}
 
