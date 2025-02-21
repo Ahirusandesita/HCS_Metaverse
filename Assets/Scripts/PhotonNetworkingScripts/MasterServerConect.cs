@@ -221,8 +221,22 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 		XKumaDebugSystem.LogWarning($"OnDisconnectedFromMasterServer:{reason}", KumaDebugColor.MessageColor);
 	}
 
-	private void OnShutdown(NetworkRunner runner, ShutdownReason reason)
+	private async void OnShutdown(NetworkRunner runner, ShutdownReason reason)
 	{
+		var requester = new WebAPIRequester();
+		await requester.PostCostume(
+			PlayerDontDestroyData.Instance.hair,
+			PlayerDontDestroyData.Instance.face,
+			PlayerDontDestroyData.Instance.headGear,
+			PlayerDontDestroyData.Instance.top,
+			PlayerDontDestroyData.Instance.bottom,
+			PlayerDontDestroyData.Instance.bag,
+			PlayerDontDestroyData.Instance.shoes,
+			PlayerDontDestroyData.Instance.glove,
+			PlayerDontDestroyData.Instance.eyeWear,
+			PlayerDontDestroyData.Instance.body
+			);
+
 		XKumaDebugSystem.LogWarning($"OnShutdown:{reason}", KumaDebugColor.MessageColor);
 		_isConnected = false;
 	}

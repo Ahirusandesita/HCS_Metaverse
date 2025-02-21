@@ -32,6 +32,17 @@ public class PlayerDontDestroyData : MonoBehaviour
 	private readonly object _wallpaperInventoryLockObject = new object();
 	private readonly object _flooringInventoryLockObject = new object();
 
+	public int hair { get; set; }
+	public int face { get; set; }
+	public int headGear { get; set; }
+	public int top { get; set; }
+	public int bottom { get; set; }
+	public int bag { get; set; }
+	public int shoes { get; set; }
+	public int glove { get; set; }
+	public int eyeWear { get; set; }
+	public int body { get; set; }
+
 	//id count
 	[SerializeField]
 	private ItemIDAmountPair[] _inventory = new ItemIDAmountPair[_MAX_INVENTORY_COUNT];
