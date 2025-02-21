@@ -52,6 +52,18 @@ public class LoginManager : MonoBehaviour
 		_resultText.text = "Success";
 		_resultText.color = Color.green;
 
+		var costumeData = await webAPIRequester.GetCosutume();
+		PlayerDontDestroyData.Instance.hair = costumeData.GetBody.Hair;
+		PlayerDontDestroyData.Instance.face = costumeData.GetBody.Face;
+		PlayerDontDestroyData.Instance.headGear = costumeData.GetBody.HeadGear;
+		PlayerDontDestroyData.Instance.top = costumeData.GetBody.Top;
+		PlayerDontDestroyData.Instance.bottom = costumeData.GetBody.Bottom;
+		PlayerDontDestroyData.Instance.bag = costumeData.GetBody.Bag;
+		PlayerDontDestroyData.Instance.shoes = costumeData.GetBody.Shoes;
+		PlayerDontDestroyData.Instance.glove = costumeData.GetBody.Glove;
+		PlayerDontDestroyData.Instance.eyeWear = costumeData.GetBody.EyeWear;
+		PlayerDontDestroyData.Instance.body = costumeData.GetBody.BodyCos;
+
 		SceneManager.LoadScene(_nextScene);
 	}
 

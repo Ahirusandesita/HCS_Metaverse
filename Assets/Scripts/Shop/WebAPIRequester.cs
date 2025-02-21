@@ -26,6 +26,8 @@ public class WebAPIRequester
 	private const string DATABASE_PATH_LOGIN = "http://10.11.33.228:8080/login";
 	private const string DATABASE_PATH_INVENTORY_CATCH = DATABASE_PATH_BASE + "inventory/catch";
 	private const string DATABASE_PATH_INVENTORY_SAVE = DATABASE_PATH_BASE + "inventory/save";
+	private const string DATABASE_PATH_COSTUME_CATCH = DATABASE_PATH_BASE + "costume/catch";
+	private const string DATABASE_PATH_COSTUME_SAVE = DATABASE_PATH_BASE + "costume/save";
 	private const string CONTENT_TYPE = "application/json";
 	private const string TOKEN_KEY = "Authorization";
 
@@ -464,6 +466,70 @@ public class WebAPIRequester
 		var onCatchUserInventoryData = JsonUtility.FromJson<OnCatchUserInventory>(request.downloadHandler.text);
 		return onCatchUserInventoryData;
 	}
+
+	/// <summary>
+	/// コスチュームの取得
+	/// </summary>
+	/// <returns></returns>
+	public async UniTask<OnCatchCostumeData> GetCosutume()
+	{
+		using var request = UnityWebRequest.Post(DATABASE_PATH_COSTUME_CATCH, new WWWForm());
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
+
+		await request.SendWebRequest();
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				throw new APIConnectException(request.error);
+		}
+
+		var onCatchCostumeData = JsonUtility.FromJson<OnCatchCostumeData>(request.downloadHandler.text);
+		return onCatchCostumeData;
+	}
+
+	/// <summary>
+	/// コスチュームのセーブ
+	/// </summary>
+	/// <param name="hair"></param>
+	/// <param name="face"></param>
+	/// <param name="headGear"></param>
+	/// <param name="top"></param>
+	/// <param name="bottom"></param>
+	/// <param name="bag"></param>
+	/// <param name="shoes"></param>
+	/// <param name="glove"></param>
+	/// <param name="eyeWaar"></param>
+	/// <param name="body"></param>
+	/// <returns></returns>
+	public async UniTask PostCostume(int hair, int face, int headGear, int top, int bottom, int bag, int shoes, int glove, int eyeWaar, int body)
+	{
+		var form = new WWWForm();
+		form.AddField("hair", hair);
+		form.AddField("face", face);
+		form.AddField("headGear", headGear);
+		form.AddField("top", top);
+		form.AddField("bottom", bottom);
+		form.AddField("bag", bag);
+		form.AddField("shoes", shoes);
+		form.AddField("glove", glove);
+		form.AddField("eyeWaar", eyeWaar);
+		form.AddField("body", body);
+		using var request = UnityWebRequest.Post(DATABASE_PATH_COSTUME_SAVE, form);
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
+
+		await request.SendWebRequest();
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				throw new APIConnectException(request.error);
+		}
+	}
 	#endregion
 
 	#region レスポンスデータ
@@ -739,6 +805,58 @@ public class WebAPIRequester
 
 			[SerializeField] private List<UserInventoryData> itemList = default;
 			public IReadOnlyList<UserInventoryData> Inventory => itemList;
+		}
+	}
+
+	[System.Serializable]
+	public class OnCatchCostumeData : ResponseData
+	{
+		public OnCatchCostumeData(Body body)
+		{
+			this.body = body;
+		}
+
+		[SerializeField] private Body body;
+		public Body GetBody => body;
+
+		[System.Serializable]
+		public class Body
+		{
+			public Body(int hair, int face, int headGear, int top, int bottom, int bag, int shoes, int glove, int eyeWear, int body)
+			{
+				this.hair = hair;
+				this.face = face;
+				this.headGear = headGear;
+				this.top = top;
+				this.bottom = bottom;
+				this.bag = bag;
+				this.shoes = shoes;
+				this.glove = glove;
+				this.eyeWear = eyeWear;
+				this.body = body;
+			}
+
+			[SerializeField] private int hair = default;
+			[SerializeField] private int face = default;
+			[SerializeField] private int headGear = default;
+			[SerializeField] private int top = default;
+			[SerializeField] private int bottom = default;
+			[SerializeField] private int bag = default;
+			[SerializeField] private int shoes = default;
+			[SerializeField] private int glove = default;
+			[SerializeField] private int eyeWear = default;
+			[SerializeField] private int body = default;
+
+			public int Hair => hair;
+			public int Face => face;
+			public int HeadGear => headGear;
+			public int Top => top;
+			public int Bottom => bottom;
+			public int Bag => bag;
+			public int Shoes => shoes;
+			public int Glove => glove;
+			public int EyeWear => eyeWear;
+			public int BodyCos => body;
 		}
 	}
 	#endregion
