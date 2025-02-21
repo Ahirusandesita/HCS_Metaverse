@@ -125,10 +125,12 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	/// <summary>
 	/// セッションに入る。ない場合は作る
 	/// </summary>
-	public async UniTask JoinOrCreateSession(string sessionName, PlayerRef executePlayer)
+	public async UniTask JoinOrCreateSession(string sceneName,string sessionName, PlayerRef executePlayer)
 	{
 		if (!_isUsePhoton) { return; }
 		RoomManager.Instance.Initialize(executePlayer);
+		WebAPIRequester webAPIRequester = new WebAPIRequester();
+		await webAPIRequester.PostUserLocation(sessionName,sceneName);
 		if (_networkRunner != null)
 		{
 			XKumaDebugSystem.LogWarning($"Runnerが破棄されていません", KumaDebugColor.ErrorColor);
@@ -224,6 +226,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 	private async void OnShutdown(NetworkRunner runner, ShutdownReason reason)
 	{
 		var requester = new WebAPIRequester();
+		await requester.PostOffline();
 		await requester.PostCostume(
 			PlayerDontDestroyData.Instance.hair,
 			PlayerDontDestroyData.Instance.face,
@@ -236,6 +239,7 @@ public class MasterServerConect : NetworkBehaviour, IMasterServerConectable
 			PlayerDontDestroyData.Instance.eyeWear,
 			PlayerDontDestroyData.Instance.body
 			);
+
 
 		XKumaDebugSystem.LogWarning($"OnShutdown:{reason}", KumaDebugColor.MessageColor);
 		_isConnected = false;

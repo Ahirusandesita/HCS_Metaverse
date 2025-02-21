@@ -97,7 +97,7 @@ public class VisualShop : MonoBehaviour, ISelectedNotification, IDependencyInjec
 		WebAPIRequester webAPIRequester = new WebAPIRequester();
 
 		var data = await webAPIRequester.PostShopEntry(_shopID);
-
+		XDebug.LogWarning(data.ItemList.Count);
 		int smallItemCounter = 0;
 		int largeItemCounter = 0;
 		int recommendCounter = 0;

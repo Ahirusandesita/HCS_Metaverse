@@ -25,12 +25,6 @@ public class Room
 	{
 		this._worldType = activityType;
 		this._nextSessionName = nextSessionName;
-
-		if (activityType == "KumaKumaTest"
-			|| activityType == "TestPhotonScene")
-		{
-			_isNonLeader = true;
-		}
 		_maxParticipantCount = activityType switch
 		{
 			"TestPhotonScene" => -1,
@@ -38,11 +32,6 @@ public class Room
 			"KumaKumaTest" => -1,
 			_ => -1,
 		};
-	}
-
-	public int GetPlayerIndex(PlayerRef playerRef)
-	{
-		return _roomPlayers.IndexOf(playerRef);
 	}
 
 	public void Join(PlayerRef playerRef)

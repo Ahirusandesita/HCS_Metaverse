@@ -34,7 +34,7 @@ public class GateOfFusion
 			_networkRunner = value;
 		}
 	}
-	private GateOfFusion(){}
+	private GateOfFusion() { }
 	public void Init()
 	{
 		MasterServer.OnConnect += () => OnConnect?.Invoke();
@@ -163,7 +163,7 @@ public class GateOfFusion
 			PlayerDontDestroyData.Instance.PreviousScene = sceneName;
 		}
 		XKumaDebugSystem.LogWarning($"シーンを読み込んだ");
-		await MasterServer.JoinOrCreateSession(sessionName, localPlayerRef);
+		await MasterServer.JoinOrCreateSession(sceneName,sessionName, localPlayerRef);
 		XKumaDebugSystem.LogWarning($"自分がセッション移動した", KumaDebugColor.MessageColor);
 		_syncResult = SyncResult.Complete;
 		XKumaDebugSystem.LogWarning($"移動終了", KumaDebugColor.MessageColor);
@@ -177,10 +177,9 @@ public class GateOfFusion
 
 
 		MasterServer.SessionRPCManager.Rpc_RoomStandbyOn();
-		if (currentRoom.SceneNameType != "KumaKumaTest" || currentRoom.SceneNameType != "TestPhotonScene")
-		{
-			_masterServer.SessionRPCManager.Rpc_ExecuteOnActivityConnedted();
-		}
+
+		MasterServer.SessionRPCManager.Rpc_ExecuteOnActivityConnedted();
+
 	}
 	public void ExecuteOnActivityConnected()
 	{
@@ -217,7 +216,7 @@ public class GateOfFusion
 		XKumaDebugSystem.LogWarning($"切断した", KumaDebugColor.MessageColor);
 		await SceneManager.LoadSceneAsync(sceneName);
 		XKumaDebugSystem.LogWarning($"シーンを読み込んだ");
-		await MasterServer.JoinOrCreateSession(sessionName, localPlayerRef);
+		await MasterServer.JoinOrCreateSession(sceneName,sessionName, localPlayerRef);
 		XKumaDebugSystem.LogWarning($"自分がセッション移動した", KumaDebugColor.MessageColor);
 		_syncResult = SyncResult.Complete;
 		XKumaDebugSystem.LogWarning($"移動終了", KumaDebugColor.MessageColor);
