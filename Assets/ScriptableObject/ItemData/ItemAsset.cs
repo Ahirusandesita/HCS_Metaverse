@@ -47,6 +47,7 @@ public class ItemAsset : ScriptableObject
 			}
 			return itemIcon;
 		}
+		set { itemIcon = value; }
 	}
 
 	public string Text => itemText;
