@@ -52,7 +52,17 @@ public class ItemAsset : ScriptableObject
 	public string Text => itemText;
 	public ItemGenre Genre => itemGenre;
 	public int Size => (int)size;
-	public GameObject Prefab => prefab;
+	public GameObject Prefab 
+	{ 
+		get 
+		{ 
+			if(prefab == null)
+			{
+				return (displayItem as IDisplayItem).gameObject;
+			}
+			return prefab; 
+		} 
+	}
 	public IDisplayItem DisplayItem => displayItem as IDisplayItem;
 	public NetworkView NetworkView => networkView;
 	public AnimationClip Animation => animation;

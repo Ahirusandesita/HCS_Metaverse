@@ -12,6 +12,8 @@ public class WebAPIRequester
 	private const string DATABASE_PATH_BASE = "http://10.11.33.228:8080/api/";
 	private const string DATABASE_PATH_COOK_SCORE = DATABASE_PATH_BASE + "score";
 	private const string DATABASE_PATH_JOIN_WORLD = DATABASE_PATH_BASE + "world";
+	private const string DATABASE_PATH_JOIN_WORLD_ONLINE = DATABASE_PATH_BASE + "world/online";
+	private const string DATABASE_PATH_JOIN_WORLD_OFFLINE = DATABASE_PATH_BASE + "world/offline";
 	private const string DATABASE_PATH_MONEY = DATABASE_PATH_BASE + "money";
 	private const string DATABASE_PATH_SHOP_RECOMMEND = DATABASE_PATH_BASE + "shop/recommend";
 	private const string DATABASE_PATH_SHOP_ENTRY = DATABASE_PATH_BASE + "shop/entry";
@@ -84,6 +86,36 @@ public class WebAPIRequester
 
 
 	#region Post/Get メソッド
+
+	public async UniTask PostOnline()
+	{
+		using var request = UnityWebRequest.Post(DATABASE_PATH_JOIN_WORLD_ONLINE, "", CONTENT_TYPE);
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
+		await request.SendWebRequest();
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				throw new APIConnectException(request.error);
+		}
+	}
+
+	public async UniTask PostOffline()
+	{
+		using var request = UnityWebRequest.Post(DATABASE_PATH_JOIN_WORLD_OFFLINE, "", CONTENT_TYPE);
+		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
+		await request.SendWebRequest();
+		switch (request.result)
+		{
+			case Result.InProgress:
+				throw new System.InvalidOperationException("ネットワーク通信が未だ進行中。");
+
+			case Result.ConnectionError or Result.ProtocolError or Result.DataProcessingError:
+				throw new APIConnectException(request.error);
+		}
+	}
 
 	public async UniTask<OnGetWorldData> GetJoinWorldData()
 	{
@@ -506,18 +538,10 @@ public class WebAPIRequester
 	/// <returns></returns>
 	public async UniTask PostCostume(int hair, int face, int headGear, int top, int bottom, int bag, int shoes, int glove, int eyeWaar, int body)
 	{
-		var form = new WWWForm();
-		form.AddField("hair", hair);
-		form.AddField("face", face);
-		form.AddField("headGear", headGear);
-		form.AddField("top", top);
-		form.AddField("bottom", bottom);
-		form.AddField("bag", bag);
-		form.AddField("shoes", shoes);
-		form.AddField("glove", glove);
-		form.AddField("eyeWaar", eyeWaar);
-		form.AddField("body", body);
-		using var request = UnityWebRequest.Post(DATABASE_PATH_COSTUME_SAVE, form);
+
+		var data = new SendCostumeData(hair, face, headGear, top, body, bag, shoes, glove, eyeWaar, body);
+		var jsonData = JsonUtility.ToJson(data);
+		using var request = UnityWebRequest.Post(DATABASE_PATH_COSTUME_SAVE,jsonData ,CONTENT_TYPE);
 		request.SetRequestHeader(TOKEN_KEY, PlayerDontDestroyData.Instance.Token);
 
 		await request.SendWebRequest();
@@ -601,7 +625,34 @@ public class WebAPIRequester
 		[SerializeField] private int amount = default;
 	}
 
+	[System.Serializable]
+	public class SendCostumeData
+	{
+		public SendCostumeData(int hair, int face, int headGear, int top, int bottom, int bag, int shoes, int glove, int eyeWear, int body)
+		{
+			this.hair = hair;
+			this.face = face;
+			this.headGear = headGear;
+			this.top = top;
+			this.bottom = bottom;
+			this.bag = bag;
+			this.shoes = shoes;
+			this.glove = glove;
+			this.eyeWear = eyeWear;
+			this.body = body;
+		}
 
+		[SerializeField] private int hair = default;
+		[SerializeField] private int face = default;
+		[SerializeField] private int headGear = default;
+		[SerializeField] private int top = default;
+		[SerializeField] private int bottom = default;
+		[SerializeField] private int bag = default;
+		[SerializeField] private int shoes = default;
+		[SerializeField] private int glove = default;
+		[SerializeField] private int eyeWear = default;
+		[SerializeField] private int body = default;
+	}
 
 	/// <summary>
 	/// ショップ入店時のレスポンスデータ

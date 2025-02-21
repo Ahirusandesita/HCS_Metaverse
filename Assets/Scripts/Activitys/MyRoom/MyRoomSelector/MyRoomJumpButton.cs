@@ -25,7 +25,8 @@ public class MyRoomJumpButton : MonoBehaviour, IPointerClickHandler
 		await RoomManager.Instance.JoinOrCreate(
 			"MyRoom",
 			GateOfFusion.Instance.NetworkRunner.LocalPlayer,
-			_playerID);
+			_playerID
+			);
 
 		GateOfFusion.Instance.ActivityStart();
 	}

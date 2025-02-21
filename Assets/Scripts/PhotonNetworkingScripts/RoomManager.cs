@@ -18,7 +18,7 @@ public class RoomManager : MonoBehaviour
 	[SerializeField]
 	private GameObject _activityStartUIPrefab;
 	private ActivityMemberTextController _activityMemberTextController;
-	private Dictionary<int, Room> _rooms = new();
+	private List<Room> _rooms = new();
 	private GameObject _leaderObject;
 	private GameObject _activityStartUI;
 	private static RoomManager _instance = default;
@@ -67,26 +67,12 @@ public class RoomManager : MonoBehaviour
 	public Room FindCurrentRoom(PlayerRef playerRef)
 	{
 		if (_rooms.Count < 1) { return null; }
-		Room temp = _rooms.Values.FirstOrDefault(room => room.JoinRoomPlayer.Contains(playerRef));
+		Room temp = _rooms.FirstOrDefault(room => room.JoinRoomPlayer.Contains(playerRef));
 		return temp;
 	}
 
-	public int GetCurrentRoomKey(Room room)
+	public async UniTask<JoinOrCreateResult> JoinOrCreate(string sceneNameType, PlayerRef joinPlayer, int sessionNum = 0)
 	{
-		return _rooms.FirstOrDefault(roomData => roomData.Value == room).Key;
-	}
-
-	public int GetCuurentRoomKey(PlayerRef playerRef)
-	{
-		return _rooms
-			.FirstOrDefault(roomData => roomData.Value.JoinRoomPlayer
-				.Where(playerData => playerData == playerRef)
-			.FirstOrDefault() != null).Key;
-	}
-
-	public async UniTask<JoinOrCreateResult> JoinOrCreate(string sceneNameType, PlayerRef joinPlayer, int roomNumber = -1)
-	{
-
 		Room myRoom = FindCurrentRoom(joinPlayer);
 		if (myRoom != null)
 		{
@@ -95,47 +81,25 @@ public class RoomManager : MonoBehaviour
 		}
 
 		JoinOrCreateResult result = default;
-		Room roomTemp = default;
-		//部屋番号指定なしの場合
-		if (roomNumber < 0)
-		{
-			//入れる部屋があるか
-			roomTemp = _rooms.Values.FirstOrDefault(room => !room.IsEndJoining
-			&& room.SceneNameType == sceneNameType);
-			if (roomTemp != null)
-			{
-				XKumaDebugSystem.LogWarning($"{roomTemp.IsEndJoining}:{roomTemp.SceneNameType}");
-			}
-		}
+		Room roomTemp = _rooms.Where(room => room.NextSessionName == sceneNameType + sessionNum).FirstOrDefault();
 
-		//入れる部屋がないため作成する
 		if (roomTemp == null)
 		{
-			//自動でキーを作る場合
-			if (roomNumber < 0) { roomNumber = 1; }
-			for (; _rooms.ContainsKey(roomNumber); roomNumber++) ;
-			if (sceneNameType == SceneNameType.TestPhotonScene.ToString())
-			{
-				roomTemp = Create(sceneNameType, 0);
-			}
-			else
-			{
-				roomTemp = Create(sceneNameType, roomNumber);
-			}
-
+			roomTemp = Create(sceneNameType, sceneNameType + sessionNum);
 			result = JoinOrCreateResult.Create;
 		}
 		else
 		{
 			result = JoinOrCreateResult.Join;
-			if (_activityMemberTextController != null)
-			{
-				_activityMemberTextController.UpdateText();
-			}
+		}
+
+		if (_activityMemberTextController != null)
+		{
+			_activityMemberTextController.UpdateText();
 		}
 
 		roomTemp.Join(joinPlayer);
-		
+
 		if (!roomTemp.IsNonLeader && joinPlayer == GateOfFusion.Instance.NetworkRunner.LocalPlayer)
 		{
 			InstantiateLeaderObject();
@@ -219,9 +183,7 @@ public class RoomManager : MonoBehaviour
 		LeftResult result = await joinedRoom.Left(playerRef);
 		if (result == LeftResult.Closable)
 		{
-			int deleteRoomKey = _rooms.FirstOrDefault(room => room.Value == joinedRoom).Key;
-			XKumaDebugSystem.LogWarning($"{_rooms[deleteRoomKey].NextSessionName}を削除");
-			_rooms.Remove(deleteRoomKey);
+			_rooms.Remove(joinedRoom);
 		}
 		else if (result == LeftResult.Fail)
 		{
@@ -229,11 +191,11 @@ public class RoomManager : MonoBehaviour
 		}
 	}
 
-	private Room Create(string activityType, int roomNumber)
+	private Room Create(string activityType, string sessionName)
 	{
-		string nextSessionName = activityType + ":" + roomNumber;
-		_rooms.Add(roomNumber, new Room(activityType, nextSessionName));
-		return _rooms.Values.LastOrDefault();
+		Room newRoom = new Room(activityType, sessionName);
+		_rooms.Add(newRoom);
+		return newRoom;
 	}
 
 	public void ChangeSessionName(PlayerRef playerRef, string currentSessionName)
@@ -279,12 +241,11 @@ public class RoomManager : MonoBehaviour
 	{
 		XKumaDebugSystem.LogWarning($"ルームマネージャー初期化", KumaDebugColor.SuccessColor);
 		Room myRoom = FindCurrentRoom(myPlayerRef);
-		int myRoomKey = GetCurrentRoomKey(myRoom);
 		XKumaDebugSystem.LogWarning($"{myRoom}:{myPlayerRef}:", KumaDebugColor.MessageColor);
 		bool isLeader = myRoom.LeaderPlayerRef == myPlayerRef;
 		_rooms.Clear();
 		XKumaDebugSystem.LogWarning($"クリア");
-		_rooms.Add(myRoomKey, myRoom);
+		_rooms.Add(myRoom);
 		XKumaDebugSystem.LogWarning($"add");
 		if (myRoom.IsNonLeader) { return; }
 		if (isLeader) { myRoom.ChangeLeader(myPlayerRef); }
@@ -298,14 +259,14 @@ public class RoomManager : MonoBehaviour
 			XKumaDebugSystem.LogWarning("ルームがありません", KumaDebugColor.MessageColor);
 			return;
 		}
-		foreach (KeyValuePair<int, Room> roomData in _rooms)
+		foreach (Room roomData in _rooms)
 		{
 			XKumaDebugSystem.LogWarning(
-				$"RoomData::,NextSessionName:{roomData.Value.NextSessionName}" +
-				$"Leader:{roomData.Value.LeaderPlayerRef}," +
-				$"PlayerCount{roomData.Value.JoinRoomPlayer.Count}" +
-				$"RoomNumber:{roomData.Key}", KumaDebugColor.InformationColor);
-			foreach (PlayerRef player in roomData.Value.JoinRoomPlayer)
+				$"RoomData::,NextSessionName:{roomData.NextSessionName}" +
+				$"Leader:{roomData.LeaderPlayerRef}," +
+				$"PlayerCount{roomData.JoinRoomPlayer.Count}"
+				, KumaDebugColor.InformationColor);
+			foreach (PlayerRef player in roomData.JoinRoomPlayer)
 			{
 				XKumaDebugSystem.LogWarning($"{player}", KumaDebugColor.InformationColor);
 			}

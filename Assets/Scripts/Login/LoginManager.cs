@@ -52,6 +52,8 @@ public class LoginManager : MonoBehaviour
 		_resultText.text = "Success";
 		_resultText.color = Color.green;
 
+		await webAPIRequester.PostOnline();
+
 		var costumeData = await webAPIRequester.GetCosutume();
 		PlayerDontDestroyData.Instance.hair = costumeData.GetBody.Hair;
 		PlayerDontDestroyData.Instance.face = costumeData.GetBody.Face;
